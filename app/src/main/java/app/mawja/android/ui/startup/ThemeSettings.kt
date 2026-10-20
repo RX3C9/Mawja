@@ -3,11 +3,13 @@ package app.mawja.android.ui.startup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.font.FontFamily
+import app.mawja.android.account.Entitlements
 import app.mawja.android.data.local.AppFontPreferences
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.ui.theme.CustomTheme
 import app.mawja.android.ui.theme.FlowFontFamily
 import app.mawja.android.ui.theme.FlowTheme
+import app.mawja.android.ui.theme.PremiumThemes
 import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +32,14 @@ fun LocalDataManager.themeSettings(fonts: AppFontPreferences): Flow<ThemeSetting
         ThemeSettings(mode, variant, custom, light, dark)
     }.combine(systemDarkThemeVariant) { settings, darkVariant -> settings.copy(systemDarkThemeVariant = darkVariant) }
         .combine(fonts.fontFamily) { settings, family -> settings.copy(fontFamily = family) }
+
+/** The same settings with any premium palette the user does not have shown as Flow Default. */
+fun ThemeSettings.gatedBy(entitlements: Entitlements): ThemeSettings =
+    copy(
+        themeMode = PremiumThemes.effective(themeMode, entitlements),
+        systemLightThemeMode = PremiumThemes.effective(systemLightThemeMode, entitlements),
+        systemDarkThemeMode = PremiumThemes.effective(systemDarkThemeMode, entitlements),
+    )
 
 @Composable
 fun FlowTheme(

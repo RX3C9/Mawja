@@ -63,6 +63,7 @@ import app.mawja.android.ui.screens.update.UPDATE_ROUTE
 import app.mawja.android.ui.startup.FlowTheme
 import app.mawja.android.ui.startup.SplashController
 import app.mawja.android.ui.startup.ThemeSettings
+import app.mawja.android.ui.startup.gatedBy
 import app.mawja.android.ui.startup.splashTone
 import app.mawja.android.ui.startup.themeSettings
 import app.mawja.android.ui.theme.FlowFontFamily
@@ -100,6 +101,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appFontPreferences: AppFontPreferences
+
+    @Inject
+    lateinit var entitlementsRepository: app.mawja.android.account.EntitlementsRepository
 
     @Inject
     lateinit var playlistTransfer: dagger.Lazy<PlaylistTransfer>
@@ -212,7 +216,12 @@ class MainActivity : ComponentActivity() {
 
         // Read now, alongside the rest of startup, so the theme is usually known by the first composition.
         val storedTheme = MutableStateFlow<ThemeSettings?>(null)
-        lifecycleScope.launch { dataManager.themeSettings(appFontPreferences).collect { storedTheme.value = it } }
+        lifecycleScope.launch {
+            dataManager
+                .themeSettings(appFontPreferences)
+                .combine(entitlementsRepository.entitlements) { settings, entitlements -> settings.gatedBy(entitlements) }
+                .collect { storedTheme.value = it }
+        }
 
         setContent {
             // Nothing is composed until the theme is known: the splash covers the wait, and the app

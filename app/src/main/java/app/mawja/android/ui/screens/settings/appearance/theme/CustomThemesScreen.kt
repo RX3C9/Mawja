@@ -99,7 +99,11 @@ internal fun CustomThemesScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(JSON_MIME)) { uri ->
             if (uri != null && exporting.isNotEmpty()) viewModel.export(uri, exporting)
         }
-    val palettes = ThemeCatalog.palettes.filter { it.mode != ThemeMode.MATERIAL_YOU }
+    val entitlements by viewModel.entitlements.collectAsStateWithLifecycle()
+    val palettes =
+        ThemeCatalog.palettes.filter {
+            it.mode != ThemeMode.MATERIAL_YOU && !app.mawja.android.ui.theme.PremiumThemes.isLocked(it.mode, entitlements)
+        }
     val allFileName = stringResource(R.string.settings_custom_themes_title)
 
     fun exportThemes(themes: List<CustomTheme>) {

@@ -39,6 +39,7 @@ import app.mawja.android.ui.screens.settings.index.ThemeIndex
 import app.mawja.android.ui.theme.CustomTheme
 import app.mawja.android.ui.theme.ThemeCatalog
 import app.mawja.android.ui.theme.ThemeCatalogEntry
+import app.mawja.android.ui.theme.PremiumThemes
 import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
 
@@ -46,6 +47,8 @@ private val PaletteDialogMaxHeight = 440.dp
 private val PaletteDialogSpacing = 8.dp
 
 private enum class SystemSlot { LIGHT, DARK }
+
+private val LockBadgeSlot: @Composable () -> Unit = { PremiumLockBadge() }
 
 /**
  * The theme picker. With Follow system on, Flow switches between a light-mode and a dark-mode
@@ -63,6 +66,9 @@ internal fun ThemeScreen(
     val swatches by viewModel.swatches.collectAsStateWithLifecycle()
     val isSystemDark = isSystemInDarkTheme()
     var slotDialog by rememberSaveable { mutableStateOf<SystemSlot?>(null) }
+    val entitlements by viewModel.entitlements.collectAsStateWithLifecycle()
+    var upsellFor by rememberSaveable { mutableStateOf<ThemeMode?>(null) }
+    val isLocked: (ThemeMode) -> Boolean = { PremiumThemes.isLocked(it, entitlements) }
 
     val styleOptions =
         ThemeVariant.entries.map { FlowToggleOption(it, stringResource(themeVariantLabel(it))) }
@@ -70,7 +76,14 @@ internal fun ThemeScreen(
     val activeCustomName = settings.customThemes.firstOrNull { it.id == settings.activeCustomId }?.name
     val lightSlotName = themeName(settings.systemLightMode, activeCustomName)
     val darkSlotName = themeName(settings.systemDarkMode, activeCustomName)
-    val paletteItems = paletteCards(viewModel.palettes, swatches[settings.variant].orEmpty(), settings.mode, viewModel::setTheme)
+    val paletteItems =
+        paletteCards(viewModel.palettes, swatches[settings.variant].orEmpty(), settings.mode, isLocked) { mode ->
+            if (isLocked(mode)) {
+                upsellFor = mode
+            } else {
+                viewModel.setTheme(mode)
+            }
+        }
     val customItems =
         customCards(
             themes = settings.customThemes,
@@ -132,8 +145,14 @@ internal fun ThemeScreen(
         ThemePaletteDialog(
             title = stringResource(if (lightSlot) R.string.appearance_system_light_theme else R.string.appearance_system_dark_theme),
             items =
-                paletteCards(viewModel.palettes, swatches[slotVariant].orEmpty(), slotMode) { mode ->
-                    if (lightSlot) viewModel.setSystemLightTheme(mode) else viewModel.setSystemDarkTheme(mode)
+                paletteCards(viewModel.palettes, swatches[slotVariant].orEmpty(), slotMode, isLocked) { mode ->
+                    if (isLocked(mode)) {
+                        upsellFor = mode
+                    } else if (lightSlot) {
+                        viewModel.setSystemLightTheme(mode)
+                    } else {
+                        viewModel.setSystemDarkTheme(mode)
+                    }
                     slotDialog = null
                 } +
                     customCards(
@@ -145,6 +164,17 @@ internal fun ThemeScreen(
                         slotDialog = null
                     },
             onDismiss = { slotDialog = null },
+        )
+    }
+
+    upsellFor?.let { mode ->
+        PremiumThemeUpsellSheet(
+            themeName = stringResource(ThemeCatalog.nameRes(mode)),
+            onSeePlans = {
+                upsellFor = null
+                onNavigate(SettingsTarget(SettingsDestination.ACCOUNT))
+            },
+            onDismiss = { upsellFor = null },
         )
     }
 }
@@ -160,9 +190,11 @@ private fun paletteCards(
     palettes: List<ThemeCatalogEntry>,
     swatches: Map<String, ThemeSwatch>,
     selected: ThemeMode,
+    isLocked: (ThemeMode) -> Boolean,
     onSelect: (ThemeMode) -> Unit,
 ): List<ThemeCardItem> =
     palettes.map { entry ->
+        val locked = isLocked(entry.mode)
         ThemeCardItem(
             key = swatchKey(entry.mode),
             name = stringResource(entry.nameRes),
@@ -170,6 +202,7 @@ private fun paletteCards(
             swatch = swatches[swatchKey(entry.mode)],
             selected = entry.mode == selected,
             onClick = { onSelect(entry.mode) },
+            trailing = if (locked) LockBadgeSlot else null,
         )
     }
 
@@ -215,6 +248,7 @@ private fun ThemePaletteDialog(
                         swatch = item.swatch,
                         selected = item.selected,
                         onClick = item.onClick,
+                        trailing = item.trailing,
                     )
                 }
             }

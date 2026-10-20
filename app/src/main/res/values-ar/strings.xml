@@ -4715,4 +4715,11 @@
     <string name="account_error_unknown">حدث خطأ ما. حاول مرة أخرى.</string>
     <string name="theme_name_nile">النيل (موجة)</string>
     <string name="theme_desc_nile">ألوان موجة الخاصة: فيروزي النيل والمرجاني على أزرق الليل.</string>
+    <string name="premium_badge_plus">Plus</string>
+    <string name="premium_locked_content_description">مقفول، متاح مع موجة Plus</string>
+    <string name="premium_available_in_plus">متاح في Plus</string>
+    <string name="premium_theme_upsell_body">الثيم ده من إضافات موجة Plus. أعضاء Plus وPro وLifetime وFamily يقدروا يستخدموه على كل جهاز مسجلين دخول عليه.</string>
+    <string name="premium_theme_upsell_free_note">تصميم Flow الافتراضي وكل الثيمات الأصلية مجانية دايماً.</string>
+    <string name="premium_see_plans">عرض العضويات</string>
+    <string name="premium_not_now">مش دلوقتي</string>
 </resources>

@@ -43,7 +43,11 @@ class CustomThemesViewModel
     constructor(
         @ApplicationContext private val context: Context,
         private val dataManager: LocalDataManager,
+        entitlementsRepository: app.mawja.android.account.EntitlementsRepository,
     ) : SettingsViewModel() {
+        /** Membership extras; premium palettes are only offered as a starting point to members. */
+        val entitlements: StateFlow<app.mawja.android.account.Entitlements> = entitlementsRepository.entitlements
+
         val themes: StateFlow<List<CustomTheme>?> = dataManager.customThemes.asState<List<CustomTheme>?>(null)
 
         /** The custom theme the app shows right now, or null when a built-in palette is showing. */

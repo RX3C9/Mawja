@@ -9,12 +9,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import dagger.hilt.android.AndroidEntryPoint
+import app.mawja.android.account.EntitlementsRepository
 import app.mawja.android.data.local.AppFontPreferences
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.ui.screens.widgets.PlaylistConfigScreen
 import app.mawja.android.ui.screens.widgets.QuickActionsConfigScreen
 import app.mawja.android.ui.startup.FlowTheme
+import app.mawja.android.ui.startup.gatedBy
 import app.mawja.android.ui.startup.themeSettings
+import kotlinx.coroutines.flow.combine
 import app.mawja.android.widget.playlist.PlaylistWidgetReceiver
 import app.mawja.android.widget.quickactions.QuickActionsWidgetReceiver
 import javax.inject.Inject
@@ -27,6 +30,9 @@ import javax.inject.Inject
 class WidgetConfigActivity : ComponentActivity() {
     @Inject
     lateinit var appFontPreferences: AppFontPreferences
+
+    @Inject
+    lateinit var entitlementsRepository: EntitlementsRepository
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
@@ -47,7 +53,10 @@ class WidgetConfigActivity : ComponentActivity() {
             return
         }
         val glanceId = GlanceAppWidgetManager(this).getGlanceIdBy(appWidgetId)
-        val theme = LocalDataManager(applicationContext).themeSettings(appFontPreferences)
+        val theme =
+            LocalDataManager(applicationContext)
+                .themeSettings(appFontPreferences)
+                .combine(entitlementsRepository.entitlements) { settings, entitlements -> settings.gatedBy(entitlements) }
         setContent {
             val settings = theme.collectAsState(initial = null).value ?: return@setContent
             FlowTheme(settings) {

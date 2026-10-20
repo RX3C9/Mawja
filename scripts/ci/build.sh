@@ -19,6 +19,20 @@ for group in ":app:assembleGithubDebug" ":app:assembleFossDebug" "$(echo " $TASK
   c=${PIPESTATUS[0]}
   if [ "$c" != 0 ]; then code=$c; break; fi
 done
+# Mawja's own JVM unit tests (reported, do not fail the APK build). Only Mawja test classes are
+# selected; the class list lives in scripts/ci/unit-tests.txt so it grows with each batch.
+unit="skipped"
+if [ "$code" = 0 ] && [ -f scripts/ci/unit-tests.txt ]; then
+  filters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | sed 's/^/--tests /' | xargs)
+  if [ -n "$filters" ]; then
+    if timeout 40m ./gradlew :app:testFossDebugUnitTest $filters --max-workers=2 > unit.log 2>&1; then
+      unit="ok"
+    else
+      unit="FAILED: $(grep -E '^(e: |.*FAILED|.*Test.*>.*FAILED|  .*Exception|.*expected)' unit.log | head -25 | tr "\n" " " | cut -c1-1500)"
+    fi
+    cat unit.log >> build.log
+  fi
+fi
 ./gradlew --stop >/dev/null 2>&1 || true
 if [ "$code" = 0 ]; then status=success; else status=failure; fi
 # Companion apps ride along in the app artifact folder (the workflow uploads app/build/outputs/apk/**).
@@ -32,6 +46,6 @@ if [ -f backend/functions/package.json ] && command -v npm >/dev/null; then
 fi
 apks=$(find app/build/outputs/apk -name '*.apk' -printf '%f (%s bytes)\n' 2>/dev/null | head -14)
 logurl=$(curl -fsS -F "files[]=@build.log" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null || echo none)
-summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "backend: $backend"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
+summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "backend: $backend"; echo "unit: $unit"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
 curl -fsS -H "Title: Mawja CI $status" -d "$summary" "https://ntfy.sh/$TOPIC" >/dev/null || true
 exit $code

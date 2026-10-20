@@ -4369,4 +4369,11 @@
     <string name="account_error_unknown">Something went wrong. Try again.</string>
     <string name="theme_name_nile">Nile (Mawja)</string>
     <string name="theme_desc_nile">Mawja\'s own colours: Nile teal and coral on night blue.</string>
+    <string name="premium_badge_plus">Plus</string>
+    <string name="premium_locked_content_description">Locked, available with Mawja Plus</string>
+    <string name="premium_available_in_plus">Available in Plus</string>
+    <string name="premium_theme_upsell_body">This palette is a Mawja Plus extra. Plus, Pro, Lifetime and Family members can use it on every device they\'re signed in on.</string>
+    <string name="premium_theme_upsell_free_note">Flow Default and every original palette stay free, always.</string>
+    <string name="premium_see_plans">See membership</string>
+    <string name="premium_not_now">Not now</string>
 </resources>

@@ -7,9 +7,12 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import app.mawja.android.account.Entitlements
+import app.mawja.android.account.EntitlementsRepository
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.ui.screens.settings.SettingsViewModel
 import app.mawja.android.ui.theme.CustomTheme
+import app.mawja.android.ui.theme.PremiumThemes
 import app.mawja.android.ui.theme.ThemeCatalog
 import app.mawja.android.ui.theme.ThemeCatalogEntry
 import app.mawja.android.ui.theme.ThemeMode
@@ -53,6 +56,14 @@ data class ThemeSettings(
     val followsSystem: Boolean get() = mode == ThemeMode.SYSTEM
 }
 
+/** The picker's settings with any locked premium palette shown as Flow Default. */
+internal fun ThemeSettings.gatedBy(entitlements: Entitlements): ThemeSettings =
+    copy(
+        mode = PremiumThemes.effective(mode, entitlements),
+        systemLightMode = PremiumThemes.effective(systemLightMode, entitlements),
+        systemDarkMode = PremiumThemes.effective(systemDarkMode, entitlements),
+    )
+
 /** The theme picker. Writes go straight to the same store the app theme reads. */
 @HiltViewModel
 class ThemeViewModel
@@ -60,7 +71,11 @@ class ThemeViewModel
     constructor(
         @ApplicationContext private val context: Context,
         private val dataManager: LocalDataManager,
+        private val entitlementsRepository: EntitlementsRepository,
     ) : SettingsViewModel() {
+        /** What the user's membership unlocks; Free for guests and foss builds. */
+        val entitlements: StateFlow<Entitlements> = entitlementsRepository.entitlements
+
         val settings: StateFlow<ThemeSettings> =
             combine(
                 combine(dataManager.themeMode, dataManager.themeVariant, ::Pair),
@@ -69,7 +84,11 @@ class ThemeViewModel
                 dataManager.systemDarkThemeVariant,
             ) { (mode, variant), (custom, active), (light, dark), darkVariant ->
                 ThemeSettings(mode, variant, custom, active?.id, light, dark, darkVariant)
-            }.asState(ThemeSettings())
+            }.combine(entitlementsRepository.entitlements) { settings, entitlements -> settings.gatedBy(entitlements) }
+                .asState(ThemeSettings())
+
+        /** True when [mode] is a premium palette this user's membership does not include. */
+        fun isLocked(mode: ThemeMode): Boolean = PremiumThemes.isLocked(mode, entitlements.value)
 
         /** Palettes on offer: Material You needs Android 12's wallpaper colours. */
         val palettes: List<ThemeCatalogEntry> =
@@ -114,15 +133,15 @@ class ThemeViewModel
             }
         }
 
-        fun setTheme(mode: ThemeMode) = write { dataManager.setThemeMode(mode) }
+        fun setTheme(mode: ThemeMode) = write { if (!isLocked(mode)) dataManager.setThemeMode(mode) }
 
         fun setVariant(variant: ThemeVariant) = write { dataManager.setThemeVariant(variant) }
 
         fun useCustomTheme(id: String) = write { dataManager.useCustomTheme(id, settings.value.variant) }
 
-        fun setSystemLightTheme(mode: ThemeMode) = write { dataManager.setSystemLightThemeMode(mode) }
+        fun setSystemLightTheme(mode: ThemeMode) = write { if (!isLocked(mode)) dataManager.setSystemLightThemeMode(mode) }
 
-        fun setSystemDarkTheme(mode: ThemeMode) = write { dataManager.setSystemDarkThemeMode(mode) }
+        fun setSystemDarkTheme(mode: ThemeMode) = write { if (!isLocked(mode)) dataManager.setSystemDarkThemeMode(mode) }
 
         /**
          * Puts custom theme [id] in a Follow-system slot. Both slots share one active custom theme, so
