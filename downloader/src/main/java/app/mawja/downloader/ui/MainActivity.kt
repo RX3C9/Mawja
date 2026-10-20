@@ -100,6 +100,9 @@ private fun DownloaderTheme(content: @Composable () -> Unit) {
 @Composable
 private fun DownloadsScreen() {
     val items by DownloadEngine.items.collectAsStateWithLifecycle()
+    val transfers by app.mawja.downloader.RangeFetcher.active.collectAsStateWithLifecycle()
+    val transferred by app.mawja.downloader.RangeFetcher.bytesTotal.collectAsStateWithLifecycle()
+    val context = androidx.compose.ui.platform.LocalContext.current
     val scroll = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scroll.nestedScrollConnection),
@@ -113,6 +116,17 @@ private fun DownloadsScreen() {
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        if (transfers > 0 || transferred > 0) {
+                            Text(
+                                stringResource(
+                                    R.string.mawja_transfers_status,
+                                    transfers,
+                                    android.text.format.Formatter.formatShortFileSize(context, transferred),
+                                ),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
                     }
                 },
                 actions = {

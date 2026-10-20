@@ -82,7 +82,8 @@ class TransferJob(
     var result: TransferResult? = null
         private set
 
-    private val activeCalls: MutableList<Call> = Collections.synchronizedList(mutableListOf())
+    /** Stops for in-flight requests: a local OkHttp call, or a transfer running in Mawja Downloader. */
+    private val activeCalls: MutableList<() -> Unit> = Collections.synchronizedList(mutableListOf())
 
     val downloadedBytes: Long get() = streams.sumOf { it.downloadedBytes }
     val totalBytes: Long get() = streams.sumOf { it.totalBytes }
@@ -121,18 +122,22 @@ class TransferJob(
         if (won) cancelActiveCalls()
     }
 
-    internal fun track(call: Call) {
-        activeCalls.add(call)
+    internal fun track(call: Call): () -> Unit = trackCancel(call::cancel)
+
+    /** Registers [cancel] to run on stop; returns the handle to pass to [untrack]. */
+    internal fun trackCancel(cancel: () -> Unit): () -> Unit {
+        activeCalls.add(cancel)
         // A stop that landed between the status check and this add would otherwise leave the call running.
-        if (!isRunning) call.cancel()
+        if (!isRunning) cancel()
+        return cancel
     }
 
-    internal fun untrack(call: Call) {
-        activeCalls.remove(call)
+    internal fun untrack(handle: () -> Unit) {
+        activeCalls.remove(handle)
     }
 
     private fun cancelActiveCalls() {
         val calls = synchronized(activeCalls) { activeCalls.toList().also { activeCalls.clear() } }
-        calls.forEach { it.cancel() }
+        calls.forEach { runCatching { it() } }
     }
 }

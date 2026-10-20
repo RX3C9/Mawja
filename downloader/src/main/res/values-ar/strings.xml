@@ -15,4 +15,6 @@
     <string name="action_cancel">إلغاء</string>
     <string name="action_clear">مسح المنتهية</string>
     <string name="subtitle">تنزيلات موجة، في تطبيق منفصل وآمن.</string>
+    <string name="notification_mawja_transfers">جارٍ النقل لتطبيق موجة</string>
+    <string name="mawja_transfers_status">نقل موجة: %1$d نشط · %2$s تم نقلها</string>
 </resources>

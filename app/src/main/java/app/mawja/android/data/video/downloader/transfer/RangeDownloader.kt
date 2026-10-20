@@ -1,6 +1,12 @@
 package app.mawja.android.data.video.downloader.transfer
 
+import android.content.Context
 import android.util.Log
+import app.mawja.android.BuildConfig
+import app.mawja.android.data.video.downloader.remote.DownloaderConnection
+import app.mawja.android.data.video.downloader.remote.RemoteRangeResult
+import app.mawja.android.data.video.downloader.remote.RemoteRangeTransport
+import dagger.hilt.android.qualifiers.ApplicationContext
 import app.mawja.android.data.video.downloader.YouTubeStreamUrls
 import app.mawja.android.network.ProxyAwareClient
 import app.mawja.android.player.datasource.GoogleVideoRequestPolicy
@@ -40,6 +46,10 @@ internal fun audioWorkerCount(threads: Int): Int {
  * Each block is tracked on the job, so a stop keeps what was written and a later run with the
  * restored block map fetches only the rest. The first block that fails for good fails the whole
  * job at once: carrying on would download the rest of a file that is then thrown away.
+ *
+ * Mawja: when Mawja Downloader is installed (API 2+), every request is run there through
+ * [RemoteRangeTransport] and the downloader writes the bytes into these part files; the local
+ * OkHttp path stays for builds that do not require the downloader and for tests.
  */
 @Singleton
 class RangeDownloader internal constructor(
@@ -47,9 +57,12 @@ class RangeDownloader internal constructor(
     // Blocking socket reads run here, never on the shared IO pool, so a large download cannot
     // starve the rest of the app of IO threads.
     private val transferDispatcher: CoroutineDispatcher,
+    private val remote: () -> RemoteRangeTransport? = { null },
 ) {
     @Inject
-    constructor() : this(
+    constructor(
+        @ApplicationContext context: Context,
+    ) : this(
         ProxyAwareClient {
             connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -57,6 +70,13 @@ class RangeDownloader internal constructor(
                 .retryOnConnectionFailure(true)
         }::get,
         Dispatchers.IO.limitedParallelism(MAX_PARALLEL_READS),
+        {
+            if (BuildConfig.REQUIRE_DOWNLOADER) {
+                DownloaderConnection.transferService(context)?.let(::RemoteRangeTransport)
+            } else {
+                null
+            }
+        },
     )
 
     /**
@@ -86,10 +106,12 @@ class RangeDownloader internal constructor(
         client: OkHttpClient,
         job: TransferJob,
     ): TransferResult {
+        val transport = runCatching { remote() }.getOrNull()
+        if (transport != null) Log.d(TAG, "${job.videoId}: bytes go through Mawja Downloader")
         try {
             for (stream in job.streams) {
                 if (stream.totalBytes <= 0L) {
-                    when (val length = contentLength(client, stream.url, job.fallbackUserAgent)) {
+                    when (val length = contentLength(client, transport, stream.url, job.fallbackUserAgent)) {
                         is ContentLength.Known -> stream.totalBytes = length.bytes
                         ContentLength.Denied -> job.fail(TransferResult.Denied(stream.url))
                         ContentLength.Unknown -> job.fail(TransferResult.Failed(TransferFailure.LENGTH_UNKNOWN))
@@ -110,7 +132,7 @@ class RangeDownloader internal constructor(
                             } else {
                                 videoWorkerCount(job.threads)
                             }
-                        List(workers) { async { workerLoop(client, job, stream) } }
+                        List(workers) { async { workerLoop(client, transport, job, stream) } }
                     }.awaitAll()
             }
             if (job.isRunning) {
@@ -131,6 +153,7 @@ class RangeDownloader internal constructor(
 
     private suspend fun workerLoop(
         client: OkHttpClient,
+        transport: RemoteRangeTransport?,
         job: TransferJob,
         stream: TransferStream,
     ) {
@@ -141,13 +164,14 @@ class RangeDownloader internal constructor(
             if (block in stream.completedBlocks) continue
             val start = block * BLOCK_SIZE
             val end = minOf(start + BLOCK_SIZE, stream.totalBytes) - 1
-            if (!fetchBlockWithRetry(client, job, stream, block, start, end)) return
+            if (!fetchBlockWithRetry(client, transport, job, stream, block, start, end)) return
             stream.completedBlocks.add(block)
         }
     }
 
     private suspend fun fetchBlockWithRetry(
         client: OkHttpClient,
+        transport: RemoteRangeTransport?,
         job: TransferJob,
         stream: TransferStream,
         block: Int,
@@ -157,7 +181,13 @@ class RangeDownloader internal constructor(
         var lastError: String? = null
         repeat(MAX_ATTEMPTS) { attempt ->
             if (!job.isRunning) return false
-            when (val outcome = fetchBlock(client, job, stream, block, start, end)) {
+            val outcome =
+                if (transport != null) {
+                    fetchBlockRemote(transport, job, stream, block, start, end)
+                } else {
+                    fetchBlock(client, job, stream, block, start, end)
+                }
+            when (outcome) {
                 BlockOutcome.Done -> {
                     return true
                 }
@@ -201,7 +231,7 @@ class RangeDownloader internal constructor(
             return BlockOutcome.Done
         }
         val call = client.newCall(blockRequest(stream.url, from, end, job.fallbackUserAgent))
-        job.track(call)
+        val handle = job.track(call)
         var written = 0L
         try {
             val response =
@@ -248,18 +278,70 @@ class RangeDownloader internal constructor(
             if (!job.isRunning) return BlockOutcome.Stopped
             return BlockOutcome.Retry(e.message ?: e.javaClass.simpleName, diskFull = isDiskFull(e))
         } finally {
-            job.untrack(call)
+            job.untrack(handle)
         }
+    }
+
+    /** [fetchBlock] run inside Mawja Downloader, which writes the body into the part file. */
+    private fun fetchBlockRemote(
+        transport: RemoteRangeTransport,
+        job: TransferJob,
+        stream: TransferStream,
+        block: Int,
+        start: Long,
+        end: Long,
+    ): BlockOutcome {
+        val already = stream.partialBlockBytes[block] ?: 0L
+        val from = start + already
+        if (from > end) {
+            stream.partialBlockBytes.remove(block)
+            return BlockOutcome.Done
+        }
+        if (!job.isRunning) return BlockOutcome.Stopped
+        val expected = end - from + 1
+        val result =
+            try {
+                transport.fetch(
+                    request = blockRequest(stream.url, from, end, job.fallbackUserAgent),
+                    file = stream.file,
+                    offset = from,
+                    maxBytes = expected,
+                    // Only googlevideo's query range may answer 200; see fetchBlock.
+                    requirePartial = !YouTubeStreamUrls.isYouTubeStreamUrl(stream.url),
+                    onBytes = { stream.downloaded.addAndGet(it) },
+                    registerCancel = job::trackCancel,
+                    unregisterCancel = job::untrack,
+                )
+            } catch (e: IOException) {
+                return if (job.isRunning) BlockOutcome.Retry(e.message ?: e.javaClass.simpleName) else BlockOutcome.Stopped
+            }
+        val written = result.written
+        if (written > 0) stream.partialBlockBytes[block] = already + written
+        if (!job.isRunning || result.cancelled) return BlockOutcome.Stopped
+        if (result.code == 0 || result.error != null && result.isSuccessful) {
+            return BlockOutcome.Retry(result.error ?: "no response", diskFull = result.diskFull)
+        }
+        if (!result.isSuccessful) return failedResponse(result.code, result.retryAfter, stream.url)
+        if (result.code != 206 && !YouTubeStreamUrls.isYouTubeStreamUrl(stream.url)) return BlockOutcome.Retry("range ignored")
+        if (written < expected) return BlockOutcome.Retry("short block: $written of $expected bytes")
+        stream.partialBlockBytes.remove(block)
+        return BlockOutcome.Done
     }
 
     private fun failedResponse(
         response: Response,
         url: String,
+    ): BlockOutcome = failedResponse(response.code, response.header("Retry-After"), url)
+
+    private fun failedResponse(
+        code: Int,
+        retryAfter: String?,
+        url: String,
     ): BlockOutcome =
-        when (response.code) {
+        when (code) {
             403 -> BlockOutcome.Denied(url)
-            429, 500, 502, 503, 504 -> BlockOutcome.Retry("HTTP ${response.code}", retryAfterMs = retryAfterMs(response))
-            else -> BlockOutcome.Retry("HTTP ${response.code}")
+            429, 500, 502, 503, 504 -> BlockOutcome.Retry("HTTP $code", retryAfterMs = retryAfterMs(retryAfter))
+            else -> BlockOutcome.Retry("HTTP $code")
         }
 
     private fun blockRequest(
@@ -300,12 +382,14 @@ class RangeDownloader internal constructor(
      */
     private fun contentLength(
         client: OkHttpClient,
+        transport: RemoteRangeTransport?,
         url: String,
         fallbackUserAgent: String,
     ): ContentLength {
         if (YouTubeStreamUrls.isYouTubeStreamUrl(url)) {
             YouTubeStreamUrls.extractClenFromUrl(url).takeIf { it > 0 }?.let { return ContentLength.Known(it) }
         }
+        if (transport != null) return remoteContentLength(transport, url, fallbackUserAgent)
         return try {
             client.newCall(blockRequest(url, 0L, 0L, fallbackUserAgent)).execute().use { response ->
                 when {
@@ -330,6 +414,39 @@ class RangeDownloader internal constructor(
         } catch (e: IOException) {
             Log.w(TAG, "Length probe failed: ${e.message}")
             ContentLength.Unknown
+        }
+    }
+
+    private fun remoteContentLength(
+        transport: RemoteRangeTransport,
+        url: String,
+        fallbackUserAgent: String,
+    ): ContentLength {
+        val result: RemoteRangeResult =
+            try {
+                transport.fetch(
+                    request = blockRequest(url, 0L, 0L, fallbackUserAgent),
+                    file = null,
+                    offset = 0L,
+                    maxBytes = 0L,
+                    requirePartial = false,
+                    onBytes = {},
+                    registerCancel = { cancel -> cancel },
+                    unregisterCancel = {},
+                )
+            } catch (e: IOException) {
+                Log.w(TAG, "Length probe through Mawja Downloader failed: ${e.message}")
+                return ContentLength.Unknown
+            }
+        return when {
+            result.code == 403 -> ContentLength.Denied
+            !result.isSuccessful -> ContentLength.Unknown
+            else ->
+                result.contentRange
+                    ?.substringAfter('/')
+                    ?.toLongOrNull()
+                    ?.takeIf { it > 0 }
+                    ?.let { ContentLength.Known(it) } ?: ContentLength.Unknown
         }
     }
 
@@ -382,9 +499,8 @@ class RangeDownloader internal constructor(
         fun isDiskFull(error: IOException): Boolean =
             error.message?.contains("ENOSPC") == true || error.message?.contains("No space left") == true
 
-        private fun retryAfterMs(response: Response): Long? =
-            response
-                .header("Retry-After")
+        private fun retryAfterMs(retryAfter: String?): Long? =
+            retryAfter
                 ?.trim()
                 ?.toLongOrNull()
                 ?.times(1000L)

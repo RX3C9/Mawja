@@ -14,11 +14,13 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.os.ParcelFileDescriptor
 import android.os.RemoteCallbackList
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import app.mawja.downloader.api.IDownloadCallback
 import app.mawja.downloader.api.IMawjaDownloader
+import app.mawja.downloader.api.IRangeProgress
 import app.mawja.downloader.api.MawjaDownloaderContract
 import app.mawja.downloader.api.MawjaDownloaderContract.Item
 import app.mawja.downloader.api.MawjaDownloaderContract.Request
@@ -75,6 +77,28 @@ class DownloadService :
             override fun unregisterCallback(callback: IDownloadCallback?) {
                 callback?.let { callbacks.unregister(it) }
             }
+
+            override fun fetchRange(
+                request: Bundle?,
+                out: ParcelFileDescriptor?,
+                offset: Long,
+                maxBytes: Long,
+                token: String?,
+                progress: IRangeProgress?,
+            ): Bundle {
+                val req = requireNotNull(request) { "request is null" }
+                val id = token?.takeIf { it.isNotBlank() } ?: java.util.UUID.randomUUID().toString()
+                updateForeground(extra = 1)
+                try {
+                    return RangeFetcher.fetch(req, out, offset, maxBytes, id, progress)
+                } finally {
+                    updateForeground()
+                }
+            }
+
+            override fun cancelRange(token: String?) {
+                token?.let(RangeFetcher::cancel)
+            }
         }
 
     override fun onCreate() {
@@ -118,8 +142,8 @@ class DownloadService :
     }
 
     @Synchronized
-    private fun updateForeground() {
-        val active = DownloadEngine.activeCount()
+    private fun updateForeground(extra: Int = 0) {
+        val active = DownloadEngine.activeCount() + RangeFetcher.active.value + extra
         if (active > 0) {
             val notification = buildNotification(active)
             if (!foreground) {
@@ -160,7 +184,7 @@ class DownloadService :
             .Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_download)
             .setContentTitle(getString(R.string.notification_running, active))
-            .setContentText(running.firstOrNull()?.title)
+            .setContentText(running.firstOrNull()?.title ?: getString(R.string.notification_mawja_transfers))
             .setOnlyAlertOnce(true)
             .setOngoing(true)
             .setContentIntent(open)

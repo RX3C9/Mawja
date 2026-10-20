@@ -12,7 +12,10 @@ import android.os.Bundle
 
 /** Shared constants between the Mawja app and the Mawja Downloader app. */
 object MawjaDownloaderContract {
-    const val API_VERSION = 1
+    const val API_VERSION = 2
+
+    /** First version whose service runs the app's byte transfers (fetchRange). */
+    const val API_RANGE_TRANSFER = 2
 
     /** Release package name; debug builds append ".debug". */
     const val PACKAGE_RELEASE = "app.mawja.downloader"
@@ -45,6 +48,27 @@ object MawjaDownloaderContract {
         const val CONTENT_URI = "content_uri"
         const val ERROR = "error"
         const val SOURCE_ID = "source_id"
+    }
+
+    /** Request keys of fetchRange. */
+    object Range {
+        const val URL = "url"
+        const val HEADERS = "headers" // Bundle of String -> String
+
+        /** When true the body is written only for a 206 answer, so a server ignoring Range cannot corrupt the file. */
+        const val REQUIRE_PARTIAL = "require_partial"
+    }
+
+    /** Result keys of fetchRange. */
+    object RangeResult {
+        /** HTTP status, or 0 when no response arrived. */
+        const val CODE = "code"
+        const val WRITTEN = "written"
+        const val CONTENT_RANGE = "content_range"
+        const val RETRY_AFTER = "retry_after"
+        const val ERROR = "error"
+        const val DISK_FULL = "disk_full"
+        const val CANCELLED = "cancelled"
     }
 
     enum class State { QUEUED, RUNNING, COMPLETED, FAILED, CANCELLED }

@@ -15,4 +15,6 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_clear">Clear finished</string>
     <string name="subtitle">Downloads for Mawja, kept separate and safe.</string>
+    <string name="notification_mawja_transfers">Transferring for Mawja</string>
+    <string name="mawja_transfers_status">Mawja transfers: %1$d active · %2$s moved</string>
 </resources>

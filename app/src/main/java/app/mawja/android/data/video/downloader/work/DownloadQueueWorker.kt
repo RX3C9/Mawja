@@ -45,6 +45,9 @@ class DownloadQueueWorker(
                 queue.drain()
             } finally {
                 summary.cancel()
+                // Mawja: let Mawja Downloader's process go once nothing is left to transfer.
+                app.mawja.android.data.video.downloader.remote.DownloaderConnection
+                    .release(applicationContext)
             }
         }
         return Result.success()
