@@ -328,6 +328,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Teaches Mawja's on-device notification engine when this person usually uses the app.
+        lifecycleScope.launch(Dispatchers.IO) {
+            app.mawja.android.smartnotify.SmartNotifyStore(applicationContext).recordActivity()
+        }
         DiscordPresenceRuntime.setAppForeground(true)
     }
 
@@ -383,6 +387,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleIntent(intent: Intent) {
+        intent.getStringExtra(app.mawja.android.smartnotify.SmartNotifier.EXTRA_SMART_HASH)?.let { hash ->
+            intent.removeExtra(app.mawja.android.smartnotify.SmartNotifier.EXTRA_SMART_HASH)
+            lifecycleScope.launch(Dispatchers.IO) {
+                app.mawja.android.smartnotify.SmartNotifyStore(applicationContext)
+                    .recordOutcome(hash, app.mawja.android.smartnotify.SmartOutcome.OPENED)
+            }
+        }
         if (intent.getBooleanExtra(NotificationHelper.EXTRA_OPEN_UPDATE, false)) {
             intent.removeExtra(NotificationHelper.EXTRA_OPEN_UPDATE)
             links.openRoute(UPDATE_ROUTE)

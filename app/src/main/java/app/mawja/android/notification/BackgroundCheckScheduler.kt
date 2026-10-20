@@ -3,6 +3,8 @@ package app.mawja.android.notification
 import android.content.Context
 import app.mawja.android.BuildConfig
 import app.mawja.android.data.local.PlayerPreferences
+import app.mawja.android.smartnotify.SmartNotifyStore
+import app.mawja.android.smartnotify.SmartNotifyWorker
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.combine
@@ -46,6 +48,13 @@ internal object BackgroundCheckScheduler {
                     } else {
                         SubscriptionCheckWorker.schedulePeriodicCheck(context, minutes.toLong(), reschedule = index > 0)
                     }
+                }
+        }
+        launch {
+            combine(preferences.notificationsEnabled, SmartNotifyStore(context).enabled) { all, smart -> all && smart }
+                .distinctUntilChanged()
+                .collect { wanted ->
+                    if (wanted) SmartNotifyWorker.schedule(context) else SmartNotifyWorker.cancel(context)
                 }
         }
         if (BuildConfig.UPDATER_ENABLED) {

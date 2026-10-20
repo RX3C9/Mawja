@@ -1,3 +1,6 @@
 # Mawja JVM unit tests run by scripts/ci/build.sh (one Gradle --tests filter per line)
 app.mawja.android.account.EntitlementsTest
 app.mawja.android.ui.theme.PremiumThemesTest
+app.mawja.android.smartnotify.SmartNotifyEngineTest
+app.mawja.android.smartnotify.SmartCandidatesTest
+app.mawja.android.smartnotify.SmartNotifyCodecTest

@@ -6,6 +6,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.notification.BackgroundWorkPolicy
 import app.mawja.android.notification.SubscriptionCheckWorker
+import app.mawja.android.smartnotify.SmartNotifyConfig
+import app.mawja.android.smartnotify.SmartNotifyStore
 import app.mawja.android.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +29,16 @@ class NotificationSettingsViewModel
         val updates = preferences.notifUpdatesEnabled.asState(true)
         val general = preferences.notifGeneralEnabled.asState(true)
         val intervalMinutes = preferences.subscriptionCheckIntervalMinutes.asState(DEFAULT_INTERVAL_MINUTES)
+
+        private val smartStore = SmartNotifyStore(context)
+        val smartEnabled = smartStore.enabled.asState(true)
+        val smartDailyLimit = smartStore.dailyLimit.asState(SmartNotifyConfig().dailyLimit)
+
+        fun setSmartEnabled(value: Boolean) = write { smartStore.setEnabled(value) }
+
+        fun setSmartDailyLimit(value: Int) = write { smartStore.setDailyLimit(value) }
+
+        fun resetSmartLearning() = write { smartStore.reset() }
 
         private val _backgroundAllowed = MutableStateFlow(BackgroundWorkPolicy.isBackgroundWorkUnrestricted(context))
         val backgroundAllowed: StateFlow<Boolean> = _backgroundAllowed.asStateFlow()

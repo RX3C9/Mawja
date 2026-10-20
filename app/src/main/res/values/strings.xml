@@ -4376,4 +4376,27 @@
     <string name="premium_theme_upsell_free_note">Flow Default and every original palette stay free, always.</string>
     <string name="premium_see_plans">See membership</string>
     <string name="premium_not_now">Not now</string>
+    <string name="smart_notify_channel_name">Mawja suggestions</string>
+    <string name="smart_notify_channel_description">Adaptive suggestions learned on this device: continue watching, new from favourite channels, weekly recap, Smart DJ.</string>
+    <string name="smart_notify_section">Smart notifications</string>
+    <string name="smart_notify_toggle">Adaptive suggestions</string>
+    <string name="smart_notify_toggle_subtitle">Learns on this device when you use Mawja and what you open. Nothing leaves your phone.</string>
+    <string name="smart_notify_daily_limit">Daily limit</string>
+    <string name="smart_notify_daily_limit_body">The most adaptive suggestions Mawja may send in one day. Quiet hours (23:00–08:00) always apply.</string>
+    <plurals name="smart_notify_daily_limit_value">
+        <item quantity="one">%d a day</item>
+        <item quantity="other">%d a day</item>
+    </plurals>
+    <string name="smart_notify_reset">Reset what Mawja learned</string>
+    <string name="smart_notify_reset_subtitle">Forget your usual hours and which suggestions you like</string>
+    <string name="smart_notify_reset_confirm">Mawja will forget the hours you usually use the app and which suggestions you open. Your history isn\'t touched.</string>
+    <string name="smart_notify_reset_action">Reset</string>
+    <string name="smart_notify_continue_title">Pick up where you left off</string>
+    <string name="smart_notify_continue_text">You\'re partway through “%1$s”.</string>
+    <string name="smart_notify_channel_title">New from %1$s</string>
+    <string name="smart_notify_recap_title">Your week on Mawja</string>
+    <string name="smart_notify_recap_counts">%1$d videos and %2$d songs this week.</string>
+    <string name="smart_notify_recap_with_top">%1$s Most watched: %2$s.</string>
+    <string name="smart_notify_dj_title">Smart DJ</string>
+    <string name="smart_notify_dj_text">Your usual listening time. More %1$s?</string>
 </resources>

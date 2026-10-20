@@ -4,7 +4,12 @@ import android.content.Intent
 import android.provider.Settings
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.BatteryAlert
+import androidx.compose.material.icons.outlined.RestartAlt
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.outlined.Bedtime
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Notifications
@@ -19,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -29,6 +35,8 @@ import app.mawja.android.notification.BackgroundWorkPolicy
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
+import app.mawja.android.smartnotify.SmartNotifyStore
+import app.mawja.android.ui.components.shared.FlowAlertDialog
 import app.mawja.android.ui.components.shared.FlowChoice
 import app.mawja.android.ui.components.shared.FlowChoiceDialog
 import app.mawja.android.ui.components.shared.FlowNavRow
@@ -59,6 +67,11 @@ internal fun NotificationSettingsScreen(
     val interval by viewModel.intervalMinutes.collectAsStateWithLifecycle()
     val backgroundAllowed by viewModel.backgroundAllowed.collectAsStateWithLifecycle()
     var showIntervalDialog by rememberSaveable { mutableStateOf(false) }
+    var showSmartLimitDialog by rememberSaveable { mutableStateOf(false) }
+    var showSmartResetDialog by rememberSaveable { mutableStateOf(false) }
+    val smartOn by viewModel.smartEnabled.collectAsStateWithLifecycle()
+    val smartLimit by viewModel.smartDailyLimit.collectAsStateWithLifecycle()
+    val smartLimitLabel = pluralStringResource(R.plurals.smart_notify_daily_limit_value, smartLimit, smartLimit)
     LifecycleResumeEffect(Unit) {
         viewModel.refreshBackgroundWork()
         onPauseOrDispose { }
@@ -158,6 +171,30 @@ internal fun NotificationSettingsScreen(
                 icon = Icons.Outlined.Notifications,
             )
         }
+        group(key = "notifications.smart", header = R.string.smart_notify_section) {
+            switch(
+                NotificationsIndex.smartEnabled,
+                smartOn,
+                viewModel::setSmartEnabled,
+                enabled = enabled,
+                icon = Icons.Outlined.AutoAwesome,
+            )
+            nav(
+                NotificationsIndex.smartLimit,
+                value = smartLimitLabel,
+                enabled = enabled && smartOn,
+                showChevron = false,
+                icon = Icons.Outlined.Tune,
+                onClick = { showSmartLimitDialog = true },
+            )
+            nav(
+                NotificationsIndex.smartReset,
+                enabled = enabled,
+                showChevron = false,
+                icon = Icons.Outlined.RestartAlt,
+                onClick = { showSmartResetDialog = true },
+            )
+        }
         group(key = "notifications.system", header = R.string.settings_section_more) {
             nav(
                 NotificationsIndex.system,
@@ -170,6 +207,39 @@ internal fun NotificationSettingsScreen(
                 },
             )
         }
+    }
+
+    if (showSmartLimitDialog) {
+        FlowChoiceDialog(
+            title = stringResource(R.string.smart_notify_daily_limit),
+            description = stringResource(R.string.smart_notify_daily_limit_body),
+            options =
+                (1..SmartNotifyStore.MAX_DAILY_LIMIT).map { count ->
+                    FlowChoice(count, pluralStringResource(R.plurals.smart_notify_daily_limit_value, count, count))
+                },
+            selected = smartLimit,
+            onSelect = viewModel::setSmartDailyLimit,
+            onDismiss = { showSmartLimitDialog = false },
+        )
+    }
+
+    if (showSmartResetDialog) {
+        FlowAlertDialog(
+            onDismissRequest = { showSmartResetDialog = false },
+            title = { Text(stringResource(R.string.smart_notify_reset)) },
+            text = { Text(stringResource(R.string.smart_notify_reset_confirm)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.resetSmartLearning()
+                        showSmartResetDialog = false
+                    },
+                ) { Text(stringResource(R.string.smart_notify_reset_action)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSmartResetDialog = false }) { Text(stringResource(R.string.cancel)) }
+            },
+        )
     }
 
     if (showIntervalDialog) {

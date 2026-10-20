@@ -45,5 +45,12 @@ internal object NotificationsIndex {
     val system =
         entry("system", R.string.notif_system_settings, R.string.settings_section_more, R.string.notif_system_settings_subtitle)
 
-    val all = listOf(enabled, interval, newVideos, shorts, downloads, reminders, updates, general, system)
+    private val smart = R.string.smart_notify_section
+
+    val smartEnabled = entry("smart", R.string.smart_notify_toggle, smart, R.string.smart_notify_toggle_subtitle)
+    val smartLimit = entry("smart_limit", R.string.smart_notify_daily_limit, smart)
+    val smartReset = entry("smart_reset", R.string.smart_notify_reset, smart, R.string.smart_notify_reset_subtitle)
+
+    val all =
+        listOf(enabled, interval, newVideos, shorts, downloads, reminders, updates, general, smartEnabled, smartLimit, smartReset, system)
 }

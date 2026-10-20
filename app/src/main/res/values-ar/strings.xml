@@ -4722,4 +4722,31 @@
     <string name="premium_theme_upsell_free_note">تصميم Flow الافتراضي وكل الثيمات الأصلية مجانية دايماً.</string>
     <string name="premium_see_plans">عرض العضويات</string>
     <string name="premium_not_now">مش دلوقتي</string>
+    <string name="smart_notify_channel_name">اقتراحات موجة</string>
+    <string name="smart_notify_channel_description">اقتراحات ذكية بيتعلمها الجهاز: كمّل اللي بدأته، جديد قنواتك المفضلة، ملخص الأسبوع، و Smart DJ.</string>
+    <string name="smart_notify_section">الإشعارات الذكية</string>
+    <string name="smart_notify_toggle">اقتراحات ذكية</string>
+    <string name="smart_notify_toggle_subtitle">بتتعلم على جهازك إمتى بتستخدم موجة وإيه اللي بتفتحه. مفيش حاجة بتخرج من موبايلك.</string>
+    <string name="smart_notify_daily_limit">الحد اليومي</string>
+    <string name="smart_notify_daily_limit_body">أقصى عدد اقتراحات ذكية ممكن موجة تبعتها في اليوم. ساعات الهدوء (11 بالليل لـ 8 الصبح) دايماً مطبقة.</string>
+    <plurals name="smart_notify_daily_limit_value">
+        <item quantity="zero">%d في اليوم</item>
+        <item quantity="one">مرة في اليوم</item>
+        <item quantity="two">مرتين في اليوم</item>
+        <item quantity="few">%d مرات في اليوم</item>
+        <item quantity="many">%d مرة في اليوم</item>
+        <item quantity="other">%d مرة في اليوم</item>
+    </plurals>
+    <string name="smart_notify_reset">امسح اللي موجة اتعلمته</string>
+    <string name="smart_notify_reset_subtitle">انسى أوقاتك المعتادة والاقتراحات اللي بتحبها</string>
+    <string name="smart_notify_reset_confirm">موجة هتنسى الأوقات اللي بتستخدم فيها التطبيق عادةً والاقتراحات اللي بتفتحها. سجل المشاهدة مش هيتأثر.</string>
+    <string name="smart_notify_reset_action">مسح</string>
+    <string name="smart_notify_continue_title">كمّل من مكان ما وقفت</string>
+    <string name="smart_notify_continue_text">إنت في نص «%1$s».</string>
+    <string name="smart_notify_channel_title">جديد من %1$s</string>
+    <string name="smart_notify_recap_title">أسبوعك على موجة</string>
+    <string name="smart_notify_recap_counts">%1$d فيديو و %2$d أغنية الأسبوع ده.</string>
+    <string name="smart_notify_recap_with_top">%1$s الأكتر مشاهدة: %2$s.</string>
+    <string name="smart_notify_dj_title">Smart DJ</string>
+    <string name="smart_notify_dj_text">ده وقت سماعك المعتاد. نشغّل كمان من %1$s؟</string>
 </resources>

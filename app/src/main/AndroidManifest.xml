@@ -287,6 +287,11 @@
             </intent-filter>
         </receiver>
 
+        <!-- Mawja adaptive notifications: hears swiped-away nudges (on-device learning only) -->
+        <receiver
+            android:name=".smartnotify.SmartNotifyFeedbackReceiver"
+            android:exported="false" />
+
         <!-- Time Management Reminder Receiver -->
         <receiver
             android:name=".notification.ReminderReceiver"
