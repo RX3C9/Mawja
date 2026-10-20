@@ -47,7 +47,7 @@ jobs:
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: steps.msg.outputs.skip != '1'
         with:
           ref: main
@@ -86,21 +86,21 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           java-version: '21'
           distribution: 'temurin'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - run: chmod +x gradlew
       - name: Assemble debug APKs (github + foss)
         run: ./gradlew :app:assembleGithubDebug :app:assembleFossDebug --stacktrace
       - name: Unit tests
         run: ./gradlew :app:testGithubDebugUnitTest --max-workers=2 --stacktrace
         continue-on-error: true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mawja-debug-apks
           path: app/build/outputs/apk/**/*.apk
