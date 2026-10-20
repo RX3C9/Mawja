@@ -16,8 +16,21 @@ android {
         manifestPlaceholders["downloadPermission"] = "app.mawja.permission.DOWNLOAD"
     }
 
+    signingConfigs {
+        // Shared, committed debug key: stable SHA-1 for Google sign-in and same signer for the
+        // app, the Downloader and Admin (signature permission). Debug builds only; never release.
+        getByName("debug") {
+            storeFile = rootDir.resolve("keystore/mawja-debug.p12")
+            storeType = "pkcs12"
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
             manifestPlaceholders["downloadPermission"] = "app.mawja.permission.DOWNLOAD_DEBUG"

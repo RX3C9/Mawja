@@ -126,6 +126,15 @@ android {
     }
 
     signingConfigs {
+        // Shared, committed debug key: stable SHA-1 for Google sign-in and same signer for the
+        // app, the Downloader and Admin (signature permission). Debug builds only; never release.
+        getByName("debug") {
+            storeFile = rootDir.resolve("keystore/mawja-debug.p12")
+            storeType = "pkcs12"
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
         create("release") {
             storeFile = rootDir.resolve("release.keystore")
             storePassword = (project.findProperty("storePassword") as? String)
@@ -156,6 +165,10 @@ android {
             versionNameSuffix = "-debug"
             manifestPlaceholders["downloadPermission"] = "app.mawja.permission.DOWNLOAD_DEBUG"
             buildConfigField("String", "UPDATE_CHANNEL", "\"stable\"")
+            // Debug package (app.mawja.android.debug) is its own Firebase app.
+            secretValue("mawjaFirebaseDebugAppId", "firebase.debugAppId", "MAWJA_FIREBASE_DEBUG_APP_ID")
+                .takeIf { it.isNotBlank() }
+                ?.let { buildConfigField("String", "FIREBASE_APP_ID", "\"$it\"") }
             isDebuggable = true
             isMinifyEnabled = false
             isShrinkResources = false

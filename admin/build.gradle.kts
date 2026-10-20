@@ -14,7 +14,8 @@ val local =
 fun cfg(
     key: String,
     env: String,
-): String = local.getProperty(key) ?: System.getenv(env) ?: ""
+    property: String,
+): String = local.getProperty(key) ?: System.getenv(env) ?: (project.findProperty(property) as String?) ?: ""
 
 android {
     namespace = "app.mawja.admin"
@@ -26,15 +27,31 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
-        buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${cfg("firebase.projectId", "MAWJA_FIREBASE_PROJECT_ID")}\"")
-        buildConfigField("String", "FIREBASE_APP_ID", "\"${cfg("firebase.adminAppId", "MAWJA_FIREBASE_ADMIN_APP_ID")}\"")
-        buildConfigField("String", "FIREBASE_API_KEY", "\"${cfg("firebase.apiKey", "MAWJA_FIREBASE_API_KEY")}\"")
+        buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${cfg("firebase.projectId", "MAWJA_FIREBASE_PROJECT_ID", "mawjaFirebaseProjectId")}\"")
+        buildConfigField("String", "FIREBASE_APP_ID", "\"${cfg("firebase.adminAppId", "MAWJA_FIREBASE_ADMIN_APP_ID", "mawjaFirebaseAdminAppId")}\"")
+        buildConfigField("String", "FIREBASE_API_KEY", "\"${cfg("firebase.apiKey", "MAWJA_FIREBASE_API_KEY", "mawjaFirebaseApiKey")}\"")
         buildConfigField("String", "FUNCTIONS_REGION", "\"europe-west1\"")
+    }
+
+    signingConfigs {
+        // Shared, committed debug key: stable SHA-1 for Google sign-in and same signer for the
+        // app, the Downloader and Admin (signature permission). Debug builds only; never release.
+        getByName("debug") {
+            storeFile = rootDir.resolve("keystore/mawja-debug.p12")
+            storeType = "pkcs12"
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
         debug {
+            signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
+            cfg("firebase.adminDebugAppId", "MAWJA_FIREBASE_ADMIN_DEBUG_APP_ID", "mawjaFirebaseAdminDebugAppId")
+                .takeIf { it.isNotBlank() }
+                ?.let { buildConfigField("String", "FIREBASE_APP_ID", "\"$it\"") }
             versionNameSuffix = "-debug"
         }
         release {
