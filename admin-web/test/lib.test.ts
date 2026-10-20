@@ -50,3 +50,17 @@ test("errors map to dictionary keys", () => {
   assert.equal(adminErrorKey(undefined), "err.unknown");
   for (const key of ["err.functions", "err.login", "err.unknown", "err.permission"]) assert.ok(key in DICTIONARIES.en);
 });
+
+test("plan catalogue mirrors PLAN_V2 prices and formats money", async () => {
+  const { PLANS, formatMoney, yearlySaving, validCheckoutUrl } = await import("../lib/plans");
+  assert.deepEqual(PLANS.map((p) => p.egp / 100), [49, 399, 99, 799, 1999, 149, 1199]);
+  assert.equal(yearlySaving("plus"), 32);
+  assert.equal(yearlySaving("pro"), 33);
+  assert.equal(yearlySaving("lifetime"), null);
+  assert.equal(formatMoney(1499, "USD", "en"), "$14.99");
+  assert.match(formatMoney(4900, "EGP", "en"), /49/);
+  assert.ok(validCheckoutUrl(""));
+  assert.ok(validCheckoutUrl("https://mawja.app/checkout"));
+  assert.ok(!validCheckoutUrl("http://mawja.app"));
+  assert.ok(!validCheckoutUrl("nope"));
+});

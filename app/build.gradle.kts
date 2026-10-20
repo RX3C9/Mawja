@@ -70,6 +70,8 @@ android {
         buildConfigField("String", "FIREBASE_API_KEY", "\"${secretValue("mawjaFirebaseApiKey", "firebase.apiKey", "MAWJA_FIREBASE_API_KEY")}\"")
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"${secretValue("mawjaGoogleWebClientId", "firebase.webClientId", "MAWJA_GOOGLE_WEB_CLIENT_ID")}\"")
         buildConfigField("String", "FUNCTIONS_REGION", "\"europe-west1\"")
+        // Mawja memberships: web checkout page opened from Upgrade; blank = "coming soon".
+        buildConfigField("String", "CHECKOUT_URL", "\"${secretValue("mawjaCheckoutUrl", "billing.checkoutUrl", "MAWJA_CHECKOUT_URL")}\"")
         buildConfigField("String", "APP_LANGUAGE_TAGS", "\"${(listOf("en") + translatedLocaleTags()).joinToString(",")}\"")
         // Last.fm keys come from the CI secrets; builds without them ask the viewer for their own key.
         buildConfigField("String", "LASTFM_API_KEY", "\"${secretValue("lastfmApiKey", "lastfm.apiKey", "LASTFM_API_KEY")}\"")

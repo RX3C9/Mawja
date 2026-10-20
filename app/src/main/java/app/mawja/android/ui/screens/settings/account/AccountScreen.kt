@@ -87,6 +87,7 @@ private const val MIN_PASSWORD = 8
 @Composable
 internal fun AccountScreen(
     onBack: (() -> Unit)?,
+    onUpgrade: () -> Unit = {},
     viewModel: AccountViewModel = hiltViewModel(),
 ) {
     val account by viewModel.account.collectAsStateWithLifecycle()
@@ -111,6 +112,7 @@ internal fun AccountScreen(
                 item("account.profile") { ProfileCard(state.profile, viewModel) }
                 ui.error?.let { error -> item("account.error") { ErrorText(error) } }
                 if (state.profile.username == null) item("account.username") { UsernameClaim(viewModel, ui.busy) }
+                item("account.upgrade") { UpgradeEntry(state.profile.tier, onUpgrade) }
                 item("account.manage") { ManageSection(state.profile, viewModel, ui.busy) }
             }
 
@@ -546,3 +548,16 @@ internal tailrec fun Context.findActivity(): Activity? =
         is ContextWrapper -> baseContext.findActivity()
         else -> null
     }
+
+@Composable
+private fun UpgradeEntry(
+    tier: MawjaTier,
+    onUpgrade: () -> Unit,
+) {
+    val label = if (tier == MawjaTier.FREE) R.string.upgrade_cta else R.string.upgrade_cta_member
+    FilledTonalButton(onClick = onUpgrade, modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) {
+        Icon(Icons.Outlined.WorkspacePremium, contentDescription = null, Modifier.size(18.dp))
+        Spacer(Modifier.size(8.dp))
+        Text(stringResource(label))
+    }
+}

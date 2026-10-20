@@ -3,6 +3,9 @@ package app.mawja.android.utils
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import app.mawja.android.network.NetworkProfile
+import app.mawja.android.network.NetworkSnapshot
+import app.mawja.android.network.SmartNetwork
 
 /**
  * Whether these capabilities can actually reach the internet.
@@ -30,7 +33,32 @@ object NetworkState {
      * assume wifi in that case, which only differs when there is no active network at all — i.e.
      * when nothing is going to stream anyway — so the data-conservative answer wins.
      */
-    fun isOnWifi(context: Context): Boolean = capabilities(context)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+    fun isOnWifi(context: Context): Boolean {
+        val snapshot = snapshot(context) ?: return false
+        return SmartNetwork.treatAsWifi(snapshot, SmartNetwork.isEnabled(context))
+    }
+
+    /** The Mawja smart-network reading of the active connection. */
+    fun profile(context: Context): NetworkProfile = snapshot(context)?.let(SmartNetwork::classify) ?: NetworkProfile.OFFLINE
+
+    private fun snapshot(context: Context): NetworkSnapshot? {
+        val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return null
+        val caps = capabilities(context) ?: return null
+        val dataSaver =
+            try {
+                manager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+            } catch (e: SecurityException) {
+                false
+            }
+        return NetworkSnapshot(
+            online = caps.hasInternet(),
+            wifi = caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI),
+            ethernet = caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET),
+            metered = !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED),
+            downKbps = caps.linkDownstreamBandwidthKbps,
+            dataSaver = dataSaver,
+        )
+    }
 
     /** Whether the active network can actually reach the internet. */
     fun isOnline(context: Context): Boolean = capabilities(context).hasInternet()

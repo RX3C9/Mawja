@@ -4,3 +4,7 @@ app.mawja.android.ui.theme.PremiumThemesTest
 app.mawja.android.smartnotify.SmartNotifyEngineTest
 app.mawja.android.smartnotify.SmartCandidatesTest
 app.mawja.android.smartnotify.SmartNotifyCodecTest
+app.mawja.android.account.MembershipPlansTest
+app.mawja.android.network.SmartNetworkTest
+app.mawja.android.data.repository.StorageGuardTest
+app.mawja.android.jobs.JobCenterTest

@@ -18,6 +18,7 @@ enum class SettingsDestination(
 
     /** Mawja: sign in / create account / guest mode, Mawja ID and membership. */
     ACCOUNT("account", R.string.mawja_account_title),
+    UPGRADE("upgrade", R.string.upgrade_title, ACCOUNT),
     TASTE("taste", R.string.taste_title),
     HIDDEN_CONTENT("hidden_content", R.string.taste_hidden_title, TASTE),
     FAVOURITE_ARTISTS("favourite_artists", R.string.favourite_artists_title, TASTE),
@@ -53,6 +54,7 @@ enum class SettingsDestination(
     ABOUT("about", R.string.settings_item_about_flow),
     REMOTE_GUIDE("remote_guide", R.string.tv_remote_guide_title, ABOUT),
     DIAGNOSTICS("diagnostics", R.string.settings_item_diagnostics),
+    BACKGROUND_JOBS("background_jobs", R.string.jobs_title, DIAGNOSTICS),
     ;
 
     /** The top-level destination this page lives under — what the settings list shows as selected. */

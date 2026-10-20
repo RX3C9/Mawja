@@ -5,7 +5,9 @@ import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.screens.equalizer.EqualizerScreen
 import app.mawja.android.ui.screens.settings.about.AboutScreen
+import app.mawja.android.jobs.BackgroundJobsScreen
 import app.mawja.android.ui.screens.settings.account.AccountScreen
+import app.mawja.android.ui.screens.settings.account.UpgradeScreen
 import app.mawja.android.ui.screens.settings.appearance.AppearanceScreen
 import app.mawja.android.ui.screens.settings.appearance.DateTimeScreen
 import app.mawja.android.ui.screens.settings.appearance.FontScreen
@@ -199,11 +201,23 @@ internal fun SettingsDetail(
         }
 
         SettingsDestination.ACCOUNT -> {
-            AccountScreen(onBack = onBack)
+            AccountScreen(onBack = onBack, onUpgrade = { onNavigate(SettingsTarget(SettingsDestination.UPGRADE)) })
+        }
+
+        SettingsDestination.UPGRADE -> {
+            UpgradeScreen(onBack = onBack)
         }
 
         SettingsDestination.DIAGNOSTICS -> {
-            DiagnosticsScreen(onBack = onBack, highlight = target.highlight)
+            DiagnosticsScreen(
+                onBack = onBack,
+                highlight = target.highlight,
+                onOpenJobs = { onNavigate(SettingsTarget(SettingsDestination.BACKGROUND_JOBS)) },
+            )
+        }
+
+        SettingsDestination.BACKGROUND_JOBS -> {
+            BackgroundJobsScreen(onBack = onBack)
         }
     }
 }

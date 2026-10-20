@@ -4749,4 +4749,65 @@
     <string name="smart_notify_recap_with_top">%1$s الأكتر مشاهدة: %2$s.</string>
     <string name="smart_notify_dj_title">Smart DJ</string>
     <string name="smart_notify_dj_text">ده وقت سماعك المعتاد. نشغّل كمان من %1$s؟</string>
+    <!-- Mawja memberships: Upgrade page -->
+    <string name="upgrade_title">عضوية موجة</string>
+    <string name="upgrade_subtitle">باقات Plus وPro والعائلة ومدى الحياة</string>
+    <string name="upgrade_current">باقتك: %1$s</string>
+    <string name="upgrade_current_badge">باقتك الحالية</string>
+    <string name="upgrade_price_egp">%1$s ج.م</string>
+    <string name="upgrade_monthly">شهري · %1$s</string>
+    <string name="upgrade_yearly">سنوي · %1$s</string>
+    <string name="upgrade_yearly_save">سنوي · %1$s (وفّر %2$d%%)</string>
+    <string name="upgrade_once">مرة واحدة · %1$s</string>
+    <string name="upgrade_pitch_plus">ثيمات وأيقونات مميزة، ومزامنة سحابية بين أجهزتك، وشوية ذكاء اصطناعي.</string>
+    <string name="upgrade_pitch_pro">كل مزايا Plus، ومعاها أصوات الواجهة والـ Visualizer وكل مزايا المحترفين.</string>
+    <string name="upgrade_pitch_family">Pro لحد 5 حسابات في نفس البيت.</string>
+    <string name="upgrade_pitch_lifetime">Pro للأبد بدفعة واحدة. عرض المؤسسين لأول 1000 مشترك.</string>
+    <string name="upgrade_footnote">كل وظائف التطبيق الأصلية هتفضل مجانية. الدفع بيفتح في المتصفح، والأسعار الدولية بالدولار.</string>
+    <string name="upgrade_coming_soon">الدفع هيتاح قريب. شكراً لاهتمامك!</string>
+    <string name="upgrade_sign_in_first">سجّل دخولك في حساب موجة الأول.</string>
+    <string name="upgrade_cta">رقّي لـ Plus أو Pro</string>
+    <string name="upgrade_cta_member">إدارة العضوية</string>
+    <!-- Mawja smart network manager -->
+    <string name="smart_network_title">الشبكة الذكية</string>
+    <string name="smart_network_switch">التكيّف مع الاتصال</string>
+    <string name="smart_network_switch_summary">استخدم جودة الداتا ووقف التحميل المسبق على الهوت سبوت والواي فاي البطيء وموفّر البيانات؛ والإيثرنت يتحسب واي فاي</string>
+    <string name="smart_network_footer">الجودة والتحميل المسبق للشورتس والتنزيل التلقائي على الواي فاي والغلاف المتحرك بيتظبطوا حسب نوع الاتصال تلقائياً.</string>
+    <string name="smart_network_status">دلوقتي</string>
+    <string name="smart_network_offline">مفيش اتصال</string>
+    <string name="smart_network_fast">سريع وغير محدود (قواعد الواي فاي)</string>
+    <string name="smart_network_metered_wifi">واي فاي محدود أو موفّر البيانات (قواعد الداتا)</string>
+    <string name="smart_network_slow_wifi">واي فاي بطيء (قواعد الداتا)</string>
+    <string name="smart_network_cellular">بيانات الموبايل</string>
+    <string name="smart_network_slow_cellular">بيانات موبايل بطيئة</string>
+    <!-- Mawja storage guard -->
+    <string name="storage_guard_title">توفير المساحة تلقائياً</string>
+    <string name="storage_guard_summary">لما مساحة الموبايل تقل، يتمسح الكاش الأول (التنزيلات أبداً)</string>
+    <string name="storage_guard_space">الموبايل: %1$s فاضية من %2$s. الكاش بيتمسح لما المساحة تقل، والتنزيلات مش بتتلمس</string>
+    <string name="storage_guard_last">%1$s. آخر تنظيف وفّر %2$s</string>
+    <!-- Mawja background job centre -->
+    <string name="jobs_title">المهام الخلفية</string>
+    <string name="jobs_subtitle">إيه اللي بيشتغل في الخلفية وإمتى</string>
+    <string name="jobs_started">بدأت</string>
+    <string name="jobs_stopped">اتوقفت</string>
+    <string name="jobs_run_now">شغّل دلوقتي</string>
+    <string name="jobs_stop">إيقاف</string>
+    <string name="jobs_next_minutes">الجاية بعد %1$d د</string>
+    <string name="jobs_next_hours">الجاية بعد %1$d س %2$d د</string>
+    <string name="jobs_status_running">شغالة</string>
+    <string name="jobs_status_scheduled">متجدولة</string>
+    <string name="jobs_status_waiting">مستنية النت أو الشحن أو مهمة تانية</string>
+    <string name="jobs_status_done">آخر مرة خلصت</string>
+    <string name="jobs_status_failed">آخر مرة فشلت</string>
+    <string name="jobs_status_stopped">متوقفة</string>
+    <string name="jobs_status_off">مقفولة</string>
+    <string name="jobs_subscription_check">فحص الفيديوهات الجديدة</string>
+    <string name="jobs_smart_notify">الإشعارات الذكية</string>
+    <string name="jobs_storage_guard">حارس المساحة</string>
+    <string name="jobs_update_check">فحص تحديثات التطبيق</string>
+    <string name="jobs_auto_backup">النسخ الاحتياطي التلقائي</string>
+    <string name="jobs_scrobble">طابور الـ Scrobbling</string>
+    <string name="jobs_download_queue">طابور التنزيلات</string>
+    <string name="jobs_download_retag">وسم التنزيلات</string>
+    <string name="jobs_footnote">المهام المتجدولة اللي بتوقفها بترجع أول ما التطبيق يفتح تاني لو إعدادها لسه شغال. اقفل الميزة من إعداداتها عشان توقفها نهائياً. تنزيلات Mawja Downloader بتتدار من التطبيق ده.</string>
 </resources>

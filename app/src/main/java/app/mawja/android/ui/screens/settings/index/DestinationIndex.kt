@@ -55,6 +55,7 @@ internal object DestinationIndex {
         when (destination) {
             SettingsDestination.HOME -> null
             SettingsDestination.ACCOUNT -> R.string.mawja_account_summary
+            SettingsDestination.UPGRADE -> R.string.upgrade_subtitle
             SettingsDestination.TASTE -> R.string.taste_summary
             SettingsDestination.HIDDEN_CONTENT -> R.string.taste_hidden_summary
             SettingsDestination.FAVOURITE_ARTISTS -> R.string.favourite_artists_summary
@@ -89,6 +90,7 @@ internal object DestinationIndex {
             SettingsDestination.WIDGETS -> R.string.settings_widgets_summary
             SettingsDestination.ABOUT -> R.string.settings_about_summary
             SettingsDestination.DIAGNOSTICS -> R.string.settings_item_diagnostics_subtitle
+            SettingsDestination.BACKGROUND_JOBS -> R.string.jobs_subtitle
             SettingsDestination.REMOTE_GUIDE -> R.string.tv_remote_guide_subtitle
         }
 }

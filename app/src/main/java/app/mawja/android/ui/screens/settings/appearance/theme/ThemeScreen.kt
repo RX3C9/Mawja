@@ -172,7 +172,7 @@ internal fun ThemeScreen(
             themeName = stringResource(ThemeCatalog.nameRes(mode)),
             onSeePlans = {
                 upsellFor = null
-                onNavigate(SettingsTarget(SettingsDestination.ACCOUNT))
+                onNavigate(SettingsTarget(SettingsDestination.UPGRADE))
             },
             onDismiss = { upsellFor = null },
         )

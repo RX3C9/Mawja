@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
+import app.mawja.android.data.repository.StorageGuard
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -109,6 +110,8 @@ internal fun DownloadSettingsScreen(
     var locationTarget by rememberSaveable { mutableStateOf<DownloadTarget?>(null) }
     var cacheLimit by rememberSaveable { mutableStateOf<MediaCacheType?>(null) }
     LaunchedEffect(Unit) { cacheViewModel.measure() }
+    var storageGuard by remember { mutableStateOf(StorageGuard.isEnabled(context)) }
+    val storageGuardSummary = storageGuardSummary(context)
     var access by remember { mutableStateOf(StorageAccess.read(context)) }
     LifecycleResumeEffect(Unit) {
         access = StorageAccess.read(context)
@@ -176,7 +179,16 @@ internal fun DownloadSettingsScreen(
             })
             row(DownloadsIndex.usage.key) { shape -> StorageUsageRow(usage, storage?.usedFraction, shape) }
         }
-        downloadCacheSection(cacheViewModel, onEditLimit = { cacheLimit = it })
+        downloadCacheSection(
+            cacheViewModel,
+            onEditLimit = { cacheLimit = it },
+            storageGuard = storageGuard,
+            storageGuardSummary = storageGuardSummary,
+            onStorageGuard = { on ->
+                StorageGuard.setEnabled(context, on)
+                storageGuard = on
+            },
+        )
         group(key = "downloads.defaults", header = R.string.settings_section_download_defaults) {
             choice(DownloadsIndex.quickQuality, onClick = { picker = DownloadPicker.QUALITY }) {
                 stringResource(videoQualityLabel(quickQuality))

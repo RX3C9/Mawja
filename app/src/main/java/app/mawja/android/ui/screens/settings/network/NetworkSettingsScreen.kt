@@ -6,6 +6,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.NetworkCheck
+import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Tag
@@ -30,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,6 +42,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.network.AppProxyType
+import app.mawja.android.network.NetworkProfile
+import app.mawja.android.network.SmartNetwork
 import app.mawja.android.ui.components.settings.SettingEntry
 import app.mawja.android.ui.components.settings.SettingsGroupScope
 import app.mawja.android.ui.components.settings.SettingsPage
@@ -48,6 +53,8 @@ import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
 import app.mawja.android.ui.components.shared.FlowToggleOption
 import app.mawja.android.ui.screens.settings.index.NetworkIndex
+import app.mawja.android.ui.utils.rememberIsOnWifi
+import app.mawja.android.utils.NetworkState
 import kotlinx.coroutines.launch
 
 private val FieldPadding = 12.dp
@@ -74,6 +81,12 @@ internal fun NetworkSettingsScreen(
     val hostError = stringResource(R.string.proxy_settings_invalid_host)
     val portError = stringResource(R.string.proxy_settings_invalid_port)
     val passwordToggle = stringResource(if (passwordVisible) R.string.settings_hide_password else R.string.settings_show_password)
+    val context = LocalContext.current
+    var smartNetwork by remember { mutableStateOf(SmartNetwork.isEnabled(context)) }
+    val onWifi = rememberIsOnWifi()
+    val profile = remember(onWifi, smartNetwork) { NetworkState.profile(context) }
+    val profileLabel = stringResource(profileRes(profile))
+    val statusTitle = stringResource(R.string.smart_network_status)
 
     SettingsPage(
         title = stringResource(R.string.settings_network_title),
@@ -89,6 +102,18 @@ internal fun NetworkSettingsScreen(
             ) { Text(stringResource(R.string.save)) }
         },
     ) {
+        group(key = "network.smart", header = R.string.smart_network_title, footer = R.string.smart_network_footer) {
+            switch(
+                NetworkIndex.smart,
+                smartNetwork,
+                { on ->
+                    SmartNetwork.setEnabled(context, on)
+                    smartNetwork = on
+                },
+                icon = Icons.Outlined.NetworkCheck,
+            )
+            info("network.smart_status", statusTitle, profileLabel, icon = Icons.Outlined.Speed)
+        }
         val form = draft ?: return@SettingsPage
         notice("network.about", text = { stringResource(R.string.proxy_settings_description) }, icon = Icons.Outlined.Info)
         group(key = "network.proxy", header = R.string.proxy_settings_title) {
@@ -183,3 +208,13 @@ private fun SettingsTextField(
         )
     }
 }
+
+private fun profileRes(profile: NetworkProfile): Int =
+    when (profile) {
+        NetworkProfile.OFFLINE -> R.string.smart_network_offline
+        NetworkProfile.FAST_UNMETERED -> R.string.smart_network_fast
+        NetworkProfile.METERED_WIFI -> R.string.smart_network_metered_wifi
+        NetworkProfile.SLOW_WIFI -> R.string.smart_network_slow_wifi
+        NetworkProfile.CELLULAR -> R.string.smart_network_cellular
+        NetworkProfile.SLOW_CELLULAR -> R.string.smart_network_slow_cellular
+    }

@@ -6,12 +6,18 @@
  * - resolveLogin: username → email for the username/password sign-in.
  * - myProfile / updateMyProfile: the app's own account page (the app ships without the Firestore SDK).
  * - adminAction: every staff action, permission-checked and written to auditLog.
+ * - createCheckout / paymobWebhook / stripeWebhook: memberships, SANDBOX ONLY (test keys; live keys are refused).
  */
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import * as functionsV1 from "firebase-functions/v1";
-import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { HttpsError, onCall, onRequest } from "firebase-functions/v2/https";
+import { paymobReady, readBillingEnv, stripeReady } from "./billing/config";
+import { grantPurchase } from "./billing/grant";
+import { buildPaymobIntention, parsePaymobReference, PAYMOB_BASE, paymobCheckoutUrl, verifyPaymobHmac } from "./billing/paymob";
+import { findPlan, PLANS, providerFor } from "./billing/plans";
+import { buildStripeSession, STRIPE_API, verifyStripeSignature } from "./billing/stripe";
 import { generateMawjaId } from "./mawjaId";
 import { can, isRole, Role } from "./roles";
 import { validateUsername } from "./username";
@@ -209,4 +215,93 @@ export const adminAction = onCall({ region: REGION }, async (req) => {
 
   await db.collection("auditLog").add({ adminUid, role, action: data.action, target, before, after, at: FieldValue.serverTimestamp() });
   return { ok: true };
+});
+
+async function syncTierClaims(uid: string, tier: string, expiresAt: number | null) {
+  const claims = (await getAuth().getUser(uid)).customClaims ?? {};
+  await getAuth().setCustomUserClaims(uid, { ...claims, tier, exp: expiresAt });
+}
+
+/** The public plan catalogue (prices in minor units) and which providers are configured. */
+export const billingPlans = onCall({ region: REGION }, async () => {
+  const env = readBillingEnv(process.env);
+  return { plans: PLANS, sandbox: true, paymob: paymobReady(env), stripe: stripeReady(env) };
+});
+
+/**
+ * Starts a sandbox checkout for the caller. Egypt → Paymob (EGP), elsewhere → Stripe (USD).
+ * Returns { url } or { comingSoon: true } when the provider has no test keys configured.
+ */
+export const createCheckout = onCall({ region: REGION }, async (req) => {
+  const uid = req.auth?.uid;
+  if (!uid) throw new HttpsError("unauthenticated", "Sign in first.");
+  const plan = findPlan(req.data?.planId);
+  if (!plan) throw new HttpsError("invalid-argument", "planId");
+  const status = (await db.doc(`users/${uid}`).get()).get("status");
+  if (status && status !== "active") throw new HttpsError("permission-denied", "limited");
+  const env = readBillingEnv(process.env);
+  const { provider, currency } = providerFor(String(req.data?.country ?? ""));
+  const email = (req.auth?.token.email as string | undefined) ?? null;
+  const now = Date.now();
+  if (provider === "paymob") {
+    if (!paymobReady(env)) return { comingSoon: true, provider, currency };
+    const res = await fetch(`${PAYMOB_BASE}/v1/intention/`, {
+      method: "POST",
+      headers: { Authorization: `Token ${env.paymobSecret}`, "Content-Type": "application/json" },
+      body: JSON.stringify(buildPaymobIntention({ plan, uid, email, integrationIds: env.paymobIntegrations, redirectUrl: env.returnUrl }, now)),
+    });
+    const body = (await res.json()) as { client_secret?: string };
+    if (!res.ok || !body.client_secret) throw new HttpsError("unavailable", "paymob");
+    return { url: paymobCheckoutUrl(env.paymobPublic, body.client_secret), provider, currency, sandbox: true };
+  }
+  if (!stripeReady(env)) return { comingSoon: true, provider, currency };
+  const res = await fetch(`${STRIPE_API}/checkout/sessions`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env.stripeSecret}`, "Content-Type": "application/x-www-form-urlencoded" },
+    body: buildStripeSession(plan, uid, email, `${env.returnUrl}?ok=1`, `${env.returnUrl}?ok=0`).toString(),
+  });
+  const body = (await res.json()) as { url?: string };
+  if (!res.ok || !body.url) throw new HttpsError("unavailable", "stripe");
+  return { url: body.url, provider, currency, sandbox: true };
+});
+
+/** Paymob "transaction processed" callback (POST JSON { type, obj }, ?hmac=...). */
+export const paymobWebhook = onRequest({ region: REGION }, async (req, res) => {
+  const env = readBillingEnv(process.env);
+  const obj = (req.body?.obj ?? {}) as Record<string, unknown>;
+  if (!paymobReady(env) || !verifyPaymobHmac(obj, String(req.query.hmac ?? ""), env.paymobHmac)) {
+    res.status(401).send("bad signature");
+    return;
+  }
+  const ok = obj.success === true && obj.pending === false && obj.is_refunded !== true && obj.is_voided !== true;
+  const ref = parsePaymobReference(obj);
+  const plan = ref ? findPlan(ref.planId) : undefined;
+  if (!ok || !ref || !plan || Number(obj.amount_cents) !== plan.egp) {
+    res.status(200).send("ignored");
+    return;
+  }
+  const granted = await grantPurchase(db, { provider: "paymob", providerPaymentId: String(obj.id), uid: ref.uid, plan,
+    amount: plan.egp, currency: "EGP", sandbox: obj.is_live !== true }, Date.now());
+  if (granted) await syncTierClaims(ref.uid, granted.tier, granted.tierExpiresAt);
+  res.status(200).send("ok");
+});
+
+/** Stripe webhook: checkout.session.completed with payment_status=paid. */
+export const stripeWebhook = onRequest({ region: REGION }, async (req, res) => {
+  const env = readBillingEnv(process.env);
+  if (!stripeReady(env) || !verifyStripeSignature(req.rawBody, req.get("stripe-signature"), env.stripeWebhookSecret, Math.floor(Date.now() / 1000))) {
+    res.status(401).send("bad signature");
+    return;
+  }
+  const event = JSON.parse(req.rawBody.toString("utf8")) as { type?: string; livemode?: boolean; data?: { object?: Record<string, any> } };
+  const s = event.data?.object ?? {};
+  const plan = findPlan(s.metadata?.planId);
+  const uid = (s.metadata?.uid ?? s.client_reference_id) as string | undefined;
+  if (event.type !== "checkout.session.completed" || s.payment_status !== "paid" || !plan || !uid || event.livemode === true || s.amount_total !== plan.usd) {
+    res.status(200).send("ignored");
+    return;
+  }
+  const granted = await grantPurchase(db, { provider: "stripe", providerPaymentId: String(s.id), uid, plan, amount: plan.usd, currency: "USD", sandbox: true }, Date.now());
+  if (granted) await syncTierClaims(uid, granted.tier, granted.tierExpiresAt);
+  res.status(200).send("ok");
 });

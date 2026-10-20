@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Movie
@@ -41,6 +42,9 @@ import app.mawja.android.data.local.MediaCacheSizes
 import app.mawja.android.data.repository.MediaCacheType
 import app.mawja.android.data.repository.MediaCacheUsage
 import app.mawja.android.ui.components.settings.SettingsListScope
+import app.mawja.android.ui.components.settings.switch
+import app.mawja.android.data.repository.StorageGuard
+import android.content.Context
 import app.mawja.android.ui.components.shared.FlowChoice
 import app.mawja.android.ui.components.shared.FlowChoiceDialog
 import app.mawja.android.ui.components.shared.FlowNavRow
@@ -63,6 +67,9 @@ private val MeteredTypes = listOf(MediaCacheType.VIDEOS, MediaCacheType.SONGS, M
 internal fun SettingsListScope.downloadCacheSection(
     viewModel: DownloadCacheViewModel,
     onEditLimit: (MediaCacheType) -> Unit,
+    storageGuard: Boolean,
+    storageGuardSummary: String,
+    onStorageGuard: (Boolean) -> Unit,
 ) {
     group(key = "downloads.cache", header = R.string.cache_group_header, footer = R.string.cache_size_desc) {
         row(DownloadsIndex.cacheUsage.key) { shape ->
@@ -84,6 +91,7 @@ internal fun SettingsListScope.downloadCacheSection(
         row(DownloadsIndex.otherCache.key) { shape ->
             CacheRow(MediaCacheType.OTHER, null, viewModel, shape, onClick = null)
         }
+        switch(DownloadsIndex.storageGuard, storageGuard, onStorageGuard, summary = storageGuardSummary, icon = Icons.Outlined.CleaningServices)
     }
 }
 
@@ -302,3 +310,17 @@ private fun cacheSizeLabel(
         5120 -> R.string.cache_size_5gb
         else -> if (plain || artwork) R.string.cache_size_500mb_plain else R.string.cache_size_500mb
     }
+
+/** "Phone: 3.2 GB free of 64 GB · last cleanup freed 1.1 GB" for the storage guard switch. */
+@Composable
+internal fun storageGuardSummary(context: Context): String {
+    val (free, total) = StorageGuard.deviceSpace(context)
+    val space =
+        if (total > 0L) {
+            stringResource(R.string.storage_guard_space, Formatter.formatShortFileSize(context, free), Formatter.formatShortFileSize(context, total))
+        } else {
+            stringResource(R.string.storage_guard_summary)
+        }
+    val last = StorageGuard.lastCleanup(context) ?: return space
+    return stringResource(R.string.storage_guard_last, space, Formatter.formatShortFileSize(context, last.second))
+}

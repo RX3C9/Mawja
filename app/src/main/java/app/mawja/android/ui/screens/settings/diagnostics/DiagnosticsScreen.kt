@@ -1,5 +1,8 @@
 package app.mawja.android.ui.screens.settings.diagnostics
 
+import app.mawja.android.ui.screens.settings.index.DestinationIndex
+import app.mawja.android.ui.components.settings.SettingsDestination
+import androidx.compose.material.icons.outlined.WorkHistory
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -65,6 +68,7 @@ private val StateHeight = 200.dp
 internal fun DiagnosticsScreen(
     onBack: (() -> Unit)?,
     highlight: String?,
+    onOpenJobs: () -> Unit = {},
     viewModel: DiagnosticsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -110,6 +114,7 @@ internal fun DiagnosticsScreen(
             info(DiagnosticsIndex.model, "${device.manufacturer} ${device.model}", Icons.Outlined.PhoneAndroid)
             info(DiagnosticsIndex.android, androidValue, Icons.Outlined.Android)
             info(DiagnosticsIndex.appVersion, versionValue, Icons.Outlined.Info)
+            nav(DestinationIndex.entry(SettingsDestination.BACKGROUND_JOBS), onClick = onOpenJobs, icon = Icons.Outlined.WorkHistory)
         }
         group(key = "diagnostics.report", header = R.string.settings_section_report) {
             nav(DiagnosticsIndex.copy, icon = Icons.Outlined.ContentCopy, showChevron = false, onClick = {

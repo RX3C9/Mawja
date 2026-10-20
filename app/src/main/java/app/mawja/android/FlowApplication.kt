@@ -16,6 +16,8 @@ import app.mawja.android.discord.DiscordPresenceRuntime
 import app.mawja.android.innertube.YouTube
 import app.mawja.android.network.AppProxyManager
 import app.mawja.android.network.VpnStateMonitor
+import app.mawja.android.data.repository.StorageGuard
+import app.mawja.android.data.repository.StorageGuardWorker
 import app.mawja.android.notification.BackgroundCheckScheduler
 import app.mawja.android.notification.NotificationHelper
 import app.mawja.android.player.PlaybackShutdown
@@ -145,6 +147,9 @@ class FlowApplication :
 
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             BackgroundCheckScheduler.follow(this@FlowApplication, playerPreferences)
+        }
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            if (StorageGuard.isEnabled(this@FlowApplication)) StorageGuardWorker.schedule(this@FlowApplication)
         }
         SleepTimerManager.attachExitCallback { PlaybackShutdown.closeApp(this) }
 

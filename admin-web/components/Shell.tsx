@@ -14,6 +14,7 @@ const NAV: { href: string; key: string; icon: string; needs?: AdminActionName }[
   { href: "/features/", key: "nav.features", icon: "⚑", needs: "feature.toggle" },
   { href: "/announcements/", key: "nav.announcements", icon: "📣", needs: "announcement.send" },
   { href: "/reports/", key: "nav.reports", icon: "⚠", needs: "report.resolve" },
+  { href: "/plans/", key: "nav.plans", icon: "💳", needs: "config.edit" },
   { href: "/audit/", key: "nav.audit", icon: "≣", needs: "audit.view" },
 ];
 

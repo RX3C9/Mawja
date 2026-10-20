@@ -33,6 +33,7 @@ internal object DownloadsIndex {
     val songCache = entry("song_cache", R.string.cache_songs, R.string.cache_group_header)
     val artworkCache = entry("artwork_cache", R.string.cache_artwork, R.string.cache_group_header)
     val otherCache = entry("other_cache", R.string.cache_other, R.string.cache_group_header)
+    val storageGuard = entry("storage_guard", R.string.storage_guard_title, R.string.cache_group_header, R.string.storage_guard_summary)
     val quickQuality =
         entry(
             "quick_quality",
@@ -125,6 +126,7 @@ internal object DownloadsIndex {
             songCache,
             artworkCache,
             otherCache,
+            storageGuard,
             quickQuality,
             codec,
             musicQuality,

@@ -25,8 +25,9 @@ fun rememberIsOnWifi(): Boolean {
     DisposableEffect(context) {
         val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+        // Same answer as NetworkState.isOnWifi (smart network included), so prefetch and playback agree.
         fun update() {
-            isWifi = manager.getNetworkCapabilities(manager.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+            isWifi = NetworkState.isOnWifi(context)
         }
         update()
         val callback =

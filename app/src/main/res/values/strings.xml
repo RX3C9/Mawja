@@ -4399,4 +4399,65 @@
     <string name="smart_notify_recap_with_top">%1$s Most watched: %2$s.</string>
     <string name="smart_notify_dj_title">Smart DJ</string>
     <string name="smart_notify_dj_text">Your usual listening time. More %1$s?</string>
+    <!-- Mawja memberships: Upgrade page -->
+    <string name="upgrade_title">Mawja membership</string>
+    <string name="upgrade_subtitle">Plus, Pro, Family and Lifetime plans</string>
+    <string name="upgrade_current">Your plan: %1$s</string>
+    <string name="upgrade_current_badge">Current plan</string>
+    <string name="upgrade_price_egp">%1$s EGP</string>
+    <string name="upgrade_monthly">Monthly · %1$s</string>
+    <string name="upgrade_yearly">Yearly · %1$s</string>
+    <string name="upgrade_yearly_save">Yearly · %1$s (save %2$d%%)</string>
+    <string name="upgrade_once">One-time · %1$s</string>
+    <string name="upgrade_pitch_plus">Premium themes and icons, cloud sync across your devices and a little AI.</string>
+    <string name="upgrade_pitch_pro">Everything in Plus, plus UI sounds, the visualizer and every power feature.</string>
+    <string name="upgrade_pitch_family">Pro for up to 5 accounts in one household.</string>
+    <string name="upgrade_pitch_lifetime">Pro forever with one payment. Founders offer for the first 1,000 members.</string>
+    <string name="upgrade_footnote">Everything the original app does stays free. Checkout opens in your browser; international prices are charged in USD.</string>
+    <string name="upgrade_coming_soon">Checkout is coming soon. Thanks for your interest!</string>
+    <string name="upgrade_sign_in_first">Sign in to your Mawja account first.</string>
+    <string name="upgrade_cta">Upgrade to Plus or Pro</string>
+    <string name="upgrade_cta_member">Manage membership</string>
+    <!-- Mawja smart network manager -->
+    <string name="smart_network_title">Smart network</string>
+    <string name="smart_network_switch">Adapt to the connection</string>
+    <string name="smart_network_switch_summary">Use your mobile-data quality and skip prefetching on hotspots, slow wifi and data saver; ethernet counts as wifi</string>
+    <string name="smart_network_footer">Quality, Shorts prefetch, wifi-only auto-downloads and animated artwork follow the connection type automatically.</string>
+    <string name="smart_network_status">Right now</string>
+    <string name="smart_network_offline">Offline</string>
+    <string name="smart_network_fast">Fast, unmetered (wifi rules)</string>
+    <string name="smart_network_metered_wifi">Metered wifi or data saver (mobile-data rules)</string>
+    <string name="smart_network_slow_wifi">Slow wifi (mobile-data rules)</string>
+    <string name="smart_network_cellular">Mobile data</string>
+    <string name="smart_network_slow_cellular">Slow mobile data</string>
+    <!-- Mawja storage guard -->
+    <string name="storage_guard_title">Free space automatically</string>
+    <string name="storage_guard_summary">When the phone runs low, clear caches first (never downloads)</string>
+    <string name="storage_guard_space">Phone: %1$s free of %2$s. Caches are cleared when it runs low; downloads are never touched</string>
+    <string name="storage_guard_last">%1$s. Last cleanup freed %2$s</string>
+    <!-- Mawja background job centre -->
+    <string name="jobs_title">Background jobs</string>
+    <string name="jobs_subtitle">What runs in the background, and when</string>
+    <string name="jobs_started">Started</string>
+    <string name="jobs_stopped">Stopped</string>
+    <string name="jobs_run_now">Run now</string>
+    <string name="jobs_stop">Stop</string>
+    <string name="jobs_next_minutes">next in %1$d min</string>
+    <string name="jobs_next_hours">next in %1$d h %2$d min</string>
+    <string name="jobs_status_running">Running</string>
+    <string name="jobs_status_scheduled">Scheduled</string>
+    <string name="jobs_status_waiting">Waiting for network, charging or another job</string>
+    <string name="jobs_status_done">Last run finished</string>
+    <string name="jobs_status_failed">Last run failed</string>
+    <string name="jobs_status_stopped">Stopped</string>
+    <string name="jobs_status_off">Off</string>
+    <string name="jobs_subscription_check">New videos check</string>
+    <string name="jobs_smart_notify">Smart notifications</string>
+    <string name="jobs_storage_guard">Storage guard</string>
+    <string name="jobs_update_check">App update check</string>
+    <string name="jobs_auto_backup">Automatic backup</string>
+    <string name="jobs_scrobble">Scrobbling queue</string>
+    <string name="jobs_download_queue">Download queue</string>
+    <string name="jobs_download_retag">Download tagging</string>
+    <string name="jobs_footnote">Stopped scheduled jobs come back the next time the app starts if their setting is still on. Turn a feature off in its own settings to stop it for good. Downloads made by Mawja Downloader are managed in that app.</string>
 </resources>
