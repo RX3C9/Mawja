@@ -1,0 +1,78 @@
+name: Mawja Sync
+
+# Pulls signed git bundles published by the Mawja dev agent and pushes them to main.
+# Every bundle is verified with an Ed25519 signature before anything is pushed.
+
+on:
+  push:
+    paths: [".github/workflows/mawja-sync.yml"]
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: mawja-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TOPIC: mawja-sync-0cea54354cfce51394bd5355
+      PAT: ${{ secrets.MAWJA_PAT }}
+    steps:
+      - name: Fetch latest signed announcement
+        id: msg
+        run: |
+          set -euo pipefail
+          line=$(curl -fsS "https://ntfy.sh/${TOPIC}/json?poll=1&since=12h" | tail -n 1 || true)
+          msg=$(echo "$line" | jq -r '.message // empty' 2>/dev/null || true)
+          if [ -z "$msg" ]; then echo "No announcement."; echo "skip=1" >> "$GITHUB_OUTPUT"; exit 0; fi
+          read -r url sha sig <<< "$msg"
+          printf '%s' "$url $sha" > data.txt
+          echo "$sig" | base64 -d > sig.bin
+          cat > pub.pem <<'EOF'
+          -----BEGIN PUBLIC KEY-----
+          MCowBQYDK2VwAyEAVOw736HbMT7DOz2+oX+fbgodqqy7N3Bdpz7n1A2976o=
+          -----END PUBLIC KEY-----
+          EOF
+          sed -i 's/^ *//' pub.pem
+          openssl pkeyutl -verify -pubin -inkey pub.pem -rawin -in data.txt -sigfile sig.bin
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Download and check bundle
+        if: steps.msg.outputs.skip != '1'
+        run: |
+          set -euo pipefail
+          curl -fsSL "${{ steps.msg.outputs.url }}" -o mawja.bundle
+          echo "${{ steps.msg.outputs.sha }}  mawja.bundle" | sha256sum -c -
+
+      - name: Push to main
+        if: steps.msg.outputs.skip != '1'
+        run: |
+          set -euo pipefail
+          if [ -z "$PAT" ]; then echo "::error::MAWJA_PAT secret is missing"; exit 1; fi
+          git config --global user.name "Mawja Bot"
+          git config --global user.email "bot@mawja.app"
+          git init -q repo && cd repo
+          git remote add origin "https://x-access-token:${PAT}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch -q ../mawja.bundle main:refs/heads/incoming
+          if git fetch -q origin main:refs/remotes/origin/main 2>/dev/null; then
+            if [ "$(git rev-parse origin/main)" = "$(git rev-parse incoming)" ]; then echo "Already up to date."; exit 0; fi
+            if git merge-base --is-ancestor origin/main incoming 2>/dev/null; then
+              git push -q origin incoming:main
+            elif [ "$(git rev-list --count origin/main)" -le 1 ]; then
+              echo "Bootstrap commit detected, replacing it."
+              git push -q --force origin incoming:main
+            else
+              echo "::error::main has commits not in the bundle; refusing to overwrite."; exit 1
+            fi
+          else
+            git push -q origin incoming:main
+          fi
+          echo "Pushed $(git rev-parse --short incoming)"
