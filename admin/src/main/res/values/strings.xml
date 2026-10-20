@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Mawja Admin</string>
     <string name="unlock_title">Unlock Mawja Admin</string>
-    <string name="unlock_subtitle">Confirm it's you</string>
+    <string name="unlock_subtitle">Confirm it\'s you</string>
     <string name="unlock_again">Unlock</string>
     <string name="sign_in">Sign in</string>
     <string name="email">Email</string>
