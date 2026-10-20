@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">موجة للإدارة</string>
+    <string name="unlock_title">افتح موجة للإدارة</string>
+    <string name="unlock_subtitle">أكّد إنك أنت</string>
+    <string name="unlock_again">فتح</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="not_configured">Firebase لسه مش متظبط في النسخة دي.</string>
+    <string name="not_staff">الحساب ده ملوش صلاحية إدارة.</string>
+    <string name="sign_out">تسجيل الخروج</string>
+    <string name="users">المستخدمين</string>
+    <string name="features">الميزات</string>
+    <string name="announce">إعلان</string>
+    <string name="reports">البلاغات</string>
+    <string name="lookup_hint">Mawja ID أو اسم المستخدم</string>
+    <string name="lookup">بحث</string>
+    <string name="suspend">إيقاف</string>
+    <string name="ban">حظر</string>
+    <string name="unban">استرجاع</string>
+    <string name="set_tier">تغيير العضوية</string>
+    <string name="badge">الشارات</string>
+    <string name="feature_key">اسم الميزة</string>
+    <string name="enabled">مفعّلة</string>
+    <string name="apply">تطبيق</string>
+    <string name="title">العنوان</string>
+    <string name="body">الرسالة</string>
+    <string name="send">إرسال</string>
+    <string name="resolve">إغلاق</string>
+    <string name="done">تم</string>
+    <string name="role_label">الدور: %1$s</string>
+    <string name="nothing">مفيش حاجة هنا لسه.</string>
+    <string name="not_found">مفيش مستخدم بالبيانات دي.</string>
+</resources>

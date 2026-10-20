@@ -36,6 +36,7 @@ spotless {
             "benchmark/src/**/*.kt",
             "downloader/src/**/*.kt",
             "downloader-api/src/**/*.kt",
+            "admin/src/**/*.kt",
         )
         targetExclude(
             "**/build/**",

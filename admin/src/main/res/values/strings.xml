@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mawja Admin</string>
+    <string name="unlock_title">Unlock Mawja Admin</string>
+    <string name="unlock_subtitle">Confirm it's you</string>
+    <string name="unlock_again">Unlock</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="not_configured">Firebase is not configured for this build yet.</string>
+    <string name="not_staff">This account has no staff role.</string>
+    <string name="sign_out">Sign out</string>
+    <string name="users">Users</string>
+    <string name="features">Features</string>
+    <string name="announce">Announce</string>
+    <string name="reports">Reports</string>
+    <string name="lookup_hint">Mawja ID or username</string>
+    <string name="lookup">Find</string>
+    <string name="suspend">Suspend</string>
+    <string name="ban">Ban</string>
+    <string name="unban">Restore</string>
+    <string name="set_tier">Set tier</string>
+    <string name="badge">Badges</string>
+    <string name="feature_key">Feature key</string>
+    <string name="enabled">Enabled</string>
+    <string name="apply">Apply</string>
+    <string name="title">Title</string>
+    <string name="body">Message</string>
+    <string name="send">Send</string>
+    <string name="resolve">Resolve</string>
+    <string name="done">Done</string>
+    <string name="role_label">Role: %1$s</string>
+    <string name="nothing">Nothing here yet.</string>
+    <string name="not_found">No user found.</string>
+</resources>
