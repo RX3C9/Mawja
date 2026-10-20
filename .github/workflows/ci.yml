@@ -1,0 +1,106 @@
+name: Mawja
+
+# Sync: pulls Ed25519-signed snapshots published by the Mawja dev agent and commits them to main.
+# Build: assembles the github + foss debug APKs after every sync (or on manual run).
+# Replaces mawja.yml and mawja-sync.yml (disabled automatically).
+# Files under .github/workflows are never touched by the sync.
+
+on:
+  push:
+    paths: [".github/workflows/ci.yml"]
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: mawja
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: write
+    outputs:
+      changed: ${{ steps.apply.outputs.changed }}
+    env:
+      TOPIC: mawja-sync-0cea54354cfce51394bd5355
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Retire old sync workflow
+        continue-on-error: true
+        run: |
+          for w in mawja-sync.yml mawja.yml; do gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/$w/disable" || true; done
+
+      - name: Fetch latest signed announcement
+        id: msg
+        run: |
+          set -euo pipefail
+          line=$(curl -fsS "https://ntfy.sh/${TOPIC}/json?poll=1&since=12h" | tail -n 1 || true)
+          msg=$(echo "$line" | jq -r '.message // empty' 2>/dev/null || true)
+          if [ -z "$msg" ]; then echo "No announcement."; echo "skip=1" >> "$GITHUB_OUTPUT"; exit 0; fi
+          read -r url sha sig <<< "$msg"
+          printf '%s' "$url $sha" > /tmp/data.txt
+          echo "$sig" | base64 -d > /tmp/sig.bin
+          printf -- '-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAVOw736HbMT7DOz2+oX+fbgodqqy7N3Bdpz7n1A2976o=\n-----END PUBLIC KEY-----\n' > /tmp/pub.pem
+          openssl pkeyutl -verify -pubin -inkey /tmp/pub.pem -rawin -in /tmp/data.txt -sigfile /tmp/sig.bin
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v5
+        if: steps.msg.outputs.skip != '1'
+        with:
+          ref: main
+          path: repo
+
+      - name: Apply snapshot
+        id: apply
+        if: steps.msg.outputs.skip != '1'
+        run: |
+          set -euo pipefail
+          if ! curl -fsSL "${{ steps.msg.outputs.url }}" -o /tmp/mawja.bundle; then echo "Snapshot expired, nothing new."; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "${{ steps.msg.outputs.sha }}  /tmp/mawja.bundle" | sha256sum -c -
+          git clone -q -b main /tmp/mawja.bundle /tmp/src
+          src_sha=$(git -C /tmp/src rev-parse HEAD)
+          if [ "$(cat repo/.mawja-sync 2>/dev/null || true)" = "$src_sha" ]; then
+            echo "Already synced $src_sha"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          subject=$(git -C /tmp/src log -1 --format=%s)
+          rsync -a --delete --exclude '.git/' --exclude '.github/workflows/' /tmp/src/ repo/
+          echo "$src_sha" > repo/.mawja-sync
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "$subject" -m "Synced from Mawja source ${src_sha}"
+          git push -q origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "Synced ${src_sha:0:7}: $subject"
+
+  build:
+    needs: sync
+    if: always() && needs.sync.result == 'success' && (needs.sync.outputs.changed == 'true' || github.event_name != 'schedule')
+    name: Build APKs
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v5
+      - name: Build (scripts/ci/build.sh)
+        run: bash scripts/ci/build.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mawja-debug-apks
+          path: app/build/outputs/apk/**/*.apk
+          retention-days: 14
