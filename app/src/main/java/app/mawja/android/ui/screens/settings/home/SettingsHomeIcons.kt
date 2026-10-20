@@ -2,6 +2,7 @@ package app.mawja.android.ui.screens.settings.home
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ManageSearch
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material.icons.outlined.CloudUpload
@@ -34,6 +35,7 @@ import app.mawja.android.ui.components.settings.SettingsDestination
 internal fun destinationIcon(destination: SettingsDestination): ImageVector =
     when (destination.root) {
         SettingsDestination.HOME -> Icons.Outlined.Settings
+        SettingsDestination.ACCOUNT -> Icons.Outlined.AccountCircle
         SettingsDestination.TASTE -> Icons.Outlined.Psychology
         SettingsDestination.APPEARANCE -> Icons.Outlined.Palette
         SettingsDestination.LANGUAGE_REGION -> Icons.Outlined.Language

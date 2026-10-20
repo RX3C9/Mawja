@@ -64,6 +64,12 @@ android {
         // Mawja: downloads are handed to the separate Mawja Downloader app.
         buildConfigField("Boolean", "REQUIRE_DOWNLOADER", "true")
         manifestPlaceholders["downloadPermission"] = "app.mawja.permission.DOWNLOAD"
+        // Mawja accounts (github flavor): Firebase config from local.properties or CI env; blank = guest-only build.
+        buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${secretValue("mawjaFirebaseProjectId", "firebase.projectId", "MAWJA_FIREBASE_PROJECT_ID")}\"")
+        buildConfigField("String", "FIREBASE_APP_ID", "\"${secretValue("mawjaFirebaseAppId", "firebase.appId", "MAWJA_FIREBASE_APP_ID")}\"")
+        buildConfigField("String", "FIREBASE_API_KEY", "\"${secretValue("mawjaFirebaseApiKey", "firebase.apiKey", "MAWJA_FIREBASE_API_KEY")}\"")
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"${secretValue("mawjaGoogleWebClientId", "firebase.webClientId", "MAWJA_GOOGLE_WEB_CLIENT_ID")}\"")
+        buildConfigField("String", "FUNCTIONS_REGION", "\"europe-west1\"")
         buildConfigField("String", "APP_LANGUAGE_TAGS", "\"${(listOf("en") + translatedLocaleTags()).joinToString(",")}\"")
         // Last.fm keys come from the CI secrets; builds without them ask the viewer for their own key.
         buildConfigField("String", "LASTFM_API_KEY", "\"${secretValue("lastfmApiKey", "lastfm.apiKey", "LASTFM_API_KEY")}\"")
@@ -280,6 +286,16 @@ composeCompiler {
 dependencies {
     // --- Core Android ---
     implementation(project(":downloader-api"))
+
+    // --- Mawja accounts (github flavor only; foss stays free of Google services) ---
+    "githubImplementation"(platform("com.google.firebase:firebase-bom:33.16.0"))
+    "githubImplementation"("com.google.firebase:firebase-auth")
+    "githubImplementation"("com.google.firebase:firebase-firestore")
+    "githubImplementation"("com.google.firebase:firebase-functions")
+    "githubImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.11.0")
+    "githubImplementation"("androidx.credentials:credentials:1.5.0")
+    "githubImplementation"("androidx.credentials:credentials-play-services-auth:1.5.0")
+    "githubImplementation"("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)

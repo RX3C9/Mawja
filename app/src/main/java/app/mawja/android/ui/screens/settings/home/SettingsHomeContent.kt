@@ -20,6 +20,7 @@ import app.mawja.android.ui.components.shared.FlowSwitchRow
 import app.mawja.android.ui.components.shared.deepFlowStatus
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.HomeIndex
+import app.mawja.android.ui.screens.settings.account.AccountEntryCard
 
 @Immutable
 internal data class SettingsHomeState(
@@ -48,6 +49,14 @@ internal fun SettingsListScope.homeContent(
     state: SettingsHomeState,
     actions: SettingsHomeActions,
 ) {
+    // Mawja: the account card comes first; a guest sees guest mode and the way to sign in.
+    item("home.mawja_account") {
+        AccountEntryCard(
+            selected = state.selected == SettingsDestination.ACCOUNT,
+            onOpen = { actions.onOpen(SettingsTarget(SettingsDestination.ACCOUNT)) },
+            modifier = state.selectedFocusModifier(SettingsDestination.ACCOUNT),
+        )
+    }
     item(HomeIndex.persona.key) {
         PersonaEntryCard(
             persona = state.persona,

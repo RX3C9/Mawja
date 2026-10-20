@@ -714,6 +714,35 @@ object FlowPalettes {
                             error = Color(0xFFFFB4AB),
                         ),
                 ),
+            // Mawja "Nile": the brand palette, offered as an option on top of Flow's original look.
+            ThemeMode.NILE to
+                PalettePair(
+                    id = "nile",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF00897B),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFFE2603F),
+                            background = Color(0xFFF6FAFA),
+                            surface = Color(0xFFE7F2F1),
+                            onSurface = Color(0xFF0B1020),
+                            onSurfaceVariant = Color(0xFF4F5D6B),
+                            outline = Color(0xFFC3D3D3),
+                            error = Color(0xFFBA1A1A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFF19C3B1),
+                            onPrimary = Color(0xFF00201C),
+                            secondary = Color(0xFFFF7A59),
+                            background = Color(0xFF0B1020),
+                            surface = Color(0xFF151C30),
+                            onSurface = Color(0xFFEAF2F5),
+                            onSurfaceVariant = Color(0xFFA9B6C6),
+                            outline = Color(0xFF2B3550),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
             ThemeMode.CREAM_LIGHT to
                 PalettePair(
                     id = "cream-paper",

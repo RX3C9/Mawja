@@ -1,0 +1,97 @@
+/*
+ * Copyright (C) 2026 Mawja contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+package app.mawja.android.ui.screens.settings.account
+
+import android.app.Activity
+import androidx.compose.runtime.Immutable
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import app.mawja.android.account.AccountBackend
+import app.mawja.android.account.AccountError
+import app.mawja.android.account.AccountResult
+import app.mawja.android.account.AccountState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+enum class AccountMode { WELCOME, SIGN_IN, SIGN_UP }
+
+/** The account page's transient UI: which form is open, whether a call runs, the last error or notice. */
+@Immutable
+data class AccountUiState(
+    val mode: AccountMode = AccountMode.WELCOME,
+    val busy: Boolean = false,
+    val error: AccountError? = null,
+    val notice: AccountNotice? = null,
+)
+
+enum class AccountNotice { RESET_SENT, USERNAME_SAVED, NAME_SAVED, SIGNED_OUT, VERIFY_EMAIL }
+
+@HiltViewModel
+class AccountViewModel
+    @Inject
+    constructor(
+        private val backend: AccountBackend,
+    ) : ViewModel() {
+        val available: Boolean get() = backend.available
+        val googleAvailable: Boolean get() = backend.googleAvailable
+        val account: StateFlow<AccountState> = backend.state
+
+        private val _ui = MutableStateFlow(AccountUiState())
+        val ui: StateFlow<AccountUiState> = _ui.asStateFlow()
+
+        fun show(mode: AccountMode) = _ui.update { it.copy(mode = mode, error = null, notice = null) }
+
+        fun dismissMessage() = _ui.update { it.copy(error = null, notice = null) }
+
+        fun signIn(
+            login: String,
+            password: String,
+        ) = launchCall { backend.signIn(login, password) }
+
+        fun signUp(
+            displayName: String,
+            username: String,
+            email: String,
+            password: String,
+        ) = launchCall(onOk = AccountNotice.VERIFY_EMAIL) { backend.signUp(displayName, username, email, password) }
+
+        fun signInWithGoogle(activity: Activity) = launchCall { backend.signInWithGoogle(activity) }
+
+        fun sendPasswordReset(login: String) = launchCall(onOk = AccountNotice.RESET_SENT) { backend.sendPasswordReset(login) }
+
+        fun claimUsername(username: String) = launchCall(onOk = AccountNotice.USERNAME_SAVED) { backend.claimUsername(username) }
+
+        fun updateDisplayName(name: String) = launchCall(onOk = AccountNotice.NAME_SAVED) { backend.updateDisplayName(name) }
+
+        fun signOut() {
+            viewModelScope.launch {
+                backend.signOut()
+                _ui.value = AccountUiState(notice = AccountNotice.SIGNED_OUT)
+            }
+        }
+
+        private fun launchCall(
+            onOk: AccountNotice? = null,
+            call: suspend () -> AccountResult,
+        ) {
+            if (_ui.value.busy) return
+            _ui.update { it.copy(busy = true, error = null, notice = null) }
+            viewModelScope.launch {
+                when (val result = call()) {
+                    AccountResult.Ok -> _ui.update { it.copy(busy = false, notice = onOk, mode = AccountMode.WELCOME) }
+
+                    is AccountResult.Failed ->
+                        _ui.update {
+                            it.copy(busy = false, error = result.error.takeUnless { e -> e == AccountError.CANCELLED })
+                        }
+                }
+            }
+        }
+    }

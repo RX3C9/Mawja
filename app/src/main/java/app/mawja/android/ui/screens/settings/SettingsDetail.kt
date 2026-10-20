@@ -5,6 +5,7 @@ import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.screens.equalizer.EqualizerScreen
 import app.mawja.android.ui.screens.settings.about.AboutScreen
+import app.mawja.android.ui.screens.settings.account.AccountScreen
 import app.mawja.android.ui.screens.settings.appearance.AppearanceScreen
 import app.mawja.android.ui.screens.settings.appearance.DateTimeScreen
 import app.mawja.android.ui.screens.settings.appearance.FontScreen
@@ -195,6 +196,10 @@ internal fun SettingsDetail(
 
         SettingsDestination.REMOTE_GUIDE -> {
             Unit
+        }
+
+        SettingsDestination.ACCOUNT -> {
+            AccountScreen(onBack = onBack)
         }
 
         SettingsDestination.DIAGNOSTICS -> {

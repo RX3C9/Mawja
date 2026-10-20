@@ -80,7 +80,7 @@ class DownloadService :
 
             override fun fetchRange(
                 request: Bundle?,
-                out: ParcelFileDescriptor?,
+                target: ParcelFileDescriptor?,
                 offset: Long,
                 maxBytes: Long,
                 token: String?,
@@ -90,7 +90,7 @@ class DownloadService :
                 val id = token?.takeIf { it.isNotBlank() } ?: java.util.UUID.randomUUID().toString()
                 updateForeground(extra = 1)
                 try {
-                    return RangeFetcher.fetch(req, out, offset, maxBytes, id, progress)
+                    return RangeFetcher.fetch(req, target, offset, maxBytes, id, progress)
                 } finally {
                     updateForeground()
                 }

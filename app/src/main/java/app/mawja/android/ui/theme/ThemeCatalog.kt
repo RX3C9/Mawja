@@ -26,6 +26,7 @@ object ThemeCatalog {
         listOf(
             ThemeCatalogEntry(ThemeMode.DARK, R.string.theme_name_classic_dark, R.string.theme_desc_classic_dark),
             ThemeCatalogEntry(ThemeMode.MATERIAL_YOU, R.string.theme_name_material_you, R.string.theme_desc_material_you),
+            ThemeCatalogEntry(ThemeMode.NILE, R.string.theme_name_nile, R.string.theme_desc_nile),
             ThemeCatalogEntry(ThemeMode.MONOCHROME, R.string.theme_name_monochrome, R.string.theme_desc_monochrome),
             ThemeCatalogEntry(ThemeMode.CATPPUCCIN, R.string.theme_name_catppuccin, R.string.theme_desc_catppuccin),
             ThemeCatalogEntry(ThemeMode.GREEN_APPLE, R.string.theme_name_green_apple, R.string.theme_desc_green_apple),

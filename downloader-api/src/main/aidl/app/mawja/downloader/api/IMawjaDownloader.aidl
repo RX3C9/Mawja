@@ -32,12 +32,12 @@ interface IMawjaDownloader {
     // ---- API version 2: the downloader performs the app's byte transfers ----
 
     /**
-     * Runs one HTTP request (keys: MawjaDownloaderContract.Range) and writes its body into [out]
+     * Runs one HTTP request (keys: MawjaDownloaderContract.Range) and writes its body into [target]
      * starting at [offset], at most [maxBytes] bytes. Blocks until the body ends, fails or is
-     * cancelled. [out] may be null when [maxBytes] is 0 (a header-only probe).
+     * cancelled. [target] may be null when [maxBytes] is 0 (a header-only probe).
      * Returns a Bundle with MawjaDownloaderContract.RangeResult keys.
      */
-    Bundle fetchRange(in Bundle request, in ParcelFileDescriptor out, long offset, long maxBytes,
+    Bundle fetchRange(in Bundle request, in ParcelFileDescriptor target, long offset, long maxBytes,
             String token, IRangeProgress progress);
 
     /** Stops the fetchRange call started with [token]; what it wrote so far stays in the file. */

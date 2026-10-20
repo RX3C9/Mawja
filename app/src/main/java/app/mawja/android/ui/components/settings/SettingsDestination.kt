@@ -15,6 +15,9 @@ enum class SettingsDestination(
 ) {
     /** The settings list itself, for options that live directly on it such as Deep Flow. */
     HOME("home", R.string.settings_title),
+
+    /** Mawja: sign in / create account / guest mode, Mawja ID and membership. */
+    ACCOUNT("account", R.string.mawja_account_title),
     TASTE("taste", R.string.taste_title),
     HIDDEN_CONTENT("hidden_content", R.string.taste_hidden_title, TASTE),
     FAVOURITE_ARTISTS("favourite_artists", R.string.favourite_artists_title, TASTE),

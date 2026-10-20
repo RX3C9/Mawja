@@ -53,6 +53,9 @@ enum class ThemeMode {
     CYBERPUNK,
     ROYAL_GOLD,
     CREAM_LIGHT,
+
+    /** Mawja's own optional palette (teal, coral, sand on night blue). Flow Default stays the default. */
+    NILE,
     MATERIAL_YOU,
     CUSTOM,
     LIGHT,
