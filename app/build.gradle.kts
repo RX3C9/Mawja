@@ -288,9 +288,9 @@ dependencies {
     implementation(project(":downloader-api"))
 
     // --- Mawja accounts (github flavor only; foss stays free of Google services) ---
+    // No Firestore SDK: its protolite classes clash with the app's protobuf-javalite 4.x; profile reads go through functions.
     "githubImplementation"(platform("com.google.firebase:firebase-bom:33.16.0"))
     "githubImplementation"("com.google.firebase:firebase-auth")
-    "githubImplementation"("com.google.firebase:firebase-firestore")
     "githubImplementation"("com.google.firebase:firebase-functions")
     "githubImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.11.0")
     "githubImplementation"("androidx.credentials:credentials:1.5.0")

@@ -4,6 +4,7 @@
  * - onUserCreated: gives every new account a profile and a unique Mawja ID.
  * - claimUsername: reserves a username (also what username + password login resolves through).
  * - resolveLogin: username → email for the username/password sign-in.
+ * - myProfile / updateMyProfile: the app's own account page (the app ships without the Firestore SDK).
  * - adminAction: every staff action, permission-checked and written to auditLog.
  */
 import { initializeApp } from "firebase-admin/app";
@@ -81,6 +82,41 @@ export const resolveLogin = onCall({ region: REGION }, async (req) => {
   const email = doc.get("email") as string | undefined;
   if (!email) throw new HttpsError("not-found", "unknown");
   return { email };
+});
+
+/** The caller's own account fields, for the app's account page. */
+export const myProfile = onCall({ region: REGION }, async (req) => {
+  const uid = req.auth?.uid;
+  if (!uid) throw new HttpsError("unauthenticated", "Sign in first.");
+  const doc = await db.doc(`users/${uid}`).get();
+  if (!doc.exists) return { ready: false };
+  const tierExpiresAt = doc.get("tierExpiresAt") as number | null | undefined;
+  const expired = typeof tierExpiresAt === "number" && tierExpiresAt < Date.now();
+  return {
+    ready: true,
+    mawjaId: doc.get("mawjaId") ?? null,
+    username: doc.get("username") ?? null,
+    displayName: doc.get("displayName") ?? null,
+    photoUrl: doc.get("photoUrl") ?? null,
+    email: doc.get("email") ?? null,
+    tier: expired ? "free" : (doc.get("tier") ?? "free"),
+    tierExpiresAt: tierExpiresAt ?? null,
+    badges: (doc.get("badges") as string[] | undefined) ?? [],
+    status: doc.get("status") ?? "active",
+  };
+});
+
+/** Lets a user change their own display name (1–60 chars). */
+export const updateMyProfile = onCall({ region: REGION }, async (req) => {
+  const uid = req.auth?.uid;
+  if (!uid) throw new HttpsError("unauthenticated", "Sign in first.");
+  const name = String(req.data?.displayName ?? "").trim();
+  if (name.length < 1 || name.length > 60) throw new HttpsError("invalid-argument", "displayName");
+  const status = (await db.doc(`users/${uid}`).get()).get("status");
+  if (status && status !== "active") throw new HttpsError("permission-denied", "limited");
+  await db.doc(`users/${uid}`).set({ displayName: name }, { merge: true });
+  await db.doc(`profiles/${uid}`).set({ displayName: name }, { merge: true });
+  return { displayName: name };
 });
 
 type AdminRequest =

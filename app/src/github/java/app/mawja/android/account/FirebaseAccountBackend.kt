@@ -28,12 +28,15 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,8 +44,9 @@ import kotlinx.coroutines.tasks.await
 
 /**
  * Mawja accounts on Firebase: email/password (a username signs in by resolving to its email via the
- * `resolveLogin` function), Google through Credential Manager, and the user's own `users/{uid}`
- * document for the Mawja ID, tier and badges, which the backend writes.
+ * `resolveLogin` function), Google through Credential Manager, and the `myProfile` function for
+ * the Mawja ID, tier and badges the backend keeps in `users/{uid}`. (No Firestore SDK in the app:
+ * its protolite classes clash with the app's protobuf-javalite.)
  */
 class FirebaseAccountBackend(
     context: Context,
@@ -60,7 +64,6 @@ class FirebaseAccountBackend(
             APP_NAME,
         )
     private val auth = FirebaseAuth.getInstance(app)
-    private val db = FirebaseFirestore.getInstance(app)
     private val functions = FirebaseFunctions.getInstance(app, BuildConfig.FUNCTIONS_REGION)
 
     private val _state = MutableStateFlow<AccountState>(if (auth.currentUser != null) AccountState.Loading else AccountState.Guest)
@@ -68,47 +71,68 @@ class FirebaseAccountBackend(
     override val available = true
     override val googleAvailable = BuildConfig.GOOGLE_WEB_CLIENT_ID.isNotBlank()
 
-    private var profileListener: ListenerRegistration? = null
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var refreshJob: Job? = null
 
     init {
         auth.addAuthStateListener { watch(it.currentUser) }
     }
 
     private fun watch(user: FirebaseUser?) {
-        profileListener?.remove()
-        profileListener = null
+        refreshJob?.cancel()
         if (user == null) {
             _state.value = AccountState.Guest
             return
         }
         _state.value = AccountState.SignedIn(basicProfile(user, null))
-        profileListener =
-            db.document("users/${user.uid}").addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Log.w(TAG, "Profile listener failed", error)
-                    return@addSnapshotListener
+        refreshJob = scope.launch { loadProfile(user) }
+    }
+
+    /** Reads the account fields; right after sign-up the backend may still be allocating the Mawja ID, so it retries. */
+    private suspend fun loadProfile(user: FirebaseUser) {
+        repeat(PROFILE_ATTEMPTS) { attempt ->
+            val fields =
+                try {
+                    functions.getHttpsCallable("myProfile").call().await().data as? Map<*, *>
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "myProfile failed", e)
+                    null
                 }
-                if (auth.currentUser?.uid == user.uid) _state.value = AccountState.SignedIn(basicProfile(user, snapshot))
+            if (auth.currentUser?.uid != user.uid) return
+            if (fields != null && fields["ready"] == true) {
+                _state.value = AccountState.SignedIn(basicProfile(user, fields))
+                if (fields["mawjaId"] != null) return
             }
+            delay(PROFILE_RETRY_MS * (attempt + 1))
+        }
     }
 
     private fun basicProfile(
         user: FirebaseUser,
-        doc: DocumentSnapshot?,
+        doc: Map<*, *>?,
     ): MawjaProfile {
-        @Suppress("UNCHECKED_CAST")
-        val badges = (doc?.get("badges") as? List<String>).orEmpty()
+        fun str(key: String) = doc?.get(key) as? String
+        val badges = (doc?.get("badges") as? List<*>).orEmpty().filterIsInstance<String>()
         return MawjaProfile(
             uid = user.uid,
-            email = user.email ?: doc?.getString("email"),
-            displayName = doc?.getString("displayName") ?: user.displayName,
-            photoUrl = user.photoUrl?.toString() ?: doc?.getString("photoUrl"),
-            mawjaId = doc?.getString("mawjaId"),
-            username = doc?.getString("username"),
-            tier = MawjaTier.of(doc?.getString("tier")),
+            email = user.email ?: str("email"),
+            displayName = str("displayName") ?: user.displayName,
+            photoUrl = user.photoUrl?.toString() ?: str("photoUrl"),
+            mawjaId = str("mawjaId"),
+            username = str("username"),
+            tier = MawjaTier.of(str("tier")),
             badges = MawjaBadge.of(badges),
-            status = doc?.getString("status") ?: "active",
+            status = str("status") ?: "active",
         )
+    }
+
+    private fun reload() {
+        auth.currentUser?.let { user ->
+            refreshJob?.cancel()
+            refreshJob = scope.launch { loadProfile(user) }
+        }
     }
 
     override suspend fun signIn(
@@ -189,7 +213,8 @@ class FirebaseAccountBackend(
             val user = auth.currentUser ?: return@guarded AccountResult.Failed(AccountError.INVALID_LOGIN)
             val clean = name.trim().take(MAX_NAME)
             user.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(clean).build()).await()
-            db.document("users/${user.uid}").update("displayName", clean).await()
+            functions.getHttpsCallable("updateMyProfile").call(mapOf("displayName" to clean)).await()
+            reload()
             AccountResult.Ok
         }
 
@@ -202,6 +227,7 @@ class FirebaseAccountBackend(
     private suspend fun claim(username: String): AccountResult =
         try {
             functions.getHttpsCallable("claimUsername").call(mapOf("username" to username)).await()
+            reload()
             AccountResult.Ok
         } catch (e: FirebaseFunctionsException) {
             when (e.code) {
@@ -253,5 +279,7 @@ class FirebaseAccountBackend(
         const val TAG = "MawjaAccount"
         const val APP_NAME = "mawja"
         const val MAX_NAME = 60
+        const val PROFILE_ATTEMPTS = 6
+        const val PROFILE_RETRY_MS = 2_000L
     }
 }
