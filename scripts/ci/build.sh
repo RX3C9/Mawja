@@ -6,8 +6,20 @@ TOPIC="${MAWJA_LOG_TOPIC:-mawja-ci-3998ee696e5d3e8578e1}"
 SHA=$(cat .mawja-sync 2>/dev/null || git rev-parse HEAD)
 TASKS=${MAWJA_TASKS:-":app:assembleGithubDebug :app:assembleFossDebug :downloader:assembleDebug :admin:assembleDebug"}
 chmod +x gradlew
-./gradlew $TASKS --stacktrace --no-daemon --max-workers=2 -Pkotlin.compiler.execution.strategy=daemon 2>&1 | tee build.log
-code=${PIPESTATUS[0]}
+# The app's two flavours are compiled one after the other: compiled side by side they share one
+# Kotlin daemon and run it out of heap.
+: > build.log
+code=0
+for group in ":app:assembleGithubDebug" ":app:assembleFossDebug" "$(echo " $TASKS " | sed -e 's/ :app:assembleGithubDebug / /' -e 's/ :app:assembleFossDebug / /' | xargs)"; do
+  [ -z "$group" ] && continue
+  if [ "$group" = ":app:assembleGithubDebug" ] || [ "$group" = ":app:assembleFossDebug" ]; then
+    case " $TASKS " in *" $group "*) ;; *) continue ;; esac
+  fi
+  ./gradlew $group --stacktrace --max-workers=2 -Pkotlin.compiler.execution.strategy=daemon 2>&1 | tee -a build.log
+  c=${PIPESTATUS[0]}
+  if [ "$c" != 0 ]; then code=$c; break; fi
+done
+./gradlew --stop >/dev/null 2>&1 || true
 if [ "$code" = 0 ]; then status=success; else status=failure; fi
 # Companion apps ride along in the app artifact folder (the workflow uploads app/build/outputs/apk/**).
 for m in downloader admin; do
