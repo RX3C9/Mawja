@@ -25,7 +25,7 @@ unit="skipped"
 if [ "$code" = 0 ] && [ -f scripts/ci/unit-tests.txt ]; then
   filters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | sed 's/^/--tests /' | xargs)
   if [ -n "$filters" ]; then
-    if timeout 40m ./gradlew :app:testFossDebugUnitTest $filters --max-workers=2 > unit.log 2>&1; then
+    if timeout 30m ./gradlew :app:testFossDebugUnitTest $filters --max-workers=2 > unit.log 2>&1; then
       unit="ok"
     else
       unit="FAILED: $(grep -E '^(e: |.*FAILED|.*Test.*>.*FAILED|  .*Exception|.*expected)' unit.log | head -25 | tr "\n" " " | cut -c1-1500)"
@@ -34,6 +34,12 @@ if [ "$code" = 0 ] && [ -f scripts/ci/unit-tests.txt ]; then
   fi
 fi
 ./gradlew --stop >/dev/null 2>&1 || true
+# Real in-app screenshots from an emulator (reported, do not fail the build). Set MAWJA_SCREENSHOTS=0 to skip.
+screens="skipped"
+if [ "$code" = 0 ] && [ "${MAWJA_SCREENSHOTS:-1}" = 1 ] && [ -f scripts/ci/screenshots.sh ]; then
+  if timeout 25m bash scripts/ci/screenshots.sh > screens.log 2>&1; then screens="ok ($(grep -c 'captured' screens.log) shots)"; else screens="FAILED: $(tail -5 screens.log | tr "\n" " " | cut -c1-400)"; fi
+  cat screens.log >> build.log
+fi
 if [ "$code" = 0 ]; then status=success; else status=failure; fi
 # Companion apps ride along in the app artifact folder (the workflow uploads app/build/outputs/apk/**).
 for m in downloader admin; do
@@ -44,8 +50,18 @@ backend="skipped"
 if [ -f backend/functions/package.json ] && command -v npm >/dev/null; then
   if (cd backend/functions && npm ci --no-audit --no-fund --loglevel=error && npm test) > backend.log 2>&1; then backend="ok"; else backend="FAILED: $(tail -20 backend.log | tr "\n" " " | cut -c1-600)"; fi
 fi
+# Admin web (Next.js static export): tests, type-check and build (reported, does not fail the APK build).
+adminweb="skipped"
+if [ -f admin-web/package.json ] && command -v npm >/dev/null; then
+  if (cd admin-web && npm ci --no-audit --no-fund --loglevel=error && npm test && npm run typecheck && NEXT_TELEMETRY_DISABLED=1 npm run build) > adminweb.log 2>&1; then
+    adminweb="ok ($(find admin-web/out -name '*.html' | wc -l) pages, node $(node -v))"
+  else
+    adminweb="FAILED: $(tail -25 adminweb.log | tr "\n" " " | cut -c1-900)"
+  fi
+  cat adminweb.log >> build.log
+fi
 apks=$(find app/build/outputs/apk -name '*.apk' -printf '%f (%s bytes)\n' 2>/dev/null | head -14)
 logurl=$(curl -fsS -F "files[]=@build.log" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null || echo none)
-summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "backend: $backend"; echo "unit: $unit"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
+summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "backend: $backend"; echo "admin-web: $adminweb"; echo "unit: $unit"; echo "screens: $screens"; echo "elapsed: $((SECONDS/60))m"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
 curl -fsS -H "Title: Mawja CI $status" -d "$summary" "https://ntfy.sh/$TOPIC" >/dev/null || true
 exit $code
