@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1020"/><stop offset="1" stop-color="#1C2440"/>
+    </linearGradient>
+    <linearGradient id="w" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#19C3B1"/><stop offset="0.5" stop-color="#FF7A59"/><stop offset="1" stop-color="#F2C14E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="360" rx="28" fill="url(#bg)"/>
+  <g fill="none" stroke="url(#w)" stroke-linecap="round">
+    <path stroke-width="5" opacity=".9" d="M0 250 Q160 190 320 250 T640 250 T960 250 T1280 250">
+      <animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 250 Q160 190 320 250 T640 250 T960 250 T1280 250;M0 250 Q160 310 320 250 T640 250 T960 250 T1280 250;M0 250 Q160 190 320 250 T640 250 T960 250 T1280 250"/>
+    </path>
+    <path stroke-width="3" opacity=".5" d="M0 280 Q160 230 320 280 T640 280 T960 280 T1280 280">
+      <animate attributeName="d" dur="8s" repeatCount="indefinite" values="M0 280 Q160 230 320 280 T640 280 T960 280 T1280 280;M0 280 Q160 330 320 280 T640 280 T960 280 T1280 280;M0 280 Q160 230 320 280 T640 280 T960 280 T1280 280"/>
+    </path>
+  </g>
+  <circle cx="160" cy="150" r="56" fill="none" stroke="url(#w)" stroke-width="6"/>
+  <path d="M145 122 L190 150 L145 178 Z" fill="#F6F8FB"/>
+  <text x="250" y="150" font-family="Segoe UI, Roboto, sans-serif" font-size="84" font-weight="800" fill="#F6F8FB">Mawja</text>
+  <text x="560" y="150" font-family="Noto Naskh Arabic, Tahoma, sans-serif" font-size="72" font-weight="700" fill="#19C3B1">موجة</text>
+  <text x="252" y="200" font-family="Segoe UI, Roboto, sans-serif" font-size="26" fill="#AEB8D0">Premium open-source YouTube &amp; YouTube Music for Android</text>
+</svg>
