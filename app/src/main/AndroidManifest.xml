@@ -6,6 +6,8 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Mawja: lets this app hand downloads to Mawja Downloader (same signing key only). -->
+    <uses-permission android:name="${downloadPermission}" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -59,6 +61,9 @@
     <queries>
         <intent>
             <action android:name="android.media.action.DISPLAY_AUDIO_EFFECT_CONTROL_PANEL" />
+        </intent>
+        <intent>
+            <action android:name="app.mawja.downloader.action.BIND" />
         </intent>
     </queries>
 
@@ -265,11 +270,11 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="io.github.aedev.flow.action.CANCEL_DOWNLOAD" />
-                <action android:name="io.github.aedev.flow.action.RETRY_DOWNLOAD" />
-                <action android:name="io.github.aedev.flow.action.PAUSE_DOWNLOAD" />
-                <action android:name="io.github.aedev.flow.action.RESUME_DOWNLOAD" />
-                <action android:name="io.github.aedev.flow.action.DISMISS_NOTIFICATION" />
+                <action android:name="app.mawja.android.action.CANCEL_DOWNLOAD" />
+                <action android:name="app.mawja.android.action.RETRY_DOWNLOAD" />
+                <action android:name="app.mawja.android.action.PAUSE_DOWNLOAD" />
+                <action android:name="app.mawja.android.action.RESUME_DOWNLOAD" />
+                <action android:name="app.mawja.android.action.DISMISS_NOTIFICATION" />
             </intent-filter>
         </receiver>
 

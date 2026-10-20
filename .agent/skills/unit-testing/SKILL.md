@@ -5,7 +5,7 @@ description: Guidelines, patterns, and best practices for writing Kotlin unit te
 
 # Kotlin Unit Testing Guidelines & Best Practices for Flow
 
-This skill outlines the standards and conventions for writing unit tests in the Flow codebase (`io.github.aedev.flow`).
+This skill outlines the standards and conventions for writing unit tests in the Flow codebase (`app.mawja.android`).
 
 ## 1. Naming Conventions
 

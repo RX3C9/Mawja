@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to Flow! We welcome contributions from the community.
 
-Flow (`io.github.aedev.flow`) is an Android music/video app written in Kotlin with Jetpack Compose,
+Flow (`app.mawja.android`) is an Android music/video app written in Kotlin with Jetpack Compose,
 Hilt, and Media3/ExoPlayer. It plays YouTube content via a native InnerTube client with a
 NewPipe-based fallback extraction path, and supports local media playback, offline downloads,
 casting, lyrics, device-to-device sync, and an on-device recommendation engine (FlowNeuroEngine).
@@ -264,7 +264,7 @@ real shipped regression that had to be found and fixed on-device.
 13. Sustained heat while the app is open = per-frame work; drain with the screen off = CPU/network
     loops. Diagnose in that order: (a) run the rule-2 audit over every composed-but-hidden tree;
     (b) count fetches per user action in logcat — any unexplained second fetch is the bug;
-    (c) check `adb shell dumpsys gfxinfo io.github.aedev.flow` for continuous frame production while
+    (c) check `adb shell dumpsys gfxinfo app.mawja.android` for continuous frame production while
     the UI should be idle; (d) only then suspect the player path. Do not "fix" heat by degrading
     visible design, motion, or update smoothness — find the invisible work instead.
 
@@ -565,7 +565,7 @@ bump takes three times as long to review and is three times as likely to be reve
 ## 🔐 Release and Signing Invariants
 
 Flow is distributed through GitHub Releases and
-[IzzyOnDroid](https://apt.izzysoft.de/packages/io.github.aedev.flow). Both pin properties of the
+[IzzyOnDroid](https://apt.izzysoft.de/packages/app.mawja.android). Both pin properties of the
 published artifacts, so the following are hard constraints. Breaking one of them cannot be fixed by a
 follow-up release — it forces every installed user to uninstall and reinstall, losing their local
 data.

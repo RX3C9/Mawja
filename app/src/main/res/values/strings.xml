@@ -4297,4 +4297,8 @@
     <string name="scrobbling_import_failed">Could not read your top artists</string>
     <string name="music_home_lastfm_discover">Discover with Last.fm</string>
     <string name="music_home_lastfm_discover_subtitle">Picked by Last.fm listeners from your on repeat</string>
+    <string name="mawja_downloader_required_title">Mawja Downloader is needed</string>
+    <string name="mawja_downloader_required_body">Downloads in Mawja run through the free Mawja Downloader app, so files stay separate and safe. Install it once, then try the download again.</string>
+    <string name="mawja_downloader_install">Get Mawja Downloader</string>
+    <string name="mawja_downloader_later">Not now</string>
 </resources>

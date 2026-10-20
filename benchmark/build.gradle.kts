@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.aedev.flow.benchmark"
+    namespace = "app.mawja.android.benchmark"
     compileSdk = 37
 
     compileOptions {

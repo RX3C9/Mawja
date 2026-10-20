@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mawja Downloader</string>
+    <string name="permission_label">Download through Mawja Downloader</string>
+    <string name="permission_description">Lets Mawja apps hand downloads to Mawja Downloader.</string>
+    <string name="channel_name">Downloads</string>
+    <string name="notification_running">Downloading %1$d item(s)</string>
+    <string name="empty_title">No downloads yet</string>
+    <string name="empty_body">Start a download from Mawja and it shows up here.</string>
+    <string name="state_queued">Queued</string>
+    <string name="state_running">Downloading</string>
+    <string name="state_completed">Done</string>
+    <string name="state_failed">Failed</string>
+    <string name="state_cancelled">Cancelled</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_clear">Clear finished</string>
+    <string name="subtitle">Downloads for Mawja, kept separate and safe.</string>
+</resources>

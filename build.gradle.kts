@@ -34,6 +34,8 @@ spotless {
         target(
             "app/src/**/*.kt",
             "benchmark/src/**/*.kt",
+            "downloader/src/**/*.kt",
+            "downloader-api/src/**/*.kt",
         )
         targetExclude(
             "**/build/**",

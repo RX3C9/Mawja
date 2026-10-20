@@ -18,3 +18,5 @@ dependencyResolutionManagement {
 rootProject.name = "Mawja"
 include(":app")
 include(":benchmark")
+include(":downloader-api")
+include(":downloader")

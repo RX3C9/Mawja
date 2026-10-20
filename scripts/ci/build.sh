@@ -4,12 +4,16 @@
 set -uo pipefail
 TOPIC="${MAWJA_LOG_TOPIC:-mawja-ci-3998ee696e5d3e8578e1}"
 SHA=$(cat .mawja-sync 2>/dev/null || git rev-parse HEAD)
-TASKS=${MAWJA_TASKS:-":app:assembleGithubDebug :app:assembleFossDebug"}
+TASKS=${MAWJA_TASKS:-":app:assembleGithubDebug :app:assembleFossDebug :downloader:assembleDebug"}
 chmod +x gradlew
 ./gradlew $TASKS --stacktrace --no-daemon 2>&1 | tee build.log
 code=${PIPESTATUS[0]}
 if [ "$code" = 0 ]; then status=success; else status=failure; fi
-apks=$(find app/build/outputs/apk -name '*.apk' -printf '%f (%s bytes)\n' 2>/dev/null | head -10)
+# Companion apps ride along in the app artifact folder (the workflow uploads app/build/outputs/apk/**).
+for m in downloader admin; do
+  if [ -d "$m/build/outputs/apk" ]; then mkdir -p "app/build/outputs/apk/companions/$m"; find "$m/build/outputs/apk" -name "*.apk" -exec cp {} "app/build/outputs/apk/companions/$m/" \; ; fi
+done
+apks=$(find app/build/outputs/apk -name '*.apk' -printf '%f (%s bytes)\n' 2>/dev/null | head -14)
 logurl=$(curl -fsS -F "files[]=@build.log" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null || echo none)
 summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
 curl -fsS -H "Title: Mawja CI $status" -d "$summary" "https://ntfy.sh/$TOPIC" >/dev/null || true

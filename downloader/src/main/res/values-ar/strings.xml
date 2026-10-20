@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">موجة للتنزيل</string>
+    <string name="permission_label">التنزيل عبر موجة للتنزيل</string>
+    <string name="permission_description">يسمح لتطبيقات موجة بإرسال التنزيلات إلى موجة للتنزيل.</string>
+    <string name="channel_name">التنزيلات</string>
+    <string name="notification_running">جارٍ تنزيل %1$d عنصر</string>
+    <string name="empty_title">لا توجد تنزيلات بعد</string>
+    <string name="empty_body">ابدأ تنزيلاً من موجة وسيظهر هنا.</string>
+    <string name="state_queued">في الانتظار</string>
+    <string name="state_running">جارٍ التنزيل</string>
+    <string name="state_completed">اكتمل</string>
+    <string name="state_failed">فشل</string>
+    <string name="state_cancelled">أُلغي</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_clear">مسح المنتهية</string>
+    <string name="subtitle">تنزيلات موجة، في تطبيق منفصل وآمن.</string>
+</resources>

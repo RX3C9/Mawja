@@ -50,7 +50,7 @@ fun translatedLocaleTags(): List<String> =
         .sorted()
 
 android {
-    namespace = "io.github.aedev.flow"
+    namespace = "app.mawja.android"
     compileSdk = 37
 
     defaultConfig {
@@ -61,12 +61,15 @@ android {
         versionName = "3.0.0"
 
         buildConfigField("int", "NIGHTLY_RUN", "0")
+        // Mawja: downloads are handed to the separate Mawja Downloader app.
+        buildConfigField("Boolean", "REQUIRE_DOWNLOADER", "true")
+        manifestPlaceholders["downloadPermission"] = "app.mawja.permission.DOWNLOAD"
         buildConfigField("String", "APP_LANGUAGE_TAGS", "\"${(listOf("en") + translatedLocaleTags()).joinToString(",")}\"")
         // Last.fm keys come from the CI secrets; builds without them ask the viewer for their own key.
         buildConfigField("String", "LASTFM_API_KEY", "\"${secretValue("lastfmApiKey", "lastfm.apiKey", "LASTFM_API_KEY")}\"")
         buildConfigField("String", "LASTFM_API_SECRET", "\"${secretValue("lastfmApiSecret", "lastfm.apiSecret", "LASTFM_API_SECRET")}\"")
 
-        testInstrumentationRunner = "io.github.aedev.flow.HiltTestRunner"
+        testInstrumentationRunner = "app.mawja.android.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -145,6 +148,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+            manifestPlaceholders["downloadPermission"] = "app.mawja.permission.DOWNLOAD_DEBUG"
             buildConfigField("String", "UPDATE_CHANNEL", "\"stable\"")
             isDebuggable = true
             isMinifyEnabled = false
@@ -275,6 +279,7 @@ composeCompiler {
 
 dependencies {
     // --- Core Android ---
+    implementation(project(":downloader-api"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
