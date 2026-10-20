@@ -6,7 +6,7 @@ TOPIC="${MAWJA_LOG_TOPIC:-mawja-ci-3998ee696e5d3e8578e1}"
 SHA=$(cat .mawja-sync 2>/dev/null || git rev-parse HEAD)
 TASKS=${MAWJA_TASKS:-":app:assembleGithubDebug :app:assembleFossDebug :downloader:assembleDebug"}
 chmod +x gradlew
-./gradlew $TASKS --stacktrace --no-daemon 2>&1 | tee build.log
+./gradlew $TASKS --stacktrace --no-daemon --max-workers=2 -Pkotlin.compiler.execution.strategy=daemon 2>&1 | tee build.log
 code=${PIPESTATUS[0]}
 if [ "$code" = 0 ]; then status=success; else status=failure; fi
 # Companion apps ride along in the app artifact folder (the workflow uploads app/build/outputs/apk/**).
