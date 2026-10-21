@@ -37,7 +37,15 @@ fi
 # Real in-app screenshots from an emulator (reported, do not fail the build). Set MAWJA_SCREENSHOTS=0 to skip.
 screens="skipped"
 if [ "$code" = 0 ] && [ "${MAWJA_SCREENSHOTS:-1}" = 1 ] && [ -f scripts/ci/screenshots.sh ]; then
-  if timeout 25m bash scripts/ci/screenshots.sh > screens.log 2>&1; then screens="ok ($(grep -c 'captured' screens.log) shots)"; else screens="FAILED: $(tail -5 screens.log | tr "\n" " " | cut -c1-400)"; fi
+  if timeout 35m bash scripts/ci/screenshots.sh > screens.log 2>&1; then sc=0; else sc=$?; fi
+  [ "$sc" = 124 ] && echo "[screens] killed by the 35m timeout" >> screens.log
+  [ -f emulator.log ] && { echo "---- full emulator.log ----"; tail -400 emulator.log; } >> screens.log
+  slog=$(curl -fsS -m 60 -F "files[]=@screens.log" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null || echo none)
+  if [ "$sc" = 0 ]; then
+    screens="ok ($(grep -c '\] .*captured' screens.log) shots, $(grep -o 'api [0-9]*)' screens.log | tail -1 | tr -d ')') log=$slog)"
+  else
+    screens="FAILED (exit $sc) log=$slog: $(grep -E 'FAIL|did not|timed out|died|exited|missing' screens.log | head -6 | tr "\n" " " | cut -c1-500)"
+  fi
   cat screens.log >> build.log
 fi
 if [ "$code" = 0 ]; then status=success; else status=failure; fi
