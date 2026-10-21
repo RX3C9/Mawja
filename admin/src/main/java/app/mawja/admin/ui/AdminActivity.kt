@@ -33,6 +33,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.rounded.Campaign
+import androidx.compose.material.icons.rounded.ConfirmationNumber
 import androidx.compose.material.icons.rounded.Flag
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.People
@@ -164,6 +165,7 @@ private enum class Tab(
     val icon: ImageVector,
 ) {
     USERS(R.string.users, Icons.Rounded.People),
+    CODES(R.string.codes, Icons.Rounded.ConfirmationNumber),
     FEATURES(R.string.features, Icons.Rounded.ToggleOn),
     ANNOUNCE(R.string.announce, Icons.Rounded.Campaign),
     REPORTS(R.string.reports, Icons.Rounded.Flag),
@@ -227,6 +229,7 @@ private fun AdminApp(vm: AdminViewModel) {
                 else ->
                     when (Tab.entries[tab]) {
                         Tab.USERS -> UsersTab(state, vm)
+                        Tab.CODES -> CodesTab(state, vm)
                         Tab.FEATURES -> FeaturesTab(state, vm)
                         Tab.ANNOUNCE -> AnnounceTab(vm)
                         Tab.REPORTS -> ReportsTab(state, vm)

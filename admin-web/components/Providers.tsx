@@ -2,7 +2,8 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { onIdTokenChanged, signOut as fbSignOut, type User } from "firebase/auth";
-import { auth, firebaseConfigured } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db, firebaseConfigured } from "@/lib/firebase";
 import { dir, translate, type Lang } from "@/lib/i18n";
 import { isRole, type Role } from "@/lib/roles";
 
@@ -49,7 +50,9 @@ export function Providers({ children }: { children: ReactNode }) {
         return;
       }
       const token = await user.getIdTokenResult();
-      const role = token.claims.role;
+      let role: unknown = token.claims.role;
+      // Spark plan: no function sets claims, so an admins/{uid} doc (added in the console) grants the role.
+      if (!isRole(role)) role = await getDoc(doc(db(), "admins", user.uid)).then((d) => d.get("role")).catch(() => null);
       setSession({ state: "signedIn", user, role: isRole(role) ? role : null });
     });
   }, []);

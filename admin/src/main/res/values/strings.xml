@@ -32,4 +32,37 @@
     <string name="role_label">Role: %1$s</string>
     <string name="nothing">Nothing here yet.</string>
     <string name="not_found">No user found.</string>
+    <string name="codes">Codes</string>
+    <string name="cancel">Cancel</string>
+    <string name="codes_find">Find a code</string>
+    <string name="codes_not_found">No such code.</string>
+    <string name="codes_generate">Generate membership codes</string>
+    <string name="codes_tier">Tier</string>
+    <string name="codes_days">Days of membership</string>
+    <string name="codes_days_n">%1$d days</string>
+    <string name="codes_count">How many codes</string>
+    <string name="codes_max_uses">Uses per code</string>
+    <string name="codes_valid_for">Redeem within (days, 0 = no limit)</string>
+    <string name="codes_note">Note (who it\'s for, price, channel)</string>
+    <string name="codes_generate_n">Generate %1$d codes</string>
+    <string name="codes_once_note">Codes are shown once. Only a fingerprint (hash) is stored, so copy or share them before closing.</string>
+    <string name="codes_generated_title">%1$d codes ready</string>
+    <string name="codes_generated_warning">Copy or share these now. They can\'t be shown again.</string>
+    <string name="codes_partial">Only %1$d of %2$d were saved: %3$s</string>
+    <string name="codes_copy">Copy all</string>
+    <string name="codes_share">Share</string>
+    <string name="codes_batches">Batches</string>
+    <string name="codes_batch_line">%1$d codes · %2$d use(s) each</string>
+    <string name="codes_created">Created %1$s</string>
+    <string name="codes_expires">Redeem by %1$s</string>
+    <string name="codes_show">Codes</string>
+    <string name="codes_hide">Hide</string>
+    <string name="codes_used">used %1$d/%2$d</string>
+    <string name="codes_revoke">Revoke</string>
+    <string name="codes_revoked">Revoked</string>
+    <string name="codes_revoke_batch">Revoke batch</string>
+    <string name="codes_revoke_confirm">Revoke %1$s? It can\'t be redeemed after this. Memberships already activated stay.</string>
+    <string name="codes_revoke_batch_confirm">Revoke all %1$d codes in this batch? Memberships already activated stay.</string>
+    <string name="codes_redemptions">Recent activations</string>
+    <string name="codes_redemption_line">%1$s code · %2$d days · %3$s</string>
 </resources>

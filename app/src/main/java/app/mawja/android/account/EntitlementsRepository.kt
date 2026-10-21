@@ -56,4 +56,7 @@ class EntitlementsRepository
         }
 
         fun has(feature: MawjaFeature): Boolean = entitlements.value.has(feature)
+
+        /** Re-reads the membership from the backend, e.g. right after a code was activated. */
+        suspend fun refresh() = account.refreshProfile()
     }

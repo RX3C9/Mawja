@@ -32,4 +32,37 @@
     <string name="role_label">الدور: %1$s</string>
     <string name="nothing">مفيش حاجة هنا لسه.</string>
     <string name="not_found">مفيش مستخدم بالبيانات دي.</string>
+    <string name="codes">الأكواد</string>
+    <string name="cancel">إلغاء</string>
+    <string name="codes_find">دوّر على كود</string>
+    <string name="codes_not_found">مفيش كود بالشكل ده.</string>
+    <string name="codes_generate">إنشاء أكواد عضوية</string>
+    <string name="codes_tier">الباقة</string>
+    <string name="codes_days">مدة العضوية بالأيام</string>
+    <string name="codes_days_n">%1$d يوم</string>
+    <string name="codes_count">عدد الأكواد</string>
+    <string name="codes_max_uses">مرات الاستخدام لكل كود</string>
+    <string name="codes_valid_for">يتفعّل خلال (أيام، 0 = من غير حد)</string>
+    <string name="codes_note">ملاحظة (لمين، السعر، القناة)</string>
+    <string name="codes_generate_n">أنشئ %1$d كود</string>
+    <string name="codes_once_note">الأكواد بتظهر مرة واحدة بس. اللي بيتحفظ بصمة (hash) مش الكود نفسه، فانسخها أو شاركها قبل ما تقفل.</string>
+    <string name="codes_generated_title">%1$d كود جاهز</string>
+    <string name="codes_generated_warning">انسخها أو شاركها دلوقتي. مش هتظهر تاني.</string>
+    <string name="codes_partial">اتحفظ %1$d بس من %2$d: %3$s</string>
+    <string name="codes_copy">انسخ الكل</string>
+    <string name="codes_share">مشاركة</string>
+    <string name="codes_batches">الدفعات</string>
+    <string name="codes_batch_line">%1$d كود · %2$d استخدام لكل كود</string>
+    <string name="codes_created">اتعملت %1$s</string>
+    <string name="codes_expires">يتفعّل قبل %1$s</string>
+    <string name="codes_show">الأكواد</string>
+    <string name="codes_hide">إخفاء</string>
+    <string name="codes_used">اتستخدم %1$d/%2$d</string>
+    <string name="codes_revoke">إلغاء الكود</string>
+    <string name="codes_revoked">ملغي</string>
+    <string name="codes_revoke_batch">إلغاء الدفعة</string>
+    <string name="codes_revoke_confirm">تلغي %1$s؟ مش هيتفعّل بعد كده. العضويات اللي اتفعّلت بيه هتفضل.</string>
+    <string name="codes_revoke_batch_confirm">تلغي كل الـ %1$d كود في الدفعة دي؟ العضويات اللي اتفعّلت هتفضل.</string>
+    <string name="codes_redemptions">آخر التفعيلات</string>
+    <string name="codes_redemption_line">كود %1$s · %2$d يوم · %3$s</string>
 </resources>

@@ -8,6 +8,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.mawja.admin.data.AdminRepository
+import app.mawja.admin.data.CodeBatch
+import app.mawja.admin.data.CodeEntry
+import app.mawja.admin.data.GeneratedBatch
+import app.mawja.admin.data.Redemption
 import app.mawja.admin.data.Report
 import app.mawja.admin.data.Staff
 import app.mawja.admin.data.UserCard
@@ -16,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 
 data class AdminState(
     val configured: Boolean = true,
@@ -28,7 +33,19 @@ data class AdminState(
     val userNotFound: Boolean = false,
     val reports: List<Report> = emptyList(),
     val features: Map<String, Boolean> = emptyMap(),
+    val batches: List<CodeBatch> = emptyList(),
+    val openBatch: String? = null,
+    val batchCodes: List<CodeEntry> = emptyList(),
+    val redemptions: List<Redemption> = emptyList(),
+    /** Codes just generated: shown once, never stored in plain text. */
+    val generated: GeneratedBatch? = null,
+    val foundCode: CodeEntry? = null,
+    val codeNotFound: Boolean = false,
 )
+
+/** Who may generate and revoke codes; the rules enforce the same. */
+fun canManageCodes(role: String?): Boolean = role == "owner" || role == "admin"
+
 
 class AdminViewModel(
     app: Application,
@@ -106,6 +123,63 @@ class AdminViewModel(
         repo.action(mapOf("action" to "announcement.send", "title" to title, "body" to body, "targetTier" to targetTier))
         _state.update { it.copy(message = "ok") }
     }
+
+    fun loadCodes() =
+        launchSafe {
+            val batches = repo.codeBatches()
+            val redemptions = runCatching { repo.recentRedemptions() }.getOrDefault(emptyList())
+            _state.update { it.copy(batches = batches, redemptions = redemptions) }
+        }
+
+    fun generateCodes(
+        tier: String,
+        days: Int,
+        count: Int,
+        maxUses: Int,
+        validForDays: Int,
+        note: String,
+    ) = launchSafe {
+        val expires = if (validForDays > 0) Date(System.currentTimeMillis() + validForDays * 86_400_000L) else null
+        val result = repo.generateCodes(tier, days, count, maxUses, expires, note)
+        _state.update { it.copy(generated = result, error = result.error) }
+        val batches = repo.codeBatches()
+        _state.update { it.copy(batches = batches) }
+    }
+
+    fun dismissGenerated() = _state.update { it.copy(generated = null) }
+
+    fun openBatch(id: String?) =
+        launchSafe {
+            if (id == null) {
+                _state.update { it.copy(openBatch = null, batchCodes = emptyList()) }
+                return@launchSafe
+            }
+            val codes = repo.codesIn(id)
+            _state.update { it.copy(openBatch = id, batchCodes = codes) }
+        }
+
+    fun findCode(code: String) =
+        launchSafe {
+            val found = repo.findCode(code)
+            _state.update { it.copy(foundCode = found, codeNotFound = found == null) }
+        }
+
+    fun revokeCode(hash: String) =
+        launchSafe {
+            repo.revokeCode(hash)
+            val open = state.value.openBatch
+            val codes = open?.let { repo.codesIn(it) } ?: state.value.batchCodes
+            val found = state.value.foundCode?.takeIf { it.hash == hash }?.copy(revoked = true) ?: state.value.foundCode
+            _state.update { it.copy(batchCodes = codes, foundCode = found, message = "ok") }
+        }
+
+    fun revokeBatch(id: String) =
+        launchSafe {
+            repo.revokeBatch(id)
+            val batches = repo.codeBatches()
+            val codes = if (state.value.openBatch == id) repo.codesIn(id) else state.value.batchCodes
+            _state.update { it.copy(batches = batches, batchCodes = codes, message = "ok") }
+        }
 
     fun consumeMessage() = _state.update { it.copy(message = null, error = null) }
 

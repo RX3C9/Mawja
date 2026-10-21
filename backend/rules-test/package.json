@@ -1,0 +1,16 @@
+{
+  "name": "mawja-rules-test",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "description": "Firestore security rules tests (membership codes, profiles, staff) run on the Firestore emulator",
+  "type": "module",
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore --project demo-mawja --config ../firebase.json \"node --test --test-concurrency=1 test/*.test.mjs\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.19.0",
+    "firebase-tools": "^15.34.1"
+  },
+  "engines": { "node": ">=20" }
+}

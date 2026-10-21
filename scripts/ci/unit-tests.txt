@@ -8,3 +8,6 @@ app.mawja.android.account.MembershipPlansTest
 app.mawja.android.network.SmartNetworkTest
 app.mawja.android.data.repository.StorageGuardTest
 app.mawja.android.jobs.JobCenterTest
+app.mawja.codes.MawjaCodesTest
+app.mawja.codes.CodeRedeemPolicyTest
+app.mawja.android.account.MembershipCodesTest

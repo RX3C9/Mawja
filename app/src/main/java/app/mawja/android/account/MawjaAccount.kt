@@ -55,6 +55,8 @@ data class MawjaProfile(
     val badges: List<MawjaBadge>,
     /** suspended or banned accounts keep guest features but lose account extras. */
     val status: String,
+    /** When a code-activated membership ends (epoch ms); null for Free, Lifetime and open-ended grants. */
+    val tierUntil: Long? = null,
 )
 
 /** Who is using the app. Guest is the default and keeps every original feature. */
@@ -128,6 +130,12 @@ interface AccountBackend {
     suspend fun updateDisplayName(name: String): AccountResult
 
     suspend fun signOut()
+
+    /** Activates a membership code (MW-XXXX-XXXX-XXXX) on the signed-in account. */
+    suspend fun redeemCode(code: String): RedeemResult
+
+    /** Re-reads the account (tier, Mawja ID) from the backend. */
+    suspend fun refreshProfile()
 }
 
 /** Accounts switched off: everything stays local, exactly like the original app. */
@@ -160,6 +168,10 @@ class GuestOnlyAccountBackend : AccountBackend {
     override suspend fun updateDisplayName(name: String) = off
 
     override suspend fun signOut() = Unit
+
+    override suspend fun redeemCode(code: String): RedeemResult = RedeemResult.Failed(RedeemError.NOT_AVAILABLE)
+
+    override suspend fun refreshProfile() = Unit
 }
 
 /** Client-side copy of the backend's username rules (backend/functions/src/username.ts). */

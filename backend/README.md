@@ -20,7 +20,20 @@ GOOGLE_APPLICATION_CREDENTIALS=sa.json node functions/tools/grantRole.js you@exa
 ```
 Then enable Google and Email/Password providers in Firebase Auth, and App Check (Play Integrity is not available off-Play, so use the custom provider planned in M2).
 
-## Memberships (sandbox only)
+## Membership codes (live path, Spark plan)
+
+Memberships are activated with codes (`MW-XXXX-XXXX-XXXX`), not card payments. Spec, data model and
+redeem flow: [`docs/codes.md`](../docs/codes.md). No function is involved: the app redeems in one client
+transaction and `firestore.rules` only accepts a valid one. Rules tests: `cd rules-test && npm ci && npm test`
+(starts the Firestore emulator; needs Java 21). Publish the rules with `firebase deploy --only firestore:rules`
+or by pasting `firestore.rules` into Firebase console → Firestore → Rules (no billing needed).
+
+Staff without functions: add `admins/{uid}` with `role: "owner"` in the console (or run `tools/grantRole.js`).
+
+## Memberships (sandbox only, dormant)
+
+Kept for later; the app no longer shows a checkout (payment is code-only, DECISIONS 2026-10-22).
+
 
 `src/billing/` holds the plan catalogue (`plans.ts`, mirrored in the app's `MembershipPlans.kt` and
 `admin-web/lib/plans.ts`), the purchase → tier math (`entitlements.ts`), Paymob (Egypt, EGP) and Stripe

@@ -58,6 +58,16 @@ backend="skipped"
 if [ -f backend/functions/package.json ] && command -v npm >/dev/null; then
   if (cd backend/functions && npm ci --no-audit --no-fund --loglevel=error && npm test) > backend.log 2>&1; then backend="ok"; else backend="FAILED: $(tail -20 backend.log | tr "\n" " " | cut -c1-600)"; fi
 fi
+# Firestore security rules on the emulator (membership codes etc.; needs Java, reported, does not fail the build).
+rules="skipped"
+if [ -f backend/rules-test/package.json ] && command -v npm >/dev/null && command -v java >/dev/null; then
+  if (cd backend/rules-test && npm ci --no-audit --no-fund --loglevel=error && timeout 15m npm test) > rules.log 2>&1; then
+    rules="ok ($(grep -E '^# (pass|fail) ' rules.log | tr "\n" ' ' | xargs))"
+  else
+    rules="FAILED: $( { grep -E '^# (pass|fail) ' rules.log; grep -E -A4 '^not ok|Error:|error TS|FirebaseError|Unexpected|line [0-9]+' rules.log; } | head -40 | tr "\n" ' ' | cut -c1-1500)"
+  fi
+  cat rules.log >> build.log
+fi
 # Admin web (Next.js static export): tests, type-check and build (reported, does not fail the APK build).
 adminweb="skipped"
 if [ -f admin-web/package.json ] && command -v npm >/dev/null; then
@@ -70,6 +80,6 @@ if [ -f admin-web/package.json ] && command -v npm >/dev/null; then
 fi
 apks=$(find app/build/outputs/apk -name '*.apk' -printf '%f (%s bytes)\n' 2>/dev/null | head -14)
 logurl=$(curl -fsS -F "files[]=@build.log" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null || echo none)
-summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "backend: $backend"; echo "admin-web: $adminweb"; echo "unit: $unit"; echo "screens: $screens"; echo "elapsed: $((SECONDS/60))m"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
+summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "backend: $backend"; echo "rules: $rules"; echo "admin-web: $adminweb"; echo "unit: $unit"; echo "screens: $screens"; echo "elapsed: $((SECONDS/60))m"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
 curl -fsS -H "Title: Mawja CI $status" -d "$summary" "https://ntfy.sh/$TOPIC" >/dev/null || true
 exit $code

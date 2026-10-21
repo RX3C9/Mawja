@@ -15,6 +15,9 @@ test("roles mirror the backend permissions", () => {
   assert.ok(can("support", "report.resolve"));
   assert.ok(!can("support", "user.suspend"));
   assert.ok(!can(null, "report.resolve"));
+  assert.ok(can("owner", "codes.manage") && can("admin", "codes.manage"));
+  assert.ok(can("support", "codes.view") && !can("support", "codes.manage"));
+  assert.ok(can("moderator", "codes.view") && !can("moderator", "codes.manage"));
   assert.ok(ROLES.every(isRole));
   assert.ok(!isRole("superuser"));
 });

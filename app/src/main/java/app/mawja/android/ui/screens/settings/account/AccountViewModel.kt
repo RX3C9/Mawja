@@ -12,6 +12,10 @@ import app.mawja.android.account.AccountBackend
 import app.mawja.android.account.AccountError
 import app.mawja.android.account.AccountResult
 import app.mawja.android.account.AccountState
+import app.mawja.android.account.EntitlementsRepository
+import app.mawja.android.account.RedeemError
+import app.mawja.android.account.RedeemResult
+import app.mawja.android.account.localCodeError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,11 +37,20 @@ data class AccountUiState(
 
 enum class AccountNotice { RESET_SENT, USERNAME_SAVED, NAME_SAVED, SIGNED_OUT, VERIFY_EMAIL }
 
+/** The Upgrade page's code field: idle, checking, or the last result. */
+@Immutable
+data class RedeemUiState(
+    val busy: Boolean = false,
+    val error: RedeemError? = null,
+    val activated: RedeemResult.Activated? = null,
+)
+
 @HiltViewModel
 class AccountViewModel
     @Inject
     constructor(
         private val backend: AccountBackend,
+        private val entitlements: EntitlementsRepository,
     ) : ViewModel() {
         val available: Boolean get() = backend.available
         val googleAvailable: Boolean get() = backend.googleAvailable
@@ -45,6 +58,30 @@ class AccountViewModel
 
         private val _ui = MutableStateFlow(AccountUiState())
         val ui: StateFlow<AccountUiState> = _ui.asStateFlow()
+
+        private val _redeem = MutableStateFlow(RedeemUiState())
+        val redeem: StateFlow<RedeemUiState> = _redeem.asStateFlow()
+
+        /** Checks the code locally (format and check symbol) first, then activates it on the account. */
+        fun redeemCode(code: String) {
+            if (_redeem.value.busy) return
+            localCodeError(code)?.let { error ->
+                _redeem.value = RedeemUiState(error = error)
+                return
+            }
+            _redeem.value = RedeemUiState(busy = true)
+            viewModelScope.launch {
+                when (val result = backend.redeemCode(code)) {
+                    is RedeemResult.Activated -> {
+                        _redeem.value = RedeemUiState(activated = result)
+                        runCatching { entitlements.refresh() }
+                    }
+                    is RedeemResult.Failed -> _redeem.value = RedeemUiState(error = result.error)
+                }
+            }
+        }
+
+        fun clearRedeemError() = _redeem.update { if (it.busy) it else it.copy(error = null) }
 
         fun show(mode: AccountMode) = _ui.update { it.copy(mode = mode, error = null, notice = null) }
 

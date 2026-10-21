@@ -15,16 +15,21 @@ export type AdminActionName =
   | "announcement.send"
   | "report.resolve"
   | "staff.view"
-  | "audit.view";
+  | "audit.view"
+  | "codes.view"
+  | "codes.manage";
 
 const PERMISSIONS: Record<Role, ReadonlySet<string>> = {
   owner: new Set(["*"]),
   admin: new Set([
     "user.suspend", "user.ban", "user.unban", "user.tier", "user.badge", "feature.toggle",
     "config.edit", "announcement.send", "report.resolve", "staff.view", "audit.view",
+    "codes.view", "codes.manage",
   ]),
-  moderator: new Set(["user.suspend", "user.unban", "user.badge", "report.resolve"]),
-  support: new Set(["report.resolve"]),
+  // Membership codes: everyone on staff can look a code up; only owner/admin generate or revoke
+  // (backend/firestore.rules canManageCodes).
+  moderator: new Set(["user.suspend", "user.unban", "user.badge", "report.resolve", "codes.view"]),
+  support: new Set(["report.resolve", "codes.view"]),
 };
 
 export function isRole(value: unknown): value is Role {

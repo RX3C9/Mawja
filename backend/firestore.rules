@@ -1,32 +1,205 @@
 rules_version = '2';
-// Mawja Firestore rules. Server-owned fields (tier, status, badges, mawjaId, roles) are written
-// only by Cloud Functions through the Admin SDK, which bypasses these rules.
+// Mawja Firestore rules.
+// - Server-owned fields (status, badges, mawjaId, roles) are written only by Cloud Functions or the
+//   console, which bypass these rules.
+// - Memberships are activated with codes (docs/codes.md) and work on the free Spark plan, without
+//   Cloud Functions: the app redeems a code in one client transaction, and these rules only accept
+//   a tier change that comes with a valid redemption of an unrevoked, unexpired, not-used-up code.
+// - Staff: the `role` custom claim (tools/grantRole.js) or an admins/{uid} doc with a `role` field
+//   (can be added by hand in the Firebase console, no billing needed).
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
     function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
-    function role() { return signedIn() && request.auth.token.role is string ? request.auth.token.role : ''; }
-    function isStaff() { return role() in ['owner', 'admin', 'moderator', 'support']; }
-    function notBanned() { return !(signedIn() && request.auth.token.status == 'banned'); }
+    function role() { return signedIn() ? request.auth.token.get('role', '') : ''; }
+    function adminDoc() { return /databases/$(database)/documents/admins/$(request.auth.uid); }
+    function docRoleIn(roles) {
+      return signedIn() && exists(adminDoc()) && get(adminDoc()).data.get('role', '') in roles;
+    }
+    function hasRole(roles) { return role() in roles || docRoleIn(roles); }
+    function isStaff() { return hasRole(['owner', 'admin', 'moderator', 'support']); }
+    function isAdmin() { return hasRole(['owner', 'admin']); }
+    // Generating and revoking membership codes.
+    function canManageCodes() { return isAdmin(); }
+    function notBanned() { return !(signedIn() && request.auth.token.get('status', '') == 'banned'); }
     // Fields a user may change on their own profile.
     function profileFieldsOnly() {
       return request.resource.data.diff(resource.data).affectedKeys()
         .hasOnly(['displayName', 'photoUrl', 'locale', 'country', 'bio', 'lastSeenAt', 'privacy']);
     }
 
+    // ---- Membership codes -------------------------------------------------------------------
+    function paidTiers() { return ['plus', 'pro', 'lifetime', 'family']; }
+    function rank(tier) { return {'free': 0, 'plus': 1, 'pro': 2, 'family': 3, 'lifetime': 4}[tier]; }
+    function isHash(h) { return h is string && h.matches('^[0-9a-f]{64}$'); }
+    function codePath(h) { return /databases/$(database)/documents/codes/$(h); }
+    function redemptionPath(h) { return /databases/$(database)/documents/redemptions/$(h + '_' + request.auth.uid); }
+    function userPath() { return /databases/$(database)/documents/users/$(request.auth.uid); }
+    function attemptPath() { return /databases/$(database)/documents/users/$(request.auth.uid)/meta/redeem; }
+    // The code doc can still be redeemed.
+    function codeOk(c) {
+      return c.revoked == false && c.used < c.maxUses
+        && (c.expiresAt == null || c.expiresAt > request.time);
+    }
+    // Redeemed in this very batch: the redemption doc is new.
+    function redeemingNow(h) {
+      return !exists(redemptionPath(h)) && existsAfter(redemptionPath(h));
+    }
+    // The user announced this code a moment ago (throttled, see meta/redeem below).
+    function recentAttempt(h) {
+      return signedIn() && exists(attemptPath())
+        && get(attemptPath()).data.hash == h
+        && get(attemptPath()).data.lastAttempt > request.time - duration.value(10, 'm');
+    }
+    function isActive(old) {
+      return old.get('tier', 'free') in paidTiers()
+        && (old.get('tierUntil', null) == null || old.get('tierUntil', null) > request.time);
+    }
+    function near(t, target) {
+      return t is timestamp
+        && t > target - duration.value(10, 'm') && t < target + duration.value(10, 'm');
+    }
+    // Mirror of app CodeRedeemPolicy.decide (shared/codes): lifetime sticks; open-ended grants only
+    // take a better tier; otherwise days stack on the remaining time and the better tier is kept.
+    function tierMath(old, code, nu) {
+      let act = isActive(old);
+      let cur = act ? old.get('tier', 'free') : 'free';
+      let days = duration.value(code.days, 'd');
+      return cur != 'lifetime' && (
+        code.tier == 'lifetime'
+          ? (nu.tier == 'lifetime' && nu.tierUntil == null)
+          : ((act && old.get('tierUntil', null) == null)
+              ? (rank(cur) < rank(code.tier) && nu.tier == code.tier && near(nu.tierUntil, request.time + days))
+              : (nu.tier == (rank(cur) > rank(code.tier) ? cur : code.tier)
+                  && near(nu.tierUntil, (act ? old.tierUntil : request.time) + days)))
+      );
+    }
+    function tierKeys() { return ['tier', 'tierUntil', 'tierSource', 'tierCodeHash', 'tierUpdatedAt']; }
+    // A users doc write that activates a code. [old] is the doc before ({} when it is new).
+    function redeemWrite(old) {
+      let nu = request.resource.data;
+      let h = nu.tierCodeHash;
+      return isHash(h)
+        && old.get('status', 'active') == 'active'
+        && nu.tierSource == 'code'
+        && nu.tierUpdatedAt == request.time
+        && redeemingNow(h)
+        && tierMath(old, get(codePath(h)).data, nu);
+    }
+
     match /users/{uid} {
       allow read: if isSelf(uid) || isStaff();
-      allow create: if false; // created by the onUserCreated function
-      allow update: if isSelf(uid) && notBanned() && profileFieldsOnly();
+      // Normally created by the onUserCreated function; on Spark the first code redemption creates it.
+      allow create: if isSelf(uid) && notBanned()
+        && request.resource.data.keys().hasOnly(tierKeys()) && redeemWrite({});
+      allow update: if isSelf(uid) && notBanned() && (
+        profileFieldsOnly()
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(tierKeys()) && redeemWrite(resource.data))
+      );
       allow delete: if false;
 
       match /devices/{deviceId} {
         allow read, write: if isSelf(uid) && notBanned();
       }
       match /syncData/{doc} {
-        allow read, write: if isSelf(uid) && notBanned()
-          && request.auth.token.tier in ['plus', 'pro', 'lifetime', 'family'];
+        allow read, write: if isSelf(uid) && notBanned() && (
+          request.auth.token.get('tier', '') in paidTiers()
+          || isActive(get(/databases/$(database)/documents/users/$(uid)).data)
+        );
       }
+      // Code redeem throttle: each attempt names the code hash it is about to read, at least 2 s
+      // after the previous one and at most 12 per hour. Reading codes/{hash} needs a fresh attempt.
+      match /meta/{doc} {
+        allow read: if isSelf(uid);
+        allow create, update: if doc == 'redeem' && isSelf(uid) && notBanned() && attemptOk();
+        allow delete: if false;
+      }
+    }
+    function attemptOk() {
+      let d = request.resource.data;
+      let prev = resource;
+      return d.keys().hasOnly(['hash', 'lastAttempt', 'windowStart', 'count'])
+        && isHash(d.hash)
+        && d.lastAttempt == request.time
+        && d.count is int
+        && (prev == null || prev.data.lastAttempt < request.time - duration.value(2, 's'))
+        && (
+          ((prev == null || prev.data.windowStart < request.time - duration.value(1, 'h'))
+              && d.windowStart == request.time && d.count == 1)
+          || (prev != null && d.windowStart == prev.data.windowStart
+              && d.count == prev.data.count + 1 && d.count <= 12)
+        );
+    }
+
+    // codes/{sha256}: plaintext codes are never stored. Users can only get a code by its hash (right
+    // after a throttled attempt), never list or query.
+    match /codes/{codeId} {
+      allow get: if isStaff() || recentAttempt(codeId);
+      allow list: if isStaff();
+      allow create: if canManageCodes() && isHash(codeId) && newCodeOk(request.resource.data);
+      allow update: if (canManageCodes() && revokeOnly())
+        || (signedIn() && notBanned()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used'])
+            && request.resource.data.used == resource.data.used + 1
+            && codeOk(resource.data)
+            && redeemingNow(codeId));
+      allow delete: if false;
+    }
+    function newCodeOk(d) {
+      return d.keys().hasOnly(['tier', 'days', 'maxUses', 'used', 'expiresAt', 'revoked', 'createdBy', 'createdAt', 'batchId', 'note', 'hint'])
+        && d.keys().hasAll(['tier', 'days', 'maxUses', 'used', 'expiresAt', 'revoked', 'createdBy', 'createdAt', 'batchId', 'note', 'hint'])
+        && d.tier in paidTiers()
+        && d.days is int
+        && (d.tier == 'lifetime' ? d.days == 0 : (d.days >= 1 && d.days <= 3660))
+        && d.maxUses is int && d.maxUses >= 1 && d.maxUses <= 10000
+        && d.used == 0 && d.revoked == false
+        && d.createdBy == request.auth.uid && d.createdAt == request.time
+        && (d.expiresAt == null || (d.expiresAt is timestamp && d.expiresAt > request.time))
+        && d.batchId is string && d.batchId.size() > 0 && d.batchId.size() <= 64
+        && d.note is string && d.note.size() <= 200
+        && d.hint is string && d.hint.size() == 4;
+    }
+    function revokeOnly() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['revoked', 'revokedAt', 'revokedBy'])
+        && request.resource.data.revoked == true
+        && request.resource.data.revokedBy == request.auth.uid
+        && request.resource.data.revokedAt == request.time;
+    }
+
+    match /codeBatches/{batchId} {
+      allow read: if isStaff();
+      allow create: if canManageCodes()
+        && request.resource.data.keys().hasOnly(['tier', 'days', 'count', 'maxUses', 'expiresAt', 'note', 'createdBy', 'createdAt', 'revoked'])
+        && request.resource.data.tier in paidTiers()
+        && request.resource.data.count is int && request.resource.data.count >= 1 && request.resource.data.count <= 500
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.revoked == false;
+      allow update: if canManageCodes() && revokeOnly();
+      allow delete: if false;
+    }
+
+    // redemptions/{codeHash}_{uid}: one per user and code, written in the redeem transaction.
+    match /redemptions/{rid} {
+      allow get: if isStaff() || (signedIn() && rid.matches('^[0-9a-f]{64}_' + request.auth.uid + '$'));
+      allow list: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create: if signedIn() && notBanned() && redemptionOk(rid, request.resource.data);
+      allow update, delete: if false;
+    }
+    function redemptionOk(rid, d) {
+      let code = get(codePath(d.codeHash)).data;
+      let after = getAfter(userPath()).data;
+      return d.keys().hasOnly(['uid', 'codeHash', 'codeTier', 'days', 'tier', 'tierUntil', 'batchId', 'previousTier', 'createdAt'])
+        && d.uid == request.auth.uid
+        && isHash(d.codeHash)
+        && rid == d.codeHash + '_' + request.auth.uid
+        && recentAttempt(d.codeHash)
+        && codeOk(code)
+        && getAfter(codePath(d.codeHash)).data.used == code.used + 1
+        && d.codeTier == code.tier && d.days == code.days && d.batchId == code.batchId
+        && d.previousTier is string
+        && d.createdAt == request.time
+        && after.tierCodeHash == d.codeHash && after.tier == d.tier && after.tierUntil == d.tierUntil;
     }
 
     // Public profile card: Mawja ID, username, badges. Written by functions only.
@@ -51,7 +224,16 @@ service cloud.firestore {
     match /subscriptions/{id} { allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid); allow write: if false; }
     match /payments/{id} { allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid); allow write: if false; }
     match /promoCodes/{code} { allow read, write: if false; }
-    match /admins/{uid} { allow read: if isStaff(); allow write: if false; }
-    match /auditLog/{id} { allow read: if role() in ['owner', 'admin']; allow write: if false; }
+    match /admins/{uid} { allow read: if isStaff() || isSelf(uid); allow write: if false; }
+    // Functions write most entries; staff clients add their own code actions (generate, revoke).
+    match /auditLog/{id} {
+      allow read: if isAdmin();
+      allow create: if isStaff()
+        && request.resource.data.keys().hasOnly(['action', 'actorUid', 'target', 'details', 'at', 'source'])
+        && request.resource.data.actorUid == request.auth.uid
+        && request.resource.data.at == request.time
+        && request.resource.data.action is string && request.resource.data.action.matches('^code[.][a-z.]+$');
+      allow update, delete: if false;
+    }
   }
 }
