@@ -215,7 +215,7 @@ android {
     sourceSets {
         getByName("androidTest").assets.directories.add("$projectDir/schemas")
         // Membership-code format and redeem rules shared with :admin (docs/codes.md).
-        getByName("main").java.directories.add("$rootDir/shared/codes/kotlin")
+        getByName("main").kotlin.directories.add("$rootDir/shared/codes/kotlin")
     }
 
     compileOptions {

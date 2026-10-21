@@ -63,7 +63,7 @@ android {
 
     sourceSets {
         // Membership-code generator shared with the app (docs/codes.md).
-        getByName("main").java.directories.add("$rootDir/shared/codes/kotlin")
+        getByName("main").kotlin.directories.add("$rootDir/shared/codes/kotlin")
     }
 
     buildFeatures {
