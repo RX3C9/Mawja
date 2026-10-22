@@ -23,9 +23,15 @@ done
 # selected; the class list lives in scripts/ci/unit-tests.txt so it grows with each batch.
 unit="skipped"
 if [ "$code" = 0 ] && [ -f scripts/ci/unit-tests.txt ]; then
-  filters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | sed 's/^/--tests /' | xargs)
-  if [ -n "$filters" ]; then
-    if timeout 30m ./gradlew :app:testFossDebugUnitTest $filters --max-workers=2 > unit.log 2>&1; then
+  # app.mawja.admin.* classes are the admin app's tests; everything else runs in :app.
+  filters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | grep -v '^app\.mawja\.admin\.' | sed 's/^/--tests /' | xargs)
+  adminFilters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | grep '^app\.mawja\.admin\.' | sed 's/^/--tests /' | xargs)
+  if [ -n "$filters$adminFilters" ]; then
+    : > unit.log
+    uc=0
+    if [ -n "$filters" ]; then timeout 30m ./gradlew :app:testFossDebugUnitTest $filters --max-workers=2 >> unit.log 2>&1 || uc=1; fi
+    if [ -n "$adminFilters" ]; then timeout 15m ./gradlew :admin:testDebugUnitTest $adminFilters --max-workers=2 >> unit.log 2>&1 || uc=1; fi
+    if [ "$uc" = 0 ]; then
       unit="ok"
     else
       unit="FAILED: $(grep -E '^(e: |.*FAILED|.*Test.*>.*FAILED|  .*Exception|.*expected)' unit.log | head -25 | tr "\n" " " | cut -c1-1500)"

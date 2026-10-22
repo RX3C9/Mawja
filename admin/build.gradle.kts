@@ -25,12 +25,14 @@ android {
         applicationId = "app.mawja.admin"
         minSdk = 28
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "2.0.0"
         buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${cfg("firebase.projectId", "MAWJA_FIREBASE_PROJECT_ID", "mawjaFirebaseProjectId")}\"")
         buildConfigField("String", "FIREBASE_APP_ID", "\"${cfg("firebase.adminAppId", "MAWJA_FIREBASE_ADMIN_APP_ID", "mawjaFirebaseAdminAppId")}\"")
         buildConfigField("String", "FIREBASE_API_KEY", "\"${cfg("firebase.apiKey", "MAWJA_FIREBASE_API_KEY", "mawjaFirebaseApiKey")}\"")
         buildConfigField("String", "FUNCTIONS_REGION", "\"europe-west1\"")
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"${cfg("firebase.webClientId", "MAWJA_GOOGLE_WEB_CLIENT_ID", "mawjaGoogleWebClientId")}\"")
+        buildConfigField("String", "SOURCE_URL", "\"https://github.com/RX3C9/Mawja\"")
     }
 
     signingConfigs {
@@ -90,4 +92,14 @@ dependencies {
     implementation("com.google.firebase:firebase-functions")
     implementation("com.google.firebase:firebase-firestore")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.11.0")
+    // Per-app language on Android 9–12 (AppCompatDelegate.setApplicationLocales).
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    // Google sign-in through Credential Manager.
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    // QR codes for freshly generated membership codes (encoder only, pure Java).
+    implementation("com.google.zxing:core:3.5.3")
+
+    testImplementation(libs.junit)
 }

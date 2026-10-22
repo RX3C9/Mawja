@@ -137,6 +137,10 @@ class FirebaseAccountBackend(
                 Log.w(TAG, "users doc read failed", e)
                 null
             }
+        if (doc != null && doc.isEmpty() && listedUid != user.uid) {
+            listedUid = user.uid
+            listInDirectory(user)
+        }
         if (fromFunction == null && doc == null) return null
         val merged = LinkedHashMap<Any?, Any?>()
         doc?.let { merged.putAll(it) }
@@ -146,6 +150,31 @@ class FirebaseAccountBackend(
             merged["tierUntil"] = doc["tierUntil"]
         }
         return Fields(merged, fromFunction != null)
+    }
+
+    /** Last account listed in the staff directory this session (one try per account). */
+    @Volatile private var listedUid: String? = null
+
+    /**
+     * Creates `users/{uid}` with just the email and name, so staff can find the account in the
+     * admin app (on the Spark plan no onUserCreated function does it). The rules allow only these
+     * fields, and only the account's own email; it fails harmlessly if the doc already exists.
+     */
+    private suspend fun listInDirectory(user: FirebaseUser) {
+        val fields =
+            buildMap<String, Any?> {
+                user.email?.takeIf { it.isNotBlank() }?.let { put("email", it) }
+                user.displayName?.takeIf { it.isNotBlank() }?.let { put("displayName", it.trim().take(MAX_NAME)) }
+            }
+        try {
+            firestore.commit(
+                listOf(FirestoreRest.Update("users/${user.uid}", fields, serverTimeFields = listOf("createdAt", "lastSeenAt"), mustExist = false)),
+            )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "directory listing skipped", e)
+        }
     }
 
     private fun basicProfile(

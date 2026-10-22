@@ -7,108 +7,127 @@ package app.mawja.admin.ui
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.icons.rounded.AdminPanelSettings
 import androidx.compose.material.icons.rounded.Campaign
 import androidx.compose.material.icons.rounded.ConfirmationNumber
+import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Flag
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.People
-import androidx.compose.material.icons.rounded.ToggleOn
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.admin.R
+import app.mawja.admin.core.Perm
+import app.mawja.admin.core.Permissions
+import app.mawja.admin.core.StaffRole
+import app.mawja.admin.data.AdminServices
+import app.mawja.admin.data.Problem
+import app.mawja.admin.data.Session
+import app.mawja.admin.data.Staff
+import app.mawja.admin.ui.components.Centered
+import app.mawja.admin.ui.screens.AnnouncementsScreen
+import app.mawja.admin.ui.screens.AuditScreen
+import app.mawja.admin.ui.screens.BlockedScreen
+import app.mawja.admin.ui.screens.CodesScreen
+import app.mawja.admin.ui.screens.ConfigScreen
+import app.mawja.admin.ui.screens.DashboardScreen
+import app.mawja.admin.ui.screens.MoreScreen
+import app.mawja.admin.ui.screens.NotAuthorizedScreen
+import app.mawja.admin.ui.screens.ReportsScreen
+import app.mawja.admin.ui.screens.SettingsScreen
+import app.mawja.admin.ui.screens.SignInScreen
+import app.mawja.admin.ui.screens.StaffScreen
+import app.mawja.admin.ui.screens.UsersScreen
+import app.mawja.admin.ui.theme.AdminTheme
 
 /**
- * Mawja Admin. Locked behind the device biometric or screen lock every time it is opened,
- * screenshots are blocked, and every action is checked by role on the server.
+ * Mawja Admin. Locked behind the device biometric or screen lock every time it comes back from the
+ * background, screenshots and the recents preview are blocked, and every write is checked by role
+ * in the Firestore rules (and audited).
  */
-class AdminActivity : FragmentActivity() {
-    private val vm: AdminViewModel by viewModels()
+class AdminActivity : AppCompatActivity() {
+    private val session: SessionViewModel by viewModels()
     private var unlocked by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         enableEdgeToEdge()
+        unlocked = session.unlocked
         setContent {
-            AdminTheme {
-                if (!unlocked) LockScreen(onUnlock = ::promptUnlock) else AdminApp(vm)
+            val theme by session.theme.collectAsStateWithLifecycle()
+            AdminTheme(theme) {
+                Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    if (!unlocked) LockScreen(onUnlock = ::promptUnlock) else AdminRoot(session)
+                }
             }
         }
-        promptUnlock()
+        if (!unlocked) promptUnlock()
     }
 
     override fun onStop() {
         super.onStop()
-        if (!isChangingConfigurations) unlocked = false
+        if (!isChangingConfigurations) {
+            session.unlocked = false
+            unlocked = false
+        }
     }
 
     override fun onRestart() {
         super.onRestart()
-        promptUnlock()
+        if (!unlocked) promptUnlock()
     }
 
     private fun promptUnlock() {
@@ -121,6 +140,7 @@ class AdminActivity : FragmentActivity() {
                 ContextCompat.getMainExecutor(this),
                 object : BiometricPrompt.AuthenticationCallback() {
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        session.unlocked = true
                         unlocked = true
                     }
                 },
@@ -136,270 +156,151 @@ class AdminActivity : FragmentActivity() {
     }
 }
 
-private val Gold = Color(0xFFF2C14E)
-
-@Composable
-private fun AdminTheme(content: @Composable () -> Unit) {
-    val scheme =
-        if (isSystemInDarkTheme()) {
-            darkColorScheme(primary = Gold, onPrimary = Color(0xFF1A1A1A), background = Color(0xFF0F0F0F), surface = Color(0xFF0F0F0F))
-        } else {
-            lightColorScheme(primary = Color(0xFF8A6A12))
-        }
-    MaterialTheme(colorScheme = scheme, content = content)
-}
-
 @Composable
 private fun LockScreen(onUnlock: () -> Unit) {
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Icon(Icons.Rounded.Lock, null, tint = MaterialTheme.colorScheme.primary)
+    Centered {
+        Icon(Icons.Rounded.Lock, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(48.dp))
         Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
+        Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.locked_hint), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(20.dp))
         Button(onClick = onUnlock) { Text(stringResource(R.string.unlock_again)) }
     }
 }
 
-private enum class Tab(
+enum class Dest(
     val label: Int,
     val icon: ImageVector,
+    val perm: Perm?,
 ) {
-    USERS(R.string.users, Icons.Rounded.People),
-    CODES(R.string.codes, Icons.Rounded.ConfirmationNumber),
-    FEATURES(R.string.features, Icons.Rounded.ToggleOn),
-    ANNOUNCE(R.string.announce, Icons.Rounded.Campaign),
-    REPORTS(R.string.reports, Icons.Rounded.Flag),
+    DASHBOARD(R.string.nav_dashboard, Icons.Rounded.Dashboard, null),
+    USERS(R.string.nav_users, Icons.Rounded.People, Perm.USERS_VIEW),
+    CODES(R.string.nav_codes, Icons.Rounded.ConfirmationNumber, Perm.CODES_VIEW),
+    REPORTS(R.string.nav_reports, Icons.Rounded.Flag, Perm.REPORTS_HANDLE),
+    ANNOUNCEMENTS(R.string.nav_announcements, Icons.Rounded.Campaign, Perm.ANNOUNCE_VIEW),
+    CONFIG(R.string.nav_config, Icons.Rounded.Tune, Perm.CONFIG_VIEW),
+    AUDIT(R.string.nav_audit, Icons.Rounded.History, Perm.AUDIT_VIEW),
+    STAFF(R.string.nav_staff, Icons.Rounded.AdminPanelSettings, Perm.STAFF_VIEW),
+    SETTINGS(R.string.nav_settings, Icons.Rounded.Settings, null),
+    MORE(R.string.nav_more, Icons.Rounded.MoreHoriz, null),
+    ;
+
+    companion object {
+        val PHONE_BAR = listOf(DASHBOARD, USERS, CODES, REPORTS, MORE)
+        val IN_MORE = listOf(ANNOUNCEMENTS, CONFIG, AUDIT, STAFF, SETTINGS)
+        val RAIL = entries.filter { it != MORE }
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AdminApp(vm: AdminViewModel) {
-    val state by vm.state.collectAsStateWithLifecycle()
+private fun AdminRoot(session: SessionViewModel) {
+    val state by session.session.collectAsStateWithLifecycle()
+    val busy by session.busy.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
-    val done = stringResource(R.string.done)
-    LaunchedEffect(state.message, state.error) {
-        val text = state.error ?: state.message?.let { done }
-        if (text != null) {
-            snackbar.showSnackbar(text)
-            vm.consumeMessage()
+    val context = LocalContext.current
+    val services = remember { AdminServices.get(context) }
+    val messages =
+        mapOf(
+            Problem.DENIED to stringResource(R.string.err_denied),
+            Problem.OFFLINE to stringResource(R.string.err_offline),
+            Problem.NOT_FOUND to stringResource(R.string.err_not_found),
+            Problem.INDEX to stringResource(R.string.err_index),
+            Problem.INVALID to stringResource(R.string.err_invalid),
+            Problem.UNKNOWN to stringResource(R.string.err_unknown),
+        )
+    LaunchedEffect(Unit) {
+        services.notices.collect { n ->
+            val text =
+                when {
+                    n.text != null -> context.getString(n.text)
+                    n.problem != null -> messages.getValue(n.problem) + (n.detail?.takeIf { n.problem != Problem.DENIED }?.let { "\n$it" } ?: "")
+                    else -> n.detail.orEmpty()
+                }
+            if (text.isNotBlank()) snackbar.showSnackbar(text)
         }
     }
-    var tab by rememberSaveable { mutableIntStateOf(0) }
-    val staff = state.staff
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(stringResource(R.string.app_name))
-                        staff?.let { Text(stringResource(R.string.role_label, it.role), style = MaterialTheme.typography.labelSmall) }
+    Scaffold(snackbarHost = { SnackbarHost(snackbar) }, contentWindowInsets = WindowInsets(0)) { padding ->
+        val insets = if (state is Session.Active) Modifier else Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
+        Box(Modifier.padding(padding).fillMaxSize().then(insets)) {
+            when (val s = state) {
+                Session.NotConfigured -> Centered { Text(stringResource(R.string.not_configured)) }
+                Session.Loading -> Centered { LinearProgressIndicator(Modifier.fillMaxWidth(0.5f)) }
+                Session.SignedOut -> SignInScreen(session, busy)
+                is Session.NotStaff -> NotAuthorizedScreen(s.uid, s.email, busy, onRecheck = session::recheck, onSignOut = session::signOut)
+                is Session.Active -> {
+                    val cfg by session.adminConfig.collectAsStateWithLifecycle()
+                    if (s.staff.role != StaffRole.OWNER && session.blocked(cfg)) {
+                        BlockedScreen(cfg, onSignOut = session::signOut)
+                    } else {
+                        Console(s.staff, session)
                     }
-                },
-                actions = {
-                    if (staff != null) {
-                        IconButton(onClick = vm::signOut) {
-                            Icon(Icons.AutoMirrored.Rounded.Logout, stringResource(R.string.sign_out))
-                        }
-                    }
-                },
-            )
-        },
-        bottomBar = {
-            if (staff != null) {
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Console(
+    staff: Staff,
+    session: SessionViewModel,
+) {
+    var dest by rememberSaveable { mutableStateOf(Dest.DASHBOARD) }
+    val wide = LocalConfiguration.current.screenWidthDp >= 600
+    val allowed: (Dest) -> Boolean = { d -> d.perm == null || Permissions.can(staff.role, d.perm) }
+    val inMore = dest in Dest.IN_MORE
+    BackHandler(enabled = dest != Dest.DASHBOARD) {
+        dest = if (inMore && !wide) Dest.MORE else Dest.DASHBOARD
+    }
+    val open: (Dest) -> Unit = { dest = it }
+    val content: @Composable () -> Unit = {
+        when (if (wide && dest == Dest.MORE) Dest.DASHBOARD else dest) {
+            Dest.DASHBOARD -> DashboardScreen(staff, open)
+            Dest.USERS -> UsersScreen(staff)
+            Dest.CODES -> CodesScreen(staff)
+            Dest.REPORTS -> ReportsScreen(staff, onOpenUser = { dest = Dest.USERS })
+            Dest.ANNOUNCEMENTS -> AnnouncementsScreen(staff)
+            Dest.CONFIG -> ConfigScreen(staff)
+            Dest.AUDIT -> AuditScreen()
+            Dest.STAFF -> StaffScreen(staff)
+            Dest.SETTINGS -> SettingsScreen(staff, session)
+            Dest.MORE -> MoreScreen(Dest.IN_MORE.filter(allowed), open)
+        }
+    }
+    if (wide) {
+        Row(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
+            NavigationRail(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
+                Spacer(Modifier.height(8.dp))
+                Dest.RAIL.filter(allowed).forEach { d ->
+                    NavigationRailItem(
+                        selected = dest == d,
+                        onClick = { dest = d },
+                        icon = { Icon(d.icon, null) },
+                        label = { Text(stringResource(d.label), maxLines = 1) },
+                    )
+                }
+            }
+            Box(Modifier.weight(1f).fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+                Box(Modifier.fillMaxSize()) { content() }
+            }
+        }
+    } else {
+        Scaffold(
+            bottomBar = {
                 NavigationBar {
-                    Tab.entries.forEachIndexed { i, t ->
+                    Dest.PHONE_BAR.filter(allowed).forEach { d ->
                         NavigationBarItem(
-                            selected = tab == i,
-                            onClick = { tab = i },
-                            icon = { Icon(t.icon, null) },
-                            label = { Text(stringResource(t.label)) },
+                            selected = dest == d || (d == Dest.MORE && inMore),
+                            onClick = { dest = d },
+                            icon = { Icon(d.icon, null) },
+                            label = { Text(stringResource(d.label), maxLines = 1) },
                         )
                     }
                 }
-            }
-        },
-        snackbarHost = { SnackbarHost(snackbar) },
-    ) { padding ->
-        Box(Modifier.padding(padding).fillMaxSize()) {
-            if (state.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
-            when {
-                !state.configured -> Centered(stringResource(R.string.not_configured))
-                staff == null -> SignIn(state.notStaff, vm::signIn)
-                else ->
-                    when (Tab.entries[tab]) {
-                        Tab.USERS -> UsersTab(state, vm)
-                        Tab.CODES -> CodesTab(state, vm)
-                        Tab.FEATURES -> FeaturesTab(state, vm)
-                        Tab.ANNOUNCE -> AnnounceTab(vm)
-                        Tab.REPORTS -> ReportsTab(state, vm)
-                    }
-            }
-        }
-    }
-}
-
-@Composable
-private fun Centered(text: String) {
-    Box(Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) { Text(text) }
-}
-
-@Composable
-private fun SignIn(
-    notStaff: Boolean,
-    onSignIn: (String, String) -> Unit,
-) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)) {
-        OutlinedTextField(
-            email,
-            { email = it },
-            label = { Text(stringResource(R.string.email)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth(),
-        )
-        OutlinedTextField(
-            password,
-            { password = it },
-            label = { Text(stringResource(R.string.password)) },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
-        )
-        if (notStaff) Text(stringResource(R.string.not_staff), color = MaterialTheme.colorScheme.error)
-        Button(onClick = { onSignIn(email, password) }, enabled = email.isNotBlank() && password.isNotBlank(), modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.sign_in))
-        }
-    }
-}
-
-private val TIERS = listOf("free", "plus", "pro", "lifetime", "family")
-private val BADGES = listOf("verified", "creator", "founder", "pro", "team")
-
-@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
-@Composable
-private fun UsersTab(
-    state: AdminState,
-    vm: AdminViewModel,
-) {
-    var query by rememberSaveable { mutableStateOf("") }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedTextField(query, { query = it }, label = { Text(stringResource(R.string.lookup_hint)) }, singleLine = true, modifier = Modifier.weight(1f))
-            TextButton(onClick = { vm.lookup(query) }, enabled = query.isNotBlank()) { Text(stringResource(R.string.lookup)) }
-        }
-        if (state.userNotFound) Text(stringResource(R.string.not_found))
-        state.user?.let { user ->
-            Card(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(user.displayName ?: user.username ?: user.uid, style = MaterialTheme.typography.titleMedium)
-                    Text(listOfNotNull(user.mawjaId, user.username?.let { "@$it" }, user.email).joinToString(" · "), style = MaterialTheme.typography.bodySmall)
-                    Text("${user.tier} · ${user.status}", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-                    Spacer(Modifier.height(4.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedButton(onClick = { vm.userAction(mapOf("action" to "user.suspend", "uid" to user.uid)) }) { Text(stringResource(R.string.suspend)) }
-                        OutlinedButton(onClick = { vm.userAction(mapOf("action" to "user.ban", "uid" to user.uid)) }) { Text(stringResource(R.string.ban)) }
-                        OutlinedButton(onClick = { vm.userAction(mapOf("action" to "user.unban", "uid" to user.uid)) }) { Text(stringResource(R.string.unban)) }
-                    }
-                    Text(stringResource(R.string.set_tier), style = MaterialTheme.typography.labelLarge)
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TIERS.forEach { tier ->
-                            FilterChip(
-                                selected = user.tier == tier,
-                                onClick = { vm.userAction(mapOf("action" to "user.tier", "uid" to user.uid, "tier" to tier)) },
-                                label = { Text(tier) },
-                            )
-                        }
-                    }
-                    Text(stringResource(R.string.badge), style = MaterialTheme.typography.labelLarge)
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        BADGES.forEach { badge ->
-                            val has = badge in user.badges
-                            FilterChip(
-                                selected = has,
-                                onClick = { vm.userAction(mapOf("action" to "user.badge", "uid" to user.uid, "badge" to badge, "grant" to !has)) },
-                                label = { Text(badge) },
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun FeaturesTab(
-    state: AdminState,
-    vm: AdminViewModel,
-) {
-    LaunchedEffect(Unit) { vm.loadFeatures() }
-    var newKey by rememberSaveable { mutableStateOf("") }
-    LazyColumn(Modifier.fillMaxSize()) {
-        item {
-            Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(newKey, { newKey = it.trim() }, label = { Text(stringResource(R.string.feature_key)) }, singleLine = true, modifier = Modifier.weight(1f))
-                TextButton(onClick = {
-                    vm.toggleFeature(newKey, true)
-                    newKey = ""
-                }, enabled = newKey.isNotBlank()) { Text(stringResource(R.string.apply)) }
-            }
-        }
-        if (state.features.isEmpty()) item { Centered(stringResource(R.string.nothing)) }
-        items(state.features.entries.toList(), key = { it.key }) { (key, enabled) ->
-            ListItem(
-                headlineContent = { Text(key) },
-                trailingContent = { Switch(checked = enabled, onCheckedChange = { vm.toggleFeature(key, it) }) },
-            )
-        }
-    }
-}
-
-@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
-@Composable
-private fun AnnounceTab(vm: AdminViewModel) {
-    var title by rememberSaveable { mutableStateOf("") }
-    var body by rememberSaveable { mutableStateOf("") }
-    var target by rememberSaveable { mutableStateOf<String?>(null) }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        OutlinedTextField(title, { title = it }, label = { Text(stringResource(R.string.title)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(body, { body = it }, label = { Text(stringResource(R.string.body)) }, minLines = 4, modifier = Modifier.fillMaxWidth())
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = target == null, onClick = { target = null }, label = { Text("all") })
-            TIERS.forEach { tier -> FilterChip(selected = target == tier, onClick = { target = tier }, label = { Text(tier) }) }
-        }
-        Button(
-            onClick = {
-                vm.announce(title, body, target)
-                title = ""
-                body = ""
             },
-            enabled = title.isNotBlank() && body.isNotBlank(),
-            modifier = Modifier.fillMaxWidth(),
-        ) { Text(stringResource(R.string.send)) }
-    }
-}
-
-@Composable
-private fun ReportsTab(
-    state: AdminState,
-    vm: AdminViewModel,
-) {
-    LaunchedEffect(Unit) { vm.loadReports() }
-    if (state.reports.isEmpty()) {
-        Centered(stringResource(R.string.nothing))
-        return
-    }
-    LazyColumn(Modifier.fillMaxSize()) {
-        items(state.reports, key = { it.id }) { report ->
-            ListItem(
-                overlineContent = { Text(report.type) },
-                headlineContent = { Text(report.message, maxLines = 4) },
-                trailingContent = { TextButton(onClick = { vm.resolveReport(report.id) }) { Text(stringResource(R.string.resolve)) } },
-            )
+        ) { padding ->
+            Box(Modifier.padding(padding).fillMaxSize()) { content() }
         }
     }
 }

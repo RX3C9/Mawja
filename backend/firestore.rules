@@ -21,6 +21,26 @@ service cloud.firestore {
     function isAdmin() { return hasRole(['owner', 'admin']); }
     // Generating and revoking membership codes.
     function canManageCodes() { return isAdmin(); }
+    function isOwner() { return hasRole(['owner']); }
+    function isModerator() { return hasRole(['owner', 'admin', 'moderator']); }
+    function tiers() { return ['free', 'plus', 'pro', 'lifetime', 'family']; }
+    // ---- Staff writes from the admin apps (Spark plan: no Cloud Functions) -------------------
+    // Every staff write carries `auditId`: the id of an auditLog entry written in the same batch
+    // (its `at` equals this request's time), by the same person, about the same document.
+    function auditPath(id) { return /databases/$(database)/documents/auditLog/$(id); }
+    function audited(target) {
+      let id = request.resource.data.get('auditId', '');
+      return id is string && id.matches('^[A-Za-z0-9_-]{1,64}$')
+        && existsAfter(auditPath(id))
+        && getAfter(auditPath(id)).data.at == request.time
+        && getAfter(auditPath(id)).data.actorUid == request.auth.uid
+        && getAfter(auditPath(id)).data.target == target;
+    }
+    function optString(d, key, max) { return !(key in d) || d[key] == null || (d[key] is string && d[key].size() <= max); }
+    function optBool(d, key) { return !(key in d) || d[key] is bool; }
+    function optInt(d, key) { return !(key in d) || (d[key] is int && d[key] >= 0); }
+    function optTime(d, key) { return !(key in d) || d[key] == null || d[key] is timestamp; }
+    function optMap(d, key) { return !(key in d) || (d[key] is map && d[key].size() <= 100); }
     function notBanned() { return !(signedIn() && request.auth.token.get('status', '') == 'banned'); }
     // Fields a user may change on their own profile.
     function profileFieldsOnly() {
@@ -90,22 +110,33 @@ service cloud.firestore {
     match /users/{uid} {
       allow read: if isSelf(uid) || isStaff();
       // Normally created by the onUserCreated function; on Spark the first code redemption creates it.
-      allow create: if isSelf(uid) && notBanned()
-        && request.resource.data.keys().hasOnly(tierKeys()) && redeemWrite({});
-      allow update: if isSelf(uid) && notBanned() && (
-        profileFieldsOnly()
-        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(tierKeys()) && redeemWrite(resource.data))
-      );
+      allow create: if (isSelf(uid) && notBanned()
+          && request.resource.data.keys().hasOnly(tierKeys()) && redeemWrite({}))
+        || (isSelf(uid) && notBanned() && selfRegister())
+        || staffUserWrite(uid, request.resource.data.keys());
+      allow update: if (isSelf(uid) && notBanned() && (
+          profileFieldsOnly()
+          || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(tierKeys()) && redeemWrite(resource.data))
+          || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['email'])
+              && request.resource.data.email == request.auth.token.get('email', ''))
+        ))
+        || staffUserWrite(uid, request.resource.data.diff(resource.data).affectedKeys());
       allow delete: if false;
 
       match /devices/{deviceId} {
         allow read, write: if isSelf(uid) && notBanned();
+        allow read: if isStaff();
       }
       match /syncData/{doc} {
         allow read, write: if isSelf(uid) && notBanned() && (
           request.auth.token.get('tier', '') in paidTiers()
           || isActive(get(/databases/$(database)/documents/users/$(uid)).data)
         );
+        // Admin "reset sync data": allowed only in the batch that stamps users/{uid}.syncResetAt
+        // (itself an audited staff write).
+        allow read: if isAdmin();
+        allow delete: if isAdmin()
+          && getAfter(/databases/$(database)/documents/users/$(uid)).data.get('syncResetAt', null) == request.time;
       }
       // Code redeem throttle: each attempt names the code hash it is about to read, at least 2 s
       // after the previous one and at most 12 per hour. Reading codes/{hash} needs a fresh attempt.
@@ -114,6 +145,48 @@ service cloud.firestore {
         allow create, update: if doc == 'redeem' && isSelf(uid) && notBanned() && attemptOk();
         allow delete: if false;
       }
+    }
+    // The app lists the signed-in user in the directory staff search (Spark: no onUserCreated).
+    function selfRegister() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['email', 'displayName', 'photoUrl', 'locale', 'createdAt', 'lastSeenAt'])
+        && d.createdAt == request.time
+        && (!('email' in d) || d.email == request.auth.token.get('email', ''))
+        && optString(d, 'displayName', 100) && optString(d, 'photoUrl', 500) && optString(d, 'locale', 20);
+    }
+    // Staff edits of a user (admin apps). [keys] are the fields this write changes.
+    function staffUserWrite(uid, keys) {
+      let d = request.resource.data;
+      return isStaff() && audited('users/' + uid)
+        && keys.hasOnly(['status', 'banReason', 'statusUpdatedAt', 'statusBy',
+             'tier', 'tierUntil', 'tierSource', 'tierUpdatedAt', 'tierUpdatedBy',
+             'badges', 'verified', 'syncResetAt', 'staffNote', 'auditId'])
+        && (!keys.hasAny(['status', 'banReason', 'statusUpdatedAt', 'statusBy']) || staffStatusOk(uid, d))
+        && (!keys.hasAny(['tier', 'tierUntil', 'tierSource', 'tierUpdatedAt', 'tierUpdatedBy']) || staffTierOk(d))
+        && (!keys.hasAny(['badges', 'verified']) || staffBadgesOk(d))
+        && (!keys.hasAny(['syncResetAt']) || (isAdmin() && d.syncResetAt == request.time))
+        && optString(d, 'staffNote', 1000);
+    }
+    // Moderators suspend and restore; only owner/admin ban. Nobody changes their own status.
+    function staffStatusOk(uid, d) {
+      return isModerator() && uid != request.auth.uid
+        && d.status in ['active', 'suspended', 'banned']
+        && (d.status != 'banned' || isAdmin())
+        && d.statusUpdatedAt == request.time && d.statusBy == request.auth.uid
+        && optString(d, 'banReason', 500);
+    }
+    // Manual membership: owner/admin; free and lifetime have no end date.
+    function staffTierOk(d) {
+      let until = d.get('tierUntil', null);
+      return isAdmin() && d.tier in tiers()
+        && d.tierSource == 'admin' && d.tierUpdatedAt == request.time && d.tierUpdatedBy == request.auth.uid
+        && ((d.tier == 'free' || d.tier == 'lifetime') ? until == null : (until == null || until is timestamp));
+    }
+    function staffBadgesOk(d) {
+      return isModerator()
+        && (!('badges' in d) || (d.badges is list && d.badges.size() <= 10
+            && d.badges.hasOnly(['verified', 'creator', 'founder', 'pro', 'team', 'staff', 'early'])))
+        && optBool(d, 'verified');
     }
     function attemptOk() {
       let d = request.resource.data;
@@ -211,29 +284,92 @@ service cloud.firestore {
     match /mawjaIds/{id} { allow read: if signedIn(); allow write: if false; }
 
     match /plans/{planId} { allow read: if true; allow write: if false; }
-    match /config/{doc} { allow read: if true; allow write: if false; }
-    match /announcements/{id} { allow read: if true; allow write: if false; }
+    // Remote config and feature flags per component; owner/admin edit app, downloader and admin.
+    match /config/{doc} {
+      allow read: if true;
+      allow create, update: if isAdmin() && doc in ['app', 'downloader', 'admin']
+        && audited('config/' + doc) && configOk(request.resource.data);
+      allow delete: if false;
+    }
+    // In-app messages: owner/admin create and edit (never delete: switch `active` off).
+    match /announcements/{id} {
+      allow read: if true;
+      allow create: if isAdmin() && audited('announcements/' + id) && announcementOk(request.resource.data)
+        && request.resource.data.createdBy == request.auth.uid && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() && audited('announcements/' + id) && announcementOk(request.resource.data)
+        && request.resource.data.get('createdBy', null) == resource.data.get('createdBy', null)
+        && request.resource.data.get('createdAt', null) == resource.data.get('createdAt', null);
+      allow delete: if false;
+    }
 
     match /reports/{id} {
       allow create: if signedIn() && notBanned() && request.resource.data.uid == request.auth.uid
         && request.resource.data.message is string && request.resource.data.message.size() < 5000;
       allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
-      allow update, delete: if false;
+      // Inbox handling by any staff role: status, assignee, internal note, reply to the reporter.
+      allow update: if isStaff() && audited('reports/' + id)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'assignee', 'note', 'reply', 'updatedAt', 'updatedBy', 'resolvedBy', 'auditId'])
+        && request.resource.data.get('status', 'open') in ['open', 'in_progress', 'resolved', 'dismissed']
+        && request.resource.data.updatedAt == request.time && request.resource.data.updatedBy == request.auth.uid
+        && optString(request.resource.data, 'assignee', 128) && optString(request.resource.data, 'note', 2000)
+        && optString(request.resource.data, 'reply', 2000);
+      allow delete: if false;
     }
 
     match /subscriptions/{id} { allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid); allow write: if false; }
     match /payments/{id} { allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid); allow write: if false; }
     match /promoCodes/{code} { allow read, write: if false; }
-    match /admins/{uid} { allow read: if isStaff() || isSelf(uid); allow write: if false; }
-    // Functions write most entries; staff clients add their own code actions (generate, revoke).
+    // Staff roles. The owner adds and changes admin/moderator/support (never owner, never
+    // themselves, never another owner); "removed" switches a role off. Owners are made in the
+    // console only.
+    match /admins/{uid} {
+      allow read: if isStaff() || isSelf(uid);
+      allow create, update: if isOwner() && uid != request.auth.uid
+        && (resource == null || resource.data.get('role', '') != 'owner')
+        && audited('admins/' + uid)
+        && request.resource.data.keys().hasOnly(['role', 'email', 'note', 'updatedAt', 'updatedBy', 'auditId'])
+        && request.resource.data.role in ['admin', 'moderator', 'support', 'removed']
+        && request.resource.data.updatedAt == request.time && request.resource.data.updatedBy == request.auth.uid
+        && optString(request.resource.data, 'email', 200) && optString(request.resource.data, 'note', 500);
+      allow delete: if false;
+    }
+    // Functions write most entries; staff clients add one for each of their own writes.
     match /auditLog/{id} {
       allow read: if isAdmin();
       allow create: if isStaff()
         && request.resource.data.keys().hasOnly(['action', 'actorUid', 'target', 'details', 'at', 'source'])
         && request.resource.data.actorUid == request.auth.uid
         && request.resource.data.at == request.time
-        && request.resource.data.action is string && request.resource.data.action.matches('^code[.][a-z.]+$');
+        && request.resource.data.action is string
+        && request.resource.data.action.matches('^(code|user|report|announcement|config|staff)[.][a-z_.]+$')
+        && request.resource.data.target is string && request.resource.data.target.size() <= 200
+        && (!('details' in request.resource.data) || request.resource.data.details is map);
       allow update, delete: if false;
+    }
+    // Only known keys may change (older docs may carry other keys, which stay as they are).
+    function configOk(d) {
+      return d.diff(resource == null ? {} : resource.data).affectedKeys().hasOnly(['killSwitch', 'maintenance', 'maintenanceMessage', 'maintenanceMessageAr',
+             'minVersion', 'latestVersion', 'updateUrl', 'features', 'tierGates', 'checkoutUrl',
+             'updatedAt', 'updatedBy', 'auditId'])
+        && d.updatedAt == request.time && d.updatedBy == request.auth.uid
+        && optBool(d, 'killSwitch') && optBool(d, 'maintenance')
+        && optString(d, 'maintenanceMessage', 500) && optString(d, 'maintenanceMessageAr', 500)
+        && optInt(d, 'minVersion') && optInt(d, 'latestVersion')
+        && optString(d, 'updateUrl', 500) && optString(d, 'checkoutUrl', 500)
+        && optMap(d, 'features') && optMap(d, 'tierGates');
+    }
+    function announcementOk(d) {
+      return d.keys().hasOnly(['title', 'body', 'targetTier', 'locale', 'kind', 'ctaLabel', 'ctaUrl', 'active',
+             'startAt', 'endAt', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'auditId'])
+        && d.title is string && d.title.size() > 0 && d.title.size() <= 120
+        && d.body is string && d.body.size() > 0 && d.body.size() <= 2000
+        && (d.get('targetTier', null) == null || d.targetTier in tiers())
+        && (d.get('locale', null) == null || d.locale in ['ar', 'en'])
+        && d.get('kind', 'banner') in ['banner', 'dialog', 'news']
+        && optString(d, 'ctaLabel', 40) && optString(d, 'ctaUrl', 500)
+        && d.active is bool && d.startAt is timestamp && optTime(d, 'endAt')
+        && d.updatedBy == request.auth.uid && d.updatedAt == request.time;
     }
   }
 }
