@@ -13,3 +13,5 @@ app.mawja.codes.CodeRedeemPolicyTest
 app.mawja.android.account.MembershipCodesTest
 app.mawja.admin.core.AdminLogicTest
 app.mawja.admin.core.RemoteConfigTest
+app.mawja.remote.RemoteSettingsTest
+app.mawja.remote.AnnouncementFilterTest

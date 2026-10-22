@@ -302,6 +302,7 @@ dependencies {
     // --- Core Android ---
     implementation(project(":downloader-api"))
     implementation(project(":shared-codes"))
+    implementation(project(":shared-remote"))
 
     // --- Mawja accounts (github flavor only; foss stays free of Google services) ---
     // No Firestore SDK: its protolite classes clash with the app's protobuf-javalite 4.x; profile reads go through functions.
