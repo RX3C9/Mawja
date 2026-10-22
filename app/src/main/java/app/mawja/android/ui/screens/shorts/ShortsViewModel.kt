@@ -248,9 +248,12 @@ class ShortsViewModel
                         isWifi = isOnWifi(context),
                         wifiQuality = playerPreferences.shortsQualityWifi.first(),
                         cellularQuality = playerPreferences.shortsQualityCellular.first(),
+                        batterySaver = app.mawja.android.battery.BatterySaver.isActive(),
                     )
                 val preferredLang = playerPreferences.preferredAudioLanguage.first()
-                videoIds.forEach { id ->
+                // Battery saver: only the reel being opened, nothing ahead of it.
+                val ids = if (app.mawja.android.battery.BatterySaver.allowPrefetch()) videoIds else videoIds.take(1)
+                ids.forEach { id ->
                     launch { runCatching { getPlaybackStreams(id, targetHeight, preferredLang) } }
                 }
             }

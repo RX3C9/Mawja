@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.Cast
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.ClosedCaption
 import androidx.compose.material.icons.rounded.AspectRatio
+import androidx.compose.material.icons.rounded.BatterySaver
 import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.Cast
 import androidx.compose.material.icons.rounded.ClosedCaption
@@ -39,6 +40,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -130,6 +133,18 @@ internal fun VideoPlayerTopBar(
                     iconSize = actionIconSize,
                     containerColor = Color.Transparent,
                 )
+
+                // Battery saver (#62) indicator: quality is capped and prefetch is off while it shows.
+                val batterySaverActive by app.mawja.android.battery.BatterySaver.active
+                    .collectAsState()
+                if (batterySaverActive) {
+                    Icon(
+                        imageVector = Icons.Rounded.BatterySaver,
+                        contentDescription = stringResource(R.string.battery_saver_player_indicator),
+                        tint = PlayerScrimContentSecondary,
+                        modifier = Modifier.size(actionIconSize * 0.8f),
+                    )
+                }
 
                 if (isFullscreen && !isPortraitFullscreen && !videoTitle.isNullOrBlank()) {
                     Column(

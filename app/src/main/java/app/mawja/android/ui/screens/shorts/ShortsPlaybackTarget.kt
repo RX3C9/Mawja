@@ -16,7 +16,12 @@ internal fun shortsTargetHeight(
     isWifi: Boolean,
     wifiQuality: VideoQuality,
     cellularQuality: VideoQuality,
-): Int = if (isWifi) wifiQuality.height else cellularQuality.height
+    /** Mawja battery saver (#62) caps the reel at 480p; both callers must pass the same value. */
+    batterySaver: Boolean = false,
+): Int =
+    app.mawja.android.battery.BatterySaverPolicy
+        .capQuality(if (isWifi) wifiQuality else cellularQuality, batterySaver)
+        .height
 
 /**
  * Reads the active transport synchronously. Callers must not substitute a placeholder while a

@@ -51,6 +51,8 @@ class SmartNotifyWorker(
         // config/app features.smartNotifications: switched off remotely, nothing is posted.
         val remote = EntryPointAccessors.fromApplication(context, Dependencies::class.java).remoteConfig()
         if (!remote.isEnabled("smartNotifications")) return Result.success()
+        // Battery saver (#62): a non-essential job, so this run is skipped (the periodic schedule stays).
+        if (!app.mawja.android.battery.BatterySaver.allowNonEssentialJob(context)) return Result.success()
 
         val candidates =
             runCatching {

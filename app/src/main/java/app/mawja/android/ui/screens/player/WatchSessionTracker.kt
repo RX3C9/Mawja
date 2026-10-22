@@ -364,6 +364,8 @@ internal class WatchSessionTracker(
         if (!shouldPrewarmRelatedPlayback(videoId, positionMs, durationMs, isShort, isLocal, alreadyPrewarmed)) {
             return
         }
+        // Battery saver (#62): no related-video prewarm.
+        if (!app.mawja.android.battery.BatterySaver.allowPrefetch()) return
         if (!prewarmedVideoIds.add(videoId)) return
 
         val playerRelated = relatedVideosFor(videoId)

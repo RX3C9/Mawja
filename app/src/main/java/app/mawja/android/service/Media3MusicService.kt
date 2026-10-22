@@ -389,7 +389,10 @@ class Media3MusicService : MediaLibraryService() {
                     DefaultMediaSourceFactory(downloadUtil.getPlayerDataSourceFactory())
                         .setLoadErrorHandlingPolicy(MusicLoadErrorPolicy { !connectivityObserver.checkCurrentConnectivity() }),
                 videoDataSource = DefaultDataSource.Factory(this, YouTubeHttpDataSource.Factory()),
-                maxVideoHeight = { MusicVideoFormats.maxHeight(NetworkState.isOnWifi(this)) },
+                maxVideoHeight = {
+                    app.mawja.android.battery.BatterySaver
+                        .capHeight(MusicVideoFormats.maxHeight(NetworkState.isOnWifi(this)))
+                },
             )
 
         val renderersFactory =

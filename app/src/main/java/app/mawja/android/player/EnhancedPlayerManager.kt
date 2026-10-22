@@ -2081,11 +2081,13 @@ class EnhancedPlayerManager private constructor() {
         val context = appContext ?: return false
         val prefs = PlayerPreferences(context)
         val preferredQuality =
-            if (NetworkState.isOnWifi(context)) {
-                prefs.defaultQualityWifi.first()
-            } else {
-                prefs.defaultQualityCellular.first()
-            }
+            app.mawja.android.battery.BatterySaver.capQuality(
+                if (NetworkState.isOnWifi(context)) {
+                    prefs.defaultQualityWifi.first()
+                } else {
+                    prefs.defaultQualityCellular.first()
+                },
+            )
         val preferredAudioLanguage = prefs.preferredAudioLanguage.first()
         val preferredSubtitleLanguage = prefs.preferredSubtitleLanguage.first()
         val preferredCodecKey = prefs.videoCodecPriority.first()
@@ -2195,14 +2197,13 @@ class EnhancedPlayerManager private constructor() {
             val enrichedVideo = InnerTubeVideoMapper.videoFromResult(video.id, extraction, fallback = video)
             val prefs = PlayerPreferences(context)
             val preferredQuality =
-                if (NetworkState.isOnWifi(
-                        context,
-                    )
-                ) {
-                    prefs.defaultQualityWifi.first()
-                } else {
-                    prefs.defaultQualityCellular.first()
-                }
+                app.mawja.android.battery.BatterySaver.capQuality(
+                    if (NetworkState.isOnWifi(context)) {
+                        prefs.defaultQualityWifi.first()
+                    } else {
+                        prefs.defaultQualityCellular.first()
+                    },
+                )
             val preferredAudioLanguage = prefs.preferredAudioLanguage.first()
             val preferredSubtitleLanguage = prefs.preferredSubtitleLanguage.first()
             val preferredCodecKey = prefs.videoCodecPriority.first()

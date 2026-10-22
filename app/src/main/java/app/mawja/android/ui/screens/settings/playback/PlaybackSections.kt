@@ -1,5 +1,7 @@
 package app.mawja.android.ui.screens.settings.playback
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BatterySaver
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +42,13 @@ internal fun SettingsListScope.playbackSections(
         switch(PlaybackIndex.loopAll, viewModel.loopAll, viewModel::setLoopAll)
         switch(PlaybackIndex.skipSilence, viewModel.skipSilence, viewModel::setSkipSilence)
         switch(PlaybackIndex.playDuringCalls, viewModel.playDuringCalls, viewModel::setPlayDuringCalls)
+    }
+    group(key = "playback.battery", header = R.string.battery_saver_section_header) {
+        nav(
+            DestinationIndex.entry(SettingsDestination.BATTERY_SAVER),
+            onClick = { onNavigate(SettingsTarget(SettingsDestination.BATTERY_SAVER)) },
+            icon = Icons.Outlined.BatterySaver,
+        )
     }
     group(key = "playback.sound", header = R.string.eq_settings_section) {
         nav(DestinationIndex.entry(SettingsDestination.EQUALIZER), onClick = { onNavigate(SettingsTarget(SettingsDestination.EQUALIZER)) })

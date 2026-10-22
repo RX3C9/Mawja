@@ -377,8 +377,14 @@ internal fun UnifiedMusicPlayerSheet(
                 // The mini bar is fully transparent past 0.5 expansion; its waveform, marquee
                 // and progress-ring animations stop there instead of animating under the full
                 // player for entire listening sessions. derivedStateOf: recomposes only on flip.
-                val miniAnimationsEnabled by remember(state) {
-                    derivedStateOf { state.expansionFraction.value < 0.5f }
+                // Battery saver (#62) with reduce motion stops them too.
+                val saverActive by app.mawja.android.battery.BatterySaver.active
+                    .collectAsState()
+                val saverSettings by app.mawja.android.battery.BatterySaver.settings
+                    .collectAsState()
+                val reduceMotion = app.mawja.android.battery.BatterySaverPolicy.reduceMotion(saverSettings, saverActive)
+                val miniAnimationsEnabled by remember(state, reduceMotion) {
+                    derivedStateOf { !reduceMotion && state.expansionFraction.value < 0.5f }
                 }
                 Box(
                     modifier =

@@ -99,8 +99,10 @@ fun ShortsScreen(
     val shortsQualityPair by remember(playerPreferences) {
         playerPreferences.shortsQualityWifi.combine(playerPreferences.shortsQualityCellular, ::Pair)
     }.collectAsState(initial = null)
-    val shortsTargetHeight by remember(isWifi, shortsQualityPair) {
-        derivedStateOf { shortsQualityPair?.let { (wifi, cellular) -> shortsTargetHeight(isWifi, wifi, cellular) } }
+    val batterySaver by app.mawja.android.battery.BatterySaver.active
+        .collectAsState()
+    val shortsTargetHeight by remember(isWifi, shortsQualityPair, batterySaver) {
+        derivedStateOf { shortsQualityPair?.let { (wifi, cellular) -> shortsTargetHeight(isWifi, wifi, cellular, batterySaver) } }
     }
 
     var showCommentsSheet by remember { mutableStateOf(false) }

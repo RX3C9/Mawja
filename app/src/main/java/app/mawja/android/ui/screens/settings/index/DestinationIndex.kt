@@ -72,6 +72,7 @@ internal object DestinationIndex {
             SettingsDestination.PLAYBACK -> R.string.settings_playback_summary
             SettingsDestination.BUFFER -> R.string.settings_item_buffer_subtitle
             SettingsDestination.EQUALIZER -> R.string.eq_settings_summary
+            SettingsDestination.BATTERY_SAVER -> R.string.battery_saver_summary
             SettingsDestination.QUALITY -> R.string.settings_quality_summary
             SettingsDestination.CONTENT -> R.string.settings_content_summary
             SettingsDestination.MUSIC_HOME -> R.string.settings_music_home_summary

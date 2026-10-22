@@ -38,4 +38,20 @@ class ShortsPlaybackTargetTest {
         // than each caller substituting its own placeholder.
         assertEquals(VideoQuality.AUTO.height, wifi)
     }
+
+    @Test
+    fun `battery saver caps the reel at 480p`() {
+        assertEquals(
+            480,
+            shortsTargetHeight(isWifi = true, wifiQuality = VideoQuality.Q_1080P, cellularQuality = VideoQuality.Q_480P, batterySaver = true),
+        )
+        assertEquals(
+            480,
+            shortsTargetHeight(isWifi = true, wifiQuality = VideoQuality.AUTO, cellularQuality = VideoQuality.Q_480P, batterySaver = true),
+        )
+        assertEquals(
+            360,
+            shortsTargetHeight(isWifi = false, wifiQuality = VideoQuality.Q_1080P, cellularQuality = VideoQuality.Q_360P, batterySaver = true),
+        )
+    }
 }

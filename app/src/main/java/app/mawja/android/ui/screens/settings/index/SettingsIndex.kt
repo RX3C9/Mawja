@@ -18,6 +18,7 @@ internal object SettingsIndex {
             LanguageRegionIndex.all +
             PlaybackIndex.all +
             BufferIndex.all +
+            BatterySaverIndex.all +
             QualityIndex.all +
             ContentIndex.all +
             MusicHomeIndex.all +

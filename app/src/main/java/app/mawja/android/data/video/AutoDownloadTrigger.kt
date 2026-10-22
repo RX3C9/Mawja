@@ -79,6 +79,8 @@ class AutoDownloadTrigger
                         existing = downloadDao.getDownloadWithItems(videoId)?.overallStatus,
                     )
                 if (videoId in declined || !candidate.shouldAutoDownload()) return@launch
+                // Battery saver (#62): automatic downloads wait; downloads the user starts are untouched.
+                if (!app.mawja.android.battery.BatterySaver.allowPrefetch()) return@launch
                 if (queuer.queue(video) == QueueOutcome.QUEUED) _queued.emit(videoId)
             }
         }

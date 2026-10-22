@@ -136,6 +136,11 @@ internal fun SettingsDetail(
             BufferSettingsScreen(onBack = onBack, highlight = target.highlight)
         }
 
+        SettingsDestination.BATTERY_SAVER -> {
+            app.mawja.android.ui.screens.settings.battery
+                .BatterySaverScreen(onBack = onBack, highlight = target.highlight)
+        }
+
         SettingsDestination.EQUALIZER -> {
             EqualizerScreen(onBack = onBack, inSettings = true)
         }

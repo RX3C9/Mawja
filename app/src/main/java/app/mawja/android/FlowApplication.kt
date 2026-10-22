@@ -91,6 +91,8 @@ class FlowApplication :
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
+        // Mawja battery saver (#62): battery/power-save broadcasts drive one StateFlow every check reads.
+        app.mawja.android.battery.BatterySaver.start(this)
         YouTube.cacheDirectory = cacheDir.resolve("innertube_http_cache")
 
         DiscordPresenceRuntime.initialize(this, okHttpClient)

@@ -238,11 +238,13 @@ class PlaybackLoadResolver
         private suspend fun readStreamPreferences(isWifi: Boolean): StreamPreferences =
             StreamPreferences(
                 quality =
-                    if (isWifi) {
-                        playerPreferences.defaultQualityWifi.first()
-                    } else {
-                        playerPreferences.defaultQualityCellular.first()
-                    },
+                    app.mawja.android.battery.BatterySaver.capQuality(
+                        if (isWifi) {
+                            playerPreferences.defaultQualityWifi.first()
+                        } else {
+                            playerPreferences.defaultQualityCellular.first()
+                        },
+                    ),
                 audioLanguage = playerPreferences.preferredAudioLanguage.first(),
                 codecKey = playerPreferences.videoCodecPriority.first(),
                 subtitleLanguage = playerPreferences.preferredSubtitleLanguage.first(),

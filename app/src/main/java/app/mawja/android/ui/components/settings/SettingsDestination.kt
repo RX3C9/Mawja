@@ -36,6 +36,7 @@ enum class SettingsDestination(
     PLAYBACK("playback", R.string.settings_playback_title),
     BUFFER("buffer", R.string.buffer_settings_title, PLAYBACK),
     EQUALIZER("equalizer", R.string.equalizer, PLAYBACK),
+    BATTERY_SAVER("battery_saver", R.string.battery_saver_title, PLAYBACK),
     QUALITY("quality", R.string.quality),
     CONTENT("content", R.string.settings_content_title),
     MUSIC_HOME("music_home", R.string.settings_music_home_title, CONTENT),

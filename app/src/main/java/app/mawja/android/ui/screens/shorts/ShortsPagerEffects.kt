@@ -81,7 +81,8 @@ internal fun ShortsPagerPlaybackEffects(
             launch { prepareReel(playerPool, viewModel, settled - 1, previous, height, preferredLang, shouldPlay = false) }
         }
         // Two ahead: resolved only, not handed to a player. Last so it never competes with the visible short.
-        shorts.getOrNull(settled + 2)?.let { preload ->
+        // Battery saver (#62): no speculative resolve two reels ahead.
+        shorts.getOrNull(settled + 2)?.takeIf { app.mawja.android.battery.BatterySaver.allowPrefetch() }?.let { preload ->
             launch { runCatching { viewModel.getPlaybackStreams(preload.id, height, preferredLang) } }
         }
     }

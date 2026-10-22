@@ -381,7 +381,9 @@ internal class PlaybackPreparer(
             } else {
                 playerPreferences.defaultQualityCellular.first()
             }
-        return quality.height
+        return app.mawja.android.battery.BatterySaver
+            .capQuality(quality)
+            .height
     }
 
     private companion object {

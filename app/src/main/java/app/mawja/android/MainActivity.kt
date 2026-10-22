@@ -223,7 +223,24 @@ class MainActivity : ComponentActivity() {
             dataManager
                 .themeSettings(appFontPreferences)
                 .combine(entitlementsRepository.entitlements) { settings, entitlements -> settings.gatedBy(entitlements) }
-                .collect { storedTheme.value = it }
+                .combine(app.mawja.android.battery.BatterySaver.active) { settings, saver -> settings to saver }
+                .combine(app.mawja.android.battery.BatterySaver.settings) { (settings, saver), saverSettings ->
+                    // Battery saver (#62): the black style of the chosen theme while active (render time only).
+                    val policy = app.mawja.android.battery.BatterySaverPolicy
+                    settings.copy(
+                        themeVariant = policy.themeVariant(settings.themeVariant, saverSettings, saver),
+                        systemDarkThemeVariant = policy.themeVariant(settings.systemDarkThemeVariant, saverSettings, saver),
+                    )
+                }.collect { storedTheme.value = it }
+        }
+        // config/app features.batterySaver (on by default) reaches the saver, and is remembered for cold workers.
+        lifecycleScope.launch {
+            remoteConfig.settings.collect { settings ->
+                app.mawja.android.battery.BatterySaver.setRemoteEnabled(
+                    applicationContext,
+                    settings.isEnabled(app.mawja.android.battery.BatterySaver.REMOTE_SWITCH),
+                )
+            }
         }
 
         setContent {
