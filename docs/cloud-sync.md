@@ -1,7 +1,9 @@
 # Mawja cloud sync — design (PLAN_V2 #61, Plus)
 
 Status: part 1 (rules, merge engine, REST client, **subscriptions** end-to-end) — 2026-10-22.
-Part 2+: playlists, liked, watch history, settings subset, privacy page hooks, job-center polish.
+Part 2 (2026-10-22): playlists per entry, liked videos, watch history (newest 2 000), whitelisted
+settings, one-off full pulls, tombstone clean-up, "delete my cloud data" (§8).
+Later: privacy page hooks (#67), job-center polish.
 
 ## 1. Constraints
 - **No Firestore SDK in :app** (its protolite clashes with protobuf-javalite). The app talks to the
@@ -21,7 +23,7 @@ One flat subcollection per user (re-uses the existing `syncData` path, so the ad
 
 ```
 users/{uid}/syncData/{c}_{k}
-  c   string   collection: subscriptions | playlists | liked | history | settings   (no "_")
+  c   string   collection: subscriptions | playlists | plitems | liked | history | settings   (no "_")
   k   string   item key, ^[A-Za-z0-9_.:-]{1,128}$ (subscriptions: channel id)
   m   int      client "modified at", epoch ms — the LWW clock (rules: 0 < m < now+1 day)
   dev string   device id (random UUID per install, 1..64) — tie-break + "who wrote it"
@@ -108,3 +110,47 @@ Owner-only (not banned, paid tier) read; create/update validated as above (doc i
 known keys only, types, sizes, `at == request.time`, `m` bounded); owner may delete only
 tombstones (future GC); admin read + audited reset delete unchanged. **Needs a rules redeploy**
 (`firebase deploy --only firestore:rules`) before sync works in production.
+
+## 8. Part 2 collections (payloads v1, validated in the rules)
+- `playlists` — `k` = playlist sync id (`reserved:watch-later` for Watch later); `d`: `t` title ≤200
+  (required), `ds` ≤1000, `mu`, `uc` user-created, `or` local|youtube, `y` YouTube id, `ca` created
+  at. Watch later / saved Shorts are never deleted by sync.
+- `plitems` — one doc **per entry**, `k` = `{playlist}.{video}`; `d`: `p`, `v` (rules: `k == p+'.'+v`),
+  `o` fractional order key (`^[0-9A-Za-z]{0,63}[1-9A-Za-z]$`, `OrderKeys`), `t`, `ch`, `ci`, `th`,
+  `du`, `mu`, `aa` added at. Each entry is its own LWW register, so concurrent adds on two devices
+  both survive; display order = order-key order. Unchanged entries keep their key (longest
+  increasing run of prior keys); moved/new entries get a key between their neighbours; respread
+  only past 64 chars. A winning playlist tombstone deletes the playlist; entries of a playlist the
+  device neither has nor received are dropped.
+- `liked` — `k` = video id, clock = like time; unlike = tombstone. `d`: `t` (required), `ch`, `th`,
+  `mu`, `ci`, `du`.
+- `history` — `k` = video id, clock = watch time; only the newest **2 000** entries are offered
+  (plus keys the server just sent), **≤ 50 writes per run** newest first; deletions are sent only
+  for keys the server holds. `d`: `t`, `ch`, `ci`, `th`, `pr` progress 0..1, `du` s, `mu`, `sh`.
+- `settings` — `k` = canonical key from `SettingsMapper.WHITELIST` entries that are applied on
+  other devices (never `app_language`, paths, tokens); `d = {val}` bool | number | string ≤4000.
+  Rules hold the same list (`syncSettingKeys()`, checked by `CollectionSyncMappersTest`).
+
+Change detection: these stores keep no edit times or deletion traces, so each has a cloud-only
+`CollectionLedger` (`sync_ledger_cloud_*.json`, reset with the device-sync ledgers on a backup
+restore): `observe` stamps edits/removals, `settle` adopts the winners' clocks after applying, so
+applied remote changes are not echoed back. Per-run push caps: playlists 200, entries 1 000,
+liked 1 000, history 50, settings 100 (subscriptions 2 000).
+
+Full pull: a device that already had a cursor when a collection was added reads that collection
+whole once (`where c == X orderBy __name__`, single-field index only, ≤ 40 pages; retried next run
+when cut short). A first sync reads everything through the cursor pull.
+
+Tombstone clean-up: at most once a day, `where del == true limit 300`, deletes those whose server
+time `at` is older than **30 days**. A device offline longer keeps its unchanged copy (it is not
+re-pushed because its base already matches).
+
+Delete my cloud data (account page): deletes every `syncData` doc of the account in pages of 300
+(one commit each), then turns sync **off on this device** (`CloudSyncAvailability.OFF`, "Turn on
+cloud sync" re-uploads everything) and forgets cursor/bases/order keys. Local data stays. Other
+signed-in devices only re-push items they change afterwards.
+
+Rules (part 2): owners may **read and delete** all their own `syncData` docs at any time (also
+after the membership ended or when banned — privacy); create/update still need a paid tier, not
+banned, and a valid payload. Not yet verified in production: whether a 400-write commit stays
+within the rules' per-request limits (the emulator test commits 400 entries).

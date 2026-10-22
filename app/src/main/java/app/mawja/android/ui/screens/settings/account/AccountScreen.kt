@@ -73,7 +73,9 @@ import app.mawja.android.account.MawjaBadge
 import app.mawja.android.account.MawjaProfile
 import app.mawja.android.account.MawjaTier
 import app.mawja.android.account.UsernameRules
+import app.mawja.android.cloudsync.CloudDeleteState
 import app.mawja.android.cloudsync.CloudSyncAvailability
+import app.mawja.android.cloudsync.CloudSyncGate
 import app.mawja.android.cloudsync.CloudSyncOutcome
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.utils.copyPlainText
@@ -565,7 +567,7 @@ private fun UpgradeEntry(
     }
 }
 
-/** Cloud sync (#61): status, last sync and Sync now for members; an upsell for Free accounts. */
+/** Cloud sync (#61): status, last sync and Sync now for members; an upsell for Free accounts; delete my cloud data. */
 @Composable
 private fun CloudSyncSection(
     viewModel: AccountViewModel,
@@ -574,6 +576,7 @@ private fun CloudSyncSection(
     val availability by viewModel.syncAvailability.collectAsStateWithLifecycle()
     val status by viewModel.syncStatus.collectAsStateWithLifecycle()
     if (availability == CloudSyncAvailability.UNSUPPORTED || availability == CloudSyncAvailability.SIGNED_OUT) return
+    var confirmDelete by rememberSaveable { mutableStateOf(false) }
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
         shape = MaterialTheme.shapes.extraLarge,
@@ -611,6 +614,17 @@ private fun CloudSyncSection(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
 
+                CloudSyncAvailability.OFF -> {
+                    Text(stringResource(R.string.cloud_sync_off), style = MaterialTheme.typography.bodyMedium)
+                    FilledTonalButton(
+                        onClick = viewModel::turnOnSync,
+                        enabled = status.deleteState != CloudDeleteState.RUNNING,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(stringResource(R.string.cloud_sync_turn_on))
+                    }
+                }
+
                 else -> {
                     Text(stringResource(R.string.cloud_sync_body), style = MaterialTheme.typography.bodyMedium)
                     Text(
@@ -634,7 +648,56 @@ private fun CloudSyncSection(
                     }
                 }
             }
+            when (status.deleteState) {
+                CloudDeleteState.RUNNING -> {
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                    Text(
+                        stringResource(R.string.cloud_sync_deleting),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                CloudDeleteState.DONE ->
+                    Text(
+                        stringResource(R.string.cloud_sync_deleted, status.deletedCount),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                CloudDeleteState.FAILED ->
+                    Text(
+                        stringResource(R.string.cloud_sync_delete_failed),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+
+                CloudDeleteState.IDLE -> Unit
+            }
+            if (CloudSyncGate.canDeleteCloudData(availability, everSynced = status.lastSyncAt > 0L)) {
+                TextButton(
+                    onClick = { confirmDelete = true },
+                    enabled = status.deleteState != CloudDeleteState.RUNNING && !status.running,
+                    modifier = Modifier.align(Alignment.End),
+                ) {
+                    Text(stringResource(R.string.cloud_sync_delete), color = MaterialTheme.colorScheme.error)
+                }
+            }
         }
+    }
+    if (confirmDelete) {
+        AlertDialog(
+            onDismissRequest = { confirmDelete = false },
+            title = { Text(stringResource(R.string.cloud_sync_delete_title)) },
+            text = { Text(stringResource(R.string.cloud_sync_delete_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmDelete = false
+                    viewModel.deleteCloudData()
+                }) { Text(stringResource(R.string.cloud_sync_delete_confirm), color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.account_back)) } },
+        )
     }
 }
 

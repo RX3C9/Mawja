@@ -149,6 +149,9 @@ enum class CloudSyncAvailability {
     /** Signed in but the membership does not include sync: show the upsell. */
     LOCKED,
 
+    /** Entitled, but turned off on this device (e.g. after "delete my cloud data"). */
+    OFF,
+
     READY,
 }
 
@@ -161,13 +164,26 @@ object CloudSyncGate {
         signedIn: Boolean,
         remoteEnabled: Boolean,
         entitled: Boolean,
+        userEnabled: Boolean = true,
     ): CloudSyncAvailability =
         when {
             !supported -> CloudSyncAvailability.UNSUPPORTED
             !signedIn -> CloudSyncAvailability.SIGNED_OUT
             !remoteEnabled -> CloudSyncAvailability.DISABLED
             !entitled -> CloudSyncAvailability.LOCKED
+            !userEnabled -> CloudSyncAvailability.OFF
             else -> CloudSyncAvailability.READY
+        }
+
+    /** "Delete my cloud data" is offered to any signed-in account that may have synced before. */
+    fun canDeleteCloudData(
+        availability: CloudSyncAvailability,
+        everSynced: Boolean,
+    ): Boolean =
+        when (availability) {
+            CloudSyncAvailability.READY, CloudSyncAvailability.OFF -> true
+            CloudSyncAvailability.LOCKED, CloudSyncAvailability.DISABLED -> everSynced
+            else -> false
         }
 
     /** The periodic job skips its run while the deep battery saver is on; "Sync now" still runs. */
@@ -190,4 +206,87 @@ object SyncLimits {
     const val SCHEMA_VERSION = 1L
     const val NAME_MAX = 300
     const val AVATAR_MAX = 1000
+
+    // Part 2 collections: per-run push caps and item caps.
+    const val MAX_PLAYLISTS = 500
+    const val MAX_ENTRIES_PER_PLAYLIST = 1_000
+    const val MAX_PLAYLIST_PUSH = 200
+    const val MAX_ENTRY_PUSH = 1_000
+    const val MAX_LIKED = 5_000
+    const val MAX_LIKED_PUSH = 1_000
+    const val MAX_HISTORY = 2_000
+    const val MAX_HISTORY_PUSH = 50
+    const val MAX_SETTINGS_PUSH = 100
+
+    /** A first pull of one collection reads at most this many pages before trying again next run. */
+    const val MAX_FULL_PULL_PAGES = 40
+
+    /** Own tombstones older than this (server time) are deleted, at most once a day. */
+    const val TOMBSTONE_TTL_MS = 30L * 24 * 60 * 60 * 1000
+    const val GC_INTERVAL_MS = 24L * 60 * 60 * 1000
+    const val GC_MAX_DELETES = 300
+
+    /** "Delete my cloud data": pages of this many docs, each deleted in one commit. */
+    const val DELETE_PAGE = 300
+    const val DELETE_MAX_PAGES = 200
+}
+
+/** Which collections this build syncs, and the one-off full pulls a newly enabled one needs. */
+object CloudSyncCollections {
+    /** In push order: a playlist's meta before its entries. */
+    val ALL: List<String> =
+        listOf(
+            SubscriptionSyncMapper.COLLECTION,
+            PlaylistSyncMapper.PLAYLISTS,
+            PlaylistSyncMapper.ENTRIES,
+            LikeSyncMapper.COLLECTION,
+            HistorySyncMapper.COLLECTION,
+            SettingsSyncMapper.COLLECTION,
+        )
+
+    /**
+     * Collections to pull in full this run. The first sync (no cursor yet) reads everything through
+     * the cursor pull; afterwards a collection this device has never pulled whole (added by an app
+     * update, while the cursor already moved past older docs of it) gets one full pull.
+     */
+    fun toFullPull(
+        fullyPulled: Set<String>,
+        cursorKnown: Boolean,
+    ): List<String> = if (!cursorKnown) emptyList() else ALL.filter { it !in fullyPulled }
+
+    /** Before part 2 only subscriptions synced, so a device with a cursor already holds those. */
+    fun legacyFullyPulled(cursorKnown: Boolean): Set<String> = if (cursorKnown) setOf(SubscriptionSyncMapper.COLLECTION) else emptySet()
+}
+
+/** A tombstone doc found on the server, for garbage collection. */
+data class ServerTombstone(
+    val path: String,
+    /** Server write time (epoch ms), or 0 when unknown. */
+    val at: Long,
+    val modifiedAt: Long,
+    val deleted: Boolean,
+)
+
+object SyncHousekeeping {
+    fun gcDue(
+        lastGcAt: Long,
+        now: Long,
+    ): Boolean = lastGcAt <= 0L || now - lastGcAt >= SyncLimits.GC_INTERVAL_MS || lastGcAt > now
+
+    /** Tombstones older than [SyncLimits.TOMBSTONE_TTL_MS] by server time (client clock if unknown). */
+    fun expired(
+        docs: List<ServerTombstone>,
+        now: Long,
+        max: Int = SyncLimits.GC_MAX_DELETES,
+    ): List<String> =
+        docs
+            .filter { it.deleted && now - (if (it.at > 0) it.at else it.modifiedAt) > SyncLimits.TOMBSTONE_TTL_MS }
+            .take(max)
+            .map { it.path }
+
+    /** Prunes an agreed base to the keys still worth remembering. */
+    fun pruneBase(
+        base: Map<String, Long>,
+        keep: Set<String>,
+    ): Map<String, Long> = if (base.keys.all { it in keep }) base else base.filterKeys { it in keep }
 }

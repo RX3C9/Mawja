@@ -66,7 +66,18 @@ class SyncChangeLedgerStore
             const val SETTINGS = "settings"
             const val SETTINGS_RELAY = "settings_relay"
 
-            val LEDGERED = listOf(WATCH_HISTORY, LIKES, NOTES, GROUPS, PLAYLISTS, PLAYLIST_ITEMS, SETTINGS, SETTINGS_RELAY)
+            // Cloud sync (cloudsync/) keeps its own ledgers: what changed since the last *cloud* sync.
+            const val CLOUD_PLAYLISTS = "cloud_playlists"
+            const val CLOUD_PLAYLIST_ITEMS = "cloud_plitems"
+            const val CLOUD_LIKES = "cloud_liked"
+            const val CLOUD_HISTORY = "cloud_history"
+            const val CLOUD_SETTINGS = "cloud_settings"
+
+            val LEDGERED =
+                listOf(
+                    WATCH_HISTORY, LIKES, NOTES, GROUPS, PLAYLISTS, PLAYLIST_ITEMS, SETTINGS, SETTINGS_RELAY,
+                    CLOUD_PLAYLISTS, CLOUD_PLAYLIST_ITEMS, CLOUD_LIKES, CLOUD_HISTORY, CLOUD_SETTINGS,
+                )
         }
     }
 

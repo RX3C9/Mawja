@@ -54,10 +54,11 @@ test("sync: a tier claim is enough, without a users doc", async () => {
   await assertSucceeds(pull(db));
 });
 
-test("sync: Free, expired, banned and other users are refused", async () => {
+test("sync: Free, expired, banned and other users cannot write; others cannot read", async () => {
   await seed("users/alice", { tier: "free", status: "active" });
   await assertFails(setDoc(doc(user("alice"), path()), item()));
-  await assertFails(pull(user("alice")));
+  // Owners may still read their own items (to see and delete what is stored about them).
+  await assertSucceeds(pull(user("alice")));
   await seed("users/alice", { tier: "plus", tierUntil: Timestamp.fromMillis(Date.now() - DAY), status: "active" });
   await assertFails(setDoc(doc(user("alice"), path()), item()));
   await plus();
@@ -88,7 +89,7 @@ test("sync: item shape is validated", async () => {
     [path(), item({ d: { a: "no name" } })],
     [path(), item({ d: { n: "ok", bell: true } })],
     [path("alice", "subscriptions_UC bad"), item({ k: "UC bad" })],
-    [path("alice", "playlists_PL1"), item({ c: "playlists", k: "PL1" })], // not synced yet
+    [path("alice", "playlists_PL1"), item({ c: "playlists", k: "PL1" })], // subscription payload on a playlist
     [path("alice", "music_X"), item({ c: "music", k: "X" })],
   ];
   for (const [p, data] of bad) await assertFails(setDoc(doc(db, p), data));
@@ -96,13 +97,17 @@ test("sync: item shape is validated", async () => {
   await assertSucceeds(setDoc(doc(db, path("alice", "playlists_PL1")), item({ c: "playlists", k: "PL1", del: true, d: {} })));
 });
 
-test("sync: owners delete only tombstones", async () => {
+test("sync: owners delete their own items (tombstones and live), others cannot", async () => {
   await plus();
   const db = user("alice");
   await seed(path(), { ...item(), at: Timestamp.now() });
-  await assertFails(deleteDoc(doc(db, path())));
-  await seed(path(), { ...item({ del: true, d: {} }), at: Timestamp.now() });
+  await assertFails(deleteDoc(doc(user("bob", { tier: "pro" }), path())));
   await assertSucceeds(deleteDoc(doc(db, path())));
   await seed(path(), { ...item({ del: true, d: {} }), at: Timestamp.now() });
-  await assertFails(deleteDoc(doc(user("bob", { tier: "pro" }), path())));
+  await assertSucceeds(deleteDoc(doc(db, path())));
+  // After the membership ended, and even when banned, the owner can still erase their data.
+  await seed("users/alice", { tier: "free", status: "active" });
+  await seed(path(), { ...item(), at: Timestamp.now() });
+  await assertSucceeds(deleteDoc(doc(user("alice", { status: "banned" }), path())));
+  await assertFails(deleteDoc(doc(env.unauthenticatedContext().firestore(), path("alice", "subscriptions_X"))));
 });

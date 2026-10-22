@@ -47,6 +47,61 @@ internal class CloudSyncRemote(
         return Pulled(byCollection, newest, count)
     }
 
+    /** All docs of one [collection] (a one-off full pull), paged on the document name. */
+    data class CollectionPull(
+        val records: List<SyncRecord>,
+        val complete: Boolean,
+    )
+
+    suspend fun pullCollection(collection: String): CollectionPull {
+        val out = ArrayList<SyncRecord>()
+        var after: List<Any?>? = null
+        val where = rest.fieldEquals("c", collection)
+        repeat(SyncLimits.MAX_FULL_PULL_PAGES) {
+            val docs = rest.runQuery(parent, COLLECTION_ID, where, listOf("__name__"), after, SyncLimits.PULL_PAGE)
+            docs.forEach { doc ->
+                val (c, record) = decode(doc.fields) ?: return@forEach
+                if (c == collection) out += record
+            }
+            if (docs.size < SyncLimits.PULL_PAGE) return CollectionPull(out, complete = true)
+            after = listOf(FirestoreRest.Ref(rest.name(docs.last().path)))
+        }
+        return CollectionPull(out, complete = false)
+    }
+
+    /** Up to [limit] of the user's tombstones, for garbage collection. */
+    suspend fun tombstones(limit: Int): List<ServerTombstone> =
+        rest.runQuery(parent, COLLECTION_ID, rest.fieldEquals("del", true), emptyList(), null, limit).map { doc ->
+            ServerTombstone(
+                path = doc.path,
+                at = (doc.fields[FIELD_AT] as? Instant)?.toEpochMilli() ?: 0L,
+                modifiedAt = doc.fields["m"] as? Long ?: 0L,
+                deleted = doc.fields["del"] == true,
+            )
+        }
+
+    /** Deletes [paths] (full document paths under the user) in commits of [SyncLimits.COMMIT_SIZE]. */
+    suspend fun delete(paths: List<String>) {
+        paths.chunked(SyncLimits.COMMIT_SIZE).forEach { chunk -> rest.commit(chunk.map { FirestoreRest.Delete(it) }) }
+    }
+
+    /**
+     * Deletes every sync doc of the user, a page at a time (the owner may delete their own docs).
+     * Returns how many were deleted; [onProgress] gets the running count.
+     */
+    suspend fun deleteAll(onProgress: (Int) -> Unit = {}): Int {
+        var deleted = 0
+        repeat(SyncLimits.DELETE_MAX_PAGES) {
+            val docs = rest.runQuery(parent, COLLECTION_ID, null, listOf("__name__"), null, SyncLimits.DELETE_PAGE)
+            if (docs.isEmpty()) return deleted
+            delete(docs.map { it.path })
+            deleted += docs.size
+            onProgress(deleted)
+            if (docs.size < SyncLimits.DELETE_PAGE) return deleted
+        }
+        return deleted
+    }
+
     /** Writes [records] of [collection] in commits of [SyncLimits.COMMIT_SIZE]; [onCommitted] after each. */
     suspend fun push(
         collection: String,

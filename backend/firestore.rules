@@ -130,11 +130,12 @@ service cloud.firestore {
       // Cloud sync (docs/cloud-sync.md): one doc per item, users/{uid}/syncData/{c}_{k}, last
       // writer wins on the client clock `m`, tombstones (`del`), server write time `at` for pulls.
       match /syncData/{doc} {
-        allow read: if isSelf(uid) && notBanned() && syncEntitled(uid);
+        // Owners can always see and erase what is stored about them, also after the membership
+        // ended or a ban ("delete my cloud data", tombstone clean-up). Writing needs a paid tier.
+        allow read: if isSelf(uid);
         allow create, update: if isSelf(uid) && notBanned() && syncEntitled(uid)
           && syncItemOk(doc, request.resource.data);
-        // Owners may garbage-collect their own tombstones only.
-        allow delete: if isSelf(uid) && notBanned() && resource.data.get('del', false) == true;
+        allow delete: if isSelf(uid);
         // Admin "reset sync data": allowed only in the batch that stamps users/{uid}.syncResetAt
         // (itself an audited staff write).
         allow read: if isAdmin();
@@ -154,7 +155,7 @@ service cloud.firestore {
       return request.auth.token.get('tier', '') in paidTiers()
         || isActive(get(/databases/$(database)/documents/users/$(uid)).data);
     }
-    function syncCollections() { return ['subscriptions', 'playlists', 'liked', 'history', 'settings']; }
+    function syncCollections() { return ['subscriptions', 'playlists', 'plitems', 'liked', 'history', 'settings']; }
     function syncItemOk(doc, d) {
       return d.keys().hasOnly(['c', 'k', 'm', 'dev', 'del', 'v', 'at', 'd'])
         && d.keys().hasAll(['c', 'k', 'm', 'dev', 'del', 'v', 'at', 'd'])
@@ -167,14 +168,70 @@ service cloud.firestore {
         && d.v is int && d.v >= 1 && d.v <= 100
         && d.at == request.time
         && d.d is map
-        && (d.del ? d.d.size() == 0 : syncPayloadOk(d.c, d.d));
+        && (d.del ? d.d.size() == 0 : syncPayloadOk(d.c, d.k, d.d));
     }
-    // Part 1 syncs subscriptions only; other collections are refused until their payload rules land.
-    function syncPayloadOk(c, p) {
-      return c == 'subscriptions'
-        && p.keys().hasOnly(['n', 'a', 'mu']) && p.keys().hasAll(['n'])
+    // Payload per collection (docs/cloud-sync.md §2). Optional strings are capped; ids are plain.
+    function syncPayloadOk(c, k, p) {
+      return (c == 'subscriptions' && syncSubscriptionOk(p))
+        || (c == 'playlists' && syncPlaylistOk(p))
+        || (c == 'plitems' && syncEntryOk(k, p))
+        || (c == 'liked' && syncLikedOk(p))
+        || (c == 'history' && syncHistoryOk(p))
+        || (c == 'settings' && syncSettingOk(k, p));
+    }
+    function syncId(p, key, max) { return !(key in p) || (p[key] is string && p[key].size() <= max && p[key].matches('^[A-Za-z0-9_.:-]+$')); }
+    function syncSubscriptionOk(p) {
+      return p.keys().hasOnly(['n', 'a', 'mu']) && p.keys().hasAll(['n'])
         && p.n is string && p.n.size() <= 300
         && optString(p, 'a', 1000) && optBool(p, 'mu');
+    }
+    function syncPlaylistOk(p) {
+      return p.keys().hasOnly(['t', 'ds', 'mu', 'uc', 'or', 'y', 'ca']) && p.keys().hasAll(['t'])
+        && p.t is string && p.t.size() <= 200
+        && optString(p, 'ds', 1000) && optBool(p, 'mu') && optBool(p, 'uc')
+        && (!('or' in p) || p['or'] in ['local', 'youtube'])
+        && syncId(p, 'y', 128) && optInt(p, 'ca');
+    }
+    // One playlist entry: k == p + '.' + v, o = fractional order key.
+    function syncEntryOk(k, p) {
+      return p.keys().hasOnly(['p', 'v', 'o', 't', 'ch', 'ci', 'th', 'du', 'mu', 'aa']) && p.keys().hasAll(['p', 'v', 'o'])
+        && p.p is string && p.p.matches('^[A-Za-z0-9_:-]{1,100}$')
+        && p.v is string && p.v.matches('^[A-Za-z0-9_:-]{1,64}$')
+        && k == p.p + '.' + p.v
+        && p.o is string && p.o.matches('^[0-9A-Za-z]{0,63}[1-9A-Za-z]$')
+        && optString(p, 't', 300) && optString(p, 'ch', 300) && syncId(p, 'ci', 128) && optString(p, 'th', 1000)
+        && optInt(p, 'du') && optBool(p, 'mu') && optInt(p, 'aa');
+    }
+    function syncLikedOk(p) {
+      return p.keys().hasOnly(['t', 'ch', 'th', 'mu', 'ci', 'du']) && p.keys().hasAll(['t'])
+        && p.t is string && p.t.size() <= 300
+        && optString(p, 'ch', 300) && optString(p, 'th', 1000) && optBool(p, 'mu') && syncId(p, 'ci', 128) && optInt(p, 'du');
+    }
+    function syncHistoryOk(p) {
+      return p.keys().hasOnly(['t', 'ch', 'ci', 'th', 'pr', 'du', 'mu', 'sh'])
+        && optString(p, 't', 300) && optString(p, 'ch', 300) && syncId(p, 'ci', 128) && optString(p, 'th', 1000)
+        && (!('pr' in p) || (p.pr is number && p.pr >= 0 && p.pr <= 1))
+        && optInt(p, 'du') && optBool(p, 'mu') && optBool(p, 'sh');
+    }
+    // Whitelisted settings only (= SettingsSyncMapper.KEYS); never the UI language, paths or tokens.
+    function syncSettingKeys() {
+      return [
+        'autoplay', 'queue_autoplay', 'default_quality_wifi', 'default_quality_cellular', 'playback_speed',
+        'sponsorblock_enabled', 'sponsorblock_submit_enabled', 'sponsorblock_action_sponsor', 'sponsorblock_action_intro',
+        'sponsorblock_action_outro', 'sponsorblock_action_selfpromo', 'sponsorblock_action_interaction',
+        'sponsorblock_action_music_offtopic', 'sponsorblock_action_filler', 'sponsorblock_action_preview',
+        'sponsorblock_action_exclusive_access', 'dearrow_enabled', 'dearrow_badge_enabled', 'subtitles_enabled',
+        'trending_region', 'hide_watched_videos', 'show_shorts_player_prompt', 'comments_enabled', 'comments_preview_enabled',
+        'return_youtube_dislikes', 'background_play', 'video_loop', 'skip_silence', 'stable_volume',
+        'subscriptions_show_videos', 'subscriptions_show_shorts', 'subscriptions_show_live', 'default_video_codec',
+        'shorts_quality_wifi', 'shorts_quality_cellular', 'music_audio_quality', 'preferred_audio_language',
+        'preferred_subtitle_language', 'equalizer'
+      ];
+    }
+    function syncSettingOk(k, p) {
+      return k in syncSettingKeys()
+        && p.keys().hasOnly(['val']) && p.keys().hasAll(['val'])
+        && (p.val is bool || p.val is number || (p.val is string && p.val.size() <= 4000));
     }
     // The app lists the signed-in user in the directory staff search (Spark: no onUserCreated).
     function selfRegister() {

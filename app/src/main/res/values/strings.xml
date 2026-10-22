@@ -4541,7 +4541,7 @@
     <string name="battery_saver_reason_ok">battery is fine</string>
     <string name="battery_saver_player_indicator">Battery saver is on</string>
     <string name="cloud_sync_title">Cloud sync</string>
-    <string name="cloud_sync_body">Your subscriptions stay in sync on every device signed in to this account.</string>
+    <string name="cloud_sync_body">Your subscriptions, playlists, liked videos, recent watch history and main settings stay in sync on every device signed in to this account.</string>
     <string name="cloud_sync_auto">Syncs automatically every 6 hours when you\'re online and the battery isn\'t low.</string>
     <string name="cloud_sync_now">Sync now</string>
     <string name="cloud_sync_running">Syncing…</string>
@@ -4550,9 +4550,18 @@
     <string name="cloud_sync_offline">Couldn\'t reach the server. It\'ll retry automatically.</string>
     <string name="cloud_sync_not_allowed">Sync isn\'t available for this account right now.</string>
     <string name="cloud_sync_failed">The last sync didn\'t finish. It\'ll try again later.</string>
-    <string name="cloud_sync_locked">Keep your subscriptions in sync across all your devices with Plus.</string>
+    <string name="cloud_sync_locked">Keep your subscriptions, playlists, likes and history in sync across all your devices with Plus.</string>
     <string name="cloud_sync_upgrade">Get Plus</string>
     <string name="cloud_sync_plus">Plus</string>
     <string name="cloud_sync_disabled">Cloud sync is paused for now.</string>
+    <string name="cloud_sync_off">Cloud sync is off on this device.</string>
+    <string name="cloud_sync_turn_on">Turn on cloud sync</string>
+    <string name="cloud_sync_delete">Delete my cloud data</string>
+    <string name="cloud_sync_delete_title">Delete your cloud data?</string>
+    <string name="cloud_sync_delete_body">This removes everything Mawja keeps in the cloud for this account: subscriptions, playlists, likes, watch history and settings. Nothing is removed from this device. Cloud sync turns off here; other signed-in devices may upload their copies again unless you turn it off on them too.</string>
+    <string name="cloud_sync_delete_confirm">Delete</string>
+    <string name="cloud_sync_deleting">Deleting your cloud data…</string>
+    <string name="cloud_sync_deleted">Cloud data deleted (%1$d items). Cloud sync is off on this device.</string>
+    <string name="cloud_sync_delete_failed">Couldn\'t delete all of your cloud data. Check your connection and try again.</string>
     <string name="jobs_cloud_sync">Cloud sync</string>
 </resources>

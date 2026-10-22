@@ -65,6 +65,10 @@ class AccountViewModel
 
         fun syncNow() = cloudSync.syncNow()
 
+        fun turnOnSync() = cloudSync.turnOn()
+
+        fun deleteCloudData() = cloudSync.deleteCloudData()
+
         /** config/app: codeRedeem switch and the online checkout URL. */
         val remoteSettings: StateFlow<RemoteSettings> = remote.settings
 

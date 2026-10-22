@@ -55,6 +55,11 @@ internal class FirestoreRest(
         val mustExist: Boolean? = null,
     ) : Write
 
+    /** Deletes the document at [path] (no error when it is already gone). */
+    data class Delete(
+        val path: String,
+    ) : Write
+
     private val root = "projects/$projectId/databases/(default)/documents"
     private val base = "https://firestore.googleapis.com/v1/$root"
     private val json = "application/json; charset=utf-8".toMediaType()
@@ -133,6 +138,19 @@ internal class FirestoreRest(
                 .put("value", encodeValue(value)),
         )
 
+    /** `field == value` filter for [runQuery] (single-field index, no composite index needed). */
+    fun fieldEquals(
+        field: String,
+        value: Any?,
+    ): JSONObject =
+        JSONObject().put(
+            "fieldFilter",
+            JSONObject()
+                .put("field", JSONObject().put("fieldPath", field))
+                .put("op", "EQUAL")
+                .put("value", encodeValue(value)),
+        )
+
     suspend fun beginTransaction(): String = JSONObject(post(":beginTransaction", JSONObject().put("options", JSONObject().put("readWrite", JSONObject())))).getString("transaction")
 
     suspend fun rollback(transaction: String) {
@@ -159,6 +177,8 @@ internal class FirestoreRest(
                     w.mustExist?.let { write.put("currentDocument", JSONObject().put("exists", it)) }
                     array.put(write)
                 }
+
+                is Delete -> array.put(JSONObject().put("delete", name(w.path)))
             }
         }
         val body = JSONObject().put("writes", array)

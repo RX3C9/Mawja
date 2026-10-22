@@ -4891,7 +4891,7 @@
     <string name="battery_saver_reason_ok">البطارية جيدة</string>
     <string name="battery_saver_player_indicator">توفير البطارية يعمل</string>
     <string name="cloud_sync_title">المزامنة السحابية</string>
-    <string name="cloud_sync_body">اشتراكاتك تفضل متزامنة على كل جهاز مسجّل دخوله بالحساب ده.</string>
+    <string name="cloud_sync_body">اشتراكاتك وقوائم التشغيل والفيديوهات اللي عجبتك وسجل المشاهدة الأخير والإعدادات الأساسية بتفضل متزامنة على كل جهاز مسجّل دخوله بالحساب ده.</string>
     <string name="cloud_sync_auto">بتتزامن تلقائيًا كل 6 ساعات لما تكون متصل والبطارية مش ضعيفة.</string>
     <string name="cloud_sync_now">زامن دلوقتي</string>
     <string name="cloud_sync_running">جارٍ المزامنة…</string>
@@ -4900,9 +4900,18 @@
     <string name="cloud_sync_offline">مقدرناش نوصل للسيرفر. هنحاول تاني تلقائيًا.</string>
     <string name="cloud_sync_not_allowed">المزامنة مش متاحة للحساب ده حاليًا.</string>
     <string name="cloud_sync_failed">آخر مزامنة ما كملتش. هنحاول تاني بعدين.</string>
-    <string name="cloud_sync_locked">خلّي اشتراكاتك متزامنة على كل أجهزتك مع Plus.</string>
+    <string name="cloud_sync_locked">خلّي اشتراكاتك وقوائم التشغيل والإعجابات والسجل متزامنين على كل أجهزتك مع Plus.</string>
     <string name="cloud_sync_upgrade">اشترك في Plus</string>
     <string name="cloud_sync_plus">Plus</string>
     <string name="cloud_sync_disabled">المزامنة السحابية متوقفة مؤقتًا.</string>
+    <string name="cloud_sync_off">المزامنة السحابية مقفولة على الجهاز ده.</string>
+    <string name="cloud_sync_turn_on">شغّل المزامنة السحابية</string>
+    <string name="cloud_sync_delete">امسح بياناتي من السحابة</string>
+    <string name="cloud_sync_delete_title">تمسح بياناتك من السحابة؟</string>
+    <string name="cloud_sync_delete_body">ده هيمسح كل اللي موجة محتفظة بيه في السحابة للحساب ده: الاشتراكات وقوائم التشغيل والإعجابات وسجل المشاهدة والإعدادات. مفيش حاجة هتتمسح من الجهاز ده. المزامنة السحابية هتتقفل هنا، والأجهزة التانية المسجّلة ممكن ترفع نسختها تاني لو ما قفلتهاش عليها كمان.</string>
+    <string name="cloud_sync_delete_confirm">امسح</string>
+    <string name="cloud_sync_deleting">جارٍ مسح بياناتك من السحابة…</string>
+    <string name="cloud_sync_deleted">اتمسحت بياناتك من السحابة (%1$d عنصر). المزامنة السحابية مقفولة على الجهاز ده.</string>
+    <string name="cloud_sync_delete_failed">مقدرناش نمسح كل بياناتك من السحابة. اتأكد من الاتصال وجرّب تاني.</string>
     <string name="jobs_cloud_sync">المزامنة السحابية</string>
 </resources>
