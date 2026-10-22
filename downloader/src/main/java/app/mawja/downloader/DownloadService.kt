@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.RemoteCallbackList
+import android.os.ServiceSpecificException
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import app.mawja.downloader.api.IDownloadCallback
@@ -25,7 +26,12 @@ import app.mawja.downloader.api.MawjaDownloaderContract
 import app.mawja.downloader.api.MawjaDownloaderContract.Item
 import app.mawja.downloader.api.MawjaDownloaderContract.Request
 import app.mawja.downloader.api.MawjaDownloaderContract.State
+import app.mawja.downloader.api.MawjaDownloaderContract.Range
+import app.mawja.downloader.api.MawjaDownloaderContract.RangeResult
+import app.mawja.downloader.remote.DownloaderRemoteConfig
 import app.mawja.downloader.ui.MainActivity
+import app.mawja.remote.DownloadBlock
+import java.util.Locale
 
 /**
  * Bound service other Mawja apps talk to. Access is limited by the signature permission
@@ -43,6 +49,9 @@ class DownloadService :
 
             override fun enqueue(request: Bundle?): String {
                 val req = requireNotNull(request) { "request is null" }
+                // New work is refused while config/downloader blocks it; running items still finish.
+                val block = DownloaderRemoteConfig.admit(null)
+                if (block.blocks) throw ServiceSpecificException(block.code, blockDetail(block))
                 val url = requireNotNull(req.getString(Request.URL)) { "url is required" }
                 require(url.startsWith("https://") || url.startsWith("http://")) { "unsupported url" }
                 val headersBundle = req.getBundle(Request.HEADERS)
@@ -87,6 +96,9 @@ class DownloadService :
                 progress: IRangeProgress?,
             ): Bundle {
                 val req = requireNotNull(request) { "request is null" }
+                DownloaderRemoteConfig.refreshIfStale(this@DownloadService)
+                val block = DownloaderRemoteConfig.admit(req.getString(Range.JOB_ID))
+                if (block.blocks) return blockedResult(block)
                 val id = token?.takeIf { it.isNotBlank() } ?: java.util.UUID.randomUUID().toString()
                 updateForeground(extra = 1)
                 try {
@@ -105,7 +117,22 @@ class DownloadService :
         super.onCreate()
         createChannel()
         DownloadEngine.addListener(this)
+        DownloaderRemoteConfig.refreshIfStale(this)
     }
+
+    /** A fetchRange answer that wrote nothing: no HTTP code, plus why (older clients just see an error). */
+    private fun blockedResult(block: DownloadBlock): Bundle =
+        Bundle().apply {
+            putInt(RangeResult.CODE, 0)
+            putLong(RangeResult.WRITTEN, 0L)
+            putInt(RangeResult.BLOCKED, block.code)
+            putString(RangeResult.ERROR, blockDetail(block))
+            DownloaderRemoteConfig.maintenanceMessage(Locale.getDefault().language).takeIf { it.isNotBlank() }?.let {
+                putString(RangeResult.BLOCK_MESSAGE, it)
+            }
+        }
+
+    private fun blockDetail(block: DownloadBlock): String = "Mawja Downloader refused new downloads: ${block.name.lowercase()}"
 
     override fun onBind(intent: Intent?): IBinder = binder
 

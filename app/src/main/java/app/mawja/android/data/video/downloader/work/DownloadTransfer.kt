@@ -39,6 +39,12 @@ enum class FetchFailure {
     LENGTH_UNKNOWN,
     NETWORK,
     DISK_FULL,
+
+    // Mawja Downloader's remote config refused new downloads (see DownloaderBlocks).
+    DOWNLOADER_KILLED,
+    DOWNLOADER_MAINTENANCE,
+    DOWNLOADER_UPDATE_REQUIRED,
+    DOWNLOADER_DISABLED,
 }
 
 sealed interface FetchOutcome {
@@ -141,6 +147,16 @@ class DownloadTransfer
                         val itag = StreamDenialClassifier.itagOf(result.url)?.toIntOrNull()
                         ClientGateTracker.reportDenied(result.url)
                         if (itag != null && (refusals.merge(itag, 1, Int::plus) ?: 0) >= 2) avoid = avoid + itag
+                    }
+
+                    is TransferResult.Blocked -> {
+                        // Refused by Mawja Downloader's remote config: no SABR or local fallback.
+                        Log.w(TAG, "${request.videoId}: Mawja Downloader refused new downloads (${result.code})")
+                        return FetchOutcome.Failed(
+                            app.mawja.android.data.video.downloader.remote.DownloaderBlocks
+                                .failureFor(result.code) ?: FetchFailure.DOWNLOADER_DISABLED,
+                            result.message,
+                        )
                     }
 
                     is TransferResult.Failed -> {

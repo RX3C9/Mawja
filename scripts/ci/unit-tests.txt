@@ -16,3 +16,4 @@ app.mawja.admin.core.AdminLogicTest
 app.mawja.admin.core.RemoteConfigTest
 app.mawja.remote.RemoteSettingsTest
 app.mawja.remote.AnnouncementFilterTest
+app.mawja.android.data.video.downloader.remote.DownloaderBlocksTest

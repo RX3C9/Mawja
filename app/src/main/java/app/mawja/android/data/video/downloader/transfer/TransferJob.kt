@@ -59,6 +59,15 @@ sealed interface TransferResult {
         val reason: TransferFailure,
         val detail: String? = null,
     ) : TransferResult
+
+    /**
+     * Mawja Downloader refused the transfer because its remote config blocks new downloads
+     * ([code] is a MawjaDownloaderContract.ERROR_*). Never retried and never run locally instead.
+     */
+    data class Blocked(
+        val code: Int,
+        val message: String? = null,
+    ) : TransferResult
 }
 
 enum class TransferFailure {

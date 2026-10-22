@@ -2,6 +2,7 @@ package app.mawja.android.data.video.downloader.work
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import app.mawja.android.R
 import app.mawja.android.data.local.PlayerPreferences
@@ -12,6 +13,7 @@ import app.mawja.android.data.video.DownloadProgressUpdate
 import app.mawja.android.data.video.DownloadStreamPolicy
 import app.mawja.android.data.video.OfflineSubtitleStore
 import app.mawja.android.data.video.VideoDownloadManager
+import app.mawja.android.data.video.downloader.remote.DownloaderBlocks
 import app.mawja.android.data.video.downloader.request.DownloadRequest
 import app.mawja.android.data.video.downloader.subtitle.DownloadSubtitleFile
 import app.mawja.android.data.video.downloader.tags.CoverArtLoader
@@ -84,7 +86,8 @@ class DownloadRunner
                     when (val fetched = transfer.fetch(request, staging, item.id, threads)) {
                         is FetchOutcome.Failed -> {
                             withLyrics.cancel()
-                            fail(request, staging, messageFor(fetched.reason), keepParts = true)
+                            fail(request, staging, messageFor(fetched.reason, fetched.detail), keepParts = true)
+                            if (DownloaderBlocks.isBlock(fetched.reason)) toast(messageFor(fetched.reason, fetched.detail))
                         }
 
                         is FetchOutcome.Fetched -> {
@@ -234,16 +237,29 @@ class DownloadRunner
             }
         }
 
-        private fun messageFor(reason: FetchFailure): String =
-            context.getString(
+        private fun messageFor(
+            reason: FetchFailure,
+            detail: String? = null,
+        ): String {
+            DownloaderBlocks.messageRes(reason)?.let { return DownloaderBlocks.message(reason, detail, context.getString(it)) }
+            return context.getString(
                 when (reason) {
                     FetchFailure.UNAVAILABLE -> R.string.download_failed_unavailable
                     FetchFailure.NO_COMPATIBLE_AUDIO -> R.string.download_failed_no_audio
                     FetchFailure.REFUSED -> R.string.download_failed_refused
                     FetchFailure.LENGTH_UNKNOWN, FetchFailure.NETWORK -> R.string.download_failed_try_again
                     FetchFailure.DISK_FULL -> R.string.download_failed_disk_full
+                    else -> R.string.downloader_blocked_disabled
                 },
             )
+        }
+
+        /** A refusal by Mawja Downloader is told right away, not only in the failed notification. */
+        private suspend fun toast(message: String) {
+            withContext(Dispatchers.Main) {
+                runCatching { Toast.makeText(context, message, Toast.LENGTH_LONG).show() }
+            }
+        }
 
         private companion object {
             const val TAG = "DownloadRunner"

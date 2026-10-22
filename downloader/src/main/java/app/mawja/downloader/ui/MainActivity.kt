@@ -67,6 +67,7 @@ import app.mawja.downloader.DownloadEngine
 import app.mawja.downloader.DownloadItem
 import app.mawja.downloader.R
 import app.mawja.downloader.api.MawjaDownloaderContract.State
+import app.mawja.downloader.remote.DownloaderRemoteConfig
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
@@ -77,7 +78,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (Build.VERSION.SDK_INT >= 33) notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-        setContent { DownloaderTheme { DownloadsScreen() } }
+        DownloaderRemoteConfig.init(this)
+        setContent { DownloaderTheme { RemoteGateHost { notices -> DownloadsScreen(notices) } } }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Opening the app reads config/downloader again unless it was read in the last minutes.
+        DownloaderRemoteConfig.refreshIfStale(this, DownloaderRemoteConfig.APP_OPEN_MAX_AGE_MS)
     }
 }
 
@@ -98,7 +106,7 @@ private fun DownloaderTheme(content: @Composable () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DownloadsScreen() {
+private fun DownloadsScreen(notices: @Composable () -> Unit) {
     val items by DownloadEngine.items.collectAsStateWithLifecycle()
     val transfers by app.mawja.downloader.RangeFetcher.active.collectAsStateWithLifecycle()
     val transferred by app.mawja.downloader.RangeFetcher.bytesTotal.collectAsStateWithLifecycle()
@@ -138,14 +146,17 @@ private fun DownloadsScreen() {
             )
         },
     ) { padding ->
-        if (items.isEmpty()) {
-            EmptyState(Modifier.padding(padding))
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = padding.calculateTopPadding(), bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                items(items, key = { it.id }) { DownloadRow(it) }
+        Column(Modifier.fillMaxSize().padding(top = padding.calculateTopPadding())) {
+            Box(Modifier.padding(horizontal = 16.dp)) { notices() }
+            if (items.isEmpty()) {
+                EmptyState(Modifier.padding(bottom = padding.calculateBottomPadding()))
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp + padding.calculateBottomPadding()),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(items, key = { it.id }) { DownloadRow(it) }
+                }
             }
         }
     }

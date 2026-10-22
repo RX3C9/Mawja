@@ -111,8 +111,9 @@ class RangeDownloader internal constructor(
         try {
             for (stream in job.streams) {
                 if (stream.totalBytes <= 0L) {
-                    when (val length = contentLength(client, transport, stream.url, job.fallbackUserAgent)) {
+                    when (val length = contentLength(client, transport, stream.url, job.fallbackUserAgent, job.videoId)) {
                         is ContentLength.Known -> stream.totalBytes = length.bytes
+                        is ContentLength.Blocked -> job.fail(TransferResult.Blocked(length.code, length.message))
                         ContentLength.Denied -> job.fail(TransferResult.Denied(stream.url))
                         ContentLength.Unknown -> job.fail(TransferResult.Failed(TransferFailure.LENGTH_UNKNOWN))
                     }
@@ -193,6 +194,11 @@ class RangeDownloader internal constructor(
                 }
 
                 BlockOutcome.Stopped -> {
+                    return false
+                }
+
+                is BlockOutcome.Blocked -> {
+                    job.fail(TransferResult.Blocked(outcome.code, outcome.message))
                     return false
                 }
 
@@ -311,6 +317,7 @@ class RangeDownloader internal constructor(
                     onBytes = { stream.downloaded.addAndGet(it) },
                     registerCancel = job::trackCancel,
                     unregisterCancel = job::untrack,
+                    jobId = job.videoId,
                 )
             } catch (e: IOException) {
                 return if (job.isRunning) BlockOutcome.Retry(e.message ?: e.javaClass.simpleName) else BlockOutcome.Stopped
@@ -318,6 +325,7 @@ class RangeDownloader internal constructor(
         val written = result.written
         if (written > 0) stream.partialBlockBytes[block] = already + written
         if (!job.isRunning || result.cancelled) return BlockOutcome.Stopped
+        if (result.isBlocked) return BlockOutcome.Blocked(result.blocked, result.blockMessage)
         if (result.code == 0 || result.error != null && result.isSuccessful) {
             return BlockOutcome.Retry(result.error ?: "no response", diskFull = result.diskFull)
         }
@@ -374,6 +382,11 @@ class RangeDownloader internal constructor(
         data object Denied : ContentLength
 
         data object Unknown : ContentLength
+
+        data class Blocked(
+            val code: Int,
+            val message: String?,
+        ) : ContentLength
     }
 
     /**
@@ -385,11 +398,12 @@ class RangeDownloader internal constructor(
         transport: RemoteRangeTransport?,
         url: String,
         fallbackUserAgent: String,
+        jobId: String? = null,
     ): ContentLength {
         if (YouTubeStreamUrls.isYouTubeStreamUrl(url)) {
             YouTubeStreamUrls.extractClenFromUrl(url).takeIf { it > 0 }?.let { return ContentLength.Known(it) }
         }
-        if (transport != null) return remoteContentLength(transport, url, fallbackUserAgent)
+        if (transport != null) return remoteContentLength(transport, url, fallbackUserAgent, jobId)
         return try {
             client.newCall(blockRequest(url, 0L, 0L, fallbackUserAgent)).execute().use { response ->
                 when {
@@ -421,6 +435,7 @@ class RangeDownloader internal constructor(
         transport: RemoteRangeTransport,
         url: String,
         fallbackUserAgent: String,
+        jobId: String?,
     ): ContentLength {
         val result: RemoteRangeResult =
             try {
@@ -433,12 +448,14 @@ class RangeDownloader internal constructor(
                     onBytes = {},
                     registerCancel = { cancel -> cancel },
                     unregisterCancel = {},
+                    jobId = jobId,
                 )
             } catch (e: IOException) {
                 Log.w(TAG, "Length probe through Mawja Downloader failed: ${e.message}")
                 return ContentLength.Unknown
             }
         return when {
+            result.isBlocked -> ContentLength.Blocked(result.blocked, result.blockMessage)
             result.code == 403 -> ContentLength.Denied
             !result.isSuccessful -> ContentLength.Unknown
             else ->
@@ -471,6 +488,12 @@ class RangeDownloader internal constructor(
 
         data class Denied(
             val url: String,
+        ) : BlockOutcome
+
+        /** The downloader's remote config refused it: fail the job, no retry, no local fallback. */
+        data class Blocked(
+            val code: Int,
+            val message: String?,
         ) : BlockOutcome
 
         data class Retry(

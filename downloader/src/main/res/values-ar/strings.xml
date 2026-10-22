@@ -17,4 +17,16 @@
     <string name="subtitle">تنزيلات موجة، في تطبيق منفصل وآمن.</string>
     <string name="notification_mawja_transfers">جارٍ النقل لتطبيق موجة</string>
     <string name="mawja_transfers_status">نقل موجة: %1$d نشط · %2$s تم نقلها</string>
+    <string name="remote_killed_title">موجة للتنزيل غير متاح</string>
+    <string name="remote_killed_body">تم إيقاف هذا الإصدار من موجة للتنزيل. تابع قنوات موجة الرسمية لمعرفة الجديد.</string>
+    <string name="remote_maintenance_title">قيد الصيانة</string>
+    <string name="remote_maintenance_body">موجة للتنزيل متوقف للصيانة. حاول مرة أخرى بعد قليل.</string>
+    <string name="remote_force_update_title">التحديث مطلوب</string>
+    <string name="remote_force_update_body">لم يعد هذا الإصدار من موجة للتنزيل مدعومًا. ثبّت أحدث إصدار لمواصلة التنزيل.</string>
+    <string name="remote_update_button">تحديث</string>
+    <string name="remote_soft_update_title">يتوفر إصدار جديد</string>
+    <string name="remote_soft_update_body">حدّث موجة للتنزيل للحصول على أحدث الإصلاحات. تستمر التنزيلات في العمل حتى ذلك الحين.</string>
+    <string name="remote_downloads_paused_title">التنزيلات الجديدة متوقفة مؤقتًا</string>
+    <string name="remote_downloads_paused_body">ستكتمل التنزيلات الجارية، ولا يمكن بدء تنزيلات جديدة حاليًا.</string>
+    <string name="remote_dismiss">إغلاق</string>
 </resources>

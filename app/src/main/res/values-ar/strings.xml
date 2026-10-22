@@ -4850,6 +4850,10 @@
     <string name="remote_ok">حسنًا</string>
     <string name="remote_dismiss">إغلاق</string>
     <string name="remote_downloads_disabled">التنزيلات متوقفة مؤقتًا. حاول مرة أخرى لاحقًا.</string>
+    <string name="downloader_blocked_killed">تم إيقاف موجة للتنزيل، لذلك لا يمكن بدء تنزيلات جديدة.</string>
+    <string name="downloader_blocked_maintenance">موجة للتنزيل قيد الصيانة. حاول مرة أخرى بعد قليل.</string>
+    <string name="downloader_blocked_update">حدّث موجة للتنزيل لمواصلة التنزيل.</string>
+    <string name="downloader_blocked_disabled">التنزيلات الجديدة متوقفة مؤقتًا في موجة للتنزيل.</string>
     <string name="remote_redeem_disabled">تفعيل الأكواد متوقف مؤقتًا. حاول مرة أخرى لاحقًا.</string>
     <string name="upgrade_buy_online">اشترِ كودًا عبر الإنترنت</string>
 </resources>

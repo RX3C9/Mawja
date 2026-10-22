@@ -4500,6 +4500,10 @@
     <string name="remote_ok">OK</string>
     <string name="remote_dismiss">Dismiss</string>
     <string name="remote_downloads_disabled">Downloads are paused for now. Please try again later.</string>
+    <string name="downloader_blocked_killed">Mawja Downloader has been switched off, so new downloads can\'t start.</string>
+    <string name="downloader_blocked_maintenance">Mawja Downloader is under maintenance. Please try again a little later.</string>
+    <string name="downloader_blocked_update">Update Mawja Downloader to keep downloading.</string>
+    <string name="downloader_blocked_disabled">New downloads are paused in Mawja Downloader for now.</string>
     <string name="remote_redeem_disabled">Code activation is paused for now. Please try again later.</string>
     <string name="upgrade_buy_online">Buy a code online</string>
 </resources>

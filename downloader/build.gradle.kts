@@ -1,7 +1,22 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+// Firebase project for the token-free remote config read (config/downloader). Same lookup as :admin;
+// no Firebase SDK and no google-services.json here.
+val local =
+    Properties().apply {
+        rootDir.resolve("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+    }
+
+fun cfg(
+    key: String,
+    env: String,
+    property: String,
+): String = local.getProperty(key) ?: System.getenv(env) ?: (project.findProperty(property) as String?) ?: ""
 
 android {
     namespace = "app.mawja.downloader"
@@ -14,6 +29,8 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         manifestPlaceholders["downloadPermission"] = "app.mawja.permission.DOWNLOAD"
+        buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${cfg("firebase.projectId", "MAWJA_FIREBASE_PROJECT_ID", "mawjaFirebaseProjectId")}\"")
+        buildConfigField("String", "FIREBASE_API_KEY", "\"${cfg("firebase.apiKey", "MAWJA_FIREBASE_API_KEY", "mawjaFirebaseApiKey")}\"")
     }
 
     signingConfigs {
@@ -44,6 +61,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -54,6 +72,7 @@ android {
 
 dependencies {
     implementation(project(":downloader-api"))
+    implementation(project(":shared-remote"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

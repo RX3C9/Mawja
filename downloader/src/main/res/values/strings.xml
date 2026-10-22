@@ -17,4 +17,16 @@
     <string name="subtitle">Downloads for Mawja, kept separate and safe.</string>
     <string name="notification_mawja_transfers">Transferring for Mawja</string>
     <string name="mawja_transfers_status">Mawja transfers: %1$d active · %2$s moved</string>
+    <string name="remote_killed_title">Mawja Downloader is unavailable</string>
+    <string name="remote_killed_body">This version of Mawja Downloader has been switched off. Please check the official Mawja channels for news.</string>
+    <string name="remote_maintenance_title">Under maintenance</string>
+    <string name="remote_maintenance_body">Mawja Downloader is down for maintenance. Please try again a little later.</string>
+    <string name="remote_force_update_title">Update required</string>
+    <string name="remote_force_update_body">This version of Mawja Downloader is no longer supported. Install the latest version to keep downloading.</string>
+    <string name="remote_update_button">Update</string>
+    <string name="remote_soft_update_title">A new version is available</string>
+    <string name="remote_soft_update_body">Update Mawja Downloader to get the latest fixes. Downloads keep working until then.</string>
+    <string name="remote_downloads_paused_title">New downloads are paused</string>
+    <string name="remote_downloads_paused_body">Downloads already running will finish. New ones can\'t start for now.</string>
+    <string name="remote_dismiss">Dismiss</string>
 </resources>

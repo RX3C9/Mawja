@@ -12,10 +12,29 @@ import android.os.Bundle
 
 /** Shared constants between the Mawja app and the Mawja Downloader app. */
 object MawjaDownloaderContract {
-    const val API_VERSION = 2
+    const val API_VERSION = 3
 
     /** First version whose service runs the app's byte transfers (fetchRange). */
     const val API_RANGE_TRANSFER = 2
+
+    /**
+     * First version that refuses new work when its remote config (config/downloader) blocks it:
+     * fetchRange answers with [RangeResult.BLOCKED] and enqueue throws a ServiceSpecificException
+     * carrying one of the ERROR_* codes below. Older clients see a plain failure.
+     */
+    const val API_REMOTE_BLOCK = 3
+
+    /** The downloader is switched off remotely (kill switch). */
+    const val ERROR_REMOTE_BLOCKED = 1001
+
+    /** The downloader is under maintenance; [RangeResult.BLOCK_MESSAGE] may carry the remote message. */
+    const val ERROR_MAINTENANCE = 1002
+
+    /** This downloader build is older than config/downloader minVersion. */
+    const val ERROR_UPDATE_REQUIRED = 1003
+
+    /** config/downloader features.downloads is off. */
+    const val ERROR_DOWNLOADS_DISABLED = 1004
 
     /** Release package name; debug builds append ".debug". */
     const val PACKAGE_RELEASE = "app.mawja.downloader"
@@ -57,6 +76,12 @@ object MawjaDownloaderContract {
 
         /** When true the body is written only for a 206 answer, so a server ignoring Range cannot corrupt the file. */
         const val REQUIRE_PARTIAL = "require_partial"
+
+        /**
+         * Optional id of the download this request belongs to (API 3). A job that was running before
+         * the downloader got blocked may finish; requests without it are treated as new work.
+         */
+        const val JOB_ID = "job_id"
     }
 
     /** Result keys of fetchRange. */
@@ -69,6 +94,12 @@ object MawjaDownloaderContract {
         const val ERROR = "error"
         const val DISK_FULL = "disk_full"
         const val CANCELLED = "cancelled"
+
+        /** Int ERROR_* code when the downloader refused the request (API 3); absent or 0 otherwise. */
+        const val BLOCKED = "blocked"
+
+        /** Remote maintenance message in the downloader's language, when it has one. */
+        const val BLOCK_MESSAGE = "block_message"
     }
 
     enum class State { QUEUED, RUNNING, COMPLETED, FAILED, CANCELLED }

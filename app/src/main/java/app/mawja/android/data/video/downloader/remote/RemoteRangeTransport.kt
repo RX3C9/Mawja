@@ -27,8 +27,13 @@ data class RemoteRangeResult(
     val error: String? = null,
     val diskFull: Boolean = false,
     val cancelled: Boolean = false,
+    /** MawjaDownloaderContract.ERROR_* when the downloader refused new work (its remote config), else 0. */
+    val blocked: Int = 0,
+    /** The downloader's remote maintenance message, when it sent one. */
+    val blockMessage: String? = null,
 ) {
     val isSuccessful: Boolean get() = code in 200..299
+    val isBlocked: Boolean get() = blocked != 0
 }
 
 /**
@@ -55,12 +60,15 @@ class RemoteRangeTransport(
         onBytes: (Long) -> Unit,
         registerCancel: (() -> Unit) -> (() -> Unit),
         unregisterCancel: (() -> Unit) -> Unit,
+        jobId: String? = null,
     ): RemoteRangeResult {
         val token = UUID.randomUUID().toString()
         val args =
             Bundle().apply {
                 putString(Range.URL, request.url.toString())
                 putBoolean(Range.REQUIRE_PARTIAL, requirePartial)
+                // Lets a download that was already running finish if the downloader gets blocked.
+                jobId?.let { putString(Range.JOB_ID, it) }
                 putBundle(
                     Range.HEADERS,
                     Bundle().apply { request.headers.forEach { (name, value) -> putString(name, value) } },
@@ -122,6 +130,8 @@ class RemoteRangeTransport(
             error = b.getString(RangeResult.ERROR),
             diskFull = b.getBoolean(RangeResult.DISK_FULL),
             cancelled = b.getBoolean(RangeResult.CANCELLED),
+            blocked = b.getInt(RangeResult.BLOCKED, 0),
+            blockMessage = b.getString(RangeResult.BLOCK_MESSAGE),
         )
     }
 }
