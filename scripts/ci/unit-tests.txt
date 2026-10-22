@@ -19,3 +19,4 @@ app.mawja.remote.AnnouncementFilterTest
 app.mawja.android.data.video.downloader.remote.DownloaderBlocksTest
 app.mawja.android.battery.BatterySaverPolicyTest
 app.mawja.android.ui.screens.shorts.ShortsPlaybackTargetTest
+app.mawja.android.cloudsync.SyncMergeTest

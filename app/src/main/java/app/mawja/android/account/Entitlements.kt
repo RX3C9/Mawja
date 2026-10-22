@@ -20,6 +20,9 @@ enum class MawjaFeature {
     /** Audio visualizer and animated backgrounds. */
     VISUALIZER,
 
+    /** Cloud sync of the library between the member's devices (PLAN_V2 #61). */
+    CLOUD_SYNC,
+
     /** Shared plan for up to six people. */
     FAMILY_SHARING,
 }
@@ -34,7 +37,7 @@ data class Entitlements(
     val isFree: Boolean get() = tier == MawjaTier.FREE
 
     companion object {
-        private val PLUS_FEATURES = setOf(MawjaFeature.PREMIUM_THEMES, MawjaFeature.PREMIUM_ICONS)
+        private val PLUS_FEATURES = setOf(MawjaFeature.PREMIUM_THEMES, MawjaFeature.PREMIUM_ICONS, MawjaFeature.CLOUD_SYNC)
         private val PRO_FEATURES = PLUS_FEATURES + setOf(MawjaFeature.UI_SOUNDS, MawjaFeature.VISUALIZER)
 
         val FREE = Entitlements(MawjaTier.FREE, emptySet())

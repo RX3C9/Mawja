@@ -294,6 +294,8 @@ class FirebaseAccountBackend(
         auth.signOut()
     }
 
+    override suspend fun idToken(): String? = runCatching { auth.currentUser?.getIdToken(false)?.await()?.token }.getOrNull()
+
     override suspend fun refreshProfile() {
         val user = auth.currentUser ?: return
         val result = fetchFields(user) ?: return

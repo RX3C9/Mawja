@@ -73,6 +73,8 @@ import app.mawja.android.account.MawjaBadge
 import app.mawja.android.account.MawjaProfile
 import app.mawja.android.account.MawjaTier
 import app.mawja.android.account.UsernameRules
+import app.mawja.android.cloudsync.CloudSyncAvailability
+import app.mawja.android.cloudsync.CloudSyncOutcome
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.utils.copyPlainText
 import kotlinx.coroutines.launch
@@ -113,6 +115,7 @@ internal fun AccountScreen(
                 ui.error?.let { error -> item("account.error") { ErrorText(error) } }
                 if (state.profile.username == null) item("account.username") { UsernameClaim(viewModel, ui.busy) }
                 item("account.upgrade") { UpgradeEntry(state.profile.tier, onUpgrade) }
+                item("account.sync") { CloudSyncSection(viewModel, onUpgrade) }
                 item("account.manage") { ManageSection(state.profile, viewModel, ui.busy) }
             }
 
@@ -559,5 +562,104 @@ private fun UpgradeEntry(
         Icon(Icons.Outlined.WorkspacePremium, contentDescription = null, Modifier.size(18.dp))
         Spacer(Modifier.size(8.dp))
         Text(stringResource(label))
+    }
+}
+
+/** Cloud sync (#61): status, last sync and Sync now for members; an upsell for Free accounts. */
+@Composable
+private fun CloudSyncSection(
+    viewModel: AccountViewModel,
+    onUpgrade: () -> Unit,
+) {
+    val availability by viewModel.syncAvailability.collectAsStateWithLifecycle()
+    val status by viewModel.syncStatus.collectAsStateWithLifecycle()
+    if (availability == CloudSyncAvailability.UNSUPPORTED || availability == CloudSyncAvailability.SIGNED_OUT) return
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Icon(Icons.Outlined.CloudSync, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                Text(
+                    stringResource(R.string.cloud_sync_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f),
+                )
+                if (availability == CloudSyncAvailability.LOCKED) {
+                    AssistChip(
+                        onClick = onUpgrade,
+                        label = { Text(stringResource(R.string.cloud_sync_plus)) },
+                        leadingIcon = { Icon(Icons.Outlined.WorkspacePremium, contentDescription = null, Modifier.size(16.dp)) },
+                    )
+                }
+            }
+            when (availability) {
+                CloudSyncAvailability.LOCKED -> {
+                    Text(stringResource(R.string.cloud_sync_locked), style = MaterialTheme.typography.bodyMedium)
+                    FilledTonalButton(onClick = onUpgrade, modifier = Modifier.fillMaxWidth()) {
+                        Text(stringResource(R.string.cloud_sync_upgrade))
+                    }
+                }
+
+                CloudSyncAvailability.DISABLED ->
+                    Text(
+                        stringResource(R.string.cloud_sync_disabled),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                else -> {
+                    Text(stringResource(R.string.cloud_sync_body), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        stringResource(R.string.cloud_sync_auto),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    if (status.running) LinearProgressIndicator(Modifier.fillMaxWidth())
+                    Text(
+                        syncStatusText(status.running, status.lastSyncAt, status.outcome),
+                        style = MaterialTheme.typography.bodySmall,
+                        color =
+                            if (status.outcome == CloudSyncOutcome.OK || status.running || status.outcome == CloudSyncOutcome.NEVER) {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            } else {
+                                MaterialTheme.colorScheme.error
+                            },
+                    )
+                    OutlinedButton(onClick = viewModel::syncNow, enabled = !status.running, modifier = Modifier.fillMaxWidth()) {
+                        Text(stringResource(R.string.cloud_sync_now))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun syncStatusText(
+    running: Boolean,
+    lastSyncAt: Long,
+    outcome: CloudSyncOutcome,
+): String {
+    if (running) return stringResource(R.string.cloud_sync_running)
+    val last =
+        if (lastSyncAt > 0L) {
+            stringResource(
+                R.string.cloud_sync_last,
+                android.text.format.DateUtils
+                    .getRelativeTimeSpanString(lastSyncAt, System.currentTimeMillis(), android.text.format.DateUtils.MINUTE_IN_MILLIS)
+                    .toString(),
+            )
+        } else {
+            stringResource(R.string.cloud_sync_never)
+        }
+    return when (outcome) {
+        CloudSyncOutcome.OFFLINE -> stringResource(R.string.cloud_sync_offline)
+        CloudSyncOutcome.NOT_ALLOWED -> stringResource(R.string.cloud_sync_not_allowed)
+        CloudSyncOutcome.FAILED -> stringResource(R.string.cloud_sync_failed)
+        else -> last
     }
 }

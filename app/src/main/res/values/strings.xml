@@ -4540,4 +4540,19 @@
     <string name="battery_saver_reason_charging">charging</string>
     <string name="battery_saver_reason_ok">battery is fine</string>
     <string name="battery_saver_player_indicator">Battery saver is on</string>
+    <string name="cloud_sync_title">Cloud sync</string>
+    <string name="cloud_sync_body">Your subscriptions stay in sync on every device signed in to this account.</string>
+    <string name="cloud_sync_auto">Syncs automatically every 6 hours when you\'re online and the battery isn\'t low.</string>
+    <string name="cloud_sync_now">Sync now</string>
+    <string name="cloud_sync_running">Syncing…</string>
+    <string name="cloud_sync_last">Last synced %1$s</string>
+    <string name="cloud_sync_never">Not synced yet</string>
+    <string name="cloud_sync_offline">Couldn\'t reach the server. It\'ll retry automatically.</string>
+    <string name="cloud_sync_not_allowed">Sync isn\'t available for this account right now.</string>
+    <string name="cloud_sync_failed">The last sync didn\'t finish. It\'ll try again later.</string>
+    <string name="cloud_sync_locked">Keep your subscriptions in sync across all your devices with Plus.</string>
+    <string name="cloud_sync_upgrade">Get Plus</string>
+    <string name="cloud_sync_plus">Plus</string>
+    <string name="cloud_sync_disabled">Cloud sync is paused for now.</string>
+    <string name="jobs_cloud_sync">Cloud sync</string>
 </resources>

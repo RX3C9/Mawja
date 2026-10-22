@@ -29,6 +29,7 @@ enum class MawjaJob(
     SCROBBLE("flow_scrobble_flush", false),
     DOWNLOAD_QUEUE("flow_download_queue", false),
     DOWNLOAD_RETAG("flow_download_retag", false),
+    CLOUD_SYNC("mawja_cloud_sync", true),
 }
 
 /** A job's row on the Background jobs page. */

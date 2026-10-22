@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit
  * A small Firestore REST client, authenticated as the signed-in user with their Firebase ID token,
  * so every call goes through the security rules. The app carries no Firestore SDK (its protolite
  * clashes with the app's protobuf-javalite), and the REST API needs no Cloud Functions, so this
- * works on the free Spark plan.
+ * works on the free Spark plan. Shared by the github flavor's account backend and cloud sync; foss
+ * builds never construct it (they have no ID token).
  */
 internal class FirestoreRest(
     private val projectId: String,
@@ -78,6 +79,59 @@ internal class FirestoreRest(
         }
         return Snapshot(docs, readTime ?: Instant.now())
     }
+
+    /**
+     * Runs a structured query on the collection [collectionId] under [parentPath] ("" for the root,
+     * "users/{uid}" for a user's subcollection). Returns the documents in query order.
+     */
+    suspend fun runQuery(
+        parentPath: String,
+        collectionId: String,
+        where: JSONObject? = null,
+        orderBy: List<String> = emptyList(),
+        startAfter: List<Any?>? = null,
+        limit: Int? = null,
+    ): List<Doc> {
+        val q = JSONObject().put("from", JSONArray().put(JSONObject().put("collectionId", collectionId)))
+        if (where != null) q.put("where", where)
+        if (orderBy.isNotEmpty()) {
+            q.put(
+                "orderBy",
+                JSONArray(orderBy.map { JSONObject().put("field", JSONObject().put("fieldPath", it)).put("direction", "ASCENDING") }),
+            )
+        }
+        if (startAfter != null) {
+            q.put("startAt", JSONObject().put("before", false).put("values", JSONArray(startAfter.map { encodeValue(it) })))
+        }
+        if (limit != null) q.put("limit", limit)
+        val verb = (if (parentPath.isEmpty()) "" else "/$parentPath") + ":runQuery"
+        val array = JSONArray(post(verb, JSONObject().put("structuredQuery", q)))
+        val out = ArrayList<Doc>(array.length())
+        for (i in 0 until array.length()) {
+            val document = array.getJSONObject(i).optJSONObject("document") ?: continue
+            val path = document.getString("name").removePrefix("$root/")
+            out += Doc(path, decodeFields(document.optJSONObject("fields")))
+        }
+        return out
+    }
+
+    /** A document reference value for cursors on `__name__`. */
+    data class Ref(
+        val path: String,
+    )
+
+    /** `field >= value` filter for [runQuery]. */
+    fun fieldAtLeast(
+        field: String,
+        value: Any?,
+    ): JSONObject =
+        JSONObject().put(
+            "fieldFilter",
+            JSONObject()
+                .put("field", JSONObject().put("fieldPath", field))
+                .put("op", "GREATER_THAN_OR_EQUAL")
+                .put("value", encodeValue(value)),
+        )
 
     suspend fun beginTransaction(): String = JSONObject(post(":beginTransaction", JSONObject().put("options", JSONObject().put("readWrite", JSONObject())))).getString("transaction")
 
@@ -176,6 +230,7 @@ internal class FirestoreRest(
         private fun encodeValue(value: Any?): JSONObject =
             when (value) {
                 null -> JSONObject().put("nullValue", JSONObject.NULL)
+                is Ref -> JSONObject().put("referenceValue", value.path)
                 is String -> JSONObject().put("stringValue", value)
                 is Int -> JSONObject().put("integerValue", value.toString())
                 is Long -> JSONObject().put("integerValue", value.toString())

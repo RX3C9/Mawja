@@ -16,6 +16,9 @@ import app.mawja.android.account.EntitlementsRepository
 import app.mawja.android.account.RedeemError
 import app.mawja.android.account.RedeemResult
 import app.mawja.android.account.localCodeError
+import app.mawja.android.cloudsync.CloudSyncAvailability
+import app.mawja.android.cloudsync.CloudSyncRepository
+import app.mawja.android.cloudsync.CloudSyncStatus
 import app.mawja.android.remote.RemoteConfigRepository
 import app.mawja.remote.RemoteSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,7 +57,14 @@ class AccountViewModel
         private val backend: AccountBackend,
         private val entitlements: EntitlementsRepository,
         remote: RemoteConfigRepository,
+        private val cloudSync: CloudSyncRepository,
     ) : ViewModel() {
+        /** Cloud sync card: whether it is usable, locked (upsell) or off, and the last run. */
+        val syncAvailability: StateFlow<CloudSyncAvailability> = cloudSync.availability
+        val syncStatus: StateFlow<CloudSyncStatus> = cloudSync.status
+
+        fun syncNow() = cloudSync.syncNow()
+
         /** config/app: codeRedeem switch and the online checkout URL. */
         val remoteSettings: StateFlow<RemoteSettings> = remote.settings
 

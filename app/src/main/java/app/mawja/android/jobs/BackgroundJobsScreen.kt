@@ -132,4 +132,5 @@ private fun titleRes(job: MawjaJob): Int =
         MawjaJob.SCROBBLE -> R.string.jobs_scrobble
         MawjaJob.DOWNLOAD_QUEUE -> R.string.jobs_download_queue
         MawjaJob.DOWNLOAD_RETAG -> R.string.jobs_download_retag
+        MawjaJob.CLOUD_SYNC -> R.string.jobs_cloud_sync
     }

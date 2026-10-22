@@ -108,6 +108,10 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var remoteConfig: app.mawja.android.remote.RemoteConfigRepository
 
+    /** Cloud sync (#61): created with the activity so it can keep its periodic job scheduled. */
+    @Inject
+    lateinit var cloudSync: app.mawja.android.cloudsync.CloudSyncRepository
+
     @Inject
     lateinit var playlistTransfer: dagger.Lazy<PlaylistTransfer>
 

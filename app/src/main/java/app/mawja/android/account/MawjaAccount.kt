@@ -136,6 +136,12 @@ interface AccountBackend {
 
     /** Re-reads the account (tier, Mawja ID) from the backend. */
     suspend fun refreshProfile()
+
+    /**
+     * The signed-in user's Firebase ID token, for Firestore REST calls that must pass the security
+     * rules as that user (cloud sync). Null for guests and builds without accounts (foss).
+     */
+    suspend fun idToken(): String? = null
 }
 
 /** Accounts switched off: everything stays local, exactly like the original app. */

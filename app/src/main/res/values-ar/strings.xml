@@ -4890,4 +4890,19 @@
     <string name="battery_saver_reason_charging">قيد الشحن</string>
     <string name="battery_saver_reason_ok">البطارية جيدة</string>
     <string name="battery_saver_player_indicator">توفير البطارية يعمل</string>
+    <string name="cloud_sync_title">المزامنة السحابية</string>
+    <string name="cloud_sync_body">اشتراكاتك تفضل متزامنة على كل جهاز مسجّل دخوله بالحساب ده.</string>
+    <string name="cloud_sync_auto">بتتزامن تلقائيًا كل 6 ساعات لما تكون متصل والبطارية مش ضعيفة.</string>
+    <string name="cloud_sync_now">زامن دلوقتي</string>
+    <string name="cloud_sync_running">جارٍ المزامنة…</string>
+    <string name="cloud_sync_last">آخر مزامنة %1$s</string>
+    <string name="cloud_sync_never">لسه ما اتعملتش مزامنة</string>
+    <string name="cloud_sync_offline">مقدرناش نوصل للسيرفر. هنحاول تاني تلقائيًا.</string>
+    <string name="cloud_sync_not_allowed">المزامنة مش متاحة للحساب ده حاليًا.</string>
+    <string name="cloud_sync_failed">آخر مزامنة ما كملتش. هنحاول تاني بعدين.</string>
+    <string name="cloud_sync_locked">خلّي اشتراكاتك متزامنة على كل أجهزتك مع Plus.</string>
+    <string name="cloud_sync_upgrade">اشترك في Plus</string>
+    <string name="cloud_sync_plus">Plus</string>
+    <string name="cloud_sync_disabled">المزامنة السحابية متوقفة مؤقتًا.</string>
+    <string name="jobs_cloud_sync">المزامنة السحابية</string>
 </resources>

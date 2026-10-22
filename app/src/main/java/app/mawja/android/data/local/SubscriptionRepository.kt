@@ -104,13 +104,17 @@ class SubscriptionRepository private constructor(
     /**
      * Unsubscribe from a channel
      */
-    suspend fun unsubscribe(channelId: String) {
+    suspend fun unsubscribe(
+        channelId: String,
+        /** When it happened; cloud sync passes the remote unsubscribe time so it is not re-pushed. */
+        at: Long = System.currentTimeMillis(),
+    ) {
         val now = System.currentTimeMillis()
         context.subscriptionsDataStore.edit { preferences ->
             preferences.remove(channelKey(channelId))
             // Remember *when*, so device sync can tell an unsubscribe from "this device never knew
             // about the channel" and the removal actually reaches the other device.
-            preferences[unsubscribedKey(channelId)] = now.toString()
+            preferences[unsubscribedKey(channelId)] = at.toString()
             prune(preferences, now)
 
             // Update order list

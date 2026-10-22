@@ -43,6 +43,7 @@ class BackgroundJobsViewModel
                 MawjaJob.SMART_NOTIFY -> workManager.enqueue(OneTimeWorkRequestBuilder<SmartNotifyWorker>().build())
                 MawjaJob.STORAGE_GUARD -> workManager.enqueue(OneTimeWorkRequestBuilder<StorageGuardWorker>().build())
                 MawjaJob.UPDATE_CHECK -> workManager.enqueue(OneTimeWorkRequestBuilder<UpdateCheckWorker>().build())
+                MawjaJob.CLOUD_SYNC -> app.mawja.android.cloudsync.CloudSyncWorker.runOnce(context)
                 else -> Unit
             }
         }

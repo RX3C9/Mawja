@@ -127,11 +127,14 @@ service cloud.firestore {
         allow read, write: if isSelf(uid) && notBanned();
         allow read: if isStaff();
       }
+      // Cloud sync (docs/cloud-sync.md): one doc per item, users/{uid}/syncData/{c}_{k}, last
+      // writer wins on the client clock `m`, tombstones (`del`), server write time `at` for pulls.
       match /syncData/{doc} {
-        allow read, write: if isSelf(uid) && notBanned() && (
-          request.auth.token.get('tier', '') in paidTiers()
-          || isActive(get(/databases/$(database)/documents/users/$(uid)).data)
-        );
+        allow read: if isSelf(uid) && notBanned() && syncEntitled(uid);
+        allow create, update: if isSelf(uid) && notBanned() && syncEntitled(uid)
+          && syncItemOk(doc, request.resource.data);
+        // Owners may garbage-collect their own tombstones only.
+        allow delete: if isSelf(uid) && notBanned() && resource.data.get('del', false) == true;
         // Admin "reset sync data": allowed only in the batch that stamps users/{uid}.syncResetAt
         // (itself an audited staff write).
         allow read: if isAdmin();
@@ -145,6 +148,33 @@ service cloud.firestore {
         allow create, update: if doc == 'redeem' && isSelf(uid) && notBanned() && attemptOk();
         allow delete: if false;
       }
+    }
+    // ---- Cloud sync ---------------------------------------------------------------------------
+    function syncEntitled(uid) {
+      return request.auth.token.get('tier', '') in paidTiers()
+        || isActive(get(/databases/$(database)/documents/users/$(uid)).data);
+    }
+    function syncCollections() { return ['subscriptions', 'playlists', 'liked', 'history', 'settings']; }
+    function syncItemOk(doc, d) {
+      return d.keys().hasOnly(['c', 'k', 'm', 'dev', 'del', 'v', 'at', 'd'])
+        && d.keys().hasAll(['c', 'k', 'm', 'dev', 'del', 'v', 'at', 'd'])
+        && d.c is string && d.c in syncCollections()
+        && d.k is string && d.k.matches('^[A-Za-z0-9_.:-]{1,128}$')
+        && doc == d.c + '_' + d.k
+        && d.m is int && d.m > 0 && d.m < request.time.toMillis() + 86400000
+        && d.dev is string && d.dev.size() >= 1 && d.dev.size() <= 64
+        && d.del is bool
+        && d.v is int && d.v >= 1 && d.v <= 100
+        && d.at == request.time
+        && d.d is map
+        && (d.del ? d.d.size() == 0 : syncPayloadOk(d.c, d.d));
+    }
+    // Part 1 syncs subscriptions only; other collections are refused until their payload rules land.
+    function syncPayloadOk(c, p) {
+      return c == 'subscriptions'
+        && p.keys().hasOnly(['n', 'a', 'mu']) && p.keys().hasAll(['n'])
+        && p.n is string && p.n.size() <= 300
+        && optString(p, 'a', 1000) && optBool(p, 'mu');
     }
     // The app lists the signed-in user in the directory staff search (Spark: no onUserCreated).
     function selfRegister() {
