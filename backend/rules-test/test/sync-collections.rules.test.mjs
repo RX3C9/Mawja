@@ -129,8 +129,12 @@ test("sync2: delete my cloud data removes every own doc in batches", async () =>
   const b = writeBatch(db);
   page.docs.forEach((d) => b.delete(d.ref));
   await assertSucceeds(b.commit());
-  const left = await env.withSecurityRulesDisabled(async (ctx) => getDocs(collection(ctx.firestore(), "users/alice/syncData")));
-  if (left.size !== 0) throw new Error(`expected no docs left, found ${left.size}`);
+  // withSecurityRulesDisabled does not pass the callback's result back, so count inside it.
+  let left = -1;
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    left = (await getDocs(collection(ctx.firestore(), "users/alice/syncData"))).size;
+  });
+  if (left !== 0) throw new Error(`expected no docs left, found ${left}`);
   // Another user cannot wipe Alice's data.
   await seed(at("liked", VID), { ...rec("liked", VID, liked), at: Timestamp.now() });
   await assertFails(deleteDoc(doc(user("bob", { tier: "pro" }), at("liked", VID))));
