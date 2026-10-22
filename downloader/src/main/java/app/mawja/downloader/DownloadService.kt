@@ -16,7 +16,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.RemoteCallbackList
-import android.os.ServiceSpecificException
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import app.mawja.downloader.api.IDownloadCallback
@@ -51,7 +50,7 @@ class DownloadService :
                 val req = requireNotNull(request) { "request is null" }
                 // New work is refused while config/downloader blocks it; running items still finish.
                 val block = DownloaderRemoteConfig.admit(null)
-                if (block.blocks) throw ServiceSpecificException(block.code, blockDetail(block))
+                if (block.blocks) throw IllegalStateException(MawjaDownloaderContract.blockedMessage(block.code, blockDetail(block)))
                 val url = requireNotNull(req.getString(Request.URL)) { "url is required" }
                 require(url.startsWith("https://") || url.startsWith("http://")) { "unsupported url" }
                 val headersBundle = req.getBundle(Request.HEADERS)

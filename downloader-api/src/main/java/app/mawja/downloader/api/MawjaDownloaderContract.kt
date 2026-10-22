@@ -19,8 +19,8 @@ object MawjaDownloaderContract {
 
     /**
      * First version that refuses new work when its remote config (config/downloader) blocks it:
-     * fetchRange answers with [RangeResult.BLOCKED] and enqueue throws a ServiceSpecificException
-     * carrying one of the ERROR_* codes below. Older clients see a plain failure.
+     * fetchRange answers with [RangeResult.BLOCKED] and enqueue throws an IllegalStateException whose
+     * message is [blockedMessage] (read it back with [blockedCode]). Older clients see a plain failure.
      */
     const val API_REMOTE_BLOCK = 3
 
@@ -35,6 +35,22 @@ object MawjaDownloaderContract {
 
     /** config/downloader features.downloads is off. */
     const val ERROR_DOWNLOADS_DISABLED = 1004
+
+    private const val BLOCKED_PREFIX = "mawja-blocked:"
+
+    /** The exception message enqueue throws over binder for a refusal [code]. */
+    fun blockedMessage(
+        code: Int,
+        detail: String,
+    ): String = "$BLOCKED_PREFIX$code:$detail"
+
+    /** The ERROR_* code in an exception message from enqueue, or 0 when it is not a refusal. */
+    fun blockedCode(message: String?): Int =
+        message
+            ?.takeIf { it.startsWith(BLOCKED_PREFIX) }
+            ?.removePrefix(BLOCKED_PREFIX)
+            ?.substringBefore(':')
+            ?.toIntOrNull() ?: 0
 
     /** Release package name; debug builds append ".debug". */
     const val PACKAGE_RELEASE = "app.mawja.downloader"

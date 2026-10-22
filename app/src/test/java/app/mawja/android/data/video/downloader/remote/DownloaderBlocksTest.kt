@@ -27,6 +27,10 @@ class DownloaderBlocksTest {
         DownloadBlock.entries.filter { it.blocks }.forEach { assertEquals(it, DownloadBlock.fromCode(it.code)) }
         assertNull(DownloadBlock.fromCode(0))
         assertNull(DownloadBlock.fromCode(4242))
+        val msg = MawjaDownloaderContract.blockedMessage(DownloadBlock.MAINTENANCE.code, "under: maintenance")
+        assertEquals(DownloadBlock.MAINTENANCE.code, MawjaDownloaderContract.blockedCode(msg))
+        assertEquals(0, MawjaDownloaderContract.blockedCode("url is required"))
+        assertEquals(0, MawjaDownloaderContract.blockedCode(null))
     }
 
     @Test
