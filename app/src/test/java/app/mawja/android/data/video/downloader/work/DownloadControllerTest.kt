@@ -17,6 +17,7 @@ import app.mawja.android.data.video.VideoDownloadManager
 import app.mawja.android.data.video.downloader.request.DownloadRequest
 import app.mawja.android.data.video.downloader.tags.DownloadKind
 import app.mawja.android.data.video.downloader.tags.DownloadTags
+import app.mawja.android.remote.RemoteConfigRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -57,7 +58,8 @@ class DownloadControllerTest {
         every { WorkManager.getInstance(any()) } returns workManager
         every { downloads.stagingDirectory() } returns folder.root
         every { preferences.downloadOverWifiOnly } returns flowOf(false)
-        controller = DownloadController(context, dao, downloads, preferences)
+        // foss unit tests: remote config is a no-op, so downloads are never refused remotely.
+        controller = DownloadController(context, dao, downloads, preferences, RemoteConfigRepository(context))
     }
 
     @After

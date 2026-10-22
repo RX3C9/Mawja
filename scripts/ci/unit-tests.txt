@@ -11,6 +11,7 @@ app.mawja.android.jobs.JobCenterTest
 app.mawja.codes.MawjaCodesTest
 app.mawja.codes.CodeRedeemPolicyTest
 app.mawja.android.account.MembershipCodesTest
+app.mawja.android.account.RemoteEntitlementsTest
 app.mawja.admin.core.AdminLogicTest
 app.mawja.admin.core.RemoteConfigTest
 app.mawja.remote.RemoteSettingsTest

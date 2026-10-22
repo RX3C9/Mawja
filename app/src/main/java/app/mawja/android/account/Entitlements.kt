@@ -4,6 +4,8 @@
  */
 package app.mawja.android.account
 
+import app.mawja.remote.RemoteSettings
+
 /** Paid extras a membership can unlock. Everything the original app does stays free. */
 enum class MawjaFeature {
     /** Optional palettes beyond Flow's own catalogue, such as Nile. */
@@ -51,6 +53,23 @@ data class Entitlements(
             listOf(MawjaTier.PLUS, MawjaTier.PRO, MawjaTier.FAMILY).first { forTier(it).has(feature) }
     }
 }
+
+/**
+ * Applies config/app on top of the fixed table: a remote tier gate (keyed by [MawjaFeature] name)
+ * replaces the table's rule for that feature, and the premiumThemes switch turns Premium themes off
+ * for everyone. Without a remote config this is the table unchanged.
+ */
+fun Entitlements.withRemote(remote: RemoteSettings): Entitlements {
+    val allowed =
+        MawjaFeature.entries
+            .filter { feature -> remote.tierAllows(feature.name, tier.id) ?: (feature in features) }
+            .filterNot { it == MawjaFeature.PREMIUM_THEMES && !remote.isEnabled(PREMIUM_THEMES_SWITCH) }
+            .toSet()
+    return if (allowed == features) this else copy(features = allowed)
+}
+
+/** config/app features key that switches Premium themes on or off. */
+const val PREMIUM_THEMES_SWITCH = "premiumThemes"
 
 /** Account statuses that keep guest features but lose every paid extra. */
 private val RESTRICTED_STATUSES = setOf("suspended", "banned", "disabled")

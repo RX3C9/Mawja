@@ -4486,4 +4486,20 @@
     <string name="jobs_download_queue">Download queue</string>
     <string name="jobs_download_retag">Download tagging</string>
     <string name="jobs_footnote">Stopped scheduled jobs come back the next time the app starts if their setting is still on. Turn a feature off in its own settings to stop it for good. Downloads made by Mawja Downloader are managed in that app.</string>
+    <!-- Remote config (config/app) and announcements -->
+    <string name="remote_killed_title">Mawja is unavailable</string>
+    <string name="remote_killed_body">This version of Mawja has been switched off. Please check the official Mawja channels for news.</string>
+    <string name="remote_maintenance_title">Under maintenance</string>
+    <string name="remote_maintenance_body">Mawja is down for maintenance. Please try again a little later.</string>
+    <string name="remote_force_update_title">Update required</string>
+    <string name="remote_force_update_body">This version of Mawja is no longer supported. Install the latest version to keep using it.</string>
+    <string name="remote_update_button">Update</string>
+    <string name="remote_soft_update_title">A new version is available</string>
+    <string name="remote_soft_update_body">Update Mawja to get the latest fixes and features.</string>
+    <string name="remote_news_label">News</string>
+    <string name="remote_ok">OK</string>
+    <string name="remote_dismiss">Dismiss</string>
+    <string name="remote_downloads_disabled">Downloads are paused for now. Please try again later.</string>
+    <string name="remote_redeem_disabled">Code activation is paused for now. Please try again later.</string>
+    <string name="upgrade_buy_online">Buy a code online</string>
 </resources>

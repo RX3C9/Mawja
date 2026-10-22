@@ -36,6 +36,8 @@ class SmartNotifyWorker(
     @InstallIn(SingletonComponent::class)
     interface Dependencies {
         fun subscriptionFeedRepository(): SubscriptionFeedRepository
+
+        fun remoteConfig(): app.mawja.android.remote.RemoteConfigRepository
     }
 
     override suspend fun doWork(): Result {
@@ -46,6 +48,9 @@ class SmartNotifyWorker(
         val zone = ZoneId.systemDefault()
         store.update { SmartNotifyEngine.housekeep(it, config, now) }
         if (!config.enabled || !NotificationHelper.hasNotificationPermission(context)) return Result.success()
+        // config/app features.smartNotifications: switched off remotely, nothing is posted.
+        val remote = EntryPointAccessors.fromApplication(context, Dependencies::class.java).remoteConfig()
+        if (!remote.isEnabled("smartNotifications")) return Result.success()
 
         val candidates =
             runCatching {

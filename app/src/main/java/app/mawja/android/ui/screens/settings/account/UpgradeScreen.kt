@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -44,6 +46,12 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.ui.platform.LocalContext
+import app.mawja.android.BuildConfig
 import app.mawja.android.R
 import app.mawja.android.account.AccountState
 import app.mawja.android.account.MawjaTier
@@ -73,7 +81,11 @@ internal fun UpgradeScreen(
     val current = signedIn?.profile?.tier ?: MawjaTier.FREE
     val until = signedIn?.profile?.tierUntil
     var code by rememberSaveable { mutableStateOf("") }
-    val canRedeem = viewModel.available && signedIn != null
+    val remote by viewModel.remoteSettings.collectAsStateWithLifecycle()
+    val redeemSwitchedOn = remote.isEnabled("codeRedeem")
+    val canRedeem = viewModel.available && signedIn != null && redeemSwitchedOn
+    val checkoutUrl = remote.checkoutUrlOrNull ?: BuildConfig.CHECKOUT_URL.trim().takeIf { it.startsWith("https://") }
+    val context = LocalContext.current
 
     fun submit() {
         focus.clearFocus()
@@ -108,6 +120,7 @@ internal fun UpgradeScreen(
                         stringResource(
                             when {
                                 !viewModel.available -> R.string.redeem_requires_account
+                                !redeemSwitchedOn -> R.string.remote_redeem_disabled
                                 signedIn == null -> R.string.redeem_sign_in_first
                                 else -> R.string.redeem_help
                             },
@@ -175,6 +188,22 @@ internal fun UpgradeScreen(
                             )
                         }
                     }
+                }
+            }
+        }
+        if (checkoutUrl != null) {
+            item("upgrade.checkout") {
+                OutlinedButton(
+                    onClick = {
+                        runCatching {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(checkoutUrl)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                ) {
+                    Icon(Icons.Outlined.ShoppingCart, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.upgrade_buy_online))
                 }
             }
         }

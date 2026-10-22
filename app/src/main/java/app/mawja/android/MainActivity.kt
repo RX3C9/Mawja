@@ -106,6 +106,9 @@ class MainActivity : ComponentActivity() {
     lateinit var entitlementsRepository: app.mawja.android.account.EntitlementsRepository
 
     @Inject
+    lateinit var remoteConfig: app.mawja.android.remote.RemoteConfigRepository
+
+    @Inject
     lateinit var playlistTransfer: dagger.Lazy<PlaylistTransfer>
 
     @Inject
@@ -318,6 +321,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                                 app.mawja.android.ui.components.shared.DownloaderInstallPrompt()
+                                app.mawja.android.remote.RemoteControlOverlay(remoteConfig, entitlementsRepository)
                             }
                         }
                     }

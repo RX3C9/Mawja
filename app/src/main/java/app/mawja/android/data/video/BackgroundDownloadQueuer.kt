@@ -174,6 +174,6 @@ class BackgroundDownloadQueuer
             when (this) {
                 EnqueueOutcome.QUEUED -> QueueOutcome.QUEUED
                 EnqueueOutcome.ALREADY_DOWNLOADED, EnqueueOutcome.ALREADY_QUEUED -> QueueOutcome.ALREADY_PRESENT
-                EnqueueOutcome.DOWNLOADER_MISSING -> QueueOutcome.UNAVAILABLE
+                EnqueueOutcome.DOWNLOADER_MISSING, EnqueueOutcome.DOWNLOADS_DISABLED -> QueueOutcome.UNAVAILABLE
             }
     }

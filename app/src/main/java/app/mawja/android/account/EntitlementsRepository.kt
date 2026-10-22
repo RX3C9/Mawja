@@ -8,6 +8,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import app.mawja.android.data.local.safePreferencesDataStore
+import app.mawja.android.remote.RemoteConfigRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,8 @@ private val LAST_TIER = stringPreferencesKey("last_tier")
 
 /**
  * The user's [Entitlements] as a StateFlow. Free for guests, foss builds, offline and unknown
- * profiles; the last tier seen is cached on the device and used while a session restores.
+ * profiles; the last tier seen is cached on the device and used while a session restores. Remote
+ * tier gates and the premiumThemes switch from config/app apply on top ([withRemote]).
  */
 @Singleton
 class EntitlementsRepository
@@ -35,6 +37,7 @@ class EntitlementsRepository
     constructor(
         @ApplicationContext private val context: Context,
         private val account: AccountBackend,
+        private val remote: RemoteConfigRepository,
     ) {
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -42,7 +45,9 @@ class EntitlementsRepository
             context.entitlementStore.data.map { prefs -> prefs[LAST_TIER]?.let { MawjaTier.of(it) } }
 
         val entitlements: StateFlow<Entitlements> =
-            combine(account.state, cachedTier) { state, cached -> Entitlements.forTier(effectiveTier(state, cached)) }
+            combine(account.state, cachedTier, remote.settings) { state, cached, settings ->
+                Entitlements.forTier(effectiveTier(state, cached)).withRemote(settings)
+            }
                 .distinctUntilChanged()
                 .stateIn(scope, SharingStarted.Eagerly, Entitlements.FREE)
 

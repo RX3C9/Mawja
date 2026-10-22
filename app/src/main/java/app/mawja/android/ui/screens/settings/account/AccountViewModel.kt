@@ -16,6 +16,8 @@ import app.mawja.android.account.EntitlementsRepository
 import app.mawja.android.account.RedeemError
 import app.mawja.android.account.RedeemResult
 import app.mawja.android.account.localCodeError
+import app.mawja.android.remote.RemoteConfigRepository
+import app.mawja.remote.RemoteSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,7 +53,11 @@ class AccountViewModel
     constructor(
         private val backend: AccountBackend,
         private val entitlements: EntitlementsRepository,
+        remote: RemoteConfigRepository,
     ) : ViewModel() {
+        /** config/app: codeRedeem switch and the online checkout URL. */
+        val remoteSettings: StateFlow<RemoteSettings> = remote.settings
+
         val available: Boolean get() = backend.available
         val googleAvailable: Boolean get() = backend.googleAvailable
         val account: StateFlow<AccountState> = backend.state

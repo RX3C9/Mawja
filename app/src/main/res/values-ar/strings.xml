@@ -4836,4 +4836,20 @@
     <string name="jobs_download_queue">طابور التنزيلات</string>
     <string name="jobs_download_retag">وسم التنزيلات</string>
     <string name="jobs_footnote">المهام المتجدولة اللي بتوقفها بترجع أول ما التطبيق يفتح تاني لو إعدادها لسه شغال. اقفل الميزة من إعداداتها عشان توقفها نهائياً. تنزيلات Mawja Downloader بتتدار من التطبيق ده.</string>
+    <!-- Remote config (config/app) and announcements -->
+    <string name="remote_killed_title">موجة غير متاح</string>
+    <string name="remote_killed_body">تم إيقاف هذا الإصدار من موجة. تابع قنوات موجة الرسمية لمعرفة الجديد.</string>
+    <string name="remote_maintenance_title">صيانة</string>
+    <string name="remote_maintenance_body">موجة متوقف للصيانة. حاول مرة أخرى بعد قليل.</string>
+    <string name="remote_force_update_title">التحديث مطلوب</string>
+    <string name="remote_force_update_body">هذا الإصدار من موجة لم يعد مدعومًا. ثبّت أحدث إصدار لمتابعة الاستخدام.</string>
+    <string name="remote_update_button">تحديث</string>
+    <string name="remote_soft_update_title">يتوفر إصدار جديد</string>
+    <string name="remote_soft_update_body">حدّث موجة للحصول على أحدث الإصلاحات والميزات.</string>
+    <string name="remote_news_label">أخبار</string>
+    <string name="remote_ok">حسنًا</string>
+    <string name="remote_dismiss">إغلاق</string>
+    <string name="remote_downloads_disabled">التنزيلات متوقفة مؤقتًا. حاول مرة أخرى لاحقًا.</string>
+    <string name="remote_redeem_disabled">تفعيل الأكواد متوقف مؤقتًا. حاول مرة أخرى لاحقًا.</string>
+    <string name="upgrade_buy_online">اشترِ كودًا عبر الإنترنت</string>
 </resources>

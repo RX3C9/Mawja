@@ -1,12 +1,14 @@
 package app.mawja.android.data.video.downloader.work
 
 import android.content.Context
+import android.widget.Toast
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import app.mawja.android.R
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.data.local.dao.DownloadDao
 import app.mawja.android.data.local.entity.DownloadEntity
@@ -18,6 +20,8 @@ import app.mawja.android.data.video.downloader.DownloaderGate
 import app.mawja.android.data.video.downloader.request.DownloadRequest
 import app.mawja.android.data.video.downloader.request.StoredArtist
 import app.mawja.android.data.video.downloader.tags.displayArtist
+import app.mawja.android.remote.RemoteConfigRepository
+import app.mawja.remote.RemoteGate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -39,6 +44,9 @@ enum class EnqueueOutcome {
 
     /** Mawja Downloader is not installed (or not signed by us); the user was asked to install it. */
     DOWNLOADER_MISSING,
+
+    /** Downloads are switched off remotely (config/app features.downloads, or the app is blocked). */
+    DOWNLOADS_DISABLED,
 }
 
 /**
@@ -54,8 +62,13 @@ class DownloadController
         private val downloadDao: DownloadDao,
         private val downloads: VideoDownloadManager,
         private val preferences: PlayerPreferences,
+        private val remote: RemoteConfigRepository,
     ) {
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+        private companion object {
+            const val DOWNLOADS_SWITCH = "downloads"
+        }
 
         /**
          * Queues [request]. A finished download is kept unless [replaceExisting], in which case it is
@@ -65,6 +78,7 @@ class DownloadController
             request: DownloadRequest,
             replaceExisting: Boolean = false,
         ): EnqueueOutcome {
+            if (!remoteAllowsDownloads()) return EnqueueOutcome.DOWNLOADS_DISABLED
             if (!DownloaderGate.ensureAvailable(context)) return EnqueueOutcome.DOWNLOADER_MISSING
             val existing = downloadDao.getDownloadWithItems(request.videoId)
             when (existing?.overallStatus) {
@@ -82,6 +96,17 @@ class DownloadController
             downloadDao.replaceDownload(rowFor(request), listOf(pendingItemFor(request)))
             kick()
             return EnqueueOutcome.QUEUED
+        }
+
+        /** Refuses (with a short message) when config/app turns downloads off or blocks this build. */
+        private suspend fun remoteAllowsDownloads(): Boolean {
+            if (!remote.enabled) return true
+            val settings = remote.current()
+            if (settings.isEnabled(DOWNLOADS_SWITCH) && settings.gate(remote.versionCode) == RemoteGate.Open) return true
+            withContext(Dispatchers.Main) {
+                runCatching { Toast.makeText(context, R.string.remote_downloads_disabled, Toast.LENGTH_LONG).show() }
+            }
+            return false
         }
 
         /** [enqueue] from a caller that should not wait, such as a dialog about to close. */
