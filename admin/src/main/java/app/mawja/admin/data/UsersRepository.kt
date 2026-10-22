@@ -119,7 +119,7 @@ class UsersRepository(
         note: String,
     ) = write(uid, "user.note", mapOf("length" to note.length)) { mapOf("staffNote" to note.take(1000)) }
 
-    /** Deletes users/{uid}/syncData/* in the batch that stamps syncResetAt. Returns how many docs. */
+    /** Deletes every users/{uid}/syncData doc in the batch that stamps syncResetAt. Returns how many docs. */
     suspend fun resetSync(uid: String): Int {
         val docs = db.collection("users/$uid/syncData").limit(400).get().await().documents
         val batch = db.batch()
