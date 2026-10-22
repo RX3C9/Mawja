@@ -59,7 +59,7 @@ service cloud.firestore {
       return t is timestamp
         && t > target - duration.value(10, 'm') && t < target + duration.value(10, 'm');
     }
-    // Mirror of app CodeRedeemPolicy.decide (shared/codes): lifetime sticks; open-ended grants only
+    // Mirror of app CodeRedeemPolicy.decide (:shared-codes): lifetime sticks; open-ended grants only
     // take a better tier; otherwise days stack on the remaining time and the better tier is kept.
     function tierMath(old, code, nu) {
       let act = isActive(old);

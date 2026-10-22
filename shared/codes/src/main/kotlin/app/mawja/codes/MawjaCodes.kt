@@ -13,7 +13,7 @@ import kotlin.random.asKotlinRandom
 
 /**
  * Mawja membership activation codes: `MW-XXXX-XXXX-XXXX`. Shared by the app and the Admin app
- * (compiled into both from shared/codes); the TypeScript twin is admin-web/lib/codes.ts and the
+ * (Gradle module :shared-codes in shared/codes, a dependency of both); the TypeScript twin is admin-web/lib/codes.ts and the
  * spec both follow is docs/codes.md. Keep the three in step.
  *
  * - 12 symbols from [ALPHABET] (no 0, O, 1, I or L): 11 random + 1 check symbol.

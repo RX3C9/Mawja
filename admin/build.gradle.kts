@@ -61,11 +61,6 @@ android {
         }
     }
 
-    sourceSets {
-        // Membership-code generator shared with the app (docs/codes.md).
-        getByName("main").kotlin.directories.add("$rootDir/shared/codes/kotlin")
-    }
-
     buildFeatures {
         buildConfig = true
         compose = true
@@ -78,6 +73,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":shared-codes"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

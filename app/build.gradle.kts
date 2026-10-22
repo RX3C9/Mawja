@@ -214,8 +214,6 @@ android {
 
     sourceSets {
         getByName("androidTest").assets.directories.add("$projectDir/schemas")
-        // Membership-code format and redeem rules shared with :admin (docs/codes.md).
-        getByName("main").kotlin.directories.add("$rootDir/shared/codes/kotlin")
     }
 
     compileOptions {
@@ -303,6 +301,7 @@ composeCompiler {
 dependencies {
     // --- Core Android ---
     implementation(project(":downloader-api"))
+    implementation(project(":shared-codes"))
 
     // --- Mawja accounts (github flavor only; foss stays free of Google services) ---
     // No Firestore SDK: its protolite classes clash with the app's protobuf-javalite 4.x; profile reads go through functions.

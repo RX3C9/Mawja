@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Mawja membership codes: MW-XXXX-XXXX-XXXX. Twin of shared/codes/kotlin/app/mawja/codes/MawjaCodes.kt;
+// Mawja membership codes: MW-XXXX-XXXX-XXXX. Twin of shared/codes/src/main/kotlin/app/mawja/codes/MawjaCodes.kt (:shared-codes);
 // the spec both follow is docs/codes.md. Keep them in step (same test vectors in both test suites).
 
 export const ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";

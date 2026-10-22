@@ -62,7 +62,7 @@ Both implementations are tested against these (also in `MawjaCodesTest.kt` and `
 
 | Where | File |
 |---|---|
-| App + Mawja Admin (Kotlin, compiled into both) | `shared/codes/kotlin/app/mawja/codes/MawjaCodes.kt`, `CodeRedeemPolicy.kt` |
+| App + Mawja Admin (Kotlin, one library module both depend on) | Gradle module `:shared-codes` (`shared/codes/src/main/kotlin/app/mawja/codes/MawjaCodes.kt`, `CodeRedeemPolicy.kt`) |
 | admin-web (TypeScript) | `admin-web/lib/codes.ts` |
 | Security rules | `backend/firestore.rules` (`codes`, `redemptions`, `codeBatches`, `users/*/meta/redeem`, `tierMath`) |
 | Rules tests (Firestore emulator, run in CI as `rules:`) | `backend/rules-test/test/codes.rules.test.mjs` |
