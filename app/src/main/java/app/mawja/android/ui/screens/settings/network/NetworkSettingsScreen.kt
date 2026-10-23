@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.outlined.Dns
+import androidx.compose.material.icons.outlined.NetworkPing
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.SettingsBackupRestore
@@ -45,7 +47,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.network.AppProxyType
+import app.mawja.android.network.ConnectionProfile
+import app.mawja.android.network.ConnectionProfilesCodec
+import app.mawja.android.network.ConnectionTestResult
 import app.mawja.android.network.DnsProvider
+import app.mawja.android.ui.components.settings.nav
+import app.mawja.android.ui.components.shared.FlowAlertDialog
 import app.mawja.android.network.NetworkProfile
 import app.mawja.android.network.SmartNetwork
 import app.mawja.android.ui.components.settings.SettingEntry
@@ -77,6 +84,15 @@ internal fun NetworkSettingsScreen(
     val dnsDraft by viewModel.dnsDraft.collectAsStateWithLifecycle()
     val dnsSaved by viewModel.dnsSaved.collectAsStateWithLifecycle()
     val dnsUrlError = stringResource(R.string.dns_custom_url_invalid)
+    val remoteEnabled by viewModel.remoteEnabled.collectAsStateWithLifecycle()
+    val profiles by viewModel.profiles.collectAsStateWithLifecycle()
+    val activeProfileId by viewModel.activeProfileId.collectAsStateWithLifecycle()
+    val testState by viewModel.test.collectAsStateWithLifecycle()
+    val testStatus = testStatusText(testState)
+    val directLabel = stringResource(R.string.network_profile_direct)
+    val profileAppliedMessage = stringResource(R.string.network_profile_applied)
+    var naming by rememberSaveable { mutableStateOf(false) }
+    var openProfile by remember { mutableStateOf<ConnectionProfile?>(null) }
     val dnsLabels = DnsProvider.entries.associateWith { stringResource(dnsLabelRes(it)) }
     val dnsSummaries = DnsProvider.entries.associateWith { p -> dnsSummaryRes(p)?.let { stringResource(it) } }
     val scope = rememberCoroutineScope()
@@ -207,11 +223,131 @@ internal fun NetworkSettingsScreen(
             )
         }
 
+        group(key = "network.test", footer = R.string.network_test_footer) {
+            nav(
+                NetworkIndex.testConnection,
+                onClick = viewModel::testConnection,
+                value = testStatus,
+                enabled = testState != ConnectionTestState.Running && form.valid && !NetworkSettingsViewModel.dnsError(dnsDraft),
+                showChevron = false,
+                icon = Icons.Outlined.NetworkPing,
+            )
+        }
+
+        if (remoteEnabled) {
+            group(key = NetworkIndex.profiles.key, header = R.string.network_profiles_title, footer = R.string.network_profiles_footer) {
+                profiles.forEach { profile ->
+                    option(
+                        key = "network.profile.${profile.id}",
+                        label = profile.name,
+                        selected = profile.id == activeProfileId,
+                        onClick = { openProfile = profile },
+                        supportingText = profileSummary(profile, directLabel, dnsLabels),
+                    )
+                }
+                nav(
+                    NetworkIndex.saveProfile,
+                    onClick = { naming = true },
+                    enabled = form.valid && !NetworkSettingsViewModel.dnsError(dnsDraft),
+                    showChevron = false,
+                    icon = Icons.Outlined.BookmarkAdd,
+                )
+            }
+        } else {
+            notice("network.custom_off", text = { stringResource(R.string.network_custom_off) }, icon = Icons.Outlined.Info)
+        }
+
         group(key = "network.links", header = R.string.link_cleaner_title, footer = R.string.link_cleaner_footer) {
             switch(NetworkIndex.linkCleaner, viewModel.linkCleaner, viewModel::setLinkCleaner, icon = Icons.Outlined.Link)
         }
     }
+
+    if (naming) {
+        ProfileNameDialog(
+            onDismiss = { naming = false },
+            onSave = { name ->
+                if (viewModel.saveProfile(name)) naming = false
+            },
+        )
+    }
+    openProfile?.let { profile ->
+        FlowAlertDialog(
+            onDismissRequest = { openProfile = null },
+            title = { Text(profile.name) },
+            text = { Text(profileSummary(profile, directLabel, dnsLabels)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    openProfile = null
+                    if (viewModel.applyProfile(profile)) scope.launch { snackbarHostState.showSnackbar(profileAppliedMessage) }
+                }) { Text(stringResource(R.string.network_profile_apply)) }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    openProfile = null
+                    viewModel.deleteProfile(profile.id)
+                }) { Text(stringResource(R.string.network_profile_delete)) }
+            },
+        )
+    }
 }
+
+@Composable
+private fun ProfileNameDialog(
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit,
+) {
+    var name by rememberSaveable { mutableStateOf("") }
+    val clean = ConnectionProfilesCodec.cleanName(name)
+    FlowAlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.network_profile_save)) },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it.take(ConnectionProfilesCodec.MAX_NAME) },
+                label = { Text(stringResource(R.string.network_profile_name)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
+        confirmButton = {
+            TextButton(enabled = clean.isNotEmpty(), onClick = { onSave(clean) }) { Text(stringResource(R.string.save)) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
+    )
+}
+
+private fun profileSummary(
+    profile: ConnectionProfile,
+    directLabel: String,
+    dnsLabels: Map<DnsProvider, String>,
+): String {
+    val proxy = profile.proxyConfig("")
+    val route =
+        if (proxy.hasUsableEndpoint()) {
+            "${proxy.type.storageValue.uppercase()} ${proxy.host}:${proxy.port}"
+        } else {
+            directLabel
+        }
+    val dns = profile.dnsSettings()
+    val dnsLabel = if (dns.provider == DnsProvider.CUSTOM) dns.customUrl else dnsLabels.getValue(dns.provider)
+    return "$route · DNS: $dnsLabel"
+}
+
+@Composable
+private fun testStatusText(state: ConnectionTestState): String? =
+    when (state) {
+        ConnectionTestState.Idle -> null
+        ConnectionTestState.Running -> stringResource(R.string.network_test_running)
+        is ConnectionTestState.Done ->
+            when (val r = state.result) {
+                is ConnectionTestResult.Ok -> stringResource(R.string.network_test_ok, r.millis.toInt())
+                ConnectionTestResult.DnsFailed -> stringResource(R.string.network_test_dns_failed)
+                ConnectionTestResult.ProxyAuthFailed -> stringResource(R.string.network_test_auth_failed)
+                is ConnectionTestResult.UnexpectedAnswer -> stringResource(R.string.network_test_unexpected, r.code)
+                is ConnectionTestResult.Failed -> stringResource(R.string.network_test_failed, r.message.take(120))
+            }
+    }
 
 private fun dnsLabelRes(provider: DnsProvider): Int =
     when (provider) {

@@ -4937,4 +4937,24 @@
     <string name="link_cleaner_switch">شيل التتبع من الروابط</string>
     <string name="link_cleaner_switch_summary">امسح utm_ و si و fbclid وزيهم لما تشارك أو تنسخ رابط</string>
     <string name="link_cleaner_footer">الفيديو ووقت البداية وقائمة التشغيل بيفضلوا في الرابط.</string>
+    <string name="network_test">اختبار الاتصال</string>
+    <string name="network_test_summary">جرّب إعدادات الصفحة دي، محفوظة أو لأ، مع يوتيوب</string>
+    <string name="network_test_footer">الاختبار بيطلب صفحة فاضية من يوتيوب عبر البروكسي و DNS اللي فوق.</string>
+    <string name="network_test_running">جاري الاختبار…</string>
+    <string name="network_test_ok">اتصل في %1$d ms</string>
+    <string name="network_test_dns_failed">مقدرناش نلاقي عنوان يوتيوب. راجع خادم DNS.</string>
+    <string name="network_test_auth_failed">البروكسي رفض تسجيل الدخول. راجع اسم المستخدم وكلمة السر.</string>
+    <string name="network_test_unexpected">رد غير متوقع (HTTP %1$d). ممكن تكون في صفحة تسجيل دخول للشبكة.</string>
+    <string name="network_test_failed">معرفناش نتصل: %1$s</string>
+    <string name="network_profiles_title">ملفات الاتصال</string>
+    <string name="network_profiles_summary">إعدادات بروكسي و DNS محفوظة تقدر تبدّل بينها</string>
+    <string name="network_profiles_footer">دوس على ملف عشان تستخدمه أو تمسحه. كلمات السر متخزنة مشفّرة على الجهاز ده.</string>
+    <string name="network_profile_save">حفظ كملف</string>
+    <string name="network_profile_save_summary">احفظ البروكسي و DNS اللي في الصفحة دي باسم</string>
+    <string name="network_profile_name">اسم الملف</string>
+    <string name="network_profile_apply">استخدم الملف ده</string>
+    <string name="network_profile_delete">مسح</string>
+    <string name="network_profile_applied">تم تطبيق الملف</string>
+    <string name="network_profile_direct">مباشر</string>
+    <string name="network_custom_off">الـ DNS الخاص وملفات الاتصال متوقفين دلوقتي. البحث عن العناوين بيستخدم DNS الجهاز.</string>
 </resources>

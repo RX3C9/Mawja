@@ -244,6 +244,11 @@ class MainActivity : ComponentActivity() {
                     applicationContext,
                     settings.isEnabled(app.mawja.android.battery.BatterySaver.REMOTE_SWITCH),
                 )
+                // features.customNetwork (#71, on by default): off keeps DNS on the system resolver.
+                app.mawja.android.network.AppDns.setRemoteEnabled(
+                    applicationContext,
+                    settings.isEnabled(app.mawja.android.network.AppDns.REMOTE_SWITCH),
+                )
             }
         }
 

@@ -41,5 +41,14 @@ internal object NetworkIndex {
     val linkCleaner =
         entry("link_cleaner", R.string.link_cleaner_switch, R.string.link_cleaner_title, R.string.link_cleaner_switch_summary)
 
-    val all = listOf(smart, enabled, type, bypassOnVpn, host, port, username, password, dnsProvider, dnsFallback, linkCleaner)
+    val testConnection =
+        entry("test_connection", R.string.network_test, R.string.settings_network_title, R.string.network_test_summary)
+    val profiles = entry("profiles", R.string.network_profiles_title, R.string.network_profiles_title, R.string.network_profiles_summary)
+    val saveProfile = entry("save_profile", R.string.network_profile_save, R.string.network_profiles_title, R.string.network_profile_save_summary)
+
+    val all =
+        listOf(
+            smart, enabled, type, bypassOnVpn, host, port, username, password, dnsProvider, dnsFallback, testConnection, profiles,
+            saveProfile, linkCleaner,
+        )
 }

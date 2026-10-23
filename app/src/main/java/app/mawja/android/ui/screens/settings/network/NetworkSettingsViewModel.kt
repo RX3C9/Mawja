@@ -9,13 +9,20 @@ import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.network.AppProxyConfig
 import app.mawja.android.network.AppDns
 import app.mawja.android.network.AppProxyType
+import app.mawja.android.network.ConnectionProfile
+import app.mawja.android.network.ConnectionProfiles
+import app.mawja.android.network.ConnectionTester
 import app.mawja.android.network.DnsProvider
 import app.mawja.android.network.DnsSettings
 import app.mawja.android.network.LinkCleaner
 import app.mawja.android.network.VpnStateMonitor
 import app.mawja.android.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -70,6 +77,17 @@ data class ProxyDraft(
     }
 }
 
+/** The connection test row: idle, running, or the last answer. */
+sealed interface ConnectionTestState {
+    data object Idle : ConnectionTestState
+
+    data object Running : ConnectionTestState
+
+    data class Done(
+        val result: ConnectionTestResult,
+    ) : ConnectionTestState
+}
+
 /**
  * Holds the proxy form while it is edited. Nothing reaches the network stack until [save], because a
  * half-typed host would otherwise reroute every request as each key is pressed.
@@ -99,6 +117,24 @@ class NetworkSettingsViewModel
         private val _linkCleaner = MutableStateFlow(LinkCleaner.isEnabled())
         val linkCleaner: StateFlow<Boolean> = _linkCleaner.asStateFlow()
 
+        /** The remote switch features.customNetwork; off hides profiles and keeps DNS on the system. */
+        val remoteEnabled: StateFlow<Boolean> = AppDns.remoteEnabled
+
+        private val _profiles = MutableStateFlow(ConnectionProfiles.list(context))
+        val profiles: StateFlow<List<ConnectionProfile>> = _profiles.asStateFlow()
+
+        /** The profile whose setup is the saved one, if any. */
+        val activeProfileId: StateFlow<String?> =
+            combine(_profiles, _saved, _dnsSaved) { profiles, saved, dns ->
+                val config = saved?.toConfig(savedPort) ?: return@combine null
+                profiles.firstOrNull { it.sameSetupAs(config, dns) && passwordMatches(it, config) }?.id
+            }.flowOn(Dispatchers.Default)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), null)
+
+        private val _test = MutableStateFlow<ConnectionTestState>(ConnectionTestState.Idle)
+        val test: StateFlow<ConnectionTestState> = _test.asStateFlow()
+        private var testJob: Job? = null
+
         /** Whether a VPN is pausing the saved proxy right now. */
         val pausedByVpn: StateFlow<Boolean> =
             preferences.proxyConfig
@@ -123,6 +159,45 @@ class NetworkSettingsViewModel
             LinkCleaner.setEnabled(context, on)
             _linkCleaner.value = on
         }
+
+        /** Saves the current form as profile [name]; reports whether the form was valid. */
+        fun saveProfile(name: String): Boolean {
+            val current = _draft.value ?: return false
+            val dns = _dnsDraft.value
+            if (!current.valid || dnsError(dns) || app.mawja.android.network.ConnectionProfilesCodec.cleanName(name).isEmpty()) return false
+            _profiles.value = ConnectionProfiles.save(context, name, current.toConfig(savedPort), dns)
+            return true
+        }
+
+        /** Loads [profile] into the form and saves it, so one tap switches the connection. */
+        fun applyProfile(profile: ConnectionProfile): Boolean {
+            _draft.value = ProxyDraft.of(profile.proxyConfig(ConnectionProfiles.password(profile)))
+            _dnsDraft.value = profile.dnsSettings()
+            return save()
+        }
+
+        fun deleteProfile(id: String) {
+            _profiles.value = ConnectionProfiles.remove(context, id)
+        }
+
+        /** Tries the form as it is now, saved or not. */
+        fun testConnection() {
+            val current = _draft.value ?: return
+            if (!current.valid || dnsError(_dnsDraft.value)) return
+            testJob?.cancel()
+            _test.value = ConnectionTestState.Running
+            val config = current.toConfig(savedPort)
+            val dns = _dnsDraft.value
+            testJob =
+                viewModelScope.launch {
+                    _test.value = ConnectionTestState.Done(ConnectionTester.test(config, dns))
+                }
+        }
+
+        private fun passwordMatches(
+            profile: ConnectionProfile,
+            config: AppProxyConfig,
+        ): Boolean = !config.hasCredentials() || ConnectionProfiles.password(profile) == config.password
 
         /** Saves the proxy and DNS drafts when both are valid; reports whether they were. */
         fun save(): Boolean {

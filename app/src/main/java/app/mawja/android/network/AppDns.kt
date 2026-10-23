@@ -28,6 +28,10 @@ object AppDns : Dns {
     private const val KEY_PROVIDER = "dns_provider"
     private const val KEY_CUSTOM_URL = "dns_custom_url"
     private const val KEY_FALLBACK = "dns_fallback_system"
+    private const val KEY_REMOTE = "remote_enabled"
+
+    /** config/app features.customNetwork: false keeps lookups on the system resolver (and hides profiles). */
+    const val REMOTE_SWITCH = "customNetwork"
     private const val CACHE_TTL_MS = 5 * 60_000L
     private const val CACHE_MAX = 512
 
@@ -44,7 +48,25 @@ object AppDns : Dns {
     private val cache = ConcurrentHashMap<String, Pair<List<InetAddress>, Long>>()
 
     fun init(context: Context) {
+        allowed = prefs(context).getBoolean(KEY_REMOTE, true)
+        _remoteEnabled.value = allowed
         install(read(context))
+    }
+
+    private val _remoteEnabled = kotlinx.coroutines.flow.MutableStateFlow(true)
+
+    /** Whether the remote switch lets the custom DNS and connection profiles work. */
+    val remoteEnabled: kotlinx.coroutines.flow.StateFlow<Boolean> = _remoteEnabled
+
+    /** Pushed from the activity that owns RemoteConfigRepository; kept so a cold process obeys it too. */
+    fun setRemoteEnabled(
+        context: Context,
+        enabled: Boolean,
+    ) {
+        if (allowed == enabled && prefs(context).contains(KEY_REMOTE)) return
+        prefs(context).edit { putBoolean(KEY_REMOTE, enabled) }
+        _remoteEnabled.value = enabled
+        setAllowed(enabled)
     }
 
     fun current(): DnsSettings = settings
@@ -61,7 +83,7 @@ object AppDns : Dns {
         install(newSettings)
     }
 
-    internal fun setAllowed(on: Boolean) {
+    private fun setAllowed(on: Boolean) {
         if (allowed == on) return
         allowed = on
         install(settings)
@@ -91,9 +113,29 @@ object AppDns : Dns {
                 cache[key] = it to now
             }
         } catch (e: UnknownHostException) {
-            if (!settings.fallbackToSystem) throw e
+            // Names without a public suffix (router.lan, an intranet host) are not sent to DoH at all.
+            if (!settings.fallbackToSystem && !isPrivateNameRefusal(e)) throw e
             Log.w(TAG, "DoH lookup failed, using the system resolver: ${e.message}")
             Dns.SYSTEM.lookup(hostname)
+        }
+    }
+
+    /**
+     * A resolver for [s] alone, for the connection test of settings that are not saved yet; it falls
+     * back to the system as [s] says.
+     */
+    fun resolverFor(s: DnsSettings): Dns {
+        val doh = build(s) ?: return Dns.SYSTEM
+        return object : Dns {
+            override fun lookup(hostname: String): List<InetAddress> {
+                if (isLocalHost(hostname)) return Dns.SYSTEM.lookup(hostname)
+                return try {
+                    doh.lookup(hostname)
+                } catch (e: UnknownHostException) {
+                    if (!s.fallbackToSystem && !isPrivateNameRefusal(e)) throw e
+                    Dns.SYSTEM.lookup(hostname)
+                }
+            }
         }
     }
 
@@ -133,6 +175,9 @@ object AppDns : Dns {
             null
         }
     }
+
+    /** DnsOverHttps refuses names outside the public suffix list with exactly this message. */
+    private fun isPrivateNameRefusal(e: UnknownHostException): Boolean = e.message == "private hosts not resolved"
 
     private fun prefs(context: Context) = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 }

@@ -145,36 +145,57 @@ object AppProxyManager {
             .build()
             .also { livePools.addIfAbsent(it.connectionPool) }
 
-    private fun installJvmAuthenticatorLocked() {
-        val activeConfig = config
-        val shouldInstallProxyAuthenticator =
-            activeConfig.hasUsableEndpoint() &&
-                activeConfig.type == AppProxyType.SOCKS5 &&
-                activeConfig.hasCredentials()
+    /** A SOCKS5 proxy being tried by the connection test, answered alongside the saved one. */
+    @Volatile
+    private var testProxy: AppProxyConfig? = null
 
-        if (!shouldInstallProxyAuthenticator) {
+    /**
+     * Runs [block] while the JVM authenticator also answers for [candidate], so a connection test can
+     * sign in to a SOCKS5 proxy that is not saved yet. One authenticator serves both: Java has only
+     * one default, and swapping it would break the saved proxy's sign-in mid-test.
+     */
+    suspend fun <T> withTestProxy(
+        candidate: AppProxyConfig,
+        block: suspend () -> T,
+    ): T {
+        synchronized(lock) {
+            testProxy = candidate.normalized()
+            installJvmAuthenticatorLocked()
+        }
+        try {
+            return block()
+        } finally {
+            synchronized(lock) {
+                testProxy = null
+                installJvmAuthenticatorLocked()
+            }
+        }
+    }
+
+    private fun installJvmAuthenticatorLocked() {
+        val saved = config.takeIf { it.needsSocksSignIn() }
+        val test = testProxy?.takeIf { it.needsSocksSignIn() }
+        if (saved == null && test == null) {
             Authenticator.setDefault(null)
             return
         }
+        Authenticator.setDefault(SocksAuthenticator)
+    }
 
-        val proxyHost = activeConfig.host
-        val proxyPort = activeConfig.port
-        val username = activeConfig.username
-        val passwordChars = activeConfig.password.toCharArray()
-
-        Authenticator.setDefault(
-            object : Authenticator() {
-                override fun getPasswordAuthentication(): PasswordAuthentication? {
-                    val isProxyRequest = requestorType == RequestorType.PROXY
-                    val hostMatches = requestingHost.equals(proxyHost, ignoreCase = true)
-                    val portMatches = requestingPort == proxyPort || requestingPort <= 0
-                    return if (isProxyRequest && hostMatches && portMatches) {
-                        PasswordAuthentication(username, passwordChars)
-                    } else {
-                        null
-                    }
-                }
-            },
-        )
+    /** Reads the proxies in force at each challenge, so it never holds stale credentials. */
+    private object SocksAuthenticator : Authenticator() {
+        override fun getPasswordAuthentication(): PasswordAuthentication? {
+            if (requestorType != RequestorType.PROXY) return null
+            val candidates = listOfNotNull(AppProxyManager.testProxy, AppProxyManager.config)
+            val match =
+                candidates.firstOrNull { c ->
+                    c.needsSocksSignIn() &&
+                        requestingHost.equals(c.host, ignoreCase = true) &&
+                        (requestingPort == c.port || requestingPort <= 0)
+                } ?: return null
+            return PasswordAuthentication(match.username, match.password.toCharArray())
+        }
     }
 }
+
+private fun AppProxyConfig.needsSocksSignIn(): Boolean = hasUsableEndpoint() && type == AppProxyType.SOCKS5 && hasCredentials()

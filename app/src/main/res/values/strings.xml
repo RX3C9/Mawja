@@ -4587,4 +4587,24 @@
     <string name="link_cleaner_switch">Remove trackers from links</string>
     <string name="link_cleaner_switch_summary">Drop utm_, si, fbclid and similar tags when you share or copy a link</string>
     <string name="link_cleaner_footer">The video, start time and playlist stay in the link.</string>
+    <string name="network_test">Test connection</string>
+    <string name="network_test_summary">Try the settings on this page, saved or not, against YouTube</string>
+    <string name="network_test_footer">The test asks YouTube for an empty page through the proxy and DNS above.</string>
+    <string name="network_test_running">Testing…</string>
+    <string name="network_test_ok">Connected in %1$d ms</string>
+    <string name="network_test_dns_failed">Couldn\'t look up YouTube\'s address. Check the DNS server.</string>
+    <string name="network_test_auth_failed">The proxy refused the sign-in. Check the username and password.</string>
+    <string name="network_test_unexpected">Unexpected answer (HTTP %1$d). A sign-in page may be in the way.</string>
+    <string name="network_test_failed">Couldn\'t connect: %1$s</string>
+    <string name="network_profiles_title">Connection profiles</string>
+    <string name="network_profiles_summary">Saved proxy and DNS setups you can switch between</string>
+    <string name="network_profiles_footer">Tap a profile to switch to it or delete it. Passwords are stored encrypted on this device.</string>
+    <string name="network_profile_save">Save as profile</string>
+    <string name="network_profile_save_summary">Keep the proxy and DNS on this page under a name</string>
+    <string name="network_profile_name">Profile name</string>
+    <string name="network_profile_apply">Use this profile</string>
+    <string name="network_profile_delete">Delete</string>
+    <string name="network_profile_applied">Profile applied</string>
+    <string name="network_profile_direct">Direct</string>
+    <string name="network_custom_off">Private DNS and connection profiles are turned off for now. Lookups use the device DNS.</string>
 </resources>
