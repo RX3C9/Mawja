@@ -33,3 +33,9 @@ app.mawja.android.ui.selection.MultiSelectionTest
 app.mawja.android.player.PipActionsTest
 app.mawja.android.player.display.ZoomFillTest
 app.mawja.android.player.screenshot.ScreenshotPlanTest
+app.mawja.android.ui.components.videoplayer.gesture.PlayerSpeedBoostTest
+app.mawja.android.ui.components.videoplayer.gesture.PlayerSpeedSwipeTest
+app.mawja.android.ui.components.videoplayer.gesture.DoubleTapSeekZonesTest
+app.mawja.android.player.stream.StoryboardSpecTest
+app.mawja.android.ui.components.videoplayer.controls.SeekStripGeometryTest
+app.mawja.android.player.FrameStepPolicyTest
