@@ -127,7 +127,7 @@ private fun SubtitleStyle.toCaptionStyle(): CaptionStyleCompat =
             SubtitleEdgeType.DEPRESSED -> CaptionStyleCompat.EDGE_TYPE_DEPRESSED
         },
         edgeColor.toArgb(),
-        if (isBold) Typeface.DEFAULT_BOLD else Typeface.DEFAULT,
+        Typeface.create(font.familyName, if (isBold) Typeface.BOLD else Typeface.NORMAL),
     )
 
 /**

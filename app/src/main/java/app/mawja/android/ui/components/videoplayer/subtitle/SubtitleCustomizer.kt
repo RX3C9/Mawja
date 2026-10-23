@@ -158,6 +158,19 @@ fun SubtitleCustomizer(
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.subtitle_font), style = MaterialTheme.typography.labelLarge)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SubtitleFont.entries.forEach { font ->
+                    FlowFilterChip(
+                        label = stringResource(font.labelRes),
+                        selected = currentStyle.font == font,
+                        onClick = { onStyleChange(currentStyle.copy(font = font)) },
+                    )
+                }
+            }
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.subtitle_edge_style), style = MaterialTheme.typography.labelLarge)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SubtitleEdgeType.entries.forEach { type ->
@@ -270,6 +283,16 @@ private val SubtitleEdgeType.labelRes: Int
             SubtitleEdgeType.DROP_SHADOW -> R.string.subtitle_edge_drop_shadow
             SubtitleEdgeType.RAISED -> R.string.subtitle_edge_raised
             SubtitleEdgeType.DEPRESSED -> R.string.subtitle_edge_depressed
+        }
+
+private val SubtitleFont.labelRes: Int
+    get() =
+        when (this) {
+            SubtitleFont.DEFAULT -> R.string.subtitle_font_default
+            SubtitleFont.SANS_SERIF -> R.string.subtitle_font_sans_serif
+            SubtitleFont.SERIF -> R.string.subtitle_font_serif
+            SubtitleFont.MONOSPACE -> R.string.subtitle_font_monospace
+            SubtitleFont.CONDENSED -> R.string.subtitle_font_condensed
         }
 
 private val PreviewHeight = 150.dp

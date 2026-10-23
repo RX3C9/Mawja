@@ -11,6 +11,23 @@ enum class SubtitleEdgeType {
     DEPRESSED,
 }
 
+/** The typeface family captions are drawn in; [familyName] is the Android family, null for the system default. */
+enum class SubtitleFont(
+    val familyName: String?,
+) {
+    DEFAULT(null),
+    SANS_SERIF("sans-serif"),
+    SERIF("serif"),
+    MONOSPACE("monospace"),
+    CONDENSED("sans-serif-condensed"),
+    ;
+
+    companion object {
+        /** The stored font, or [DEFAULT] when nothing (or something unknown) was saved. */
+        fun fromStored(name: String?): SubtitleFont = entries.firstOrNull { it.name == name } ?: DEFAULT
+    }
+}
+
 /**
  * How captions look. [backgroundColor] sits behind the text itself and [windowColor] behind the
  * whole caption. [bottomPadding], [fullscreenBottomPadding] and [verticalFullscreenBottomPadding]
@@ -25,6 +42,7 @@ data class SubtitleStyle(
     val edgeType: SubtitleEdgeType = SubtitleEdgeType.NONE,
     val edgeColor: Color = Color.Black,
     val isBold: Boolean = true,
+    val font: SubtitleFont = SubtitleFont.DEFAULT,
     val bottomPadding: Float = DEFAULT_BOTTOM_PADDING,
     val fullscreenBottomPadding: Float = DEFAULT_BOTTOM_PADDING,
     val verticalFullscreenBottomPadding: Float = DEFAULT_BOTTOM_PADDING,

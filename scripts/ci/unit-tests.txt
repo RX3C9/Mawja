@@ -39,3 +39,15 @@ app.mawja.android.ui.components.videoplayer.gesture.DoubleTapSeekZonesTest
 app.mawja.android.player.stream.StoryboardSpecTest
 app.mawja.android.ui.components.videoplayer.controls.SeekStripGeometryTest
 app.mawja.android.player.FrameStepPolicyTest
+app.mawja.android.player.AutoplayCountdownControllerTest
+app.mawja.android.player.PlaybackQueueControllerTest
+app.mawja.android.player.PlaylistQueueOrderTest
+app.mawja.android.ui.components.videoplayer.sheet.QueueRowKeysTest
+app.mawja.android.ui.screens.player.state.QueueDockStateTest
+app.mawja.android.ui.ActiveMiniPlayerTest
+app.mawja.android.ui.components.videoplayer.PlayerDraggableStateTest
+app.mawja.android.ui.components.videoplayer.motion.DraggablePlayerDragMathTest
+app.mawja.android.ui.components.videoplayer.motion.DraggablePlayerGeometryTest
+app.mawja.android.ui.components.videoplayer.motion.MiniPlayerTapDeciderTest
+app.mawja.android.ui.components.videoplayer.subtitle.SubtitleStyleTest
+app.mawja.android.ui.components.videoplayer.subtitle.SubtitleAreaTest

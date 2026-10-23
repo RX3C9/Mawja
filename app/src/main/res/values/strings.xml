@@ -2505,6 +2505,12 @@
     <string name="subtitle_bold_text">Bold Text</string>
     <string name="subtitle_window_color">Window Color</string>
     <string name="subtitle_window_opacity_template">Window Opacity: %1$d%%</string>
+    <string name="subtitle_font">Font</string>
+    <string name="subtitle_font_default">Default</string>
+    <string name="subtitle_font_sans_serif">Sans serif</string>
+    <string name="subtitle_font_serif">Serif</string>
+    <string name="subtitle_font_monospace">Monospace</string>
+    <string name="subtitle_font_condensed">Condensed</string>
     <string name="subtitle_edge_style">Edge Style</string>
     <string name="subtitle_edge_none">None</string>
     <string name="subtitle_edge_outline">Outline</string>

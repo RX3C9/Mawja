@@ -13,6 +13,7 @@ import app.mawja.android.network.AppProxyConfig
 import app.mawja.android.network.AppProxyType
 import app.mawja.android.player.stream.CaptionTrackResolver
 import app.mawja.android.ui.components.videoplayer.subtitle.SubtitleEdgeType
+import app.mawja.android.ui.components.videoplayer.subtitle.SubtitleFont
 import app.mawja.android.ui.components.videoplayer.subtitle.SubtitleStyle
 import app.mawja.android.utils.AppLanguageManager
 import app.mawja.android.utils.DateContextMode
@@ -88,6 +89,7 @@ class PlayerPreferences(
         val SUBTITLE_BOLD = booleanPreferencesKey("subtitle_bold")
         val SUBTITLE_WINDOW_COLOR = intPreferencesKey("subtitle_window_color")
         val SUBTITLE_EDGE_TYPE = stringPreferencesKey("subtitle_edge_type")
+        val SUBTITLE_FONT = stringPreferencesKey("subtitle_font")
         val SUBTITLE_EDGE_COLOR = intPreferencesKey("subtitle_edge_color")
         val SUBTITLE_BOTTOM_PADDING = floatPreferencesKey("subtitle_bottom_padding")
         val SUBTITLE_FULLSCREEN_BOTTOM_PADDING = floatPreferencesKey("subtitle_fullscreen_bottom_padding")
@@ -2028,6 +2030,7 @@ class PlayerPreferences(
                             ?: SubtitleEdgeType.NONE,
                     edgeColor = preferences[Keys.SUBTITLE_EDGE_COLOR]?.let(::Color) ?: Color.Black,
                     isBold = preferences[Keys.SUBTITLE_BOLD] ?: true,
+                    font = SubtitleFont.fromStored(preferences[Keys.SUBTITLE_FONT]),
                     bottomPadding = bottomPadding,
                     // Each starts at the value it would have used, so nobody's captions move until they set it.
                     fullscreenBottomPadding = fullscreenBottomPadding,
@@ -2042,6 +2045,7 @@ class PlayerPreferences(
             preferences[Keys.SUBTITLE_TEXT_COLOR] = style.textColor.toArgb()
             preferences[Keys.SUBTITLE_BACKGROUND_COLOR] = style.backgroundColor.toArgb()
             preferences[Keys.SUBTITLE_BOLD] = style.isBold
+            preferences[Keys.SUBTITLE_FONT] = style.font.name
             preferences[Keys.SUBTITLE_WINDOW_COLOR] = style.windowColor.toArgb()
             preferences[Keys.SUBTITLE_EDGE_TYPE] = style.edgeType.name
             preferences[Keys.SUBTITLE_EDGE_COLOR] = style.edgeColor.toArgb()

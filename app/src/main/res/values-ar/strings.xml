@@ -4135,6 +4135,12 @@
     <string name="subtitle_fullscreen_vertical">الوضع الرأسي</string>
     <string name="subtitle_window_color">لون النافذة</string>
     <string name="subtitle_window_opacity_template">شفافية النافذة: %1$d%%</string>
+    <string name="subtitle_font">الخط</string>
+    <string name="subtitle_font_default">الافتراضي</string>
+    <string name="subtitle_font_sans_serif">بدون تذييل</string>
+    <string name="subtitle_font_serif">بتذييل</string>
+    <string name="subtitle_font_monospace">أحادي المسافة</string>
+    <string name="subtitle_font_condensed">مضغوط</string>
     <string name="subtitle_edge_style">نمط الحواف</string>
     <string name="subtitle_edge_none">بلا</string>
     <string name="subtitle_edge_outline">الأطار</string>
