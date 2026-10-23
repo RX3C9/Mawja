@@ -63,6 +63,9 @@ internal fun VideoStage(
     val isLandscapeWindow = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     val playerPreferences = remember(session.context) { PlayerPreferences(session.context) }
 
+    // Read through state: the zoom gesture's pointerInput block outlives recompositions (#87).
+    val zoomVideoAspectRatio = androidx.compose.runtime.rememberUpdatedState(videoAspectRatio)
+
     // ALWAYS use the same video surface
     val gestureModifier =
         if (!isMinimized && !localIsInPipMode && !screenState.isTouchLocked) {
@@ -144,6 +147,9 @@ internal fun VideoStage(
                         screenState.zoomOffsetY = newOffsetY
                         screenState.showZoomIndicator = true
                         screenState.zoomIndicatorSequence += 1
+                    },
+                    fitVideoAspectRatio = {
+                        if (screenState.resizeMode == app.mawja.android.player.display.ZoomFill.RESIZE_FIT) zoomVideoAspectRatio.value else 0f
                     },
                 ).graphicsLayer {
                     if (screenState.isFullscreen) translationY = screenState.exitDragOffsetY

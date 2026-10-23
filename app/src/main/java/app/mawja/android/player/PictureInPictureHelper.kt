@@ -30,12 +30,16 @@ object PictureInPictureHelper {
     const val ACTION_PREVIOUS = "app.mawja.android.action.PIP_PREVIOUS"
     const val ACTION_NEXT = "app.mawja.android.action.PIP_NEXT"
     const val ACTION_CLOSE = "app.mawja.android.action.PIP_CLOSE"
+    const val ACTION_REWIND = "app.mawja.android.action.PIP_REWIND"
+    const val ACTION_FORWARD = "app.mawja.android.action.PIP_FORWARD"
 
     private const val REQUEST_CODE_PLAY = 1
     private const val REQUEST_CODE_PAUSE = 2
     private const val REQUEST_CODE_PREVIOUS = 3
     private const val REQUEST_CODE_NEXT = 4
     private const val REQUEST_CODE_CLOSE = 5
+    private const val REQUEST_CODE_REWIND = 6
+    private const val REQUEST_CODE_FORWARD = 7
     private const val ACTION_PICTURE_IN_PICTURE_SETTINGS = "android.settings.PICTURE_IN_PICTURE_SETTINGS"
 
     @Volatile
@@ -122,6 +126,7 @@ object PictureInPictureHelper {
         isPlaying: Boolean = true,
         autoEnterEnabled: Boolean = false,
         navigation: PipQueueNavigation? = null,
+        seekButtons: Boolean = false,
     ): Boolean {
         if (!isPipSupported(activity)) return false
 
@@ -133,6 +138,7 @@ object PictureInPictureHelper {
                     isPlaying,
                     autoEnterEnabled,
                     navigation,
+                    seekButtons,
                 )
             activity.enterPictureInPictureMode(params)
         } catch (e: Exception) {
@@ -218,6 +224,7 @@ object PictureInPictureHelper {
         isPlaying: Boolean = true,
         autoEnterEnabled: Boolean = false,
         navigation: PipQueueNavigation? = null,
+        seekButtons: Boolean = false,
     ) {
         if (!isPipSupported(activity)) return
 
@@ -229,6 +236,7 @@ object PictureInPictureHelper {
                     isPlaying,
                     autoEnterEnabled,
                     navigation,
+                    seekButtons,
                 )
             activity.setPictureInPictureParams(params)
         } catch (e: Exception) {
@@ -243,13 +251,14 @@ object PictureInPictureHelper {
         isPlaying: Boolean,
         autoEnterEnabled: Boolean,
         navigation: PipQueueNavigation?,
+        seekButtons: Boolean,
     ): PictureInPictureParams {
         val safeAspectRatio = sanitizePipAspectRatio(requestedAspectRatio)
         currentVideoAspectRatio = safeAspectRatio
         val aspectRatio = Rational((safeAspectRatio * 1_000).roundToInt(), 1_000)
 
         val maxActions = (context as? Activity)?.maxNumPictureInPictureActions ?: Int.MAX_VALUE
-        val actions = pipActionSpecs(isPlaying, navigation, maxActions).map { createRemoteAction(context, it) }
+        val actions = pipActionSpecs(isPlaying, navigation, maxActions, seekButtons).map { createRemoteAction(context, it) }
 
         val builder =
             PictureInPictureParams
@@ -293,6 +302,14 @@ object PictureInPictureHelper {
 
                 PipControl.NEXT -> {
                     PipButton(android.R.drawable.ic_media_next, R.string.next, ACTION_NEXT, REQUEST_CODE_NEXT)
+                }
+
+                PipControl.REWIND -> {
+                    PipButton(android.R.drawable.ic_media_rew, R.string.ui_skip_back_10_seconds, ACTION_REWIND, REQUEST_CODE_REWIND)
+                }
+
+                PipControl.FORWARD -> {
+                    PipButton(android.R.drawable.ic_media_ff, R.string.ui_skip_forward_10_seconds, ACTION_FORWARD, REQUEST_CODE_FORWARD)
                 }
             }
         val title = context.getString(titleResId)
@@ -338,6 +355,8 @@ object PictureInPictureHelper {
         onPrevious: () -> Unit = {},
         onNext: () -> Unit = {},
         onClose: () -> Unit = {},
+        onRewind: () -> Unit = {},
+        onForward: () -> Unit = {},
     ): BroadcastReceiver =
         object : BroadcastReceiver() {
             override fun onReceive(
@@ -350,6 +369,8 @@ object PictureInPictureHelper {
                     ACTION_PREVIOUS -> onPrevious()
                     ACTION_NEXT -> onNext()
                     ACTION_CLOSE -> onClose()
+                    ACTION_REWIND -> onRewind()
+                    ACTION_FORWARD -> onForward()
                 }
             }
         }
@@ -364,5 +385,7 @@ object PictureInPictureHelper {
             addAction(ACTION_PREVIOUS)
             addAction(ACTION_NEXT)
             addAction(ACTION_CLOSE)
+            addAction(ACTION_REWIND)
+            addAction(ACTION_FORWARD)
         }
 }

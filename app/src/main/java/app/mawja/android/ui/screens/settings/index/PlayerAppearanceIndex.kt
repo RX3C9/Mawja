@@ -60,6 +60,13 @@ internal object PlayerAppearanceIndex {
             R.string.player_appearance_frame_step_subtitle,
             R.string.settings_section_seek_bar,
         )
+    val screenshot =
+        entry(
+            "screenshot_button",
+            R.string.player_appearance_screenshot_title,
+            R.string.player_appearance_screenshot_subtitle,
+            R.string.settings_section_seek_bar,
+        )
     val musicBackground =
         entry("music_background", R.string.player_background_style_title, section = R.string.settings_section_music_player)
     val followLightTheme =
@@ -178,6 +185,7 @@ internal object PlayerAppearanceIndex {
             fullscreenCustom,
             scrubPreview,
             frameStep,
+            screenshot,
             musicBackground,
             followLightTheme,
             hideMusicArtwork,

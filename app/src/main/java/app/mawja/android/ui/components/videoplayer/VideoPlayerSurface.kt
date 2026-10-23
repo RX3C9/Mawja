@@ -128,8 +128,12 @@ fun VideoPlayerSurface(
 
         surfaceView.holder.addCallback(callback)
         attachIfValid(surfaceView.holder)
+        app.mawja.android.player.screenshot.VideoSurfaceRegistry
+            .publish(surfaceView)
 
         onDispose {
+            app.mawja.android.player.screenshot.VideoSurfaceRegistry
+                .clear(surfaceView)
             surfaceView.holder.removeCallback(callback)
             attachedHolder?.let(manager::detachVideoSurface)
         }

@@ -155,6 +155,8 @@ fun VideoPlayerHost(
         rememberedBrightnessLevel = prefs.rememberedBrightnessLevel,
     )
 
+    RememberResizeModeEffect(screenState)
+
     TouchLockDisableEffect(
         screenState = screenState,
         lockModeEnabled = prefs.lockModeEnabled,

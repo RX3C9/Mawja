@@ -755,6 +755,12 @@ class MainActivity : ComponentActivity() {
                 isPlaying = isPlaying,
                 autoEnterEnabled = false,
                 navigation = navigation,
+                // The main video player (no Shorts queue) gets −10 s / +10 s buttons (#94).
+                seekButtons =
+                    navigation == null &&
+                        !app.mawja.android.player.EnhancedPlayerManager
+                            .getInstance()
+                            .isLivePlayback(),
             )
         if (!entered) {
             pendingAutoPip = false

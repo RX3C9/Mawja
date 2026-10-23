@@ -4996,4 +4996,10 @@
         <item quantity="other">اتشال %1$d عنصر من السجل</item>
     </plurals>
     <string name="selection_add_failed">ماقدرناش نضيف للقائمة</string>
+    <string name="player_screenshot">لقطة شاشة</string>
+    <string name="player_screenshot_saved">اتحفظت اللقطة في %1$s</string>
+    <string name="player_screenshot_no_frame">مفيش إطار فيديو لسه نصوره</string>
+    <string name="player_screenshot_failed">ماقدرناش نحفظ اللقطة</string>
+    <string name="player_appearance_screenshot_title">زر لقطة الشاشة</string>
+    <string name="player_appearance_screenshot_subtitle">وقت الإيقاف المؤقت في ملء الشاشة، احفظ الإطار بدقة الفيديو الكاملة ومن غير أزرار في Pictures/Mawja</string>
 </resources>

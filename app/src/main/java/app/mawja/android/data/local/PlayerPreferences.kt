@@ -287,6 +287,7 @@ class PlayerPreferences(
         val FULLSCREEN_SEEKBAR_CUSTOM_PADDING_DP = intPreferencesKey("fullscreen_seekbar_custom_padding_dp")
         val SCRUB_PREVIEW_STYLE = stringPreferencesKey("scrub_preview_style")
         val FRAME_STEP_BUTTONS_ENABLED = booleanPreferencesKey("frame_step_buttons_enabled")
+        val SCREENSHOT_BUTTON_ENABLED = booleanPreferencesKey("screenshot_button_enabled")
 
         // Mini Player Customizations
         val MINI_PLAYER_SCALE = floatPreferencesKey("mini_player_scale")
@@ -723,6 +724,8 @@ class PlayerPreferences(
             scrubPreviewStyle = resolveScrubPreviewStyle(this[Keys.SCRUB_PREVIEW_STYLE]),
             frameStepButtonsEnabled =
                 this[Keys.FRAME_STEP_BUTTONS_ENABLED] ?: overlayDefaults.frameStepButtonsEnabled,
+            screenshotButtonEnabled =
+                this[Keys.SCREENSHOT_BUTTON_ENABLED] ?: overlayDefaults.screenshotButtonEnabled,
             sponsorCategoryColors = readSponsorCategoryColors(),
         )
     }
@@ -1991,6 +1994,16 @@ class PlayerPreferences(
     suspend fun setFrameStepButtonsEnabled(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->
             preferences[Keys.FRAME_STEP_BUTTONS_ENABLED] = enabled
+        }
+    }
+
+    val screenshotButtonEnabled: Flow<Boolean> =
+        context.playerPreferencesDataStore.data
+            .map { preferences -> preferences[Keys.SCREENSHOT_BUTTON_ENABLED] ?: true }
+
+    suspend fun setScreenshotButtonEnabled(enabled: Boolean) {
+        context.playerPreferencesDataStore.edit { preferences ->
+            preferences[Keys.SCREENSHOT_BUTTON_ENABLED] = enabled
         }
     }
 

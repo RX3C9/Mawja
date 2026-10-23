@@ -15,6 +15,8 @@ import app.mawja.android.player.EnhancedPlayerManager
 import app.mawja.android.player.PictureInPictureHelper
 import app.mawja.android.player.SleepTimerManager
 import app.mawja.android.player.dlna.DlnaCastManager
+import app.mawja.android.player.screenshot.VideoScreenshot
+import kotlinx.coroutines.launch
 import app.mawja.android.ui.components.videoplayer.controls.PlayerControlActions
 import app.mawja.android.ui.components.videoplayer.controls.PlayerControlsOverlay
 import app.mawja.android.ui.components.videoplayer.controls.PlayerControlsUiState
@@ -219,6 +221,18 @@ internal fun VideoStageControls(
             },
             onSleepTimerClick = { screenState.open(PlayerSheet.SleepTimer) },
             onToggleRemainingTime = onToggleRemainingTime,
+            onScreenshotClick = {
+                screenState.onInteraction()
+                session.scope.launch {
+                    val message =
+                        when (val result = VideoScreenshot.capture(context, video.title)) {
+                            is VideoScreenshot.Result.Saved -> context.getString(R.string.player_screenshot_saved, result.displayPath)
+                            VideoScreenshot.Result.NoFrame -> context.getString(R.string.player_screenshot_no_frame)
+                            VideoScreenshot.Result.Failed -> context.getString(R.string.player_screenshot_failed)
+                        }
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            },
             onTouchLockToggle = {
                 if (prefs.lockModeEnabled || screenState.isTouchLocked) {
                     screenState.isTouchLocked = !screenState.isTouchLocked

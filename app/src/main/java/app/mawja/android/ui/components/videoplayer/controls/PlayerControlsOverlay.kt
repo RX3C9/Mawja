@@ -305,6 +305,10 @@ internal fun PlayerControlsOverlay(
                             isSleepTimerActive = state.isSleepTimerActive,
                             lockModeEnabled = state.lockModeEnabled,
                             isLiveChatAvailable = state.isLiveChatAvailable,
+                            // Clean frame grab (#91): paused, fullscreen, the picture is on this device.
+                            showScreenshot =
+                                overlayPreferences.screenshotButtonEnabled &&
+                                    isFullscreen && !state.isPlaying && !state.isCasting && !state.hasEnded,
                             hasQueue = state.hasQueue,
                             topPadding = fullscreenTopPadding,
                             horizontalPadding = topControlHorizontalPadding,

@@ -31,6 +31,7 @@ class PlayerAppearanceViewModel
         val fullscreenSeekbarCustom = preferences.fullscreenSeekbarCustomPaddingDp.asState(DEFAULT_FULLSCREEN_SEEKBAR_PADDING_DP)
         val scrubPreview = preferences.scrubPreviewStyle.asState(overlayDefaults.scrubPreviewStyle)
         val frameStepButtons = preferences.frameStepButtonsEnabled.asState(overlayDefaults.frameStepButtonsEnabled)
+        val screenshotButton = preferences.screenshotButtonEnabled.asState(overlayDefaults.screenshotButtonEnabled)
         val musicBackground = preferences.musicPlayerBackgroundStyle.asState(MusicPlayerBackgroundStyle.BLUR_GRADIENT)
         val hideMusicArtwork = preferences.hideMusicPlayerArtwork.asState(false)
         val followLightTheme = preferences.musicPlayerFollowLightTheme.asState(false)
@@ -63,6 +64,8 @@ class PlayerAppearanceViewModel
         fun setScrubPreview(value: ScrubPreviewStyle) = write { preferences.setScrubPreviewStyle(value) }
 
         fun setFrameStepButtons(value: Boolean) = write { preferences.setFrameStepButtonsEnabled(value) }
+
+        fun setScreenshotButton(value: Boolean) = write { preferences.setScreenshotButtonEnabled(value) }
 
         fun setMusicBackground(value: MusicPlayerBackgroundStyle) = write { preferences.setMusicPlayerBackgroundStyle(value) }
 

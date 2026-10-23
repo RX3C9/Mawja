@@ -25,6 +25,8 @@ private fun PipBroadcastReceiverEffect(context: Context) {
             PictureInPictureHelper.createPipActionReceiver(
                 onPlay = { EnhancedPlayerManager.getInstance().play() },
                 onPause = { EnhancedPlayerManager.getInstance().pause() },
+                onRewind = { EnhancedPlayerManager.getInstance().seekByPipStep(forward = false) },
+                onForward = { EnhancedPlayerManager.getInstance().seekByPipStep(forward = true) },
                 onClose = {
                     GlobalPlayerState.requestDismiss()
                     EnhancedPlayerManager.getInstance().stop()
@@ -73,6 +75,7 @@ private fun PipParamsUpdateEffect(
                 aspectRatio = videoAspectRatio,
                 isPlaying = isPlaying,
                 autoEnterEnabled = autoEnterEnabled,
+                seekButtons = !EnhancedPlayerManager.getInstance().isLivePlayback(),
             )
         }
     }

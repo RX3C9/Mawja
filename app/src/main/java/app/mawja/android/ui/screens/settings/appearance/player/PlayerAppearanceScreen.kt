@@ -60,6 +60,7 @@ internal fun PlayerAppearanceScreen(
     val fullscreenCustom by viewModel.fullscreenSeekbarCustom.collectAsStateWithLifecycle()
     val scrubPreview by viewModel.scrubPreview.collectAsStateWithLifecycle()
     val frameStep by viewModel.frameStepButtons.collectAsStateWithLifecycle()
+    val screenshotButton by viewModel.screenshotButton.collectAsStateWithLifecycle()
     val musicBackground by viewModel.musicBackground.collectAsStateWithLifecycle()
     val hideMusicArtwork by viewModel.hideMusicArtwork.collectAsStateWithLifecycle()
     val followLightTheme by viewModel.followLightTheme.collectAsStateWithLifecycle()
@@ -159,6 +160,7 @@ internal fun PlayerAppearanceScreen(
             }
             toggleGroup(PlayerAppearanceIndex.scrubPreview, scrubOptions, scrubPreview, viewModel::setScrubPreview)
             switch(PlayerAppearanceIndex.frameStep, frameStep, viewModel::setFrameStepButtons)
+            switch(PlayerAppearanceIndex.screenshot, screenshotButton, viewModel::setScreenshotButton)
         }
         group(key = "player_appearance.music", header = R.string.settings_section_music_player) {
             nav(PlayerAppearanceIndex.musicBackground, value = backgroundLabel, onClick = { sheet = PreviewSheet.BACKGROUND })

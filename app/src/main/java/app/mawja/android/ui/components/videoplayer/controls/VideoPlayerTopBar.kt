@@ -27,6 +27,7 @@ import androidx.compose.material.icons.rounded.ClosedCaption
 import androidx.compose.material.icons.rounded.Fullscreen
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.material.icons.rounded.PictureInPicture
 import androidx.compose.material.icons.rounded.RemoveModerator
 import androidx.compose.material.icons.rounded.Settings
@@ -92,6 +93,7 @@ internal fun VideoPlayerTopBar(
     isSleepTimerActive: Boolean,
     lockModeEnabled: Boolean,
     isLiveChatAvailable: Boolean,
+    showScreenshot: Boolean,
     hasQueue: Boolean,
     topPadding: Dp,
     horizontalPadding: Dp,
@@ -293,6 +295,16 @@ internal fun VideoPlayerTopBar(
                         iconSize = actionIconSize,
                         icon = Icons.Rounded.Bedtime,
                         contentDescription = stringResource(R.string.sleep_timer),
+                    )
+                }
+
+                if (showScreenshot) {
+                    TopBarIconButton(
+                        onClick = actions.onScreenshotClick,
+                        buttonSize = actionButtonSize,
+                        iconSize = actionIconSize,
+                        icon = Icons.Rounded.PhotoCamera,
+                        contentDescription = stringResource(R.string.player_screenshot),
                     )
                 }
 

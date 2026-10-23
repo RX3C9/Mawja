@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.util.lerp
+import app.mawja.android.player.display.ZoomFill
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -45,6 +46,8 @@ fun Modifier.videoPlayerZoom(
     offsetX: () -> Float,
     offsetY: () -> Float,
     onTransform: (scale: Float, offsetX: Float, offsetY: Float) -> Unit,
+    /** Display aspect of the video while it is fitted (Fit mode), or 0 when no fill snap applies (#87). */
+    fitVideoAspectRatio: () -> Float = { 0f },
 ): Modifier =
     pointerInput("playerZoom") {
         var settleJob: Job? = null
@@ -108,6 +111,7 @@ fun Modifier.videoPlayerZoom(
                 scope.launch {
                     settleZoom(
                         fromScale = scale(),
+                        fillScale = ZoomFill.fillScale(fitVideoAspectRatio(), size.width, size.height),
                         fromOffset = Offset(offsetX(), offsetY()),
                         width = size.width,
                         height = size.height,
@@ -145,6 +149,7 @@ private fun clampPan(
  */
 private suspend fun settleZoom(
     fromScale: Float,
+    fillScale: Float,
     fromOffset: Offset,
     width: Int,
     height: Int,
@@ -154,7 +159,8 @@ private suspend fun settleZoom(
         when {
             fromScale < ZOOM_RESET_THRESHOLD -> ZOOM_MIN
             fromScale > ZOOM_MAX -> ZOOM_MAX
-            else -> fromScale
+            // Pinch to fill (#87): a release close to "fills the tall screen" lands exactly on it.
+            else -> ZoomFill.snap(fromScale, fillScale)
         }
     val targetOffset =
         if (targetScale <= ZOOM_MIN) {

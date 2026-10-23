@@ -4634,4 +4634,10 @@
         <item quantity="other">Removed %1$d items from history</item>
     </plurals>
     <string name="selection_add_failed">Couldn\'t add to the playlist</string>
+    <string name="player_screenshot">Screenshot</string>
+    <string name="player_screenshot_saved">Screenshot saved to %1$s</string>
+    <string name="player_screenshot_no_frame">There\'s no video frame to capture yet</string>
+    <string name="player_screenshot_failed">Couldn\'t save the screenshot</string>
+    <string name="player_appearance_screenshot_title">Screenshot button</string>
+    <string name="player_appearance_screenshot_subtitle">While paused in fullscreen, save the frame at full video resolution, without the controls, to Pictures/Mawja</string>
 </resources>

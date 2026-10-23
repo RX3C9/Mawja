@@ -30,3 +30,6 @@ app.mawja.android.resume.InstantResumePolicyTest
 app.mawja.android.shortcuts.ShortcutPlanTest
 app.mawja.android.ui.reorder.ListOrderTest
 app.mawja.android.ui.selection.MultiSelectionTest
+app.mawja.android.player.PipActionsTest
+app.mawja.android.player.display.ZoomFillTest
+app.mawja.android.player.screenshot.ScreenshotPlanTest

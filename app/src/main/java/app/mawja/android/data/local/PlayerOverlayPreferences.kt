@@ -29,6 +29,8 @@ data class PlayerOverlayPreferences(
     val scrubPreviewStyle: ScrubPreviewStyle = ScrubPreviewStyle.STRIP,
     /** Off by default: two more buttons in the transport row is a cost every video pays. */
     val frameStepButtonsEnabled: Boolean = false,
+    /** Screenshot button in the fullscreen top bar while paused (#91); on by default, paused-only. */
+    val screenshotButtonEnabled: Boolean = true,
     /** Per-category ARGB overrides from SponsorBlock settings; absent categories use the defaults. */
     val sponsorCategoryColors: Map<String, Int> = emptyMap(),
 )

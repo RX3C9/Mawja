@@ -2611,6 +2611,16 @@ class EnhancedPlayerManager private constructor() {
 
     fun getCurrentPosition(): Long = player?.currentPosition ?: 0L
 
+    /** True while a live stream is playing: no ±10 s buttons in the PiP window then (#94). */
+    fun isLivePlayback(): Boolean = currentIsLiveStream || player?.isCurrentMediaItemLive == true
+
+    /** The PiP window's −10 s / +10 s buttons (#94). */
+    fun seekByPipStep(forward: Boolean) {
+        val p = player ?: return
+        if (isLivePlayback()) return
+        seekTo(pipSeekTarget(positionMs = p.currentPosition, durationMs = p.duration, forward = forward))
+    }
+
     fun getDuration(): Long = player?.duration ?: 0L
 
     fun isPlaying(): Boolean = player?.isPlaying ?: false
