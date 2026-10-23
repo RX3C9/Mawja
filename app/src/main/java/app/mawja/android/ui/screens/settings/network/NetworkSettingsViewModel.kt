@@ -11,6 +11,7 @@ import app.mawja.android.network.AppDns
 import app.mawja.android.network.AppProxyType
 import app.mawja.android.network.ConnectionProfile
 import app.mawja.android.network.ConnectionProfiles
+import app.mawja.android.network.ConnectionTestResult
 import app.mawja.android.network.ConnectionTester
 import app.mawja.android.network.DnsProvider
 import app.mawja.android.network.DnsSettings
