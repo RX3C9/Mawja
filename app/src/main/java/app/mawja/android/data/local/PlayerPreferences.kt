@@ -332,6 +332,7 @@ class PlayerPreferences(
         val RECAP_SOURCE = stringPreferencesKey("recap_source")
         val HIDDEN_MUSIC_HOME_SHELVES = stringSetPreferencesKey("hidden_music_home_shelves")
         val HIDDEN_LIBRARY_SECTIONS = stringSetPreferencesKey("hidden_library_sections")
+        val LIBRARY_SECTION_ORDER = stringPreferencesKey("library_section_order")
         val SPEED_PER_CHANNEL = booleanPreferencesKey("speed_per_channel")
         val CHANNEL_PLAYBACK_SPEEDS = stringSetPreferencesKey("channel_playback_speeds")
 
@@ -2147,6 +2148,22 @@ class PlayerPreferences(
         context.playerPreferencesDataStore.edit { preferences ->
             val current = preferences[Keys.HIDDEN_LIBRARY_SECTIONS].orEmpty()
             preferences[Keys.HIDDEN_LIBRARY_SECTIONS] = if (hidden) current + section else current - section
+        }
+    }
+
+    /** Library section names in the order the viewer dragged them to (#83); empty = default order. */
+    val librarySectionOrder: Flow<List<String>> =
+        context.playerPreferencesDataStore.data
+            .map { preferences -> app.mawja.android.ui.reorder.ListOrder.decode(preferences[Keys.LIBRARY_SECTION_ORDER]) }
+            .distinctUntilChanged()
+
+    suspend fun setLibrarySectionOrder(order: List<String>) {
+        context.playerPreferencesDataStore.edit { preferences ->
+            if (order.isEmpty()) {
+                preferences.remove(Keys.LIBRARY_SECTION_ORDER)
+            } else {
+                preferences[Keys.LIBRARY_SECTION_ORDER] = app.mawja.android.ui.reorder.ListOrder.encode(order)
+            }
         }
     }
 

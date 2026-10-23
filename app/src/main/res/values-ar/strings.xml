@@ -4966,4 +4966,8 @@
     <string name="shortcut_downloads_long">افتح التنزيلات بتاعتك</string>
     <string name="shortcut_dj_short">دي جي ذكي</string>
     <string name="shortcut_dj_long">شغّل عشوائي الأغاني اللي بتسمعها كتير</string>
+    <!-- #83 Library section order -->
+    <string name="library_order_header">ترتيب الأقسام</string>
+    <string name="library_order_footer">اسحب المقبض لتغيير ترتيب أقسام المكتبة.</string>
+    <string name="library_order_reset">استعادة الترتيب الافتراضي</string>
 </resources>

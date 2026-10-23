@@ -4616,4 +4616,8 @@
     <string name="shortcut_downloads_long">Open your downloads</string>
     <string name="shortcut_dj_short">Smart DJ</string>
     <string name="shortcut_dj_long">Shuffle the songs you\'ve had on repeat</string>
+    <!-- #83 Library section order -->
+    <string name="library_order_header">Section order</string>
+    <string name="library_order_footer">Drag the handle to change the order Library shows its sections in.</string>
+    <string name="library_order_reset">Reset to default order</string>
 </resources>

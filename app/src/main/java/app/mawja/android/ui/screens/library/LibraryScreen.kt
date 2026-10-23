@@ -78,6 +78,7 @@ fun LibraryScreen(
     val recapReady by viewModel.recapReady.collectAsStateWithLifecycle()
     val notesCount by viewModel.notesCount.collectAsStateWithLifecycle()
     val hiddenSections by viewModel.hiddenSections.collectAsStateWithLifecycle()
+    val sectionOrder by viewModel.sectionOrder.collectAsStateWithLifecycle()
     val locale = LocalConfiguration.current.locales[0]
     val listState = rememberLazyListState()
     app.mawja.android.resume.ResumableScroll(listState, "library")
@@ -136,8 +137,8 @@ fun LibraryScreen(
                 )
             }
             val hidden = hiddenSections ?: return@LazyColumn
-            val contentSections = visibleContentSections(hidden, separatePlaylistKinds, shortsEnabled)
-            val settingsSections = visibleSettingsSections(hidden, notesEnabled = notesCount != null)
+            val contentSections = visibleContentSections(hidden, separatePlaylistKinds, shortsEnabled, sectionOrder)
+            val settingsSections = visibleSettingsSections(hidden, notesEnabled = notesCount != null, order = sectionOrder)
             if (shelfPreviewsEnabled && isLibraryEmpty) {
                 item(key = "library-empty", contentType = "empty") {
                     FlowEmptyState(

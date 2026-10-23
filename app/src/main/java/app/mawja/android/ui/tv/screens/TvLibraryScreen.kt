@@ -54,6 +54,7 @@ fun TvLibraryScreen(
     val separatePlaylistKinds by viewModel.separatePlaylistKinds.collectAsStateWithLifecycle()
     val isLibraryEmpty by viewModel.isLibraryEmpty.collectAsStateWithLifecycle()
     val hiddenSections by viewModel.hiddenSections.collectAsStateWithLifecycle()
+    val sectionOrder by viewModel.sectionOrder.collectAsStateWithLifecycle()
 
     TvScreenFrame(modifier = modifier) {
         LazyColumn(
@@ -74,7 +75,7 @@ fun TvLibraryScreen(
             }
             libraryShelves(
                 viewModel = viewModel,
-                sections = visibleContentSections(hidden, separatePlaylistKinds, shortsEnabled = false).filterNot { it in NOT_ON_TV },
+                sections = visibleContentSections(hidden, separatePlaylistKinds, shortsEnabled = false, order = sectionOrder).filterNot { it in NOT_ON_TV },
                 onOpenSection = { section ->
                     when (section) {
                         LibrarySection.HISTORY -> onOpenHistory()

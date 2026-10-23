@@ -182,6 +182,11 @@ class LibraryViewModel
                 .map(LibrarySection::fromStored)
                 .stateIn(viewModelScope, sharing, null)
 
+        /** Section names in the viewer's dragged order (#83); empty keeps the default order. */
+        internal val sectionOrder: StateFlow<List<String>> =
+            playerPreferences.librarySectionOrder
+                .stateIn(viewModelScope, sharing, emptyList())
+
         internal val shelfPreviewsEnabled =
             playerPreferences.libraryShelfPreviewsEnabled
                 .distinctUntilChanged()
