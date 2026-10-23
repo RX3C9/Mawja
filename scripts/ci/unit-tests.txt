@@ -51,3 +51,16 @@ app.mawja.android.ui.components.videoplayer.motion.DraggablePlayerGeometryTest
 app.mawja.android.ui.components.videoplayer.motion.MiniPlayerTapDeciderTest
 app.mawja.android.ui.components.videoplayer.subtitle.SubtitleStyleTest
 app.mawja.android.ui.components.videoplayer.subtitle.SubtitleAreaTest
+app.mawja.android.player.MusicQueueShuffleTest
+app.mawja.android.ui.components.shared.card.WatchProgressTest
+app.mawja.android.player.audio.PlaybackSpeedStateTest
+app.mawja.android.ui.screens.player.PlaybackSpeedPolicyTest
+app.mawja.android.ui.components.musicplayer.lyrics.LyricsTimingTest
+app.mawja.android.ui.components.musicplayer.lyrics.LyricsPanelStateTest
+app.mawja.android.ui.components.musicplayer.lyrics.LyricsPresentationTest
+app.mawja.android.ui.screens.music.MusicPlayerLyricsTest
+app.mawja.android.player.MusicRadioPlannerTest
+app.mawja.android.player.MusicRadioStationTest
+app.mawja.android.ui.screens.music.MusicRadioSwitchTest
+app.mawja.android.data.recommendation.music.MusicBrainRankerTest
+app.mawja.android.notification.SubscriptionNotificationPolicyTest

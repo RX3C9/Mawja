@@ -709,7 +709,12 @@ object EnhancedMusicPlayerManager {
             val target =
                 buildList {
                     add(currentQ[currentIdx])
-                    addAll(currentQ.filterIndexed { index, _ -> index != currentIdx }.shuffled())
+                    addAll(
+                        MusicQueuePlanner.shuffleAvoidingArtistRepeats(
+                            currentQ.filterIndexed { index, _ -> index != currentIdx },
+                            previousArtist = currentQ[currentIdx].artist,
+                        ) { it.artist },
+                    )
                 }
             _queue.value = target
             clearPendingPlayNext()
