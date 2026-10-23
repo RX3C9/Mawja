@@ -92,7 +92,7 @@ private fun textShareChooser(
         Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
-            putExtra(Intent.EXTRA_TEXT, text)
+            putExtra(Intent.EXTRA_TEXT, app.mawja.android.network.LinkCleaner.forShare(text))
         }
     return Intent.createChooser(send, chooserTitle)
 }

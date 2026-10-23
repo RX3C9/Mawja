@@ -357,6 +357,7 @@ dependencies {
 
     // Networking
     implementation(libs.okhttp)
+    implementation(libs.okhttp.dnsoverhttps)
 
     // Ktor (Managed in libs.versions.toml)
     implementation(libs.ktor.client.core)

@@ -1,11 +1,17 @@
 package app.mawja.android.ui.screens.settings.network
 
+import android.content.Context
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.network.AppProxyConfig
+import app.mawja.android.network.AppDns
 import app.mawja.android.network.AppProxyType
+import app.mawja.android.network.DnsProvider
+import app.mawja.android.network.DnsSettings
+import app.mawja.android.network.LinkCleaner
 import app.mawja.android.network.VpnStateMonitor
 import app.mawja.android.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,12 +81,23 @@ class NetworkSettingsViewModel
     constructor(
         private val preferences: PlayerPreferences,
         vpnStateMonitor: VpnStateMonitor,
+        @ApplicationContext private val context: Context,
     ) : SettingsViewModel() {
         private var savedPort = DEFAULT_PORT
         private val _saved = MutableStateFlow<ProxyDraft?>(null)
         private val _draft = MutableStateFlow<ProxyDraft?>(null)
         val saved: StateFlow<ProxyDraft?> = _saved.asStateFlow()
         val draft: StateFlow<ProxyDraft?> = _draft.asStateFlow()
+
+        /** The DNS choice is saved with the proxy form on Save, so a half-typed custom server is never used. */
+        private val _dnsSaved = MutableStateFlow(AppDns.read(context))
+        private val _dnsDraft = MutableStateFlow(_dnsSaved.value)
+        val dnsSaved: StateFlow<DnsSettings> = _dnsSaved.asStateFlow()
+        val dnsDraft: StateFlow<DnsSettings> = _dnsDraft.asStateFlow()
+
+        /** Applied at once: it only changes what later shares and copies carry. */
+        private val _linkCleaner = MutableStateFlow(LinkCleaner.isEnabled())
+        val linkCleaner: StateFlow<Boolean> = _linkCleaner.asStateFlow()
 
         /** Whether a VPN is pausing the saved proxy right now. */
         val pausedByVpn: StateFlow<Boolean> =
@@ -100,10 +117,23 @@ class NetworkSettingsViewModel
 
         fun edit(transform: (ProxyDraft) -> ProxyDraft) = _draft.update { it?.let(transform) }
 
-        /** Saves the draft when it is valid; reports whether it was. */
+        fun editDns(transform: (DnsSettings) -> DnsSettings) = _dnsDraft.update(transform)
+
+        fun setLinkCleaner(on: Boolean) {
+            LinkCleaner.setEnabled(context, on)
+            _linkCleaner.value = on
+        }
+
+        /** Saves the proxy and DNS drafts when both are valid; reports whether they were. */
         fun save(): Boolean {
             val current = _draft.value ?: return false
-            if (!current.valid) return false
+            val dns = _dnsDraft.value
+            if (!current.valid || dnsError(dns)) return false
+            if (dns != _dnsSaved.value) {
+                AppDns.save(context, dns)
+                _dnsSaved.value = dns
+            }
+            if (current == _saved.value) return true
             val config = current.toConfig(savedPort)
             savedPort = config.port
             _saved.value = ProxyDraft.of(config)
@@ -112,8 +142,12 @@ class NetworkSettingsViewModel
             return true
         }
 
-        private companion object {
-            const val DEFAULT_PORT = 8080
-            const val STOP_TIMEOUT_MS = 5_000L
+        companion object {
+            /** A custom resolver needs a valid https address before it can be saved. */
+            fun dnsError(dns: DnsSettings): Boolean =
+                dns.provider == DnsProvider.CUSTOM && !DnsSettings.isValidCustomUrl(dns.customUrl)
+
+            private const val DEFAULT_PORT = 8080
+            private const val STOP_TIMEOUT_MS = 5_000L
         }
     }

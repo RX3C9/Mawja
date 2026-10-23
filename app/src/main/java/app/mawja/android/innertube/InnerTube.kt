@@ -166,6 +166,9 @@ class InnerTube {
                     // Retry on connection failure
                     retryOnConnectionFailure(true)
 
+                    // The app resolver: system DNS or DNS over HTTPS (#71), read per lookup.
+                    dns(app.mawja.android.network.AppDns)
+
                     // High concurrency dispatcher
                     dispatcher(
                         okhttp3.Dispatcher().apply {

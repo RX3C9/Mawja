@@ -3564,7 +3564,7 @@
     <string name="settings_backup_summary">Export, import and automatic backups</string>
     <string name="settings_history_summary">Search history and suggestions</string>
     <string name="settings_downloads_summary">Download locations, defaults and media cache</string>
-    <string name="settings_network_summary">Proxy for remote traffic</string>
+    <string name="settings_network_summary">Proxy, private DNS and clean links</string>
     <string name="settings_wellbeing_summary">Watch time and break reminders</string>
     <string name="settings_about_summary">Version, licence and links</string>
     <string name="settings_theme_summary">Palette and light or dark style</string>
@@ -3747,7 +3747,7 @@
     <string name="settings_keywords_notifications">alerts, push, new uploads, background checks, shorts</string>
     <string name="settings_section_proxy_server">Server</string>
     <string name="settings_section_proxy_sign_in">Sign-in</string>
-    <string name="settings_keywords_network">proxy, socks, http, vpn, connection</string>
+    <string name="settings_keywords_network">proxy, socks, http, vpn, connection, dns, doh, dns over https, cloudflare, adguard, quad9, tracking, utm, links</string>
     <string name="settings_show_password">Show password</string>
     <string name="settings_hide_password">Hide password</string>
     <string name="settings_proxy_unsaved">You have unsaved changes</string>
@@ -4564,4 +4564,27 @@
     <string name="cloud_sync_deleted">Cloud data deleted (%1$d items). Cloud sync is off on this device.</string>
     <string name="cloud_sync_delete_failed">Couldn\'t delete all of your cloud data. Check your connection and try again.</string>
     <string name="jobs_cloud_sync">Cloud sync</string>
+    <string name="network_settings_saved">Network settings saved</string>
+    <string name="dns_title">Private DNS</string>
+    <string name="dns_footer">Mawja looks up addresses over an encrypted connection (DNS over HTTPS). Other apps keep the device DNS. With a proxy on, the proxy looks up the sites.</string>
+    <string name="dns_provider">DNS resolver</string>
+    <string name="dns_provider_summary">Who answers Mawja\'s address lookups</string>
+    <string name="dns_system">System default</string>
+    <string name="dns_system_summary">The device or network DNS</string>
+    <string name="dns_cloudflare">Cloudflare</string>
+    <string name="dns_google">Google</string>
+    <string name="dns_quad9">Quad9</string>
+    <string name="dns_quad9_summary">Blocks known malicious sites</string>
+    <string name="dns_adguard">AdGuard</string>
+    <string name="dns_adguard_summary">Blocks ads and trackers</string>
+    <string name="dns_custom">Custom</string>
+    <string name="dns_custom_summary">Your own DNS over HTTPS server</string>
+    <string name="dns_custom_url">Server address</string>
+    <string name="dns_custom_url_invalid">Enter an https:// address, such as https://dns.example/dns-query.</string>
+    <string name="dns_fallback">Fall back to system DNS</string>
+    <string name="dns_fallback_summary">Use the device DNS when the server can\'t be reached</string>
+    <string name="link_cleaner_title">Clean links</string>
+    <string name="link_cleaner_switch">Remove trackers from links</string>
+    <string name="link_cleaner_switch_summary">Drop utm_, si, fbclid and similar tags when you share or copy a link</string>
+    <string name="link_cleaner_footer">The video, start time and playlist stay in the link.</string>
 </resources>

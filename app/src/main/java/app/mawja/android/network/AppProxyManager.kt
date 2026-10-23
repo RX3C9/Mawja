@@ -99,8 +99,11 @@ object AppProxyManager {
             }
         // A live client's pool is keyed by its selector, not the proxy the selector picks, so a
         // kept-alive connection would otherwise carry on through the previous route.
-        if (changed) livePools.forEach { it.evictAll() }
+        if (changed) evictLiveConnections()
     }
+
+    /** Drops kept-alive connections of the live clients, so the next request takes the new route. */
+    fun evictLiveConnections() = livePools.forEach { it.evictAll() }
 
     fun currentConfig(): AppProxyConfig = config
 
@@ -108,10 +111,12 @@ object AppProxyManager {
 
     fun currentHttpProxyAuthorizationHeader(): String? = config.httpProxyAuthorizationHeader()
 
-    fun currentSignature(): String = config.signature()
+    /** Proxy and DNS together: a client cached per signature is rebuilt when either changes. */
+    fun currentSignature(): String = config.signature() + "|" + AppDns.signature()
 
     fun applyTo(builder: OkHttpClient.Builder): OkHttpClient.Builder {
         val activeConfig = config
+        builder.dns(AppDns)
         val proxy = activeConfig.toProxy() ?: return builder
         builder.proxy(proxy)
         if (activeConfig.type == AppProxyType.HTTP) {
@@ -136,6 +141,7 @@ object AppProxyManager {
         builder
             .proxySelector(AppProxySelector)
             .proxyAuthenticator(AppProxyAuthenticator)
+            .dns(AppDns)
             .build()
             .also { livePools.addIfAbsent(it.connectionPool) }
 

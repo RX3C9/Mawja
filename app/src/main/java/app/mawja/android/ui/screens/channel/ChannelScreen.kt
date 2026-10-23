@@ -209,7 +209,7 @@ fun ChannelScreen(
                         val shareIntent =
                             Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, shareUrl)
+                                putExtra(Intent.EXTRA_TEXT, app.mawja.android.network.LinkCleaner.forShare(shareUrl))
                             }
                         context.startActivity(Intent.createChooser(shareIntent, null))
                     }) {
@@ -264,7 +264,7 @@ fun ChannelScreen(
                                 val shareIntent =
                                     Intent(Intent.ACTION_SEND).apply {
                                         type = "text/plain"
-                                        putExtra(Intent.EXTRA_TEXT, "https://www.youtube.com/post/${post.id}")
+                                        putExtra(Intent.EXTRA_TEXT, app.mawja.android.network.LinkCleaner.forShare("https://www.youtube.com/post/${post.id}"))
                                     }
                                 context.startActivity(
                                     Intent.createChooser(

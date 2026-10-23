@@ -368,7 +368,7 @@ private fun moreRows(
         },
         actionRow("copy_link", Icons.Outlined.ContentCopy, stringResource(R.string.copy_video_link)) {
             scope.launch {
-                clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(video.title, youtubeWatchUrl(video.id))))
+                clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(video.title, app.mawja.android.network.LinkCleaner.forShare(youtubeWatchUrl(video.id)))))
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) viewModel.announce(R.string.link_copied)
                 onDismiss()
             }

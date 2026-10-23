@@ -23,3 +23,5 @@ app.mawja.android.cloudsync.SyncMergeTest
 app.mawja.android.cloudsync.OrderKeysTest
 app.mawja.android.cloudsync.PlaylistSyncMapperTest
 app.mawja.android.cloudsync.CollectionSyncMappersTest
+app.mawja.android.network.LinkCleanerTest
+app.mawja.android.network.DnsSettingsTest

@@ -137,7 +137,7 @@ internal fun NotesScreen(
     }
 
     fun share(notes: List<Note>) {
-        val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, shareText(notes))
+        val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, app.mawja.android.network.LinkCleaner.forShare(shareText(notes)))
         context.startActivity(Intent.createChooser(send, null))
     }
 

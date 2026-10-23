@@ -3478,7 +3478,7 @@
     <string name="removed_from_queue">تمت الإزالة من قائمة الانتظار</string>
     <string name="queue_after_this_template">%1$s بعد هذا</string>
     <string name="settings_downloads_summary">مواقع التنزيل والإعدادات الافتراضية وذاكرة التخزين المؤقت للوسائط</string>
-    <string name="settings_network_summary">خادم وكيل لحركة المرور البعيدة</string>
+    <string name="settings_network_summary">بروكسي و DNS خاص وروابط نظيفة</string>
     <string name="settings_wellbeing_summary">وقت المشاهدة وتذكيرات الاستراحة</string>
     <string name="settings_about_summary">الإصدار، الترخيص والروابط</string>
     <string name="settings_theme_summary">لوحة الألوان والمظهر الفاتح أو الداكن</string>
@@ -3649,7 +3649,7 @@
     <string name="settings_keywords_notifications">‎التنبيهات، الإشعارات الفورية، التحميلات الجديدة، التحقق في الخلفية، Shorts</string>
     <string name="settings_section_proxy_server">الخادم</string>
     <string name="settings_section_proxy_sign_in">تسجيل الدخول</string>
-    <string name="settings_keywords_network">الوكيل، SOCKS، HTTP، VPN، الاتصال</string>
+    <string name="settings_keywords_network">الوكيل، بروكسي، SOCKS، HTTP، VPN، الاتصال، DNS، DoH، كلاودفلير، أدجارد، تتبع، روابط</string>
     <string name="settings_show_password">إظهار كلمة المرور</string>
     <string name="settings_hide_password">إخفاء كلمة المرور</string>
     <string name="settings_proxy_unsaved">لديك تغييرات غير محفوظة</string>
@@ -4914,4 +4914,27 @@
     <string name="cloud_sync_deleted">اتمسحت بياناتك من السحابة (%1$d عنصر). المزامنة السحابية مقفولة على الجهاز ده.</string>
     <string name="cloud_sync_delete_failed">مقدرناش نمسح كل بياناتك من السحابة. اتأكد من الاتصال وجرّب تاني.</string>
     <string name="jobs_cloud_sync">المزامنة السحابية</string>
+    <string name="network_settings_saved">تم حفظ إعدادات الشبكة</string>
+    <string name="dns_title">DNS خاص</string>
+    <string name="dns_footer">موجة بتدور على العناوين عبر اتصال مشفّر (DNS over HTTPS). باقي التطبيقات بتفضل على DNS الجهاز. ولو البروكسي شغال، البروكسي هو اللي بيدور على المواقع.</string>
+    <string name="dns_provider">خادم DNS</string>
+    <string name="dns_provider_summary">مين يرد على طلبات العناوين بتاعة موجة</string>
+    <string name="dns_system">افتراضي النظام</string>
+    <string name="dns_system_summary">DNS الجهاز أو الشبكة</string>
+    <string name="dns_cloudflare">Cloudflare</string>
+    <string name="dns_google">Google</string>
+    <string name="dns_quad9">Quad9</string>
+    <string name="dns_quad9_summary">بيحجب المواقع الضارة المعروفة</string>
+    <string name="dns_adguard">AdGuard</string>
+    <string name="dns_adguard_summary">بيحجب الإعلانات والتتبع</string>
+    <string name="dns_custom">مخصص</string>
+    <string name="dns_custom_summary">خادم DNS over HTTPS بتاعك</string>
+    <string name="dns_custom_url">عنوان الخادم</string>
+    <string name="dns_custom_url_invalid">اكتب عنوان يبدأ بـ https://‏ زي https://dns.example/dns-query.</string>
+    <string name="dns_fallback">الرجوع لـ DNS النظام</string>
+    <string name="dns_fallback_summary">استخدم DNS الجهاز لما الخادم ميكونش متاح</string>
+    <string name="link_cleaner_title">روابط نظيفة</string>
+    <string name="link_cleaner_switch">شيل التتبع من الروابط</string>
+    <string name="link_cleaner_switch_summary">امسح utm_ و si و fbclid وزيهم لما تشارك أو تنسخ رابط</string>
+    <string name="link_cleaner_footer">الفيديو ووقت البداية وقائمة التشغيل بيفضلوا في الرابط.</string>
 </resources>

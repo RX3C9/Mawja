@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Dns
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.NetworkCheck
 import androidx.compose.material.icons.outlined.Speed
@@ -42,6 +45,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.network.AppProxyType
+import app.mawja.android.network.DnsProvider
 import app.mawja.android.network.NetworkProfile
 import app.mawja.android.network.SmartNetwork
 import app.mawja.android.ui.components.settings.SettingEntry
@@ -49,6 +53,7 @@ import app.mawja.android.ui.components.settings.SettingsGroupScope
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.info
 import app.mawja.android.ui.components.settings.notice
+import app.mawja.android.ui.components.settings.option
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
 import app.mawja.android.ui.components.shared.FlowToggleOption
@@ -69,9 +74,14 @@ internal fun NetworkSettingsScreen(
     val draft by viewModel.draft.collectAsStateWithLifecycle()
     val saved by viewModel.saved.collectAsStateWithLifecycle()
     val pausedByVpn by viewModel.pausedByVpn.collectAsStateWithLifecycle()
+    val dnsDraft by viewModel.dnsDraft.collectAsStateWithLifecycle()
+    val dnsSaved by viewModel.dnsSaved.collectAsStateWithLifecycle()
+    val dnsUrlError = stringResource(R.string.dns_custom_url_invalid)
+    val dnsLabels = DnsProvider.entries.associateWith { stringResource(dnsLabelRes(it)) }
+    val dnsSummaries = DnsProvider.entries.associateWith { p -> dnsSummaryRes(p)?.let { stringResource(it) } }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val savedMessage = stringResource(R.string.proxy_settings_saved)
+    val savedMessage = stringResource(R.string.network_settings_saved)
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val types =
         listOf(
@@ -95,7 +105,11 @@ internal fun NetworkSettingsScreen(
         snackbarHostState = snackbarHostState,
         actions = {
             TextButton(
-                enabled = draft != null && draft != saved && draft?.valid == true,
+                enabled =
+                    draft != null &&
+                        (draft != saved || dnsDraft != dnsSaved) &&
+                        draft?.valid == true &&
+                        !NetworkSettingsViewModel.dnsError(dnsDraft),
                 onClick = {
                     if (viewModel.save()) scope.launch { snackbarHostState.showSnackbar(savedMessage) }
                 },
@@ -162,8 +176,61 @@ internal fun NetworkSettingsScreen(
             }
         }
         notice("network.restart", text = { stringResource(R.string.proxy_settings_restart_notice) })
+
+        group(key = NetworkIndex.dnsProvider.key, header = R.string.dns_title, footer = R.string.dns_footer) {
+            DnsProvider.entries.forEach { provider ->
+                option(
+                    key = "network.dns.${provider.key}",
+                    label = dnsLabels.getValue(provider),
+                    selected = dnsDraft.provider == provider,
+                    onClick = { viewModel.editDns { it.copy(provider = provider) } },
+                    supportingText = dnsSummaries.getValue(provider) ?: provider.url,
+                )
+            }
+            if (dnsDraft.provider == DnsProvider.CUSTOM) {
+                field(
+                    NetworkIndex.dnsCustomUrl,
+                    dnsDraft.customUrl,
+                    { value -> viewModel.editDns { it.copy(customUrl = value.trim()) } },
+                    Icons.Outlined.Dns,
+                ) {
+                    error = dnsUrlError.takeIf { NetworkSettingsViewModel.dnsError(dnsDraft) && dnsDraft.customUrl.isNotEmpty() }
+                    keyboardType = KeyboardType.Uri
+                }
+            }
+            switch(
+                NetworkIndex.dnsFallback,
+                dnsDraft.fallbackToSystem,
+                { on -> viewModel.editDns { it.copy(fallbackToSystem = on) } },
+                enabled = dnsDraft.provider != DnsProvider.SYSTEM,
+                icon = Icons.Outlined.SettingsBackupRestore,
+            )
+        }
+
+        group(key = "network.links", header = R.string.link_cleaner_title, footer = R.string.link_cleaner_footer) {
+            switch(NetworkIndex.linkCleaner, viewModel.linkCleaner, viewModel::setLinkCleaner, icon = Icons.Outlined.Link)
+        }
     }
 }
+
+private fun dnsLabelRes(provider: DnsProvider): Int =
+    when (provider) {
+        DnsProvider.SYSTEM -> R.string.dns_system
+        DnsProvider.CLOUDFLARE -> R.string.dns_cloudflare
+        DnsProvider.GOOGLE -> R.string.dns_google
+        DnsProvider.QUAD9 -> R.string.dns_quad9
+        DnsProvider.ADGUARD -> R.string.dns_adguard
+        DnsProvider.CUSTOM -> R.string.dns_custom
+    }
+
+private fun dnsSummaryRes(provider: DnsProvider): Int? =
+    when (provider) {
+        DnsProvider.SYSTEM -> R.string.dns_system_summary
+        DnsProvider.QUAD9 -> R.string.dns_quad9_summary
+        DnsProvider.ADGUARD -> R.string.dns_adguard_summary
+        DnsProvider.CUSTOM -> R.string.dns_custom_summary
+        else -> null
+    }
 
 private class FieldOptions {
     var error: String? = null

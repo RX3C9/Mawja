@@ -13,7 +13,8 @@ suspend fun Clipboard.copyPlainText(
     text: String,
     sensitive: Boolean = false,
 ) {
-    val clip = ClipData.newPlainText(label, text)
+    // A link copied anywhere in the app leaves without its trackers (#72); secrets are copied verbatim.
+    val clip = ClipData.newPlainText(label, if (sensitive) text else app.mawja.android.network.LinkCleaner.forShare(text))
     if (sensitive && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         clip.description.extras =
             PersistableBundle().apply {

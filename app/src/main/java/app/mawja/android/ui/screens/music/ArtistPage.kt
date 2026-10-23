@@ -185,7 +185,7 @@ fun ArtistPage(
                     IconButton(
                         modifier = Modifier.dpadDownTo(contentFocus),
                         onClick = {
-                            clipboardManager.setText(AnnotatedString("https://music.youtube.com/channel/${artistDetails.channelId}"))
+                            clipboardManager.setText(AnnotatedString(app.mawja.android.network.LinkCleaner.forShare("https://music.youtube.com/channel/${artistDetails.channelId}")))
                             Toast.makeText(context, context.getString(R.string.link_copied), Toast.LENGTH_SHORT).show()
                         },
                         colors = iconColors,

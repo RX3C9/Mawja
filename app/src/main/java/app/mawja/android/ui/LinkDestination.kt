@@ -27,7 +27,7 @@ internal fun linkTextOf(intent: Intent): String? =
         Intent.ACTION_VIEW -> intent.dataString
         Intent.ACTION_SEND -> intent.takeIf { it.type == "text/plain" }?.getStringExtra(Intent.EXTRA_TEXT)
         else -> null
-    }
+    }?.let(app.mawja.android.network.LinkCleaner::cleanText)
 
 /**
  * Null for a link Flow has no page for: a search, and a mix, which YouTube builds around a video

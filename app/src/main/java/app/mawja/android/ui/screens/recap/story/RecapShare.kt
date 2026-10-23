@@ -48,7 +48,7 @@ internal suspend fun shareRecap(
         }
     val send =
         Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_TEXT, text)
+            putExtra(Intent.EXTRA_TEXT, app.mawja.android.network.LinkCleaner.forShare(text))
             if (uri != null) {
                 type = "image/png"
                 putExtra(Intent.EXTRA_STREAM, uri)

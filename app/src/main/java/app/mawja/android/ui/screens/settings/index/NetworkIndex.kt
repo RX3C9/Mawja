@@ -35,5 +35,11 @@ internal object NetworkIndex {
     val username = entry("username", R.string.proxy_settings_username, R.string.settings_section_proxy_sign_in)
     val password = entry("password", R.string.proxy_settings_password, R.string.settings_section_proxy_sign_in)
 
-    val all = listOf(smart, enabled, type, bypassOnVpn, host, port, username, password)
+    val dnsProvider = entry("dns_provider", R.string.dns_provider, R.string.dns_title, R.string.dns_provider_summary)
+    val dnsCustomUrl = entry("dns_custom_url", R.string.dns_custom_url, R.string.dns_title)
+    val dnsFallback = entry("dns_fallback", R.string.dns_fallback, R.string.dns_title, R.string.dns_fallback_summary)
+    val linkCleaner =
+        entry("link_cleaner", R.string.link_cleaner_switch, R.string.link_cleaner_title, R.string.link_cleaner_switch_summary)
+
+    val all = listOf(smart, enabled, type, bypassOnVpn, host, port, username, password, dnsProvider, dnsFallback, linkCleaner)
 }
