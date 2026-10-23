@@ -93,7 +93,7 @@ internal fun VideoPlayerTopBar(
     isSleepTimerActive: Boolean,
     lockModeEnabled: Boolean,
     isLiveChatAvailable: Boolean,
-    showScreenshot: Boolean,
+    showScreenshot: Boolean = false,
     hasQueue: Boolean,
     topPadding: Dp,
     horizontalPadding: Dp,
