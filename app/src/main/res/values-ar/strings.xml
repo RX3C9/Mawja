@@ -4970,4 +4970,30 @@
     <string name="library_order_header">ترتيب الأقسام</string>
     <string name="library_order_footer">اسحب المقبض لتغيير ترتيب أقسام المكتبة.</string>
     <string name="library_order_reset">استعادة الترتيب الافتراضي</string>
+    <!-- #84 multi-select -->
+    <plurals name="selection_play_next_done">
+        <item quantity="zero">%1$d عنصر هيتشغل بعد الحالي</item>
+        <item quantity="one">%1$d عنصر هيتشغل بعد الحالي</item>
+        <item quantity="two">%1$d عنصر هيتشغل بعد الحالي</item>
+        <item quantity="few">%1$d عنصر هيتشغل بعد الحالي</item>
+        <item quantity="many">%1$d عنصر هيتشغل بعد الحالي</item>
+        <item quantity="other">%1$d عنصر هيتشغل بعد الحالي</item>
+    </plurals>
+    <plurals name="selection_added_to_playlist">
+        <item quantity="zero">اتضاف %1$d عنصر إلى “%2$s”</item>
+        <item quantity="one">اتضاف %1$d عنصر إلى “%2$s”</item>
+        <item quantity="two">اتضاف %1$d عنصر إلى “%2$s”</item>
+        <item quantity="few">اتضاف %1$d عنصر إلى “%2$s”</item>
+        <item quantity="many">اتضاف %1$d عنصر إلى “%2$s”</item>
+        <item quantity="other">اتضاف %1$d عنصر إلى “%2$s”</item>
+    </plurals>
+    <plurals name="selection_history_removed">
+        <item quantity="zero">اتشال %1$d عنصر من السجل</item>
+        <item quantity="one">اتشال %1$d عنصر من السجل</item>
+        <item quantity="two">اتشال %1$d عنصر من السجل</item>
+        <item quantity="few">اتشال %1$d عنصر من السجل</item>
+        <item quantity="many">اتشال %1$d عنصر من السجل</item>
+        <item quantity="other">اتشال %1$d عنصر من السجل</item>
+    </plurals>
+    <string name="selection_add_failed">ماقدرناش نضيف للقائمة</string>
 </resources>

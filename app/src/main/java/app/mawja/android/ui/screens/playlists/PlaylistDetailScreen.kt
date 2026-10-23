@@ -44,6 +44,12 @@ import app.mawja.android.ui.components.shared.FlowErrorState
 import app.mawja.android.ui.components.shared.FlowLoadingIndicator
 import app.mawja.android.ui.components.shared.FlowSelectionAction
 import app.mawja.android.ui.components.shared.FlowSelectionToolbar
+import app.mawja.android.ui.components.shared.quickactions.VideoQuickActionsBottomSheet
+import app.mawja.android.ui.selection.MultiSelection
+import app.mawja.android.ui.selection.deleteSelectionAction
+import app.mawja.android.ui.selection.rememberSelectionActions
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import app.mawja.android.ui.components.shared.FlowSidePanes
 import app.mawja.android.ui.components.shared.quickactions.sharedQuickActionsViewModel
 import app.mawja.android.ui.components.shared.rememberFlowPaneState
@@ -111,6 +117,24 @@ fun PlaylistDetailScreen(
         selectionMode = false
         selectedIds = emptySet()
     }
+
+    val haptic = LocalHapticFeedback.current
+    var menuVideo by remember { mutableStateOf<Video?>(null) }
+    val removeLabel = stringResource(R.string.remove)
+    val selectionActions =
+        rememberSelectionActions(
+            videos = { displayVideos.filter { it.id in selectedIds } },
+            onDone = exitSelection,
+            delete = if (canModify) deleteSelectionAction(removeLabel) { dialog = PlaylistDialog.RemoveSelected(selectedIds) } else null,
+            more = {
+                displayVideos.firstOrNull { it.id in selectedIds }?.let { video ->
+                    exitSelection()
+                    menuVideo = video
+                }
+            },
+            count = selectedIds.size,
+            quickActions = quickActions,
+        )
 
     val reorderState =
         rememberReorderableLazyListState(
@@ -193,7 +217,7 @@ fun PlaylistDetailScreen(
                 inSelectionMode = selectionMode,
                 selectedCount = selectedIds.size,
                 allSelected = shownVideos.isNotEmpty() && shownVideos.all { it.id in selectedIds },
-                canSelect = canModify && displayVideos.isNotEmpty(),
+                canSelect = displayVideos.isNotEmpty(),
                 search =
                     PlaylistSearchBar(
                         query = searchQuery,
@@ -250,12 +274,22 @@ fun PlaylistDetailScreen(
                             reorderState = reorderState,
                             onVideoClick = { index, video ->
                                 if (selectionMode) {
-                                    selectedIds = if (video.id in selectedIds) selectedIds - video.id else selectedIds + video.id
+                                    // Unticking the last row leaves selection mode, as in every multi-select list (#84).
+                                    val next = MultiSelection(true, selectedIds).toggle(video.id)
+                                    selectionMode = next.active
+                                    selectedIds = next.ids
                                 } else {
                                     onPlayPlaylist(displayVideos, positions[video.id]?.minus(1) ?: index, false, uiState.playlistName)
                                 }
                             },
                             onRemove = { viewModel.removeVideo(it.id) },
+                            onLongPress = { video ->
+                                if (!selectionMode) {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    selectionMode = true
+                                    selectedIds = setOf(video.id)
+                                }
+                            },
                             header = header,
                         )
                     }
@@ -283,15 +317,31 @@ fun PlaylistDetailScreen(
             FlowSelectionToolbar(
                 visible = selectionMode && selectedIds.isNotEmpty(),
                 summary = pluralStringResource(R.plurals.selected_count_template, selectedIds.size, selectedIds.size),
-                actions =
-                    listOf(
-                        FlowSelectionAction(Icons.Outlined.Delete, stringResource(R.string.remove)) {
-                            dialog = PlaylistDialog.RemoveSelected(selectedIds)
-                        },
-                    ),
+                actions = selectionActions.actions,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
+    }
+
+    selectionActions.sheet()
+    menuVideo?.let { video ->
+        VideoQuickActionsBottomSheet(
+            video = video,
+            onRemoveFromCollection = if (canModify) ({ viewModel.removeVideo(video.id) }) else null,
+            removeFromCollectionLabel =
+                if (canModify) {
+                    stringResource(
+                        when {
+                            uiState.isLikes -> R.string.unlike
+                            uiState.isWatchLater -> R.string.remove_from_watch_later
+                            else -> R.string.remove_from_playlist_action
+                        },
+                    )
+                } else {
+                    null
+                },
+            onDismiss = { menuVideo = null },
+        )
     }
 
     PlaylistDetailDialogs(

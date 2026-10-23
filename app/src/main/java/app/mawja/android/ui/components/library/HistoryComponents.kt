@@ -52,6 +52,7 @@ import app.mawja.android.ui.components.shared.ShortCardDefaults
 import app.mawja.android.ui.components.shared.animateMediaListItem
 import app.mawja.android.ui.screens.history.HistoryContentFilter
 import app.mawja.android.ui.screens.history.HistorySort
+import app.mawja.android.ui.selection.MultiSelection
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -163,6 +164,8 @@ internal fun HistoryList(
     onShortClick: (row: List<Video>, tapped: Video) -> Unit,
     onMusicClick: (MusicTrack, List<MusicTrack>) -> Unit,
     onRemove: (VideoHistoryEntry) -> Unit,
+    selection: MultiSelection = MultiSelection(),
+    onSelectionChange: (MultiSelection) -> Unit = {},
 ) {
     val groupedEntries =
         remember(entries) {
@@ -220,6 +223,8 @@ internal fun HistoryList(
                                 onRemove = onRemove,
                                 thumbnailWidth = thumbnailWidth,
                                 modifier = animateMediaListItem(),
+                                selection = selection,
+                                onSelectionChange = onSelectionChange,
                             )
                         }
 
@@ -249,6 +254,8 @@ internal fun HistoryList(
                                 onRemove = onRemove,
                                 thumbnailWidth = thumbnailWidth,
                                 modifier = animateMediaListItem(),
+                                selection = selection,
+                                onSelectionChange = onSelectionChange,
                             )
                         }
                     }
@@ -307,17 +314,23 @@ internal fun HistoryEntryRow(
     onRemove: (VideoHistoryEntry) -> Unit,
     modifier: Modifier = Modifier,
     thumbnailWidth: Dp = MediaThumbnailDefaults.VideoWidth,
+    selection: MultiSelection = MultiSelection(),
+    onSelectionChange: (MultiSelection) -> Unit = {},
 ) {
     val track = remember(entry) { entry.toMusicTrack() }
     val removeLabel = stringResource(R.string.remove_from_history)
+    val toggle = { onSelectionChange(selection.toggle(entry.videoId)) }
 
     LibraryMediaListRow(
         track = track,
         video = remember(entry) { entry.toVideo() },
         isMusic = entry.isMusic,
         title = entry.title.ifBlank { entry.videoId },
-        onVideoClick = { onVideoClick(track) },
-        onMusicClick = { onMusicClick(track, musicQueue) },
+        onVideoClick = { if (selection.active) toggle() else onVideoClick(track) },
+        onMusicClick = { if (selection.active) toggle() else onMusicClick(track, musicQueue) },
+        selectionMode = selection.active,
+        selected = entry.videoId in selection,
+        onLongPress = { onSelectionChange(selection.longPress(entry.videoId)) },
         removeLabel = removeLabel,
         onRemove = { onRemove(entry) },
         showWatchProgress = true,

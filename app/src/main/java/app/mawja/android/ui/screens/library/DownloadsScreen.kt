@@ -49,7 +49,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.local.dao.DownloadCollectionSummary
 import app.mawja.android.data.music.DownloadedTrack
+import app.mawja.android.data.music.model.toVideo
 import app.mawja.android.data.video.DownloadedVideo
+import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
+import app.mawja.android.ui.components.shared.quickactions.VideoQuickActionsBottomSheet
+import app.mawja.android.ui.selection.MultiSelection
+import app.mawja.android.ui.selection.deleteSelectionAction
+import app.mawja.android.ui.selection.rememberSelectionActions
 import app.mawja.android.data.video.storage.StorageAccess
 import app.mawja.android.ui.components.layout.topbar.FlowTopBar
 import app.mawja.android.ui.components.library.ActiveDownloadActions
@@ -132,10 +138,46 @@ fun DownloadsScreen(
     BackHandler(enabled = selectionMode) { exitSelection() }
 
     val selection =
-        LibrarySelection(selectionMode, selectedIds) { id ->
-            selectedIds =
-                if (id in selectedIds) selectedIds - id else selectedIds + id
+        LibrarySelection(
+            active = selectionMode,
+            ids = selectedIds,
+            // Multi-select (#84): a long press starts selecting with that download.
+            onLongPress = { id ->
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                selectionMode = true
+                selectedIds = setOf(id)
+            },
+        ) { id ->
+            val next = MultiSelection(true, selectedIds).toggle(id)
+            selectionMode = next.active
+            selectedIds = next.ids
         }
+    var menuVideo by remember { mutableStateOf<DownloadedVideo?>(null) }
+    val musicMenus = LocalMusicMenus.current
+    val selectedVideos = {
+        if (selectedKind == MediaKind.Videos) {
+            uiState.downloadedVideos.filter { it.video.id in selectedIds }.map { it.video }
+        } else {
+            uiState.downloadedMusic.filter { it.track.videoId in selectedIds }.map { it.track.toVideo().copy(isMusic = true) }
+        }
+    }
+    val selectionActions =
+        rememberSelectionActions(
+            videos = selectedVideos,
+            onDone = exitSelection,
+            delete = deleteSelectionAction(stringResource(R.string.action_delete)) { pendingDeletion = PendingDeletion(selectedIds, title = null) },
+            more = {
+                val id = selectedIds.firstOrNull()
+                exitSelection()
+                if (selectedKind == MediaKind.Videos) {
+                    menuVideo = uiState.downloadedVideos.firstOrNull { it.video.id == id }
+                } else {
+                    uiState.downloadedMusic.firstOrNull { it.track.videoId == id }?.let { musicMenus.openSong(it.track) }
+                }
+            },
+            count = selectedIds.size,
+            offerDownload = false,
+        )
     val activeActions =
         ActiveDownloadActions(
             onPause = viewModel::pauseVideoDownload,
@@ -276,15 +318,21 @@ fun DownloadsScreen(
             FlowSelectionToolbar(
                 visible = selectionMode && selectedIds.isNotEmpty(),
                 summary = pluralStringResource(R.plurals.selected_count_template, selectedIds.size, selectedIds.size),
-                actions =
-                    listOf(
-                        FlowSelectionAction(Icons.Outlined.Delete, stringResource(R.string.action_delete)) {
-                            pendingDeletion = PendingDeletion(selectedIds, title = null)
-                        },
-                    ),
+                actions = selectionActions.actions,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
+    }
+
+    selectionActions.sheet()
+    menuVideo?.let { video ->
+        VideoQuickActionsBottomSheet(
+            video = video.video,
+            onDismiss = { menuVideo = null },
+            onRemoveFromCollection = { pendingDeletion = PendingDeletion(setOf(video.video.id), video.video.title) },
+            removeFromCollectionLabel = stringResource(R.string.delete),
+            removeFromCollectionIcon = Icons.Outlined.Delete,
+        )
     }
 
     pendingDeletion?.let { deletion ->

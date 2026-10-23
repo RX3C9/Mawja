@@ -38,6 +38,7 @@ internal fun PlaylistVideoRow(
     isLikes: Boolean = false,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onLongPress: (() -> Unit)? = null,
     thumbnailWidth: Dp = MediaThumbnailDefaults.VideoWidth,
 ) {
     var showQuickActions by remember { mutableStateOf(false) }
@@ -55,7 +56,13 @@ internal fun PlaylistVideoRow(
             },
         selected = isSelected,
         onClick = onClick,
-        onLongClick = if (inSelectionMode) null else ({ showQuickActions = true }),
+        // With multi-select (#84) a long press starts selecting; the menu is then in the selection toolbar.
+        onLongClick =
+            when {
+                inSelectionMode -> null
+                onLongPress != null -> onLongPress
+                else -> ({ showQuickActions = true })
+            },
         leading =
             when {
                 inSelectionMode -> {

@@ -29,3 +29,4 @@ app.mawja.android.network.ConnectionProfilesCodecTest
 app.mawja.android.resume.InstantResumePolicyTest
 app.mawja.android.shortcuts.ShortcutPlanTest
 app.mawja.android.ui.reorder.ListOrderTest
+app.mawja.android.ui.selection.MultiSelectionTest

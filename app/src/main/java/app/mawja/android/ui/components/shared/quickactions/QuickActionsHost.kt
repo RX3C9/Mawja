@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.SnackbarDuration
+import app.mawja.android.ui.components.shared.showUndoSnackbar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
@@ -72,12 +73,13 @@ fun QuickActionsHost(
                     ?: message.arg?.let { context.getString(message.text, it) }
                     ?: context.getString(message.text)
             val undo = message.undo
+            // Anything with an Undo stays up for six seconds (#82), the rest for the short default.
             val result =
-                snackbarHostState.showSnackbar(
-                    message = text,
-                    actionLabel = undo?.let { context.getString(R.string.undo) },
-                    duration = SnackbarDuration.Short,
-                )
+                if (undo != null) {
+                    snackbarHostState.showUndoSnackbar(message = text, actionLabel = context.getString(R.string.undo))
+                } else {
+                    snackbarHostState.showSnackbar(message = text, duration = SnackbarDuration.Short)
+                }
             if (undo != null && result == SnackbarResult.ActionPerformed) {
                 if (undo is QuickActionUndo.RestoreFromTrash) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

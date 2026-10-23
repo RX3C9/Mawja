@@ -61,6 +61,8 @@ private fun listPadding(side: Dp) =
 internal class LibrarySelection(
     val active: Boolean,
     val ids: Set<String>,
+    /** Long press outside selection mode (#84): starts selecting with that item; null keeps the item's menu. */
+    val onLongPress: ((String) -> Unit)? = null,
     val onToggle: (String) -> Unit,
 )
 
@@ -141,6 +143,7 @@ internal fun VideosDownloadsList(
                         selected = video.video.id in selection.ids,
                         onClick = { if (selection.active) selection.onToggle(video.video.id) else onVideoClick(videos, index) },
                         onDeleteClick = { onDelete(video.video.id, video.video.title) },
+                        onLongPress = selection.onLongPress?.let { press -> { press(video.video.id) } },
                         rowThumbnailWidth = grid.rowThumbnailWidth,
                         modifier = animateMediaGridItem().padding(bottom = if (asCard) GridSpacing else 0.dp),
                     )
@@ -202,6 +205,7 @@ internal fun MusicDownloadsList(
                     selectionMode = selection.active,
                     selected = track.track.videoId in selection.ids,
                     onClick = { if (selection.active) selection.onToggle(track.track.videoId) else onMusicClick(tracks, index) },
+                    onLongPress = selection.onLongPress?.let { press -> { press(track.track.videoId) } },
                     modifier = animateMediaGridItem(),
                 )
             }

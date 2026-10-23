@@ -53,6 +53,7 @@ internal fun PlaylistDetailList(
     onVideoClick: (index: Int, video: Video) -> Unit,
     onRemove: (Video) -> Unit,
     modifier: Modifier = Modifier,
+    onLongPress: ((Video) -> Unit)? = null,
     contentPadding: PaddingValues = PaddingValues(bottom = flowBottomContentPadding()),
     header: (@Composable () -> Unit)? = null,
 ) {
@@ -111,6 +112,7 @@ internal fun PlaylistDetailList(
                     isLikes = mode.isLikes,
                     onRemove = { onRemove(video) },
                     onClick = { onVideoClick(index, video) },
+                    onLongPress = onLongPress?.let { press -> { press(video) } },
                     thumbnailWidth = thumbnailWidth,
                 )
             }

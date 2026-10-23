@@ -332,6 +332,21 @@ class HistoryViewModel
             }
         }
 
+        /** Multi-select delete (#84); the screen keeps [entries] for its Undo. */
+        fun removeFromHistory(entries: List<VideoHistoryEntry>) {
+            if (entries.isEmpty()) return
+            viewModelScope.launch {
+                entries.forEach { viewHistory.clearVideoHistory(it.videoId) }
+            }
+        }
+
+        fun restoreHistoryEntries(entries: List<VideoHistoryEntry>) {
+            if (entries.isEmpty()) return
+            viewModelScope.launch {
+                viewHistory.bulkSaveHistoryEntries(entries)
+            }
+        }
+
         fun restoreHistoryEntry(entry: VideoHistoryEntry) {
             viewModelScope.launch {
                 viewHistory.bulkSaveHistoryEntries(listOf(entry))

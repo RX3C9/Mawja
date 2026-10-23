@@ -89,10 +89,16 @@ internal fun VideoDownloadItem(
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
     rowThumbnailWidth: Dp = MediaThumbnailDefaults.VideoWidth,
+    onLongPress: (() -> Unit)? = null,
 ) {
     var showMenu by remember { mutableStateOf(false) }
     val supporting = downloadSupportingLine(video.quality, video.fileSize, video.downloadedAt)
-    val onLongClick = if (selectionMode) null else ({ showMenu = true })
+    val onLongClick: (() -> Unit)? =
+        when {
+            selectionMode -> null
+            onLongPress != null -> onLongPress
+            else -> ({ showMenu = true })
+        }
     if (asCard) {
         LibraryVideoCard(
             title = video.video.title,
@@ -153,6 +159,7 @@ internal fun MusicDownloadRow(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onLongPress: (() -> Unit)? = null,
 ) {
     val musicMenus = LocalMusicMenus.current
     MediaRow(
@@ -164,7 +171,12 @@ internal fun MusicDownloadRow(
         titleMaxLines = 1,
         selected = selected,
         onClick = onClick,
-        onLongClick = if (selectionMode) null else ({ musicMenus.openSong(downloadedTrack.track) }),
+        onLongClick =
+            when {
+                selectionMode -> null
+                onLongPress != null -> onLongPress
+                else -> ({ musicMenus.openSong(downloadedTrack.track) })
+            },
         leading = if (selectionMode) ({ Checkbox(checked = selected, onCheckedChange = { onClick() }) }) else null,
         subtitleLeading =
             if (downloadedTrack.track.isExplicit == true) {

@@ -4620,4 +4620,18 @@
     <string name="library_order_header">Section order</string>
     <string name="library_order_footer">Drag the handle to change the order Library shows its sections in.</string>
     <string name="library_order_reset">Reset to default order</string>
+    <!-- #84 multi-select -->
+    <plurals name="selection_play_next_done">
+        <item quantity="one">%1$d item will play next</item>
+        <item quantity="other">%1$d items will play next</item>
+    </plurals>
+    <plurals name="selection_added_to_playlist">
+        <item quantity="one">Added %1$d item to “%2$s”</item>
+        <item quantity="other">Added %1$d items to “%2$s”</item>
+    </plurals>
+    <plurals name="selection_history_removed">
+        <item quantity="one">Removed %1$d item from history</item>
+        <item quantity="other">Removed %1$d items from history</item>
+    </plurals>
+    <string name="selection_add_failed">Couldn\'t add to the playlist</string>
 </resources>
