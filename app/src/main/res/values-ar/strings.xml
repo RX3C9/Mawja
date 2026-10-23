@@ -4957,4 +4957,13 @@
     <string name="network_profile_applied">تم تطبيق الملف</string>
     <string name="network_profile_direct">مباشر</string>
     <string name="network_custom_off">الـ DNS الخاص وملفات الاتصال متوقفين دلوقتي. البحث عن العناوين بيستخدم DNS الجهاز.</string>
+    <string name="instant_resume_title">استكمال فوري</string>
+    <string name="instant_resume_summary">لما التطبيق يتقفل، يرجعك لنفس الصفحة ونفس مكانك في القائمة، والمشغل متوقف عند آخر نقطة</string>
+    <string name="instant_resume_keywords">استكمال، استرجاع، رجوع، آخر صفحة، مكان التمرير، كمّل</string>
+    <string name="shortcut_search_short">بحث</string>
+    <string name="shortcut_search_long">دوّر على فيديوهات وأغاني</string>
+    <string name="shortcut_downloads_short">التنزيلات</string>
+    <string name="shortcut_downloads_long">افتح التنزيلات بتاعتك</string>
+    <string name="shortcut_dj_short">دي جي ذكي</string>
+    <string name="shortcut_dj_long">شغّل عشوائي الأغاني اللي بتسمعها كتير</string>
 </resources>

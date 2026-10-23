@@ -204,6 +204,13 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
 
+            <!-- mawja:// links: launcher shortcuts (#79) and announcement buttons. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="mawja" />
+            </intent-filter>
+
             <!-- A playlist file shared from Flow opens here and is imported. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

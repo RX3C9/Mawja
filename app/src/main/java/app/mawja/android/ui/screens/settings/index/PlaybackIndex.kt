@@ -318,6 +318,15 @@ internal object PlaybackIndex {
             section = R.string.settings_section_pip,
             destination = page,
         )
+    val instantResume =
+        SettingEntry(
+            key = "playback.instant_resume",
+            title = R.string.instant_resume_title,
+            summary = R.string.instant_resume_summary,
+            keywords = R.string.instant_resume_keywords,
+            section = R.string.settings_section_pip,
+            destination = page,
+        )
     val restoreMusicMiniPlayer =
         SettingEntry(
             key = "playback.restore_music_mini_player",
@@ -526,6 +535,7 @@ internal object PlaybackIndex {
             nextPrevButtons,
             autoPip,
             continueWatchingMiniPlayer,
+            instantResume,
             restoreMusicMiniPlayer,
             openMusicPlayerOnPlay,
             audioLanguage,

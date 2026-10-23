@@ -71,6 +71,7 @@ fun SubscriptionsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val feedGridState = rememberLazyGridState()
+    app.mawja.android.resume.ResumableScroll(feedGridState, "subscriptions")
 
     var isManagingSubs by remember { mutableStateOf(false) }
     var manageShowsMusic by rememberSaveable { mutableStateOf(false) }

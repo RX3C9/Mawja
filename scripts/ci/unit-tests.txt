@@ -26,3 +26,5 @@ app.mawja.android.cloudsync.CollectionSyncMappersTest
 app.mawja.android.network.LinkCleanerTest
 app.mawja.android.network.DnsSettingsTest
 app.mawja.android.network.ConnectionProfilesCodecTest
+app.mawja.android.resume.InstantResumePolicyTest
+app.mawja.android.shortcuts.ShortcutPlanTest

@@ -220,6 +220,15 @@ class MainActivity : ComponentActivity() {
         isRestoringState = savedInstanceState != null
         handleIntent(intent)
         isRestoringState = false
+        // Instant Resume (#75): a plain launcher start after the process died reopens the last page.
+        if (savedInstanceState == null &&
+            intent?.action == Intent.ACTION_MAIN &&
+            links.route.value == null &&
+            links.videoId.value == null &&
+            links.musicPlayerRequest.value == 0
+        ) {
+            app.mawja.android.resume.InstantResume.takeColdStartRoute()?.let(links::openRoute)
+        }
 
         // Read now, alongside the rest of startup, so the theme is usually known by the first composition.
         val storedTheme = MutableStateFlow<ThemeSettings?>(null)
@@ -362,6 +371,8 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             app.mawja.android.smartnotify.SmartNotifyStore(applicationContext).recordActivity()
         }
+        // Launcher shortcuts (#79): pushed only when they changed (language, last playlist).
+        lifecycleScope.launch(Dispatchers.Default) { app.mawja.android.shortcuts.AppShortcuts.refresh(this@MainActivity) }
         DiscordPresenceRuntime.setAppForeground(true)
     }
 
@@ -416,6 +427,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun routeForMawjaLink(target: app.mawja.android.shortcuts.ShortcutPlan.Target): String =
+        when (target) {
+            is app.mawja.android.shortcuts.ShortcutPlan.Target.Page -> target.route
+            is app.mawja.android.shortcuts.ShortcutPlan.Target.Playlist ->
+                if (target.isMusic) {
+                    app.mawja.android.ui.musicCollectionRoute(target.id) ?: "library"
+                } else {
+                    "playlist/${Uri.encode(target.id)}"
+                }
+            app.mawja.android.shortcuts.ShortcutPlan.Target.SmartDj -> app.mawja.android.ui.ON_REPEAT_SHUFFLE_ROUTE
+        }
+
     private fun handleIntent(intent: Intent) {
         intent.getStringExtra(app.mawja.android.smartnotify.SmartNotifier.EXTRA_SMART_HASH)?.let { hash ->
             intent.removeExtra(app.mawja.android.smartnotify.SmartNotifier.EXTRA_SMART_HASH)
@@ -443,6 +466,19 @@ class MainActivity : ComponentActivity() {
         if (widgetRoute != null) {
             intent.removeExtra(app.mawja.android.widget.core.action.WidgetDeepLink.EXTRA_WIDGET_ROUTE)
             links.openRoute(widgetRoute)
+            return
+        }
+
+        intent.getStringExtra(app.mawja.android.shortcuts.AppShortcuts.EXTRA_SHORTCUT_ID)?.let { id ->
+            intent.removeExtra(app.mawja.android.shortcuts.AppShortcuts.EXTRA_SHORTCUT_ID)
+            app.mawja.android.shortcuts.AppShortcuts.reportUsed(this, id)
+        }
+        // mawja:// links: launcher shortcuts (#79) and announcement buttons.
+        if (intent.data?.scheme.equals(app.mawja.android.shortcuts.ShortcutPlan.SCHEME, ignoreCase = true)) {
+            if (!isRestoringState) {
+                val route = app.mawja.android.shortcuts.ShortcutPlan.parse(intent.data?.toString())?.let(::routeForMawjaLink)
+                if (route != null) links.openRoute(route) else Toast.makeText(this, R.string.link_not_supported, Toast.LENGTH_LONG).show()
+            }
             return
         }
 

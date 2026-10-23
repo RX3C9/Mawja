@@ -169,6 +169,18 @@ fun FlowApp(
     OfflineMonitor(context, navController, snackbarHostState, currentRoute)
 
     val currentEntry by navController.currentBackStackEntryAsState()
+    // Instant Resume (#75): the page on screen is written down so a launch after the process died reopens it.
+    LaunchedEffect(currentEntry, needsOnboarding) {
+        val entry = currentEntry ?: return@LaunchedEffect
+        if (needsOnboarding != false) return@LaunchedEffect
+        val bundle = entry.arguments
+        val args =
+            bundle?.keySet()?.associateWith { key ->
+                @Suppress("DEPRECATION")
+                bundle.get(key)?.toString()
+            }.orEmpty()
+        app.mawja.android.resume.InstantResume.recordPage(entry.destination.route, args)
+    }
     val statusBarHero = remember { StatusBarHeroState() }
     val currentTab = currentEntry?.flowTab()
     val selectedTab by rememberSelectedFlowTab(navController, defaultTab)

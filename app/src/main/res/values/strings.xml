@@ -4607,4 +4607,13 @@
     <string name="network_profile_applied">Profile applied</string>
     <string name="network_profile_direct">Direct</string>
     <string name="network_custom_off">Private DNS and connection profiles are turned off for now. Lookups use the device DNS.</string>
+    <string name="instant_resume_title">Instant resume</string>
+    <string name="instant_resume_summary">After the app was closed, reopen the same page and list position, with the player paused where you left it</string>
+    <string name="instant_resume_keywords">resume, restore, reopen, last page, scroll position, continue</string>
+    <string name="shortcut_search_short">Search</string>
+    <string name="shortcut_search_long">Search videos and music</string>
+    <string name="shortcut_downloads_short">Downloads</string>
+    <string name="shortcut_downloads_long">Open your downloads</string>
+    <string name="shortcut_dj_short">Smart DJ</string>
+    <string name="shortcut_dj_long">Shuffle the songs you\'ve had on repeat</string>
 </resources>

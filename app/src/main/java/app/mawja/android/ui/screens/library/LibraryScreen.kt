@@ -80,6 +80,7 @@ fun LibraryScreen(
     val hiddenSections by viewModel.hiddenSections.collectAsStateWithLifecycle()
     val locale = LocalConfiguration.current.locales[0]
     val listState = rememberLazyListState()
+    app.mawja.android.resume.ResumableScroll(listState, "library")
     OnTabReselected(FlowTab.Library.route) { listState.animateScrollToItem(0) }
     val openSection: (LibrarySection) -> Unit = { section ->
         when (section) {

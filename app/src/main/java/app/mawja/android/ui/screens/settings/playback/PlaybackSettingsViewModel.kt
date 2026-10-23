@@ -77,6 +77,7 @@ class PlaybackSettingsViewModel
         val autoPip = preferences.autoPipEnabled.asState(false)
         val continueWatchingMiniPlayer = preferences.miniPlayerContinueWatchingEnabled.asState(true)
         val restoreMusicMiniPlayer = preferences.showRestoredMusicMiniPlayer.asState(true)
+        val instantResume = app.mawja.android.resume.InstantResume.enabled
         val openMusicPlayerOnPlay = preferences.openMusicPlayerOnPlay.asState(false)
 
         val audioLanguage = preferences.preferredAudioLanguage.asState(ORIGINAL_AUDIO)
@@ -196,6 +197,17 @@ class PlaybackSettingsViewModel
         fun setContinueWatchingMiniPlayer(value: Boolean) = write { preferences.setMiniPlayerContinueWatchingEnabled(value) }
 
         fun setRestoreMusicMiniPlayer(value: Boolean) = write { preferences.setShowRestoredMusicMiniPlayer(value) }
+
+        /** Instant Resume (#75): turning it on also brings back both paused mini players it relies on. */
+        fun setInstantResume(value: Boolean) {
+            app.mawja.android.resume.InstantResume.setEnabled(value)
+            if (value) {
+                write {
+                    preferences.setMiniPlayerContinueWatchingEnabled(true)
+                    preferences.setShowRestoredMusicMiniPlayer(true)
+                }
+            }
+        }
 
         fun setOpenMusicPlayerOnPlay(value: Boolean) = write { preferences.setOpenMusicPlayerOnPlay(value) }
 

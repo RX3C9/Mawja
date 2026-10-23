@@ -90,6 +90,16 @@ fun PlaylistDetailScreen(
             target?.let(viewModel::exportTo)
         }
     val listState = rememberLazyListState()
+    app.mawja.android.resume.ResumableScroll(listState, "playlist")
+    // Launcher shortcuts (#79): the playlist opened last is offered first on the app icon.
+    val shortcutContext = androidx.compose.ui.platform.LocalContext.current
+    LaunchedEffect(viewModel.playlistId, uiState.playlistName) {
+        if (uiState.playlistName.isNotBlank()) {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                app.mawja.android.shortcuts.AppShortcuts.recordPlaylist(shortcutContext, viewModel.playlistId, uiState.playlistName, isMusic = false)
+            }
+        }
+    }
     val panes = rememberFlowPaneState()
     val twoPane = panes.showsSidePane
 

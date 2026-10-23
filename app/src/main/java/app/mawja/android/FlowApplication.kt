@@ -94,6 +94,7 @@ class FlowApplication :
         // #71/#72: the DNS choice and the link-cleaner switch are read synchronously by every client and share.
         app.mawja.android.network.AppDns.init(this)
         app.mawja.android.network.LinkCleaner.init(this)
+        app.mawja.android.resume.InstantResume.init(this)
         // Mawja battery saver (#62): battery/power-save broadcasts drive one StateFlow every check reads.
         app.mawja.android.battery.BatterySaver.start(this)
         YouTube.cacheDirectory = cacheDir.resolve("innertube_http_cache")
