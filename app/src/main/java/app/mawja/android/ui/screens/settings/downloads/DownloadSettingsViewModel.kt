@@ -93,6 +93,7 @@ class DownloadSettingsViewModel
         val musicQuality = preferences.musicDownloadQuality.asState(MusicAudioQuality.HIGH)
         val menuStyle = preferences.downloadDialogStyle.asState(DownloadDialogStyle.FULL)
         val wifiOnly = preferences.downloadOverWifiOnly.asState(false)
+        val chargingOnly = preferences.downloadWhileChargingOnly.asState(false)
         val autoDownloadLikes = preferences.autoDownloadLikedMusic.asState(false)
         val autoDownloadOpened = preferences.autoDownloadOpenedVideos.asState(AutoDownloadMode.OFF)
         val subtitleFile = preferences.downloadSubtitleFile.asState(false)
@@ -167,6 +168,12 @@ class DownloadSettingsViewModel
         fun setAutoDownloadLikes(value: Boolean) = write { preferences.setAutoDownloadLikedMusic(value) }
 
         fun setAutoDownloadOpened(value: AutoDownloadMode) = write { preferences.setAutoDownloadOpenedVideos(value) }
+
+        fun setChargingOnly(value: Boolean) =
+            write {
+                preferences.setDownloadWhileChargingOnly(value)
+                downloadController.applyNetworkPolicy()
+            }
 
         fun setWifiOnly(value: Boolean) =
             write {

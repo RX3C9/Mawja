@@ -291,6 +291,20 @@ class PlaylistDetailViewModel
             }
         }
 
+        fun exportFileName(format: app.mawja.android.data.playlist.PlaylistListFormat): String =
+            app.mawja.android.data.playlist.PlaylistListFormats.fileName(format, _uiState.value.playlistName)
+
+        fun exportListTo(
+            target: Uri,
+            format: app.mawja.android.data.playlist.PlaylistListFormat,
+        ) {
+            viewModelScope.launch {
+                val state = _uiState.value
+                val saved = transfer.writeListTo(target, format, state.playlistName, state.videos)
+                _messages.send(PlaylistUiMessage(stringRes = if (saved) R.string.playlist_exported else R.string.playlist_export_failed))
+            }
+        }
+
         /** This playlist as a file another app can read, or null when it could not be written. */
         suspend fun shareableFile(): Uri? {
             val state = _uiState.value

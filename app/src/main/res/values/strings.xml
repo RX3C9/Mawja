@@ -4646,4 +4646,8 @@
     <string name="player_screenshot_failed">Couldn\'t save the screenshot</string>
     <string name="player_appearance_screenshot_title">Screenshot button</string>
     <string name="player_appearance_screenshot_subtitle">While paused in fullscreen, save the frame at full video resolution, without the controls, to Pictures/Mawja</string>
+    <string name="export_playlist_m3u">Export as M3U</string>
+    <string name="export_playlist_csv">Export as CSV</string>
+    <string name="download_while_charging_only">Download only while charging</string>
+    <string name="download_while_charging_only_summary">Queued downloads wait until the phone is on the charger, e.g. overnight</string>
 </resources>

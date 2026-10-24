@@ -101,6 +101,7 @@ internal class PlaylistHeaderActions(
     val onExport: () -> Unit,
     val onEdit: () -> Unit,
     val onDelete: () -> Unit,
+    val onExportList: (app.mawja.android.data.playlist.PlaylistListFormat) -> Unit = {},
 )
 
 /** The header at the top of the list, on windows too narrow for a side pane. */
@@ -267,6 +268,22 @@ private fun PlaylistOverflowMenu(
                         actions.onExport()
                     },
                 )
+                app.mawja.android.data.playlist.PlaylistListFormat.entries.forEach { format ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                stringResource(
+                                    if (format == app.mawja.android.data.playlist.PlaylistListFormat.M3U) R.string.export_playlist_m3u else R.string.export_playlist_csv,
+                                ),
+                            )
+                        },
+                        leadingIcon = { Icon(Icons.Outlined.SaveAs, contentDescription = null) },
+                        onClick = {
+                            open = false
+                            actions.onExportList(format)
+                        },
+                    )
+                }
             }
             if (!state.canEdit) return@DropdownMenu
             DropdownMenuItem(

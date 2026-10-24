@@ -5008,4 +5008,8 @@
     <string name="player_screenshot_failed">ماقدرناش نحفظ اللقطة</string>
     <string name="player_appearance_screenshot_title">زر لقطة الشاشة</string>
     <string name="player_appearance_screenshot_subtitle">وقت الإيقاف المؤقت في ملء الشاشة، احفظ الإطار بدقة الفيديو الكاملة ومن غير أزرار في Pictures/Mawja</string>
+    <string name="export_playlist_m3u">تصدير كـ M3U</string>
+    <string name="export_playlist_csv">تصدير كـ CSV</string>
+    <string name="download_while_charging_only">التنزيل أثناء الشحن فقط</string>
+    <string name="download_while_charging_only_summary">التنزيلات في الطابور تستنى لحد ما الموبايل يتشحن، مثلاً بالليل</string>
 </resources>

@@ -153,12 +153,14 @@ class DownloadController
         /** Runs the queue work unless it is running already, with the network the settings allow. */
         suspend fun kick() {
             val wifiOnly = preferences.downloadOverWifiOnly.first()
+            val chargingOnly = preferences.downloadWhileChargingOnly.first()
             val work =
                 OneTimeWorkRequestBuilder<DownloadQueueWorker>()
                     .setConstraints(
                         Constraints
                             .Builder()
                             .setRequiredNetworkType(if (wifiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+                            .setRequiresCharging(chargingOnly)
                             .build(),
                     ).addTag(DownloadQueueWorker.TAG)
                     .build()

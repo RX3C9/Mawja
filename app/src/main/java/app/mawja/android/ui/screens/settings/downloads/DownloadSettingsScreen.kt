@@ -203,6 +203,7 @@ internal fun DownloadSettingsScreen(
                 stringResource(autoDownloadLabel(autoDownloadOpened))
             }
             switch(DownloadsIndex.wifiOnly, viewModel.wifiOnly, viewModel::setWifiOnly)
+            switch(DownloadsIndex.chargingOnly, viewModel.chargingOnly, viewModel::setChargingOnly)
             switch(DownloadsIndex.subtitleFile, viewModel.subtitleFile, viewModel::setSubtitleFile)
         }
         group(key = "downloads.library", header = R.string.local_section_library) {

@@ -95,6 +95,14 @@ fun PlaylistDetailScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PLAYLIST_FILE_MIME_TYPE)) { target ->
             target?.let(viewModel::exportTo)
         }
+    val m3uLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(app.mawja.android.data.playlist.PlaylistListFormat.M3U.mimeType)) { target ->
+            target?.let { viewModel.exportListTo(it, app.mawja.android.data.playlist.PlaylistListFormat.M3U) }
+        }
+    val csvLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(app.mawja.android.data.playlist.PlaylistListFormat.CSV.mimeType)) { target ->
+            target?.let { viewModel.exportListTo(it, app.mawja.android.data.playlist.PlaylistListFormat.CSV) }
+        }
     val listState = rememberLazyListState()
     app.mawja.android.resume.ResumableScroll(listState, "playlist")
     // Launcher shortcuts (#79): the playlist opened last is offered first on the app icon.
@@ -203,6 +211,10 @@ fun PlaylistDetailScreen(
                 }
             },
             onExport = { exportLauncher.launch(viewModel.exportFileName) },
+            onExportList = { format ->
+                val launcher = if (format == app.mawja.android.data.playlist.PlaylistListFormat.M3U) m3uLauncher else csvLauncher
+                launcher.launch(viewModel.exportFileName(format))
+            },
             onEdit = { dialog = PlaylistDialog.Edit },
             onDelete = { dialog = PlaylistDialog.Delete },
         )

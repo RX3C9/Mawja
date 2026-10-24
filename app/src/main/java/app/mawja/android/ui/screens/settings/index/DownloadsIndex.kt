@@ -77,6 +77,13 @@ internal object DownloadsIndex {
             R.string.settings_section_download_defaults,
             summary = R.string.reduce_data_usage_subtitle,
         )
+    val chargingOnly =
+        entry(
+            "charging_only",
+            R.string.download_while_charging_only,
+            R.string.settings_section_download_defaults,
+            summary = R.string.download_while_charging_only_summary,
+        )
     val subtitleFile =
         entry(
             "subtitle_file",
@@ -134,6 +141,7 @@ internal object DownloadsIndex {
             autoDownloadLikes,
             autoDownloadOpened,
             wifiOnly,
+            chargingOnly,
             subtitleFile,
             retag,
             findEarlier,

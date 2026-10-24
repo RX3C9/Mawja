@@ -60,6 +60,20 @@ class PlaylistTransfer
                 }.isSuccess
             }
 
+        /** Saves the playlist as a plain [format] list (#117) into [target]; false when it could not be written. */
+        suspend fun writeListTo(
+            target: Uri,
+            format: PlaylistListFormat,
+            name: String,
+            videos: List<Video>,
+        ): Boolean =
+            withContext(Dispatchers.IO) {
+                runCatching {
+                    val text = PlaylistListFormats.encode(format, name, videos)
+                    checkNotNull(context.contentResolver.openOutputStream(target, "wt")).use { it.write(text.toByteArray()) }
+                }.isSuccess
+            }
+
         /** A copy in the cache another app can read, replacing the last one shared; null when it could not be written. */
         suspend fun shareableCopy(
             name: String,

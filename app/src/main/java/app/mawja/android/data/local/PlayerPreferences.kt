@@ -120,6 +120,7 @@ class PlayerPreferences(
         val DOWNLOAD_THREADS = intPreferencesKey("download_threads")
         val CONCURRENT_DOWNLOADS = intPreferencesKey("concurrent_downloads")
         val DOWNLOAD_OVER_WIFI_ONLY = booleanPreferencesKey("download_over_wifi_only")
+        val DOWNLOAD_WHILE_CHARGING_ONLY = booleanPreferencesKey("download_while_charging_only")
         val DEFAULT_DOWNLOAD_QUALITY = stringPreferencesKey("default_download_quality")
         val DEFAULT_DOWNLOAD_CODEC = stringPreferencesKey("default_download_codec")
         val MUSIC_DOWNLOAD_QUALITY = stringPreferencesKey("music_download_quality")
@@ -3239,6 +3240,14 @@ class PlayerPreferences(
             .map { preferences ->
                 preferences[Keys.DOWNLOAD_OVER_WIFI_ONLY] ?: false
             }
+
+    /** Queued downloads wait until the phone is charging (#120), e.g. overnight on the charger. */
+    val downloadWhileChargingOnly: Flow<Boolean> =
+        context.playerPreferencesDataStore.data.map { it[Keys.DOWNLOAD_WHILE_CHARGING_ONLY] ?: false }
+
+    suspend fun setDownloadWhileChargingOnly(enabled: Boolean) {
+        context.playerPreferencesDataStore.edit { it[Keys.DOWNLOAD_WHILE_CHARGING_ONLY] = enabled }
+    }
 
     suspend fun setDownloadOverWifiOnly(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->
