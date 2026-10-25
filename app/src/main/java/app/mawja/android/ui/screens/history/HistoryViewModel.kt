@@ -103,6 +103,13 @@ class HistoryViewModel
                 .flowOn(Dispatchers.Default)
                 .stateIn(viewModelScope, sharing, emptyList())
 
+        val bestWatchWindowStart: StateFlow<Int?> =
+            _uiState
+                .map { state -> BestWatchTime.suggest(state.historyEntries.map { it.timestamp }) }
+                .distinctUntilChanged()
+                .flowOn(Dispatchers.Default)
+                .stateIn(viewModelScope, sharing, null)
+
         val displayEntries: StateFlow<List<VideoHistoryEntry>> =
             combine(
                 _uiState.map { it.historyEntries }.distinctUntilChanged(),

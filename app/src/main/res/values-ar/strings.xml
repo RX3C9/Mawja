@@ -2830,6 +2830,7 @@
     <string name="playlist_download_queue_empty">تعذّر إضافة أي تنزيلات من قائمة التشغيل هذه</string>
     <string name="artist_known_related_badge">ضمن اقتراحاتك</string>
     <string name="removed_from_history">تمت إزالته من السجل</string>
+    <string name="history_best_watch_time">غالبًا تشاهد في الفترة %1$s</string>
     <string name="removed_from_likes">تمت إزالته من الإعجابات</string>
     <string name="delete_download_dialog_title">هل تريد حذف التحميل؟</string>
     <string name="delete_download_dialog_text">سيتم إزالة %1$s من هذا الجهاز.</string>

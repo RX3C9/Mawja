@@ -2439,6 +2439,7 @@
     <string name="file_size_mb">%1$s MB</string>
     <string name="file_size_gb">%1$s GB</string>
     <string name="removed_from_history">Removed from history</string>
+    <string name="history_best_watch_time">You usually watch around %1$s</string>
     <string name="removed_from_likes">Removed from likes</string>
     <string name="delete_download_dialog_title">Delete download?</string>
     <string name="delete_download_dialog_text">%1$s will be removed from this device.</string>

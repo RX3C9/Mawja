@@ -82,6 +82,7 @@ fun HistoryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val displayEntries by viewModel.displayEntries.collectAsStateWithLifecycle()
     val availableYears by viewModel.availableYears.collectAsStateWithLifecycle()
+    val bestWatchStart by viewModel.bestWatchWindowStart.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val contentFilter by viewModel.contentFilter.collectAsStateWithLifecycle()
     val sortOrder by viewModel.sortOrder.collectAsStateWithLifecycle()
@@ -230,6 +231,15 @@ fun HistoryScreen(
                 availableYears = availableYears,
                 onYearSelected = viewModel::setYearFilter,
             )
+
+            bestWatchStart?.let { start ->
+                Text(
+                    text = stringResource(R.string.history_best_watch_time, BestWatchTime.formatWindow(start)),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                )
+            }
 
             when {
                 uiState.isLoading -> {
