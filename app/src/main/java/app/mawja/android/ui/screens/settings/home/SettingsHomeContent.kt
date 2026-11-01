@@ -118,6 +118,7 @@ internal fun SettingsListScope.homeContent(
     }
     group(key = "home.look", header = R.string.settings_group_look) {
         page(SettingsDestination.APPEARANCE)
+        page(SettingsDestination.ACCESSIBILITY)
         page(SettingsDestination.LANGUAGE_REGION)
         page(SettingsDestination.WIDGETS)
     }

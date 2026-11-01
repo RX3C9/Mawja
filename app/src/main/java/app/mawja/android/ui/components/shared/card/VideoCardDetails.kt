@@ -117,7 +117,7 @@ internal fun Modifier.videoCardClickable(
         .combinedClickable(
             interactionSource = interactionSource,
             indication = ripple(focusRingShape = MaterialTheme.shapes.large),
-            onClickLabel = null,
+            onClickLabel = stringResource(R.string.a11y_play_video),
             onLongClickLabel = stringResource(R.string.more_options),
             onLongClick = { state.sheets.showQuickActions = true },
             onClick = onClick,

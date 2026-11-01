@@ -68,8 +68,8 @@ class AnimatedArtworkViewModel
             lookup =
                 viewModelScope.launch {
                     if (!preferences.animatedArtwork.first()) return@launch forgetLoaded()
-                    // Battery saver (#62) with reduce motion: the still cover only.
-                    if (app.mawja.android.battery.BatterySaver.reduceMotion()) return@launch forgetLoaded()
+                    // Reduce motion (#163, including the battery saver's extra #62): the still cover only.
+                    if (app.mawja.android.accessibility.MawjaAccessibility.reduceMotionNow()) return@launch forgetLoaded()
                     if (preferences.animatedArtworkWifiOnly.first() && !NetworkState.isOnWifi(context)) return@launch forgetLoaded()
                     loop.value =
                         try {

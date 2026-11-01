@@ -185,3 +185,15 @@ app.mawja.android.ui.screens.history.HistorySmartListsTest
 app.mawja.android.ui.screens.history.HistoryTimelineTest
 app.mawja.android.ui.screens.settings.index.SettingsIndexTest
 app.mawja.android.ui.screens.music.ArabicMusicDiscoveryTest
+app.mawja.android.accessibility.AccessibilityPolicyTest
+app.mawja.android.ui.theme.HighContrastSchemeTest
+app.mawja.android.ui.theme.ThemeMigrationTest
+app.mawja.android.data.local.CustomThemeCodecTest
+app.mawja.android.ui.components.musicplayer.common.MusicPlayerThemeTest
+app.mawja.android.ui.components.layout.navigation.FlowNavigationBarTest
+app.mawja.android.ui.components.layout.navigation.FlowNavigationChromeTest
+app.mawja.android.data.shorts.ShortsContentFilterTest
+app.mawja.android.player.shorts.ShortsPreferenceObserversTest
+app.mawja.android.ui.components.FeedGridLayoutTest
+app.mawja.android.ui.components.FeedGridPolicyTest
+app.mawja.android.ui.components.shared.FeedGridPlanTest

@@ -1,5 +1,6 @@
 package app.mawja.android.ui.components.musicplayer.full
 
+import app.mawja.android.ui.theme.LocalReduceMotion
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -116,7 +117,7 @@ internal fun PlayerTrackHeader(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier =
-                        if (animateTitle) {
+                        if (animateTitle && !LocalReduceMotion.current) {
                             Modifier.basicMarquee(
                                 iterations = 1,
                                 initialDelayMillis = 3000,

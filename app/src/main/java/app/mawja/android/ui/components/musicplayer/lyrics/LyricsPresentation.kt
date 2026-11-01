@@ -1,11 +1,8 @@
 package app.mawja.android.ui.components.musicplayer.lyrics
 
 import android.os.Build
-import android.provider.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import app.mawja.android.data.lyrics.LyricsEntry
 import app.mawja.android.ui.theme.ensureContrastOn
@@ -143,11 +140,9 @@ internal fun lyricsPresentation(
 
 private const val LINE_SPACING = 1.3f
 
-/** False when the system's animations are turned off: lyrics then fill without lift, glow or blur transitions. */
+/**
+ * False under reduce motion (#163: the in-app switch, the system's animations turned off, or the
+ * battery saver's extra): lyrics then fill without lift, glow or blur transitions.
+ */
 @Composable
-internal fun rememberLyricsMotionEnabled(): Boolean {
-    val context = LocalContext.current
-    return remember(context) {
-        Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f
-    }
-}
+internal fun rememberLyricsMotionEnabled(): Boolean = !app.mawja.android.ui.theme.LocalReduceMotion.current

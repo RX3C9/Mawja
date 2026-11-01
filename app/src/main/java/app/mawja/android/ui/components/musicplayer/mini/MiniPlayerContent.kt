@@ -57,6 +57,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import app.mawja.android.R
 import app.mawja.android.data.music.model.MusicTrack
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import app.mawja.android.accessibility.AccessibilityPolicy
 import app.mawja.android.player.EnhancedMusicPlayerManager
 import app.mawja.android.ui.components.PlayingWaveform
 import app.mawja.android.ui.components.shared.MediaPlayPauseButton
@@ -95,6 +99,16 @@ internal fun MiniPlayerContent(
         animationSpec = if (animationsEnabled) tween(900, easing = LinearEasing) else snap(),
         label = "miniProgress",
     )
+    // TalkBack (#160): the cover-and-titles target says what it opens and how far the track has played,
+    // since the ring around the cover is drawn, not announced.
+    val playedPercent =
+        if (playerState.duration > 0) {
+            AccessibilityPolicy.percentOf(playerState.position.toFloat() / playerState.duration.toFloat())
+        } else {
+            0
+        }
+    val playedLabel = stringResource(R.string.a11y_played_percent, playedPercent)
+    val openLabel = stringResource(R.string.a11y_open_player)
 
     Row(
         modifier =
@@ -110,6 +124,7 @@ internal fun MiniPlayerContent(
             modifier =
                 Modifier
                     .weight(1f)
+                    .semantics { stateDescription = playedLabel }
                     .then(
                         if (onOpen == null) {
                             Modifier
@@ -117,7 +132,13 @@ internal fun MiniPlayerContent(
                             Modifier
                                 .fillMaxHeight()
                                 .clip(CircleShape)
-                                .clickable(interactionSource = null, indication = ripple(focusRingShape = CircleShape), onClick = onOpen)
+                                .clickable(
+                                    interactionSource = null,
+                                    indication = ripple(focusRingShape = CircleShape),
+                                    onClickLabel = openLabel,
+                                    role = Role.Button,
+                                    onClick = onOpen,
+                                )
                         },
                     ),
             verticalAlignment = Alignment.CenterVertically,
@@ -164,7 +185,8 @@ internal fun MiniPlayerContent(
                 ) {
                     AsyncImage(
                         model = track.listThumbnailUrl,
-                        contentDescription = stringResource(R.string.album_art),
+                        // Decorative here: the title beside it names the track.
+                        contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )

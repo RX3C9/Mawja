@@ -1,5 +1,6 @@
 package app.mawja.android.ui.components.shared
 
+import app.mawja.android.ui.theme.LocalReduceMotion
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +25,11 @@ fun Modifier.shimmerEffect(
     durationMillis: Int = 1200,
     delayMillis: Int = 0,
 ): Modifier {
+    // Reduce motion (#163): a still placeholder in the lighter tone instead of a pulse.
+    if (LocalReduceMotion.current) {
+        val still = MaterialTheme.colorScheme.surfaceContainerHigh
+        return this.clip(shape).drawBehind { drawRect(still) }
+    }
     val pulse =
         rememberInfiniteTransition(label = "skeleton").animateFloat(
             initialValue = 0f,

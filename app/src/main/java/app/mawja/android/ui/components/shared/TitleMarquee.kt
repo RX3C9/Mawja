@@ -8,6 +8,7 @@ package app.mawja.android.ui.components.shared
 
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.ui.Modifier
+import app.mawja.android.accessibility.MawjaAccessibility
 
 private const val MARQUEE_PASSES = 1
 private const val MARQUEE_START_DELAY_MILLIS = 1200
@@ -18,7 +19,12 @@ private const val MARQUEE_START_DELAY_MILLIS = 1200
  * screen, and a title that scrolls away during the pause never starts at all.
  */
 fun Modifier.titleMarquee(): Modifier =
-    basicMarquee(
-        iterations = MARQUEE_PASSES,
-        initialDelayMillis = MARQUEE_START_DELAY_MILLIS,
-    )
+    if (MawjaAccessibility.reduceMotionNow()) {
+        // Reduce motion (#163): the title ellipsizes and stays put.
+        this
+    } else {
+        basicMarquee(
+            iterations = MARQUEE_PASSES,
+            initialDelayMillis = MARQUEE_START_DELAY_MILLIS,
+        )
+    }

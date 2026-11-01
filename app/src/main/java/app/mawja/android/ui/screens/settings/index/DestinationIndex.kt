@@ -68,6 +68,7 @@ internal object DestinationIndex {
             SettingsDestination.NAVIGATION_BAR -> R.string.settings_navigation_bar_summary
             SettingsDestination.DATE_TIME -> R.string.settings_item_datetime_subtitle
             SettingsDestination.PLAYER_APPEARANCE -> R.string.settings_player_appearance_summary
+            SettingsDestination.ACCESSIBILITY -> R.string.a11y_settings_summary
             SettingsDestination.LANGUAGE_REGION -> R.string.settings_language_region_summary
             SettingsDestination.PLAYBACK -> R.string.settings_playback_summary
             SettingsDestination.BUFFER -> R.string.settings_item_buffer_subtitle

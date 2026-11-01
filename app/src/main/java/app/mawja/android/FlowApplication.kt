@@ -97,6 +97,8 @@ class FlowApplication :
         app.mawja.android.resume.InstantResume.init(this)
         // Mawja battery saver (#62): battery/power-save broadcasts drive one StateFlow every check reads.
         app.mawja.android.battery.BatterySaver.start(this)
+        // Mawja accessibility (#161-#163): text size, high contrast, colour vision, reduce motion.
+        app.mawja.android.accessibility.MawjaAccessibility.start(this)
         YouTube.cacheDirectory = cacheDir.resolve("innertube_http_cache")
 
         DiscordPresenceRuntime.initialize(this, okHttpClient)

@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material.icons.outlined.ViewAgenda
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material.icons.outlined.VolunteerActivism
 import androidx.compose.material.icons.outlined.Widgets
@@ -38,6 +39,7 @@ internal fun destinationIcon(destination: SettingsDestination): ImageVector =
         SettingsDestination.ACCOUNT -> Icons.Outlined.AccountCircle
         SettingsDestination.TASTE -> Icons.Outlined.Psychology
         SettingsDestination.APPEARANCE -> Icons.Outlined.Palette
+        SettingsDestination.ACCESSIBILITY -> Icons.Outlined.Visibility
         SettingsDestination.LANGUAGE_REGION -> Icons.Outlined.Language
         SettingsDestination.PLAYBACK -> Icons.Outlined.PlayCircle
         SettingsDestination.QUALITY -> Icons.Outlined.HighQuality

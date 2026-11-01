@@ -12,10 +12,17 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import app.mawja.android.accessibility.AccessibilityPolicy
+import app.mawja.android.accessibility.MawjaAccessibility
 import androidx.compose.ui.text.font.FontFamily
 
 /**
@@ -167,7 +174,7 @@ fun FlowTheme(
     fontFamily: FontFamily = FlowFontFamily,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme =
+    val baseColorScheme =
         resolveFlowColorScheme(
             context = LocalContext.current,
             isSystemDark = isSystemInDarkTheme(),
@@ -179,24 +186,58 @@ fun FlowTheme(
             systemDarkThemeVariant = systemDarkThemeVariant,
         )
 
+    // Accessibility (#161-#163): high contrast and colour vision reshape the scheme, the text size
+    // boost multiplies the system font scale, and reduce motion swaps in a motion scheme that snaps.
+    val accessibility by MawjaAccessibility.settings.collectAsState()
+    val reduceMotion by MawjaAccessibility.reduceMotion.collectAsState()
+    val isDark = baseColorScheme.surface.luminance() < 0.5f
+    val accessibleScheme =
+        remember(baseColorScheme, accessibility.highContrast, accessibility.colorVision, isDark) {
+            baseColorScheme
+                .withColorVision(accessibility.colorVision, isDark)
+                .let { if (accessibility.highContrast) it.withHighContrast() else it }
+        }
+
     val extendedColors =
         ExtendedColors(
-            textSecondary = colorScheme.onSurfaceVariant,
-            border = colorScheme.outlineVariant,
-            success = colorScheme.tertiary,
+            textSecondary = accessibleScheme.onSurfaceVariant,
+            border = accessibleScheme.outlineVariant,
+            success = accessibleSuccess(accessibleScheme.tertiary, accessibility.colorVision, isDark),
             // Brand mark, not a scheme role: the Shorts glyph is red in every theme.
             shortsAccent = YouTubeRed,
         )
 
-    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+    // A FlowTheme nested inside another must not boost text a second time.
+    val density = LocalDensity.current
+    val boosted = LocalTextBoostApplied.current
+    val fontScale = if (boosted) density.fontScale else AccessibilityPolicy.effectiveFontScale(density.fontScale, accessibility.textSize)
+    val scaledDensity =
+        remember(density, fontScale) {
+            if (fontScale == density.fontScale) density else Density(density = density.density, fontScale = fontScale)
+        }
+
+    CompositionLocalProvider(
+        LocalExtendedColors provides extendedColors,
+        LocalReduceMotion provides reduceMotion,
+        LocalDensity provides scaledDensity,
+        LocalTextBoostApplied provides true,
+    ) {
         MaterialExpressiveTheme(
-            colorScheme = colorScheme,
-            motionScheme = MotionScheme.expressive(),
+            colorScheme = accessibleScheme,
+            motionScheme = if (reduceMotion) ReducedMotionScheme else MotionScheme.expressive(),
             typography = remember(fontFamily) { flowTypography(fontFamily) },
             content = content,
         )
     }
 }
+
+/**
+ * True while non-essential motion is off (#163): the in-app switch, Android's animations-off setting,
+ * or the battery saver's reduce-motion extra. Looping and decorative animations read it and rest.
+ */
+val LocalReduceMotion = staticCompositionLocalOf { false }
+
+private val LocalTextBoostApplied = staticCompositionLocalOf { false }
 
 /**
  * Non-composable resolution of the app's active color scheme. Single source of truth

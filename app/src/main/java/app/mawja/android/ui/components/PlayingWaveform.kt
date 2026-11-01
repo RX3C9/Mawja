@@ -1,5 +1,6 @@
 package app.mawja.android.ui.components
 
+import app.mawja.android.ui.theme.LocalReduceMotion
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -48,8 +49,9 @@ fun PlayingWaveform(
     cycleMillis: Int = 350,
     staggerMillis: Int = 100,
 ) {
+    // Reduce motion (#163): the bars hold still at mid height.
     val barHeights: List<() -> Float> =
-        if (animate) {
+        if (animate && !LocalReduceMotion.current) {
             val infiniteTransition = rememberInfiniteTransition(label = "waveform")
             List(barCount) { index ->
                 val bar =

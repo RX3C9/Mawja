@@ -31,6 +31,9 @@ enum class SettingsDestination(
     NAVIGATION_BAR("navigation_bar", R.string.settings_navigation_bar_title, APPEARANCE),
     DATE_TIME("date_time", R.string.settings_item_datetime, APPEARANCE),
     PLAYER_APPEARANCE("player_appearance", R.string.player_appearance_title, APPEARANCE),
+
+    /** Mawja: text size, high contrast, colour-blind mode, reduce motion (#161-#163). */
+    ACCESSIBILITY("accessibility", R.string.a11y_settings_title),
     LANGUAGE_REGION("language_region", R.string.settings_language_region_title),
     WIDGETS("widgets", R.string.settings_widgets_title),
     PLAYBACK("playback", R.string.settings_playback_title),

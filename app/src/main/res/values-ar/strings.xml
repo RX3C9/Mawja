@@ -5032,4 +5032,64 @@
     <string name="arabic_music_maghrebi">مغربي</string>
     <string name="arabic_music_levantine">شامي</string>
     <string name="arabic_music_indie">إندي عربي</string>
+    <!-- Accessibility (#160-#163) -->
+    <string name="a11y_settings_title">إمكانية الوصول</string>
+    <string name="a11y_settings_summary">حجم النص، والتباين العالي، ووضع عمى الألوان، وتقليل الحركة</string>
+    <string name="a11y_keywords">إمكانية الوصول، تولك باك، قارئ الشاشة، الخط، حجم النص، نص كبير، التباين، عمى الألوان، الحركة، الرسوم المتحركة، accessibility, talkback, font, contrast, color blind, motion</string>
+    <string name="a11y_section_text">النص والتباين</string>
+    <string name="a11y_section_color">الألوان</string>
+    <string name="a11y_section_motion">الحركة</string>
+    <string name="a11y_text_size">حجم النص</string>
+    <string name="a11y_text_size_summary">يُضاف إلى حجم الخط المضبوط في إعدادات أندرويد</string>
+    <string name="a11y_text_size_now">يظهر النص الآن بنسبة %1$d%%</string>
+    <string name="a11y_text_size_system">النظام</string>
+    <string name="a11y_text_size_large">كبير</string>
+    <string name="a11y_text_size_largest">الأكبر</string>
+    <string name="a11y_text_footer">يتبع موجة دائمًا حجم الخط المضبوط في إعدادات أندرويد. ويزيد خيارا كبير والأكبر حجم النص أكثر، حتى ضعف الحجم العادي.</string>
+    <string name="a11y_high_contrast">تباين عالٍ</string>
+    <string name="a11y_high_contrast_summary">نصوص وأيقونات وحدود وفواصل أوضح في كل السمات</string>
+    <string name="a11y_color_vision">وضع عمى الألوان</string>
+    <string name="a11y_color_vision_summary">ألوان أوضح لحالات النجاح والخطأ ولمقاطع SponsorBlock</string>
+    <string name="a11y_color_vision_default">إيقاف</string>
+    <string name="a11y_color_vision_red_green">أحمر-أخضر</string>
+    <string name="a11y_color_vision_blue_yellow">أزرق-أصفر</string>
+    <string name="a11y_color_footer">يناسب وضع أحمر-أخضر عمى الأخضر وعمى الأحمر، ويناسب وضع أزرق-أصفر عمى الأزرق. تبقى الألوان التي اخترتها بنفسك لمقاطع SponsorBlock كما هي.</string>
+    <string name="a11y_reduce_motion">تقليل الحركة</string>
+    <string name="a11y_reduce_motion_summary">إيقاف العناوين المتحركة والأغلفة المتحركة ونبض التحميل والانتقالات المرنة</string>
+    <string name="a11y_reduce_motion_system_on">مُفعَّل لأن الرسوم المتحركة متوقفة في أندرويد</string>
+    <string name="a11y_reduce_motion_saver_on">مُفعَّل ما دام موفّر البطارية يقلّل الحركة</string>
+    <string name="a11y_system_animations">رسوم أندرويد المتحركة</string>
+    <string name="a11y_system_animations_on">مُفعَّلة</string>
+    <string name="a11y_system_animations_off">متوقفة، لذا يقلّل موجة الحركة أيضًا</string>
+    <string name="a11y_talkback_notice">يعمل موجة مع تولك باك: أزرار المشغّل والمشغّل المصغّر وبطاقات الفيديو وشريط التقديم كلها موصوفة، وتُقرأ المُدد بالكلمات.</string>
+    <string name="a11y_seek_bar">شريط التقديم</string>
+    <string name="a11y_play_video">تشغيل الفيديو</string>
+    <string name="a11y_open_player">فتح المشغّل</string>
+    <string name="a11y_watched_percent">تمت مشاهدة %1$d%%</string>
+    <string name="a11y_played_percent">تم تشغيل %1$d%%</string>
+    <string name="a11y_list_separator">"، "</string>
+    <plurals name="a11y_duration_hours">
+        <item quantity="zero">%1$d ساعة</item>
+        <item quantity="one">ساعة واحدة</item>
+        <item quantity="two">ساعتان</item>
+        <item quantity="few">%1$d ساعات</item>
+        <item quantity="many">%1$d ساعة</item>
+        <item quantity="other">%1$d ساعة</item>
+    </plurals>
+    <plurals name="a11y_duration_minutes">
+        <item quantity="zero">%1$d دقيقة</item>
+        <item quantity="one">دقيقة واحدة</item>
+        <item quantity="two">دقيقتان</item>
+        <item quantity="few">%1$d دقائق</item>
+        <item quantity="many">%1$d دقيقة</item>
+        <item quantity="other">%1$d دقيقة</item>
+    </plurals>
+    <plurals name="a11y_duration_seconds">
+        <item quantity="zero">%1$d ثانية</item>
+        <item quantity="one">ثانية واحدة</item>
+        <item quantity="two">ثانيتان</item>
+        <item quantity="few">%1$d ثوانٍ</item>
+        <item quantity="many">%1$d ثانية</item>
+        <item quantity="other">%1$d ثانية</item>
+    </plurals>
 </resources>

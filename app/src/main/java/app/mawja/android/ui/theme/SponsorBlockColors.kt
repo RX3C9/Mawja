@@ -1,6 +1,9 @@
 package app.mawja.android.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import app.mawja.android.accessibility.AccessibilityPolicy
+import app.mawja.android.accessibility.ColorVisionMode
+import app.mawja.android.accessibility.MawjaAccessibility
 
 /**
  * Default segment colours for SponsorBlock categories.
@@ -22,10 +25,18 @@ val SponsorBlockPreview = Color(0xFF008FD6)
 const val SPONSOR_BLOCK_SEGMENT_ALPHA = 0.78f
 
 /**
- * Default colour for [category], used when the user has not chosen a custom one.
+ * Default colour for [category], used when the user has not chosen a custom one: SponsorBlock's
+ * palette, or a colour-blind-safe one when the user picked a colour-vision mode (#162).
  * Unknown categories fall back to the sponsor colour, matching the previous behaviour.
  */
-fun defaultSponsorBlockColor(category: String): Color =
+fun defaultSponsorBlockColor(
+    category: String,
+    colorVision: ColorVisionMode = MawjaAccessibility.colorVisionNow(),
+): Color =
+    AccessibilityPolicy.sponsorBlockColor(category, colorVision)?.let(::Color) ?: conventionSponsorBlockColor(category)
+
+/** SponsorBlock's own colour for [category]; [defaultSponsorBlockColor] swaps it in a colour-vision mode (#162). */
+fun conventionSponsorBlockColor(category: String): Color =
     when (category) {
         "sponsor" -> SponsorBlockSponsor
         "selfpromo" -> SponsorBlockSelfPromo

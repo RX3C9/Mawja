@@ -116,6 +116,11 @@ internal fun SettingsDetail(
             LibrarySettingsScreen(onBack = onBack, highlight = target.highlight)
         }
 
+        SettingsDestination.ACCESSIBILITY -> {
+            app.mawja.android.ui.screens.settings.accessibility
+                .AccessibilityScreen(onBack = onBack, highlight = target.highlight)
+        }
+
         SettingsDestination.DATE_TIME -> {
             DateTimeScreen(onBack = onBack, highlight = target.highlight)
         }

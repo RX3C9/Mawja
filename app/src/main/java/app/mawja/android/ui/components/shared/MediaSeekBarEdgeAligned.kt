@@ -11,6 +11,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.setProgress
+import app.mawja.android.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import app.mawja.android.data.model.SponsorBlockSegment
@@ -41,12 +48,26 @@ internal fun EdgeAlignedSeekbar(
 ) {
     val thumbFillColor = colors.playhead
     val accentColor = colors.active
+    val seekLabel = stringResource(R.string.a11y_seek_bar)
 
     Canvas(
         modifier =
             Modifier
                 .fillMaxSize()
-                .pointerInput(enabled) {
+                // TalkBack (#160): the strip draws itself and handles its own touches, so it states
+                // the playhead and takes the volume-key / swipe adjust gesture as a seek.
+                .semantics {
+                    contentDescription = seekLabel
+                    progressBarRangeInfo = ProgressBarRangeInfo(displayValueProvider().coerceIn(0f, 1f), 0f..1f)
+                    if (enabled) {
+                        setProgress { target ->
+                            onPointerActiveChange(true)
+                            onScrub(target.coerceIn(0f, 1f))
+                            onPointerActiveChange(false)
+                            true
+                        }
+                    }
+                }.pointerInput(enabled) {
                     if (!enabled) return@pointerInput
 
                     fun valueForX(x: Float): Float {
