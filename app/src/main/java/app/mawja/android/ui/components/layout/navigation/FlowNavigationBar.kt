@@ -25,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
 import app.mawja.android.ui.utils.LocalWindowSizeClass
 import app.mawja.android.ui.utils.isMediumWidth
+import app.mawja.android.sound.UiSound
+import app.mawja.android.sound.rememberUiSounds
 
 private const val MAX_BAR_TABS = 5
 
@@ -43,6 +45,7 @@ internal fun FlowNavigationBar(
     val iconPosition = if (horizontalItems) NavigationItemIconPosition.Start else NavigationItemIconPosition.Top
     val barTabs = if (tabs.size <= MAX_BAR_TABS) tabs else tabs.take(MAX_BAR_TABS - 1)
     val overflowTabs = tabs.drop(barTabs.size)
+    val sounds = rememberUiSounds()
 
     ShortNavigationBar(
         modifier = modifier,
@@ -54,7 +57,10 @@ internal fun FlowNavigationBar(
             val selected = tab == selectedTab
             ShortNavigationBarItem(
                 selected = selected,
-                onClick = { onTabSelected(tab) },
+                onClick = {
+                    sounds?.play(UiSound.TAP)
+                    onTabSelected(tab)
+                },
                 icon = { Icon(imageVector = tab.icon(selected), contentDescription = null) },
                 label = { Text(text = stringResource(tab.labelRes)) },
                 iconPosition = iconPosition,

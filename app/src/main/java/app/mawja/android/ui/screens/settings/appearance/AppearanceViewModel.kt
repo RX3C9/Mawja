@@ -1,6 +1,9 @@
 package app.mawja.android.ui.screens.settings.appearance
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import app.mawja.android.account.Entitlements
+import app.mawja.android.account.EntitlementsRepository
+import app.mawja.android.account.MawjaFeature
 import app.mawja.android.data.local.AppFontPreferences
 import app.mawja.android.data.local.AppFontSelection
 import app.mawja.android.data.local.AppUiModePreferences
@@ -11,12 +14,15 @@ import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.platform.AppIconController
 import app.mawja.android.platform.AppUiMode
+import app.mawja.android.sound.UiSound
+import app.mawja.android.sound.UiSoundPlayer
 import app.mawja.android.ui.components.layout.navigation.NavigationVisibility
 import app.mawja.android.ui.screens.settings.SettingsViewModel
 import app.mawja.android.ui.theme.GridItemSize
 import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
 import app.mawja.android.util.AppIcons
+import app.mawja.android.util.PremiumIcons
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,7 +40,12 @@ class AppearanceViewModel
         private val appIconController: AppIconController,
         localDataManager: LocalDataManager,
         fontPreferences: AppFontPreferences,
+        entitlementsRepository: EntitlementsRepository,
+        private val uiSoundPlayer: UiSoundPlayer,
     ) : SettingsViewModel() {
+        /** What the user's membership unlocks; gates the premium icons. */
+        val entitlements: StateFlow<Entitlements> = entitlementsRepository.entitlements
+
         val themeMode = localDataManager.themeMode.asState(ThemeMode.SYSTEM)
         val themeVariant = localDataManager.themeVariant.asState(ThemeVariant.DARK)
         val customThemeName = localDataManager.activeCustomTheme.map { it?.name }.asState(null)
@@ -77,10 +88,21 @@ class AppearanceViewModel
             write { _appIcon.value = appIconController.activeSuffix() }
         }
 
+        /** Mawja UI sounds (Pro), off by default. */
+        val uiSounds: StateFlow<Boolean> = uiSoundPlayer.enabled
+
+        fun setUiSounds(enabled: Boolean) {
+            if (enabled && !entitlements.value.has(MawjaFeature.UI_SOUNDS)) return
+            uiSoundPlayer.setEnabled(enabled)
+        }
+
+        fun playSuccess() = uiSoundPlayer.play(UiSound.SUCCESS)
+
         fun setInterfaceMode(mode: AppUiMode) = write { uiModePreferences.setMode(mode) }
 
         fun setAppIcon(suffix: String) =
             write {
+                if (!PremiumIcons.canApply(suffix, entitlements.value)) return@write
                 appIconController.apply(suffix)
                 _appIcon.value = suffix
             }

@@ -24,7 +24,6 @@ import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
@@ -335,11 +334,8 @@ private fun RowScope.ElasticControlButton(
         contentAlignment = Alignment.Center,
     ) {
         if (isBuffering) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(28.dp),
-                color = contentColor,
-                strokeWidth = 3.dp,
-            )
+            // Mawja's wave loader stands in for the buffering spinner (still under reduce motion).
+            WaveLoadingIndicator(color = contentColor, size = 28.dp)
         } else {
             Icon(
                 imageVector = icon,

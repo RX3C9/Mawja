@@ -17,6 +17,18 @@ fun cfg(
     property: String,
 ): String = local.getProperty(key) ?: System.getenv(env) ?: (project.findProperty(property) as String?) ?: ""
 
+// Mawja release key (docs/release-signing.md): the same key as the app, read from -P,
+// local.properties or the environment. Missing values = unsigned release build.
+fun mawjaReleaseValue(name: String): String? =
+    ((project.findProperty(name) as String?) ?: local.getProperty(name) ?: System.getenv(name))
+        ?.trim()
+        ?.takeIf { it.isNotEmpty() }
+
+val mawjaReleaseStoreFile = mawjaReleaseValue("MAWJA_RELEASE_STORE_FILE")?.let { rootDir.resolve(it) }
+val mawjaReleaseSigningReady =
+    mawjaReleaseStoreFile?.isFile == true &&
+        listOf("MAWJA_RELEASE_STORE_PASSWORD", "MAWJA_RELEASE_KEY_ALIAS", "MAWJA_RELEASE_KEY_PASSWORD").all { mawjaReleaseValue(it) != null }
+
 android {
     namespace = "app.mawja.admin"
     compileSdk = 37
@@ -45,6 +57,15 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        if (mawjaReleaseSigningReady) {
+            create("release") {
+                storeFile = mawjaReleaseStoreFile
+                storePassword = mawjaReleaseValue("MAWJA_RELEASE_STORE_PASSWORD")
+                keyAlias = mawjaReleaseValue("MAWJA_RELEASE_KEY_ALIAS")
+                keyPassword = mawjaReleaseValue("MAWJA_RELEASE_KEY_PASSWORD")
+                mawjaReleaseValue("MAWJA_RELEASE_STORE_TYPE")?.let { storeType = it }
+            }
+        }
     }
 
     buildTypes {
@@ -60,6 +81,8 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Never the debug key: a release signed with it could not install over (or talk to) the real apps.
+            signingConfig = if (mawjaReleaseSigningReady) signingConfigs.getByName("release") else null
         }
     }
 

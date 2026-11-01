@@ -24,10 +24,17 @@ import app.mawja.android.data.local.ShortsPlayerUiMode
 import app.mawja.android.data.local.SliderStyle
 import app.mawja.android.data.local.resolveSeekbarHorizontalPaddingDp
 import app.mawja.android.ui.components.musicplayer.common.canTurnLight
+import app.mawja.android.ui.components.musicplayer.live.LiveBackgroundGate
+import app.mawja.android.ui.components.musicplayer.live.LiveBackgroundStyle
+import app.mawja.android.ui.components.musicplayer.live.LiveBackgroundUpsellSheet
+import app.mawja.android.ui.components.musicplayer.live.LiveBackgroundViewModel
+import app.mawja.android.ui.components.musicplayer.live.liveLabelRes
 import app.mawja.android.ui.components.settings.SettingEntry
+import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsGroupScope
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.SettingsPreviewSheet
+import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.slider
 import app.mawja.android.ui.components.settings.switch
@@ -41,7 +48,7 @@ private const val SEEKBAR_STEP_DP = 4
 private val PortraitSeekbarModes = listOf(SeekbarPaddingMode.SPACED, SeekbarPaddingMode.FULL_WIDTH, SeekbarPaddingMode.CUSTOM)
 private val FullscreenSeekbarModes = listOf(SeekbarPaddingMode.FULL_WIDTH, SeekbarPaddingMode.DEFAULT, SeekbarPaddingMode.CUSTOM)
 
-private enum class PreviewSheet { SLIDER, BACKGROUND, GESTURE, SWIPE_LEFT, SWIPE_RIGHT }
+private enum class PreviewSheet { SLIDER, BACKGROUND, LIVE_BACKGROUND, GESTURE, SWIPE_LEFT, SWIPE_RIGHT }
 
 /**
  * How the players look: seek bar, music background, video player surfaces, Shorts overlay and the
@@ -51,7 +58,9 @@ private enum class PreviewSheet { SLIDER, BACKGROUND, GESTURE, SWIPE_LEFT, SWIPE
 internal fun PlayerAppearanceScreen(
     onBack: (() -> Unit)?,
     highlight: String?,
+    onNavigate: (SettingsTarget) -> Unit = {},
     viewModel: PlayerAppearanceViewModel = hiltViewModel(),
+    liveBackgroundViewModel: LiveBackgroundViewModel = hiltViewModel(),
 ) {
     val sliderStyle by viewModel.sliderStyle.collectAsStateWithLifecycle()
     val portraitMode by viewModel.portraitSeekbarMode.collectAsStateWithLifecycle()
@@ -79,6 +88,9 @@ internal fun PlayerAppearanceScreen(
     val miniBarSwipeLeft by viewModel.miniBarSwipeLeft.collectAsStateWithLifecycle()
     val miniBarSwipeRight by viewModel.miniBarSwipeRight.collectAsStateWithLifecycle()
     var sheet by rememberSaveable { mutableStateOf<PreviewSheet?>(null) }
+    val liveBackground by liveBackgroundViewModel.selected.collectAsStateWithLifecycle()
+    val liveEntitlements by liveBackgroundViewModel.entitlements.collectAsStateWithLifecycle()
+    var liveUpsellFor by rememberSaveable { mutableStateOf<LiveBackgroundStyle?>(null) }
 
     val portraitPadding =
         resolveSeekbarHorizontalPaddingDp(
@@ -115,6 +127,8 @@ internal fun PlayerAppearanceScreen(
     val fullscreenSummary = stringResource(R.string.player_fullscreen_seekbar_width_subtitle, fullscreenPadding)
     val sliderLabel = stringResource(sliderStyleLabel(sliderStyle))
     val backgroundLabel = stringResource(musicBackgroundLabel(musicBackground))
+    // A stored pick the membership no longer covers shows as Off, which is what the player draws.
+    val liveBackgroundLabel = stringResource(LiveBackgroundGate.effective(liveBackground, liveEntitlements).liveLabelRes())
     val gestureLabel = stringResource(gestureOverlayLabel(gestureOverlay))
     val swipeLeftLabel = stringResource(miniBarSwipeLeft.labelRes)
     val swipeRightLabel = stringResource(miniBarSwipeRight.labelRes)
@@ -164,6 +178,7 @@ internal fun PlayerAppearanceScreen(
         }
         group(key = "player_appearance.music", header = R.string.settings_section_music_player) {
             nav(PlayerAppearanceIndex.musicBackground, value = backgroundLabel, onClick = { sheet = PreviewSheet.BACKGROUND })
+            nav(PlayerAppearanceIndex.liveBackground, value = liveBackgroundLabel, onClick = { sheet = PreviewSheet.LIVE_BACKGROUND })
             if (musicBackground.canTurnLight) {
                 switch(PlayerAppearanceIndex.followLightTheme, followLightTheme, viewModel::setFollowLightTheme)
             }
@@ -244,6 +259,33 @@ internal fun PlayerAppearanceScreen(
             )
         }
 
+        PreviewSheet.LIVE_BACKGROUND -> {
+            SettingsPreviewSheet(
+                title = stringResource(R.string.live_background_title),
+                subtitle = stringResource(R.string.live_background_subtitle),
+                options = LiveBackgroundStyle.entries,
+                selected = LiveBackgroundGate.effective(liveBackground, liveEntitlements),
+                label = { stringResource(it.liveLabelRes()) },
+                onSelect = { style ->
+                    if (LiveBackgroundGate.isLocked(style, liveEntitlements)) {
+                        sheet = null
+                        liveUpsellFor = style
+                    } else {
+                        liveBackgroundViewModel.setStyle(style)
+                    }
+                },
+                onDismiss = { sheet = null },
+                preview = {
+                    LiveBackgroundPreview(
+                        style = it,
+                        locked = LiveBackgroundGate.isLocked(it, liveEntitlements),
+                        flowStyle = musicBackground,
+                        followLightTheme = followLightTheme,
+                    )
+                },
+            )
+        }
+
         PreviewSheet.GESTURE -> {
             SettingsPreviewSheet(
                 title = stringResource(R.string.player_appearance_gesture_overlay_title),
@@ -274,6 +316,17 @@ internal fun PlayerAppearanceScreen(
         null -> {
             Unit
         }
+    }
+
+    liveUpsellFor?.let { style ->
+        LiveBackgroundUpsellSheet(
+            styleName = stringResource(style.liveLabelRes()),
+            onSeePlans = {
+                liveUpsellFor = null
+                onNavigate(SettingsTarget(SettingsDestination.UPGRADE))
+            },
+            onDismiss = { liveUpsellFor = null },
+        )
     }
 }
 

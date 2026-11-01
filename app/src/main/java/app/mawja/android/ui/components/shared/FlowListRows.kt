@@ -37,6 +37,8 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.mawja.android.sound.UiSound
+import app.mawja.android.sound.rememberUiSounds
 
 private val RowHorizontalPadding = 20.dp
 private val GroupedRowHorizontalPadding = 16.dp
@@ -181,9 +183,13 @@ fun FlowSwitchRow(
     enabled: Boolean = true,
     shape: Shape = RectangleShape,
 ) {
+    val sounds = rememberUiSounds()
     SegmentedListItem(
         verticalAlignment = Alignment.CenterVertically,
-        onClick = { onCheckedChange(!checked) },
+        onClick = {
+            sounds?.play(UiSound.TOGGLE)
+            onCheckedChange(!checked)
+        },
         shapes = ListItemDefaults.shapes(shape = shape),
         modifier =
             modifier

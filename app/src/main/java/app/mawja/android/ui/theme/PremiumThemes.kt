@@ -15,7 +15,15 @@ object PremiumThemes {
     /** Flow Default: what a locked palette falls back to. */
     val FALLBACK: ThemeMode = ThemeMode.DARK
 
-    val modes: Set<ThemeMode> = setOf(ThemeMode.NILE)
+    val modes: Set<ThemeMode> =
+        setOf(
+            ThemeMode.NILE,
+            ThemeMode.SAHARA,
+            ThemeMode.ANDALUS,
+            ThemeMode.MIDNIGHT_OUD,
+            ThemeMode.DELTA,
+            ThemeMode.RED_SEA_REEF,
+        )
 
     fun isPremium(mode: ThemeMode): Boolean = mode in modes
 

@@ -17,8 +17,8 @@ class PaletteColorsTest {
     @Test
     fun `every palette in the picker has a seed and every seed is in the picker`() {
         val catalogued = ThemeCatalog.palettes.map { it.mode }.filterNot { it == ThemeMode.MATERIAL_YOU }
-        assertThat(catalogued).hasSize(26)
-        assertThat(catalogued.map { FlowPalettes.forMode(it).id }.toSet()).hasSize(26)
+        assertThat(catalogued).hasSize(31)
+        assertThat(catalogued.map { FlowPalettes.forMode(it).id }.toSet()).hasSize(31)
     }
 
     @Test
@@ -73,6 +73,11 @@ class PaletteColorsTest {
             ThemeMode.CYBERPUNK,
             ThemeMode.ROYAL_GOLD,
             ThemeMode.CREAM_LIGHT,
+            ThemeMode.SAHARA,
+            ThemeMode.ANDALUS,
+            ThemeMode.MIDNIGHT_OUD,
+            ThemeMode.DELTA,
+            ThemeMode.RED_SEA_REEF,
         ).forEach { mode ->
             listOf(ThemeVariant.LIGHT, ThemeVariant.DARK).forEach { variant ->
                 val c = FlowPalettes.forMode(mode).colorsFor(variant)

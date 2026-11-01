@@ -63,6 +63,13 @@ enum class ThemeMode {
 
     /** Mawja's own optional palette (teal, coral, sand on night blue). Flow Default stays the default. */
     NILE,
+
+    /** Mawja premium palettes (Plus), appended after Nile; names are stored, never rename. */
+    SAHARA,
+    ANDALUS,
+    MIDNIGHT_OUD,
+    DELTA,
+    RED_SEA_REEF,
     MATERIAL_YOU,
     CUSTOM,
     LIGHT,

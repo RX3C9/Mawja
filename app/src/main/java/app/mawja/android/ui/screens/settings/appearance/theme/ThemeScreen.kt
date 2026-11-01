@@ -39,6 +39,7 @@ import app.mawja.android.ui.screens.settings.index.ThemeIndex
 import app.mawja.android.ui.theme.CustomTheme
 import app.mawja.android.ui.theme.ThemeCatalog
 import app.mawja.android.ui.theme.ThemeCatalogEntry
+import app.mawja.android.ui.theme.ThemeMotif
 import app.mawja.android.ui.theme.PremiumThemes
 import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
@@ -203,6 +204,7 @@ private fun paletteCards(
             selected = entry.mode == selected,
             onClick = { onSelect(entry.mode) },
             trailing = if (locked) LockBadgeSlot else null,
+            motif = ThemeMotif.forMode(entry.mode),
         )
     }
 
@@ -249,6 +251,7 @@ private fun ThemePaletteDialog(
                         selected = item.selected,
                         onClick = item.onClick,
                         trailing = item.trailing,
+                        motif = item.motif,
                     )
                 }
             }

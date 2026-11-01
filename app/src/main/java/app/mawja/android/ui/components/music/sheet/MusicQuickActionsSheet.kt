@@ -32,12 +32,15 @@ import app.mawja.android.R
 import app.mawja.android.data.localmedia.LocalMediaIds
 import app.mawja.android.data.music.model.MusicArtist
 import app.mawja.android.data.music.model.MusicTrack
+import app.mawja.android.data.ratings.RatingKind
+import app.mawja.android.data.ratings.RatingSubject
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
 import app.mawja.android.ui.components.shared.ArtworkThumbnail
 import app.mawja.android.ui.components.shared.ChannelAvatarStack
 import app.mawja.android.ui.components.shared.FlowNavRow
 import app.mawja.android.ui.components.shared.quickactions.MediaDetailsPage
 import app.mawja.android.ui.components.shared.quickactions.MediaDetailsSubject
+import app.mawja.android.ui.components.shared.quickactions.MyRatingGroup
 import app.mawja.android.ui.components.shared.quickactions.QuickActionRow
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsDefaults
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsGroup
@@ -125,6 +128,17 @@ fun MusicQuickActionsSheet(
                 QuickActionsGroup(
                     title = stringResource(R.string.playback_header),
                     rows = playbackRows(track, viewModel, quickActions, onAudioEffectsClick, onSleepTimerClick, close),
+                )
+                MyRatingGroup(
+                    kind = RatingKind.Track,
+                    targetId = track.videoId,
+                    subject =
+                        RatingSubject(
+                            title = track.title,
+                            subtitle = track.artist,
+                            thumbnailUrl = track.listThumbnailUrl,
+                            durationSeconds = track.duration,
+                        ),
                 )
                 // A file on the device has no artist page, feed or online details to offer.
                 if (isDeviceFile) return@QuickActionsSheet

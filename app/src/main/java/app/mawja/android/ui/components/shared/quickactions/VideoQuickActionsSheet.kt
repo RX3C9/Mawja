@@ -41,6 +41,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.model.VideoCollaborator
+import app.mawja.android.data.ratings.RatingKind
+import app.mawja.android.data.ratings.toRatingSubject
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
 import app.mawja.android.ui.components.shared.ChannelAvatarStack
 import app.mawja.android.ui.components.shared.FlowNavRow
@@ -124,6 +126,7 @@ fun VideoQuickActionsBottomSheet(
                     )
                 }
                 VideoPrimaryActions(video, viewModel, onSave = { sheet.hideThen { page = VideoMenuPage.Save } }, onDismiss = close)
+                MyRatingGroup(kind = RatingKind.Video, targetId = video.id, subject = video.toRatingSubject().copy(title = title))
                 if (!video.isShort) {
                     QuickActionsGroup(
                         title = stringResource(R.string.playback_header),

@@ -4,6 +4,7 @@
  */
 package app.mawja.android.ui.screens.settings.appearance.theme
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,6 +63,9 @@ internal fun PremiumThemeUpsellSheet(
     themeName: String,
     onSeePlans: () -> Unit,
     onDismiss: () -> Unit,
+    @StringRes bodyRes: Int = R.string.premium_theme_upsell_body,
+    @StringRes freeNoteRes: Int = R.string.premium_theme_upsell_free_note,
+    @StringRes titleRes: Int = R.string.premium_available_in_plus,
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -69,7 +73,7 @@ internal fun PremiumThemeUpsellSheet(
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         FlowSheetHeader(
-            title = stringResource(R.string.premium_available_in_plus),
+            title = stringResource(titleRes),
             subtitle = themeName,
             onClose = onDismiss,
             showDragHandle = false,
@@ -82,13 +86,13 @@ internal fun PremiumThemeUpsellSheet(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
         ) {
             Text(
-                text = stringResource(R.string.premium_theme_upsell_body),
+                text = stringResource(bodyRes),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.premium_theme_upsell_free_note),
+                text = stringResource(freeNoteRes),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

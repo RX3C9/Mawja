@@ -2,6 +2,7 @@ package app.mawja.android.ui.screens.settings.appearance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -42,6 +47,8 @@ private val IconSize = 56.dp
 private val IconCellPadding = 8.dp
 private val IconLabelSpacing = 6.dp
 private val WarningSpacing = 16.dp
+private val LockBadgeSize = 22.dp
+private val LockIconPadding = 4.dp
 
 /**
  * Picks the launcher icon. The grid scrolls inside a dialog of fixed height rather than growing to
@@ -53,6 +60,8 @@ internal fun AppIconDialog(
     selected: String,
     onApply: (String) -> Unit,
     onDismiss: () -> Unit,
+    isLocked: (String) -> Boolean = { false },
+    onLockedClick: (LauncherIcon) -> Unit = {},
 ) {
     var staged by rememberSaveable(selected) { mutableStateOf(selected) }
 
@@ -73,10 +82,12 @@ internal fun AppIconDialog(
                     verticalArrangement = Arrangement.spacedBy(IconGridSpacing),
                 ) {
                     items(appIconOptions, key = { it.suffix }) { option ->
+                        val locked = isLocked(option.suffix)
                         AppIconCell(
                             option = option,
                             selected = option.suffix == staged,
-                            onClick = { staged = option.suffix },
+                            locked = locked,
+                            onClick = { if (locked) onLockedClick(option) else staged = option.suffix },
                         )
                     }
                 }
@@ -84,7 +95,7 @@ internal fun AppIconDialog(
         },
         confirmButton = {
             TextButton(
-                enabled = staged != selected,
+                enabled = staged != selected && !isLocked(staged),
                 onClick = {
                     onApply(staged)
                     onDismiss()
@@ -101,6 +112,7 @@ internal fun AppIconDialog(
 private fun AppIconCell(
     option: LauncherIcon,
     selected: Boolean,
+    locked: Boolean,
     onClick: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
@@ -115,14 +127,30 @@ private fun AppIconCell(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(IconLabelSpacing),
     ) {
-        AsyncImage(
-            model = option.iconRes,
-            contentDescription = null,
-            modifier =
-                Modifier
-                    .size(IconSize)
-                    .clip(CircleShape),
-        )
+        Box {
+            AsyncImage(
+                model = option.iconRes,
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .size(IconSize)
+                        .clip(CircleShape),
+            )
+            if (locked) {
+                Surface(
+                    shape = CircleShape,
+                    color = colors.secondaryContainer,
+                    contentColor = colors.onSecondaryContainer,
+                    modifier = Modifier.align(Alignment.BottomEnd).size(LockBadgeSize),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Lock,
+                        contentDescription = stringResource(R.string.premium_locked_content_description),
+                        modifier = Modifier.padding(LockIconPadding),
+                    )
+                }
+            }
+        }
         Text(
             text = stringResource(option.nameRes),
             style = MaterialTheme.typography.labelMedium,

@@ -30,6 +30,12 @@ object WidgetDeepLink {
     const val ROUTE_SUBSCRIPTIONS = "subscriptions"
     const val ROUTE_LIBRARY = "library"
 
+    // Not a FlowNavigation route: MainActivity resolves it to the newest part-watched video.
+    const val ROUTE_CONTINUE_WATCHING = "continueWatching"
+
+    // Settings > Prayer times & qibla.
+    const val ROUTE_PRAYER_SETTINGS = "settings?target=islamic"
+
     fun openApp(context: Context): Intent = base(context, "open")
 
     /** Expands the full music player over whatever screen the app opens on. */

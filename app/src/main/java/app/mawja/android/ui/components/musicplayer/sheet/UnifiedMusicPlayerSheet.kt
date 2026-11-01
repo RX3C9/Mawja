@@ -46,6 +46,7 @@ import androidx.compose.ui.zIndex
 import app.mawja.android.data.local.MiniBarSwipeAction
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.player.EnhancedMusicPlayerManager
+import app.mawja.android.ui.components.motion.MicroMotion
 import app.mawja.android.ui.components.musicplayer.common.rememberMusicPlayerAppearance
 import app.mawja.android.ui.components.musicplayer.full.FullMusicPlayerContent
 import app.mawja.android.ui.components.musicplayer.mini.MiniPlayerContent
@@ -56,6 +57,7 @@ import app.mawja.android.ui.components.shared.MediaMiniBarBounds
 import app.mawja.android.ui.components.shared.MediaMiniBarDefaults
 import app.mawja.android.ui.components.shared.mediaMiniBarSwipe
 import app.mawja.android.ui.components.shared.rememberMediaMiniBarSwipeHandler
+import app.mawja.android.ui.theme.LocalReduceMotion
 import app.mawja.android.ui.utils.LocalWindowSizeClass
 import app.mawja.android.ui.utils.isMediumWidth
 import kotlinx.coroutines.flow.first
@@ -431,6 +433,7 @@ internal fun UnifiedMusicPlayerSheet(
                         }
                     }
                     val fullEnterOffsetPx = with(density) { 24.dp.toPx() }
+                    val zoomStill = LocalReduceMotion.current
                     Box(
                         modifier =
                             Modifier
@@ -441,6 +444,10 @@ internal fun UnifiedMusicPlayerSheet(
                                     val contentAlpha = (f - 0.25f).coerceIn(0f, 0.75f) / 0.75f
                                     alpha = contentAlpha
                                     translationY = fullEnterOffsetPx * (1f - contentAlpha)
+                                    // Opens with a gentle zoom from 0.94 to full size; still under reduce motion.
+                                    val openScale = MicroMotion.playerOpenScale(contentAlpha, zoomStill)
+                                    scaleX = openScale
+                                    scaleY = openScale
                                 }.zIndex(fullZIndex)
                                 .offset { fullOffset },
                     ) {

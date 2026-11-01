@@ -31,6 +31,20 @@ fun secretValue(
         ?: System.getenv(environment)
         ?: ""
 
+// Mawja release key (docs/release-signing.md). One key signs the app, Mawja Downloader and Mawja
+// Admin, so the Downloader's signature permission and its checkSignatures gate accept the app.
+// Read from -P, local.properties or the environment; nothing is committed. When any value is
+// missing the release build is left unsigned (sign it later, or let a store sign it).
+fun mawjaReleaseValue(name: String): String? =
+    ((project.findProperty(name) as String?) ?: localProperties.getProperty(name) ?: System.getenv(name))
+        ?.trim()
+        ?.takeIf { it.isNotEmpty() }
+
+val mawjaReleaseStoreFile = mawjaReleaseValue("MAWJA_RELEASE_STORE_FILE")?.let { rootDir.resolve(it) }
+val mawjaReleaseSigningReady =
+    mawjaReleaseStoreFile?.isFile == true &&
+        listOf("MAWJA_RELEASE_STORE_PASSWORD", "MAWJA_RELEASE_KEY_ALIAS", "MAWJA_RELEASE_KEY_PASSWORD").all { mawjaReleaseValue(it) != null }
+
 // The in-app picker lists the same languages AGP writes into the generated locale config: every
 // values folder that carries a strings.xml, so a new Weblate language shows up in both at once.
 fun translatedLocaleTags(): List<String> =
@@ -137,20 +151,14 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
-        create("release") {
-            storeFile = rootDir.resolve("release.keystore")
-            storePassword = (project.findProperty("storePassword") as? String)
-                ?: localProperties.getProperty("storePassword")
-                ?: System.getenv("STORE_PASSWORD")
-                ?: ""
-            keyAlias = (project.findProperty("keyAlias") as? String)
-                ?: localProperties.getProperty("keyAlias")
-                ?: System.getenv("KEY_ALIAS")
-                ?: ""
-            keyPassword = (project.findProperty("keyPassword") as? String)
-                ?: localProperties.getProperty("keyPassword")
-                ?: System.getenv("KEY_PASSWORD")
-                ?: ""
+        if (mawjaReleaseSigningReady) {
+            create("release") {
+                storeFile = mawjaReleaseStoreFile
+                storePassword = mawjaReleaseValue("MAWJA_RELEASE_STORE_PASSWORD")
+                keyAlias = mawjaReleaseValue("MAWJA_RELEASE_KEY_ALIAS")
+                keyPassword = mawjaReleaseValue("MAWJA_RELEASE_KEY_PASSWORD")
+                mawjaReleaseValue("MAWJA_RELEASE_STORE_TYPE")?.let { storeType = it }
+            }
         }
         // One long-lived key for every nightly, so each build installs over the last one.
         create("nightly") {
@@ -184,19 +192,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            // Use release signing if configured, otherwise fallback to debug
-            val releaseKeystore =
-                try {
-                    signingConfigs.getByName("release").storeFile
-                } catch (e: Exception) {
-                    null
-                }
-            if (releaseKeystore?.exists() == true) {
+            // Mawja release key when MAWJA_RELEASE_* are all set, otherwise an unsigned APK.
+            if (mawjaReleaseSigningReady) {
                 signingConfig = signingConfigs.getByName("release")
-                println("Using RELEASE signing config with keystore: ${releaseKeystore.absolutePath}")
             } else {
-                signingConfig = null // Let Gradle build an unsigned APK for IzzyOnDroid/F-Droid
-                println("WARNING: Release keystore not found. Building UNSIGNED release APK.")
+                signingConfig = null
+                logger.warn("Mawja: MAWJA_RELEASE_* not set or keystore missing; release APK will be UNSIGNED.")
             }
         }
         // Nightly: release-level performance under its own app id. It must come after release,

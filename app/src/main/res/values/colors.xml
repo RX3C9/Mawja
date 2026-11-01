@@ -27,5 +27,10 @@
     <color name="splash_background_light">#FFFFFF</color>
     <color name="splash_background_dark">#0F0F0F</color>
     <color name="splash_background_black">#000000</color>
+    <!-- visual-themes icons -->
+    <color name="icon_bg_sahara">#F3E3C3</color>
+    <color name="icon_bg_andalus">#0D2B28</color>
+    <color name="icon_bg_midnight_oud">#1E0F24</color>
+    <color name="icon_bg_gold_mono">#0A0A0A</color>
 </resources>
 

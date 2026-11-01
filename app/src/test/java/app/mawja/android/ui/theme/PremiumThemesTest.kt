@@ -22,7 +22,7 @@ class PremiumThemesTest {
 
     @Test
     fun onlyMawjaAdditionsArePremium() {
-        ThemeMode.entries.filter { it != ThemeMode.NILE }.forEach { mode ->
+        ThemeMode.entries.filter { it !in PremiumThemes.modes }.forEach { mode ->
             assertThat(PremiumThemes.isLocked(mode, free)).isFalse()
             assertThat(PremiumThemes.effective(mode, free)).isEqualTo(mode)
         }
@@ -43,5 +43,20 @@ class PremiumThemesTest {
         assertThat(PremiumThemes.effective(ThemeMode.NILE, free)).isEqualTo(ThemeMode.DARK)
         // The stored choice is untouched, so the same input resolves to Nile again after re-upgrading.
         assertThat(PremiumThemes.effective(ThemeMode.NILE, plus)).isEqualTo(ThemeMode.NILE)
+    }
+
+    @Test
+    fun mawjaVisualThemesArePlusOnly() {
+        listOf(ThemeMode.SAHARA, ThemeMode.ANDALUS, ThemeMode.MIDNIGHT_OUD, ThemeMode.DELTA, ThemeMode.RED_SEA_REEF).forEach { mode ->
+            assertThat(PremiumThemes.isPremium(mode)).isTrue()
+            assertThat(PremiumThemes.effective(mode, free)).isEqualTo(ThemeMode.DARK)
+            assertThat(PremiumThemes.effective(mode, plus)).isEqualTo(mode)
+        }
+    }
+
+    @Test
+    fun everyPremiumModeIsInThePicker() {
+        val catalogued = ThemeCatalog.palettes.map { it.mode }.toSet()
+        assertThat(catalogued).containsAtLeastElementsIn(PremiumThemes.modes)
     }
 }

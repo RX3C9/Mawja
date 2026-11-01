@@ -256,7 +256,7 @@ fun SettingsScreen(
                 InfoRow(stringResource(R.string.version), "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
                 Text(stringResource(R.string.about_body), style = MaterialTheme.typography.bodyMedium)
                 Text(stringResource(R.string.license_credit), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.SOURCE_URL))) }) {
+                TextButton(onClick = { runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.SOURCE_URL))) } }) {
                     Text(stringResource(R.string.source_code))
                 }
             }

@@ -23,6 +23,8 @@ import app.mawja.android.widget.nowplaying.NowPlayingWidgetReceiver
 import app.mawja.android.widget.onrepeat.OnRepeatWidget
 import app.mawja.android.widget.onrepeat.OnRepeatWidgetReceiver
 import app.mawja.android.widget.playlist.PlaylistWidget
+import app.mawja.android.widget.prayer.NextPrayerWidget
+import app.mawja.android.widget.prayer.NextPrayerWidgetReceiver
 import app.mawja.android.widget.playlist.PlaylistWidgetReceiver
 import app.mawja.android.widget.quickactions.QuickActionsWidget
 import app.mawja.android.widget.quickactions.QuickActionsWidgetReceiver
@@ -155,6 +157,14 @@ object FlowWidgets {
                 label = R.string.widget_quick_actions_label,
                 description = R.string.widget_quick_actions_description,
                 icon = R.drawable.ic_widget_search,
+            ),
+            FlowWidgetEntry(
+                id = "next_prayer",
+                receiver = NextPrayerWidgetReceiver::class,
+                widget = ::NextPrayerWidget,
+                label = R.string.widget_next_prayer_label,
+                description = R.string.widget_next_prayer_description,
+                icon = R.drawable.ic_widget_prayer,
             ),
             FlowWidgetEntry(
                 id = "recognize",

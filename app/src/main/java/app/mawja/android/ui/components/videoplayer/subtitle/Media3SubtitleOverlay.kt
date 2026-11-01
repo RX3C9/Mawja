@@ -122,11 +122,15 @@ fun Media3SubtitleOverlay(
             }.getOrNull() ?: return@LaunchedEffect
         secondaryCues = DualSubtitles.prepared(runCatching { repository.captionCues(url) }.getOrDefault(emptyList()))
     }
-    var positionMs by remember { mutableStateOf(0L) }
+    // The second line is looked up inside the poll and only the text is kept in state: the same
+    // String written again does not invalidate, so the overlay recomposes when the line changes,
+    // not five times a second with the playback position.
+    var secondaryRaw by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(player, secondaryCues) {
+        secondaryRaw = null
         if (player == null || secondaryCues.isEmpty()) return@LaunchedEffect
         while (true) {
-            positionMs = player.currentPosition
+            secondaryRaw = DualSubtitles.textAt(secondaryCues, player.currentPosition)
             delay(SECONDARY_POLL_MS)
         }
     }
@@ -139,10 +143,8 @@ fun Media3SubtitleOverlay(
             shownCues.mapNotNull { it.text?.toString()?.takeIf(String::isNotBlank) }.joinToString("\n").ifBlank { null }
         }
     val secondaryText =
-        remember(secondaryCues, positionMs, primaryText) {
-            DualSubtitles
-                .textAt(secondaryCues, positionMs)
-                ?.takeUnless { DualSubtitles.repeatsPrimary(primaryText, it) }
+        remember(secondaryRaw, primaryText) {
+            secondaryRaw?.takeUnless { DualSubtitles.repeatsPrimary(primaryText, it) }
         }
 
     // Not wrapped in AnimatedVisibility: cues empty out in the gap between every caption, which

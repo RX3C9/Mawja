@@ -48,7 +48,7 @@ if [ "$code" = 0 ] && [ "${MAWJA_SCREENSHOTS:-1}" = 1 ] && [ -f scripts/ci/scree
   [ -f emulator.log ] && { echo "---- full emulator.log ----"; tail -400 emulator.log; } >> screens.log
   slog=$(curl -fsS -m 60 -F "files[]=@screens.log" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null || echo none)
   if [ "$sc" = 0 ]; then
-    screens="ok ($(grep -c '\] .*captured' screens.log) shots, $(grep -o 'api [0-9]*)' screens.log | tail -1 | tr -d ')') log=$slog)"
+    screens="ok ($(grep -c '\] .*captured' screens.log) shots, $(grep -o 'api [0-9]*)' screens.log | tail -1 | tr -d ')') log=$slog $(grep -o 'summary: .*' screens.log | tail -1 | sed 's/^summary: //'))"
   else
     screens="FAILED (exit $sc) log=$slog: $(grep -E 'FAIL|did not|timed out|died|exited|missing' screens.log | head -6 | tr "\n" " " | cut -c1-500)"
   fi

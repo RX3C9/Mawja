@@ -126,7 +126,7 @@ internal fun SettingsDetail(
         }
 
         SettingsDestination.PLAYER_APPEARANCE -> {
-            PlayerAppearanceScreen(onBack = onBack, highlight = target.highlight)
+            PlayerAppearanceScreen(onBack = onBack, highlight = target.highlight, onNavigate = onNavigate)
         }
 
         SettingsDestination.LANGUAGE_REGION -> {

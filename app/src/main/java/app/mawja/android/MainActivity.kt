@@ -463,6 +463,21 @@ class MainActivity : ComponentActivity() {
             intent.getStringExtra(
                 app.mawja.android.widget.core.action.WidgetDeepLink.EXTRA_WIDGET_ROUTE,
             )
+        if (widgetRoute == app.mawja.android.widget.core.action.WidgetDeepLink.ROUTE_CONTINUE_WATCHING) {
+            intent.removeExtra(app.mawja.android.widget.core.action.WidgetDeepLink.EXTRA_WIDGET_ROUTE)
+            lifecycleScope.launch {
+                val pick =
+                    runCatching {
+                        kotlinx.coroutines.withContext(Dispatchers.IO) {
+                            app.mawja.android.widget.quickactions.ContinueWatchingPick.pick(
+                                app.mawja.android.widget.core.widgetEntryPoint(applicationContext).recentlyPlayedSource().entries(),
+                            )
+                        }
+                    }.getOrNull()
+                if (pick != null) links.openVideo(pick.videoId) else links.openRoute(app.mawja.android.widget.core.action.WidgetDeepLink.ROUTE_HISTORY)
+            }
+            return
+        }
         if (widgetRoute != null) {
             intent.removeExtra(app.mawja.android.widget.core.action.WidgetDeepLink.EXTRA_WIDGET_ROUTE)
             links.openRoute(widgetRoute)

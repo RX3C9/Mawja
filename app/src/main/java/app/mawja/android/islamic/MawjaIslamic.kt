@@ -179,6 +179,7 @@ object MawjaIslamic {
         _settings.value = next
         started = true
         if (next.enabled) PrayerAlarms.reschedule(app) else PrayerAlarms.cancel(app)
+        app.mawja.android.widget.prayer.NextPrayerRefresh.request(app)
     }
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

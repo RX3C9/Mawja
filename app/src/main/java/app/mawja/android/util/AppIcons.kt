@@ -42,7 +42,16 @@ object AppIcons {
             LauncherIcon(".IconExpressiveCookie", R.string.icon_name_expressive_cookie, R.mipmap.ic_launcher_expressive_cookie),
             LauncherIcon(".IconExpressiveOval", R.string.icon_name_expressive_oval, R.mipmap.ic_launcher_expressive_oval),
             LauncherIcon(".IconExpressivePill", R.string.icon_name_expressive_pill, R.mipmap.ic_launcher_expressive_pill),
+            LauncherIcon(".IconSahara", R.string.icon_name_sahara, R.mipmap.ic_launcher_sahara),
+            LauncherIcon(".IconAndalus", R.string.icon_name_andalus, R.mipmap.ic_launcher_andalus),
+            LauncherIcon(".IconMidnightOud", R.string.icon_name_midnight_oud, R.mipmap.ic_launcher_midnight_oud),
+            LauncherIcon(".IconGoldMono", R.string.icon_name_gold_mono, R.mipmap.ic_launcher_gold_mono),
         )
+
+    /** Mawja premium icons ([app.mawja.android.account.MawjaFeature.PREMIUM_ICONS], Plus). */
+    val PREMIUM_SUFFIXES: Set<String> = setOf(".IconSahara", ".IconAndalus", ".IconMidnightOud", ".IconGoldMono")
+
+    fun isPremium(suffix: String): Boolean = suffix in PREMIUM_SUFFIXES
 
     val ALL_SUFFIXES: List<String> = ALL.map { it.suffix }
 

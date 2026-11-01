@@ -76,6 +76,7 @@ object SmartNotifier {
                 .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build()
-        NotificationManagerCompat.from(context).notify(id, notification)
+        // The permission can be revoked between the worker's check and this call (SecurityException).
+        runCatching { NotificationManagerCompat.from(context).notify(id, notification) }
     }
 }

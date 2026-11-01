@@ -10,6 +10,7 @@
     android:targetCellHeight="1"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewLayout="@layout/widget_preview_quick_actions"
     android:description="@string/widget_quick_actions_description"
     android:resizeMode="horizontal"
     android:configure="app.mawja.android.widget.config.WidgetConfigActivity"

@@ -743,6 +743,151 @@ object FlowPalettes {
                             error = Color(0xFFFFB4AB),
                         ),
                 ),
+            // Mawja premium "Sahara: desert sand with an amber accent."
+            ThemeMode.SAHARA to
+                PalettePair(
+                    id = "sahara",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF9A5B00),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFFB5651D),
+                            background = Color(0xFFFBF5EA),
+                            surface = Color(0xFFF3E8D3),
+                            onSurface = Color(0xFF2B1D0E),
+                            onSurfaceVariant = Color(0xFF65523A),
+                            outline = Color(0xFFDECBA8),
+                            error = Color(0xFFB3261E),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFF2B54A),
+                            onPrimary = Color(0xFF2E1D00),
+                            secondary = Color(0xFFE08A4F),
+                            background = Color(0xFF17120B),
+                            surface = Color(0xFF231B11),
+                            onSurface = Color(0xFFF6EBD9),
+                            onSurfaceVariant = Color(0xFFCDBB9C),
+                            outline = Color(0xFF47392A),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            // Mawja premium "Andalus: zellige teal with terracotta."
+            ThemeMode.ANDALUS to
+                PalettePair(
+                    id = "andalus",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF00695C),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFFB5502E),
+                            background = Color(0xFFF7F6F1),
+                            surface = Color(0xFFEAEFEA),
+                            onSurface = Color(0xFF14241F),
+                            onSurfaceVariant = Color(0xFF4C5D57),
+                            outline = Color(0xFFC9D6CF),
+                            error = Color(0xFFBA1A1A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFF4DC2B0),
+                            onPrimary = Color(0xFF00201B),
+                            secondary = Color(0xFFE8875F),
+                            background = Color(0xFF0D1716),
+                            surface = Color(0xFF16211F),
+                            onSurface = Color(0xFFE7F1EE),
+                            onSurfaceVariant = Color(0xFFA9BDB7),
+                            outline = Color(0xFF2C3B38),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            // Mawja premium "Midnight Oud: deep plum with an oud-gold accent."
+            ThemeMode.MIDNIGHT_OUD to
+                PalettePair(
+                    id = "midnight-oud",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF6B2E7A),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF8C6A1F),
+                            background = Color(0xFFFAF6F8),
+                            surface = Color(0xFFF0E7EE),
+                            onSurface = Color(0xFF24142A),
+                            onSurfaceVariant = Color(0xFF5E4B63),
+                            outline = Color(0xFFDCCDD9),
+                            error = Color(0xFFB3261E),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFE2B85C),
+                            onPrimary = Color(0xFF2A1C00),
+                            secondary = Color(0xFFC79BD6),
+                            background = Color(0xFF140A17),
+                            surface = Color(0xFF1F1224),
+                            onSurface = Color(0xFFF4E9F2),
+                            onSurfaceVariant = Color(0xFFC7B3CB),
+                            outline = Color(0xFF3C2A41),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            // Mawja premium "Delta: Nile-delta green on papyrus."
+            ThemeMode.DELTA to
+                PalettePair(
+                    id = "delta",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF2F6B2F),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF8A6D2E),
+                            background = Color(0xFFF8F7EE),
+                            surface = Color(0xFFECEEDD),
+                            onSurface = Color(0xFF1A2414),
+                            onSurfaceVariant = Color(0xFF4E5944),
+                            outline = Color(0xFFCCD3B9),
+                            error = Color(0xFFBA1A1A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFF8CCB7A),
+                            onPrimary = Color(0xFF0E2A06),
+                            secondary = Color(0xFFD9C27E),
+                            background = Color(0xFF0F150D),
+                            surface = Color(0xFF182016),
+                            onSurface = Color(0xFFEAF0E2),
+                            onSurfaceVariant = Color(0xFFB3BFA6),
+                            outline = Color(0xFF2F3A2A),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            // Mawja premium "Red Sea Reef: coral with reef aqua."
+            ThemeMode.RED_SEA_REEF to
+                PalettePair(
+                    id = "red-sea-reef",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFFB8402F),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF00838F),
+                            background = Color(0xFFF7FBFB),
+                            surface = Color(0xFFE8F3F4),
+                            onSurface = Color(0xFF0E2229),
+                            onSurfaceVariant = Color(0xFF4A5F66),
+                            outline = Color(0xFFC4D9DC),
+                            error = Color(0xFFA8201A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFFF8A70),
+                            onPrimary = Color(0xFF3A0A00),
+                            secondary = Color(0xFF4DD0E1),
+                            background = Color(0xFF081A20),
+                            surface = Color(0xFF10262D),
+                            onSurface = Color(0xFFE6F4F6),
+                            onSurfaceVariant = Color(0xFFA6C1C7),
+                            outline = Color(0xFF23404A),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
             ThemeMode.CREAM_LIGHT to
                 PalettePair(
                     id = "cream-paper",

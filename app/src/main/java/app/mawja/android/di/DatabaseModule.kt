@@ -34,6 +34,9 @@ object DatabaseModule {
     fun provideNoteDao(database: AppDatabase): app.mawja.android.data.local.dao.NoteDao = database.noteDao()
 
     @Provides
+    fun provideRatingDao(database: AppDatabase): app.mawja.android.data.local.dao.RatingDao = database.ratingDao()
+
+    @Provides
     fun provideCacheDao(database: AppDatabase): app.mawja.android.data.local.dao.CacheDao = database.cacheDao()
 
     @Provides

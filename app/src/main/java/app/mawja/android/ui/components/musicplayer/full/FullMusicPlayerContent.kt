@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -39,6 +40,9 @@ import app.mawja.android.ui.components.musicplayer.common.PlayerBackdropColors
 import app.mawja.android.ui.components.musicplayer.controls.PlayerProgressSlider
 import app.mawja.android.ui.components.musicplayer.lyrics.DEFAULT_LYRICS_TEXT_SIZE
 import app.mawja.android.ui.components.musicplayer.lyrics.LARGE_LYRICS_TEXT_SIZE
+import app.mawja.android.ui.components.musicplayer.live.LiveBackground
+import app.mawja.android.ui.components.musicplayer.live.LiveBackgroundStyle
+import app.mawja.android.ui.components.musicplayer.live.LiveBackgroundViewModel
 import app.mawja.android.ui.components.musicplayer.lyrics.lyricsBackdrop
 import app.mawja.android.ui.components.musicplayer.queue.QueueActions
 import app.mawja.android.ui.components.musicplayer.queue.QueueList
@@ -71,8 +75,10 @@ internal fun FullMusicPlayerContent(
     controlScheme: ColorScheme = MaterialTheme.colorScheme,
     viewModel: MusicPlayerViewModel = sharedMusicPlayerViewModel(),
     videoSwitch: MusicVideoSwitchViewModel = hiltViewModel(),
+    liveBackgroundViewModel: LiveBackgroundViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val liveBackground by liveBackgroundViewModel.effective.collectAsState()
     val positionState = viewModel.currentPositionMs.collectAsState()
     val density = LocalDensity.current
     val colorScheme = MaterialTheme.colorScheme
@@ -182,7 +188,8 @@ internal fun FullMusicPlayerContent(
             )
         }
 
-    val immersiveBackground = backgroundStyle == MusicPlayerBackgroundStyle.IMMERSIVE
+    // A live background (#165) takes the place of the immersive art, so immersive layout rules rest with it.
+    val immersiveBackground = backgroundStyle == MusicPlayerBackgroundStyle.IMMERSIVE && liveBackground == LiveBackgroundStyle.OFF
     val displayTitle = previewTrack?.title ?: uiState.currentTrack?.title ?: track.title
     val displayArtist = previewTrack?.artist ?: uiState.currentTrack?.artist ?: track.artist
 
@@ -356,13 +363,24 @@ internal fun FullMusicPlayerContent(
                 },
             )
 
-        PlayerBackground(
-            thumbnailUrl = backgroundThumbnailUrl,
-            style = backgroundStyle,
-            backdrop = backdrop,
-            artworkAtStart = layout == MusicPlayerLayout.WIDE || layout == MusicPlayerLayout.SPLIT,
-            animatedArtwork = animatedArtwork.takeIf { immersiveBackground },
-        )
+        if (liveBackground == LiveBackgroundStyle.OFF) {
+            PlayerBackground(
+                thumbnailUrl = backgroundThumbnailUrl,
+                style = backgroundStyle,
+                backdrop = backdrop,
+                artworkAtStart = layout == MusicPlayerLayout.WIDE || layout == MusicPlayerLayout.SPLIT,
+                animatedArtwork = animatedArtwork.takeIf { immersiveBackground },
+            )
+        } else {
+            // #165: a live background replaces the backdrop layer; Off keeps Flow's own look.
+            LiveBackground(
+                style = liveBackground,
+                backdrop = backdrop,
+                darkText = colorScheme.onSurface.luminance() < 0.5f,
+                thumbnailUrl = backgroundThumbnailUrl,
+                playerVisible = isPlayerSheetExpanded && videoPlayer == null && !showLyricsSheet && !queueCoversArtwork,
+            )
+        }
 
         val pullUpQueue = Modifier.queuePullUpGesture(queueState, enabled = isPlayerSheetExpanded && !isWide)
         when (layout) {

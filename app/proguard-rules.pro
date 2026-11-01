@@ -92,3 +92,38 @@
 -dontwarn javax.annotation.**
 -dontwarn org.slf4j.**
 -dontwarn java.beans.**
+
+## ---- Mawja additions (v1.0 release readiness) ----
+
+## Adaptive notifications state (smartnotify) is Gson-persisted through private nested classes
+## outside the kept packages above; without this R8 may drop the generic Signature of
+## List<StoredSent> (the #996 failure mode) and every decode silently resets the learned state.
+-keep class app.mawja.android.smartnotify.SmartNotifyCodec$Stored* { *; }
+
+## Mawja Downloader AIDL contract (also in downloader-api consumer rules; kept here explicitly so
+## the Stub/Proxy descriptors always match the Downloader build).
+-keep class app.mawja.downloader.api.** { *; }
+-keep interface app.mawja.downloader.api.** { *; }
+
+## kotlinx.serialization: @Serializable classes in Mawja code (network profiles and future models).
+## kotlinx-serialization-core ships rules for the common case; these cover named companions.
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+-if @kotlinx.serialization.Serializable class app.mawja.**
+-keepclassmembers class <1> {
+    static <1>$Companion Companion;
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keepclassmembers class app.mawja.** {
+    *** Companion;
+}
+
+## Credential Manager (Google sign-in, github flavor): the Play services provider is found by
+## reflection; R8 would otherwise strip it and sign-in fails with "no provider dependencies".
+-if class androidx.credentials.CredentialManager
+-keep class androidx.credentials.playservices.** { *; }
+-dontwarn androidx.credentials.playservices.**
+
+## Firebase Auth / Functions (github flavor) ship their own consumer rules; only silence the
+## optional classes they reference.
+-dontwarn com.google.firebase.**
+-dontwarn com.google.android.gms.**

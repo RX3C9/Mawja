@@ -457,6 +457,7 @@ internal fun HistorySmartList.label(): String =
         HistorySmartList.Unfinished -> stringResource(R.string.history_smart_unfinished)
         HistorySmartList.LongAgo -> stringResource(R.string.history_smart_long_ago)
         HistorySmartList.TopChannels -> stringResource(R.string.history_smart_top_channels)
+        HistorySmartList.Rated -> stringResource(R.string.history_smart_rated)
     }
 
 @Composable

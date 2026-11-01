@@ -3091,7 +3091,7 @@
     <string name="widget_now_playing_label">Now Playing</string>
     <string name="widget_now_playing_description">Control the music that\'s playing in Mawja</string>
     <string name="widget_quick_actions_label">Quick actions</string>
-    <string name="widget_quick_actions_description">Search Mawja and jump to downloads, history, or recognition</string>
+    <string name="widget_quick_actions_description">Search Mawja and jump to downloads, your library, or continue watching</string>
     <string name="widget_recognize_label">Recognize music</string>
     <string name="widget_recognize_description">Identify the song playing around you with one tap</string>
     <string name="widget_turntable_label">Turntable</string>
@@ -4849,4 +4849,59 @@
         <item>west</item>
         <item>north-west</item>
     </string-array>
+    <!-- ratings -->
+    <string name="rating_label">My rating</string>
+    <string name="rating_my_rating">My rating</string>
+    <string name="rating_not_rated">Not rated</string>
+    <string name="rating_clear">Clear rating</string>
+    <plurals name="rating_n_of_5">
+        <item quantity="one">%1$d of 5 stars</item>
+        <item quantity="other">%1$d of 5 stars</item>
+    </plurals>
+    <string name="history_smart_rated">Rated by you</string>
+
+    <!-- widgets -->
+    <string name="widget_next_prayer_label">Next prayer</string>
+    <string name="widget_next_prayer_description">Countdown to the next prayer and today\'s five prayer times</string>
+    <string name="widget_next_prayer_off">Turn on prayer times in Settings</string>
+    <string name="widget_next_prayer_no_place">Choose a city to see prayer times</string>
+    <string name="widget_next_prayer_soon">%1$s soon</string>
+    <string name="widget_next_prayer_now">Time for %1$s</string>
+    <string name="widget_next_prayer_at">at %1$s</string>
+    <string name="widget_next_prayer_cd">Next prayer: %1$s at %2$s, in %3$s</string>
+    <string name="widget_next_prayer_now_cd">Time for %1$s, since %2$s</string>
+    <!-- visual-themes -->
+    <string name="theme_name_sahara">Sahara</string>
+    <string name="theme_desc_sahara">Warm desert sand with an amber glow.</string>
+    <string name="theme_name_andalus">Andalus</string>
+    <string name="theme_desc_andalus">Zellige teal and terracotta, inspired by Andalusian tilework.</string>
+    <string name="theme_name_midnight_oud">Midnight Oud</string>
+    <string name="theme_desc_midnight_oud">Deep plum lit with oud gold.</string>
+    <string name="theme_name_delta">Delta</string>
+    <string name="theme_desc_delta">Nile delta green on papyrus.</string>
+    <string name="theme_name_red_sea_reef">Red Sea Reef</string>
+    <string name="theme_desc_red_sea_reef">Coral and reef aqua from the Red Sea.</string>
+    <string name="icon_name_sahara">Sahara</string>
+    <string name="icon_name_andalus">Andalus</string>
+    <string name="icon_name_midnight_oud">Midnight Oud</string>
+    <string name="icon_name_gold_mono">Gold</string>
+    <string name="premium_icon_upsell_body">This icon is a Mawja Plus extra. Plus, Pro, Lifetime and Family members can use it on every device they\'re signed in on.</string>
+    <string name="premium_icon_upsell_free_note">Every original icon stays free, always.</string>
+    <string name="settings_item_ui_sounds">UI sounds</string>
+    <string name="settings_item_ui_sounds_subtitle">Soft clicks for taps, switches and confirmations. Follows your phone\'s touch sounds, silent mode and Do Not Disturb.</string>
+    <string name="settings_keywords_ui_sounds">sound, sounds, click, tap, feedback, audio, effects</string>
+    <string name="premium_available_in_pro">Available in Pro</string>
+    <string name="premium_sounds_upsell_body">UI sounds are a Mawja Pro extra. Pro, Lifetime and Family members can turn them on.</string>
+    <string name="premium_sounds_upsell_free_note">Mawja stays silent by default, and every original feature stays free.</string>
+    <!-- visual-player -->
+    <string name="live_background_title">Live background</string>
+    <string name="live_background_subtitle">Moving colours from the cover behind the full player. Rests as a still gradient with reduce motion or battery saver on.</string>
+    <string name="live_background_off">Off (Flow look)</string>
+    <string name="live_background_waves">Waves</string>
+    <string name="live_background_aurora">Aurora</string>
+    <string name="live_background_particles">Particles</string>
+    <string name="live_background_static_blur">Static blur</string>
+    <string name="live_background_upsell_body">Live backgrounds paint the full player with slow waves, aurora or drifting light in the colours of each cover.</string>
+    <string name="live_background_upsell_free_note">Off keeps the original Flow player look, free always.</string>
+    <string name="wave_loading_label">Loading</string>
 </resources>

@@ -19,6 +19,7 @@ import app.mawja.android.data.backup.NewPipeSubscriptionCodec
 import app.mawja.android.data.backup.NewPipeSubscriptionEntry
 import app.mawja.android.data.backup.NewPipeSubscriptionExport
 import app.mawja.android.data.local.entity.NoteEntity
+import app.mawja.android.data.local.entity.RatingEntity
 import app.mawja.android.data.local.entity.PlaylistEntity
 import app.mawja.android.data.local.entity.PlaylistVideoCrossRef
 import app.mawja.android.data.local.entity.SubscriptionGroupEntity
@@ -82,6 +83,8 @@ data class BackupData(
     val videos: List<VideoEntity>? = emptyList(),
     val subscriptionGroups: List<SubscriptionGroupEntity>? = emptyList(),
     val notes: List<NoteEntity>? = emptyList(),
+    /** Personal star ratings (#152); absent in backups made before ratings. */
+    val ratings: List<RatingEntity>? = emptyList(),
     val likedVideos: List<LikedVideoInfo>? = emptyList(),
     val contentPreferences: ContentPreferencesBackup? = null,
     val settings: SettingsBackup? = null,
@@ -292,6 +295,7 @@ class BackupRepository(
             videos = database.videoDao().getAllVideos(),
             subscriptionGroups = database.subscriptionGroupDao().getAllGroupsOnce(),
             notes = database.noteDao().getAll(),
+            ratings = database.ratingDao().getAll(),
             likedVideos = likedVideosRepo.getAllLikedVideos().first(),
             contentPreferences = getContentPreferencesBackup(),
             settings = getMergedSettingsBackup(),
@@ -1848,6 +1852,18 @@ class BackupRepository(
             backupData.notes?.let { notes ->
                 if (notes.isNotEmpty()) {
                     database.noteDao().upsertAll(notes)
+                }
+            }
+            backupData.ratings?.let { ratings ->
+                // A hand-edited or older file may carry rows outside 1..5 or of an unknown kind.
+                val valid =
+                    ratings.filter {
+                        it.id.isNotBlank() &&
+                            app.mawja.android.data.ratings.Ratings.isValid(it.stars) &&
+                            app.mawja.android.data.ratings.RatingKind.fromName(it.kind) != null
+                    }
+                if (valid.isNotEmpty()) {
+                    database.ratingDao().upsertAll(valid)
                 }
             }
         }

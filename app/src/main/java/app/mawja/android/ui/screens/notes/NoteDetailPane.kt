@@ -48,10 +48,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.notes.Note
 import app.mawja.android.data.notes.NoteKind
 import app.mawja.android.data.notes.NoteMoments
+import app.mawja.android.data.ratings.RatingKind
+import app.mawja.android.data.ratings.RatingSubject
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
 import app.mawja.android.ui.components.shared.DurationBadge
@@ -63,6 +66,8 @@ import app.mawja.android.ui.components.shared.FlowSectionHeader
 import app.mawja.android.ui.components.shared.VideoThumbnailImage
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import app.mawja.android.ui.components.shared.rememberNoteText
+import app.mawja.android.ui.components.shared.rating.RatingBar
+import app.mawja.android.ui.components.shared.rating.sharedRatingsViewModel
 import app.mawja.android.utils.formatDurationMillis
 
 private val TwoColumnMinWidth = 720.dp
@@ -136,6 +141,27 @@ private fun NoteSubjectHeader(
                 )
             }
         }
+        if (isVideo) NoteRating(note)
+    }
+}
+
+/** The viewer's own rating of the noted video (#152), under its actions. */
+@Composable
+private fun NoteRating(note: Note) {
+    val viewModel = sharedRatingsViewModel()
+    val ratings by viewModel.ratings.collectAsStateWithLifecycle()
+    val stars = ratings[RatingKind.Video.idFor(note.targetId)]?.stars ?: 0
+    val subject =
+        note.subject?.let {
+            RatingSubject(title = it.title, subtitle = it.channelName, thumbnailUrl = it.thumbnailUrl, durationSeconds = it.durationSeconds)
+        }
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = stringResource(R.string.rating_my_rating),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        RatingBar(stars = stars, onRate = { viewModel.setRating(RatingKind.Video, note.targetId, it, subject) })
     }
 }
 

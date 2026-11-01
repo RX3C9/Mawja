@@ -371,6 +371,19 @@
                 android:resource="@xml/widget_quick_actions_info" />
         </receiver>
         <receiver
+            android:name=".widget.prayer.NextPrayerWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_next_prayer_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_next_prayer_info" />
+        </receiver>
+        <receiver
             android:name=".widget.recognize.RecognizeWidgetReceiver"
             android:exported="true"
             android:label="@string/widget_recognize_label">
@@ -669,6 +682,62 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_expressive_pill"
             android:roundIcon="@mipmap/ic_launcher_expressive_pill_round"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Sahara (Mawja premium, Plus) -->
+        <activity-alias
+            android:name=".IconSahara"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_sahara"
+            android:roundIcon="@mipmap/ic_launcher_sahara_round"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Andalus (Mawja premium, Plus) -->
+        <activity-alias
+            android:name=".IconAndalus"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_andalus"
+            android:roundIcon="@mipmap/ic_launcher_andalus_round"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- MidnightOud (Mawja premium, Plus) -->
+        <activity-alias
+            android:name=".IconMidnightOud"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_midnight_oud"
+            android:roundIcon="@mipmap/ic_launcher_midnight_oud_round"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- GoldMono (Mawja premium, Plus) -->
+        <activity-alias
+            android:name=".IconGoldMono"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_gold_mono"
+            android:roundIcon="@mipmap/ic_launcher_gold_mono_round"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

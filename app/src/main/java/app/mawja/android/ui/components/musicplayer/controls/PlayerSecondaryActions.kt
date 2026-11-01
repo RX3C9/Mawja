@@ -3,6 +3,7 @@ package app.mawja.android.ui.components.musicplayer.controls
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.*
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -30,7 +32,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.player.RepeatMode
+import app.mawja.android.ui.components.motion.MicroMotion
 import app.mawja.android.ui.components.musicplayer.common.readableAccentOn
+import app.mawja.android.ui.theme.LocalReduceMotion
 
 private val SegmentFullRadius = 21.dp
 private val SegmentEdgeRadius = 8.dp
@@ -249,13 +253,26 @@ private fun SplitCapsuleButton(
         animationSpec = tween(durationMillis = 250),
         label = "capsuleContent",
     )
+    // Springy press: the capsule sinks while held and bounces back; resting under reduce motion.
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val pressScale by animateFloatAsState(
+        targetValue = MicroMotion.pressScale(pressed, LocalReduceMotion.current),
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
+        label = "capsulePress",
+    )
     Box(
         modifier =
             Modifier
-                .size(width = 50.dp, height = 42.dp)
+                .graphicsLayer {
+                    scaleX = pressScale
+                    scaleY = pressScale
+                }.size(width = 50.dp, height = 42.dp)
                 .clip(shape)
                 .background(containerColor)
                 .combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
                     onClick = onClick,
                     onLongClick = onLongClick,
                 ),

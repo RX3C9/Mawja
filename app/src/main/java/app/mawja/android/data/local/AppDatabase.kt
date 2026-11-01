@@ -12,6 +12,7 @@ import app.mawja.android.data.local.dao.MusicGraphDao
 import app.mawja.android.data.local.dao.NoteDao
 import app.mawja.android.data.local.dao.NotificationDao
 import app.mawja.android.data.local.dao.PlaylistDao
+import app.mawja.android.data.local.dao.RatingDao
 import app.mawja.android.data.local.dao.RecognitionHistoryDao
 import app.mawja.android.data.local.dao.SubscriptionGroupDao
 import app.mawja.android.data.local.dao.SyncLogDao
@@ -34,6 +35,7 @@ import app.mawja.android.data.local.entity.NoteEntity
 import app.mawja.android.data.local.entity.NotificationEntity
 import app.mawja.android.data.local.entity.PlaylistEntity
 import app.mawja.android.data.local.entity.PlaylistVideoCrossRef
+import app.mawja.android.data.local.entity.RatingEntity
 import app.mawja.android.data.local.entity.RecognitionHistoryEntity
 import app.mawja.android.data.local.entity.SubscriptionFeedEntity
 import app.mawja.android.data.local.entity.SubscriptionGroupEntity
@@ -69,6 +71,7 @@ import app.mawja.android.data.local.migrations.Migration24To25
         NoteEntity::class,
         DownloadCollectionEntity::class,
         DownloadCollectionItemEntity::class,
+        RatingEntity::class,
     ],
     autoMigrations = [
         AutoMigration(from = 24, to = 25, spec = Migration24To25::class),
@@ -80,8 +83,9 @@ import app.mawja.android.data.local.migrations.Migration24To25
         AutoMigration(from = 30, to = 31),
         AutoMigration(from = 31, to = 32),
         AutoMigration(from = 32, to = 33),
+        AutoMigration(from = 33, to = 34),
     ],
-    version = 33,
+    version = 34,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -92,6 +96,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun notificationDao(): NotificationDao
 
     abstract fun noteDao(): NoteDao
+
+    abstract fun ratingDao(): RatingDao
 
     abstract fun cacheDao(): CacheDao
 

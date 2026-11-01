@@ -10,6 +10,8 @@ import app.mawja.android.data.local.dao.WatchHistoryDao
 import app.mawja.android.data.local.entity.VideoEntity
 import app.mawja.android.data.local.entity.WatchHistoryEntity
 import app.mawja.android.data.model.Video
+import app.mawja.android.data.ratings.Ratings
+import app.mawja.android.data.ratings.RatingsRepository
 import app.mawja.android.data.repository.YouTubeRepository
 import app.mawja.android.data.shorts.ShortsContentFilter
 import app.mawja.android.data.shorts.queue.ShortsQueueHandoff
@@ -72,6 +74,7 @@ class HistoryViewModel
         private val watchHistoryDao: WatchHistoryDao,
         private val shortsContentFilter: ShortsContentFilter,
         private val shortsQueueHandoff: ShortsQueueHandoff,
+        ratingsRepository: RatingsRepository,
     ) : ViewModel() {
         private val isEnriching = AtomicBoolean(false)
         private val attemptedEnrichment = HashSet<String>()
@@ -116,17 +119,24 @@ class HistoryViewModel
                 .flowOn(Dispatchers.Default)
                 .stateIn(viewModelScope, sharing, null)
 
+        /** videoId → the viewer's stars (#152), video and track ratings together. */
+        private val ratedStars =
+            ratingsRepository
+                .observeAll()
+                .map { Ratings.starsByTarget(it) }
+                .distinctUntilChanged()
+
         val displayEntries: StateFlow<List<VideoHistoryEntry>> =
             combine(
                 _uiState.map { it.historyEntries }.distinctUntilChanged(),
                 _searchQuery,
-                combine(_contentFilter, _smartList) { filter, smart -> filter to smart },
+                combine(_contentFilter, _smartList, ratedStars) { filter, smart, stars -> Triple(filter, smart, stars) },
                 _sortOrder,
                 _yearFilter,
-            ) { entries, query, (filter, smart), sort, year ->
+            ) { entries, query, (filter, smart, stars), sort, year ->
                 val trimmed = query.trim()
                 HistorySmartLists
-                    .apply(smart, entries.filter { filter.matches(it) }, System.currentTimeMillis())
+                    .apply(smart, entries.filter { filter.matches(it) }, System.currentTimeMillis(), stars)
                     .asSequence()
                     .filter { year == null || historyYear(it.timestamp) == year }
                     .filter {
@@ -134,10 +144,11 @@ class HistoryViewModel
                             it.title.contains(trimmed, ignoreCase = true) ||
                             it.channelName.contains(trimmed, ignoreCase = true)
                     }.let { sequence ->
-                        if (sort == HistorySort.Newest) {
-                            sequence.sortedByDescending { it.timestamp }
-                        } else {
-                            sequence.sortedBy { it.timestamp }
+                        when {
+                            // Rated keeps its own order: highest rating first.
+                            smart == HistorySmartList.Rated -> sequence
+                            sort == HistorySort.Newest -> sequence.sortedByDescending { it.timestamp }
+                            else -> sequence.sortedBy { it.timestamp }
                         }
                     }.toList()
             }.flowOn(Dispatchers.Default)

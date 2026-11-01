@@ -20,6 +20,8 @@ import app.mawja.android.ui.components.FeedGridLayout
 import app.mawja.android.ui.components.home.ContinueWatchingShelf
 import app.mawja.android.ui.components.home.ContinueWatchingShelfDefaults
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
+import app.mawja.android.ui.components.motion.rememberFirstLoadStagger
+import app.mawja.android.ui.components.motion.staggeredAppear
 import app.mawja.android.ui.components.shared.FlowFeedProgress
 import app.mawja.android.ui.components.shared.MediaShortsShelf
 import app.mawja.android.ui.components.shared.card.MediaVideoCard
@@ -73,6 +75,8 @@ internal fun HomeFeedGrid(
             compactRowSpacing = if (isListView) 0.dp else feedLayout.cardSpacing,
         )
     val stripCardWidth = feedStripCardWidth(feedLayout.rowWidth, ContinueWatchingShelfDefaults.CardWidth)
+    // The first cards fade in one after another when the feed first appears (not on refresh).
+    val firstLoadStagger = rememberFirstLoadStagger()
 
     LazyVerticalGrid(
         columns = plan.cells,
@@ -104,7 +108,7 @@ internal fun HomeFeedGrid(
                         thumbnailWidth = plan.listThumbnailWidth,
                         reason = channelMemoryReason.takeIf { uiState.origins[row.video.id]?.kind == HomeCardOrigin.Kind.CHANNEL_MEMORY },
                         whyShown = uiState.origins[row.video.id]?.label(),
-                        modifier = Modifier.testTag("home_video_card"),
+                        modifier = Modifier.testTag("home_video_card").staggeredAppear(firstLoadStagger, index),
                     )
                 }
 

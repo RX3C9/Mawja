@@ -38,6 +38,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.mawja.android.ui.theme.ThemeMotif
 
 private val CardPadding = 16.dp
 private val CardSpacing = 16.dp
@@ -67,6 +68,7 @@ internal fun ThemeCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     trailing: (@Composable () -> Unit)? = null,
+    motif: ThemeMotif? = null,
 ) {
     val colors = MaterialTheme.colorScheme
     OutlinedCard(
@@ -92,7 +94,7 @@ internal fun ThemeCard(
             horizontalArrangement = Arrangement.spacedBy(CardSpacing),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            ThemeSwatchTile(swatch)
+            ThemeSwatchTile(swatch, motif)
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -129,7 +131,10 @@ internal fun ThemeCard(
  * component, so this is drawn from boxes; every colour comes from the resolved scheme.
  */
 @Composable
-internal fun ThemeSwatchTile(swatch: ThemeSwatch?) {
+internal fun ThemeSwatchTile(
+    swatch: ThemeSwatch?,
+    motif: ThemeMotif? = null,
+) {
     val colors = MaterialTheme.colorScheme
     Box(
         modifier =
@@ -140,6 +145,9 @@ internal fun ThemeSwatchTile(swatch: ThemeSwatch?) {
                 .border(BorderWidth, colors.outlineVariant, MaterialTheme.shapes.medium),
         contentAlignment = Alignment.Center,
     ) {
+        if (swatch != null && motif != null) {
+            ThemeMotifCanvas(motif = motif, color = swatch.primary, modifier = Modifier.matchParentSize())
+        }
         if (swatch != null) {
             Row(horizontalArrangement = Arrangement.spacedBy(PillSpacing)) {
                 listOf(swatch.primary, swatch.secondary, swatch.neutral).forEach { color -> SwatchPill(color) }
@@ -169,6 +177,7 @@ internal data class ThemeCardItem(
     val selected: Boolean,
     val onClick: () -> Unit,
     val trailing: (@Composable () -> Unit)? = null,
+    val motif: ThemeMotif? = null,
 )
 
 /**
@@ -194,6 +203,7 @@ internal fun ThemeCardGrid(items: List<ThemeCardItem>) {
                                 selected = item.selected,
                                 onClick = item.onClick,
                                 trailing = item.trailing,
+                                motif = item.motif,
                                 modifier =
                                     Modifier
                                         .weight(1f)

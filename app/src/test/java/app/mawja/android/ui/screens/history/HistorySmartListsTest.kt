@@ -84,4 +84,37 @@ class HistorySmartListsTest {
         val blank2 = entry("z2").copy(channelId = "", channelName = "")
         assertEquals(setOf("Local"), HistorySmartLists.topChannels(listOf(named, named2, blank, blank2)))
     }
+
+    @Test
+    fun `rated keeps only rated rows, highest first, ties to most recent`() {
+        val entries =
+            listOf(
+                entry("new3", daysAgo = 1),
+                entry("unrated", daysAgo = 2),
+                entry("old5", daysAgo = 30),
+                entry("old3", daysAgo = 10),
+                entry("new5", daysAgo = 3),
+            )
+        val ratings = mapOf("new3" to 3, "old5" to 5, "old3" to 3, "new5" to 5, "ghost" to 4)
+        assertEquals(
+            listOf("new5", "old5", "new3", "old3"),
+            HistorySmartLists.apply(HistorySmartList.Rated, entries, now, ratings).map { it.videoId },
+        )
+    }
+
+    @Test
+    fun `rated with no ratings is empty and zero stars do not count`() {
+        val entries = listOf(entry("a"), entry("b"))
+        assertEquals(emptyList<VideoHistoryEntry>(), HistorySmartLists.apply(HistorySmartList.Rated, entries, now))
+        assertEquals(
+            listOf("b"),
+            HistorySmartLists.apply(HistorySmartList.Rated, entries, now, mapOf("a" to 0, "b" to 1)).map { it.videoId },
+        )
+    }
+
+    @Test
+    fun `other lists ignore ratings`() {
+        val entries = listOf(entry("a"), entry("b"))
+        assertEquals(entries, HistorySmartLists.apply(null, entries, now, mapOf("a" to 5)))
+    }
 }

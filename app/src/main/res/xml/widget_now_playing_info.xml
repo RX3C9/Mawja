@@ -11,6 +11,7 @@
     android:targetCellHeight="2"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewLayout="@layout/widget_preview_now_playing"
     android:description="@string/widget_now_playing_description"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen" />

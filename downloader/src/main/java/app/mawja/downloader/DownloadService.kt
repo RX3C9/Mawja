@@ -135,6 +135,26 @@ class DownloadService :
 
     override fun onBind(intent: Intent?): IBinder = binder
 
+    /**
+     * Android 15+ caps dataSync foreground services (6 h a day). When the cap is hit the system
+     * calls this and the service must leave the foreground within seconds, or the app is crashed
+     * with ForegroundServiceDidNotStopInTimeException. Running transfers carry on while a client
+     * stays bound; the next transfer tries to go foreground again (and is refused until the cap resets).
+     */
+    override fun onTimeout(
+        startId: Int,
+        fgsType: Int,
+    ) {
+        leaveForeground()
+    }
+
+    @Synchronized
+    private fun leaveForeground() {
+        runCatching { ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE) }
+        foreground = false
+        stopSelf()
+    }
+
     override fun onDestroy() {
         DownloadEngine.removeListener(this)
         callbacks.kill()
@@ -175,9 +195,11 @@ class DownloadService :
             if (!foreground) {
                 // Android 12+ may refuse a background foreground-service start; downloads keep running
                 // while a client stays bound, so a refusal is not fatal.
+                var started = false
                 foreground =
                     runCatching {
                         startService(Intent(this, DownloadService::class.java))
+                        started = true
                         ServiceCompat.startForeground(
                             this,
                             NOTIFICATION_ID,
@@ -185,6 +207,9 @@ class DownloadService :
                             if (Build.VERSION.SDK_INT >= 29) ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC else 0,
                         )
                     }.isSuccess
+                // A started service that could not go foreground would otherwise stay started (and
+                // keep the process) after the last transfer; the binding alone keeps it alive meanwhile.
+                if (!foreground && started) stopSelf()
             } else {
                 getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
             }

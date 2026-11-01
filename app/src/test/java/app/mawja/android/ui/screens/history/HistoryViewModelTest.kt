@@ -3,13 +3,16 @@ package app.mawja.android.ui.screens.history
 import com.google.common.truth.Truth.assertThat
 import app.mawja.android.data.local.VideoHistoryEntry
 import app.mawja.android.data.local.ViewHistory
+import app.mawja.android.data.local.dao.RatingDao
 import app.mawja.android.data.local.dao.VideoDao
 import app.mawja.android.data.local.dao.WatchHistoryDao
+import app.mawja.android.data.ratings.RatingsRepository
 import app.mawja.android.data.repository.YouTubeRepository
 import app.mawja.android.data.shorts.ShortsContentFilter
 import app.mawja.android.data.shorts.queue.ShortsQueueHandoff
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
@@ -30,10 +33,13 @@ class HistoryViewModelTest {
     private val youTubeRepository: YouTubeRepository = mockk(relaxed = true)
     private val videoDao: VideoDao = mockk(relaxed = true)
     private val watchHistoryDao: WatchHistoryDao = mockk(relaxed = true)
+    private val ratingDao: RatingDao = mockk(relaxed = true)
+    private val ratingsRepository = RatingsRepository(ratingDao)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        every { ratingDao.observeAll() } returns flowOf(emptyList())
     }
 
     @After
@@ -69,6 +75,7 @@ class HistoryViewModelTest {
                     watchHistoryDao,
                     ShortsContentFilter(flowOf(true)),
                     ShortsQueueHandoff(),
+                    ratingsRepository,
                 )
             testDispatcher.scheduler.advanceUntilIdle()
 
@@ -91,6 +98,7 @@ class HistoryViewModelTest {
                     watchHistoryDao,
                     ShortsContentFilter(flowOf(true)),
                     ShortsQueueHandoff(),
+                    ratingsRepository,
                 )
             viewModel.clearHistory()
             testDispatcher.scheduler.advanceUntilIdle()
@@ -111,6 +119,7 @@ class HistoryViewModelTest {
                     watchHistoryDao,
                     ShortsContentFilter(flowOf(true)),
                     ShortsQueueHandoff(),
+                    ratingsRepository,
                 )
             viewModel.removeFromHistory("vid_123")
             testDispatcher.scheduler.advanceUntilIdle()

@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.AppShortcut
 import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.TextFields
 import androidx.compose.material.icons.outlined.Tv
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
+import app.mawja.android.account.MawjaFeature
 import app.mawja.android.data.local.AppFontSelection
 import app.mawja.android.data.local.HomeFeedColumns
 import app.mawja.android.data.local.HomeViewMode
@@ -32,12 +34,14 @@ import app.mawja.android.ui.components.settings.toggleGroup
 import app.mawja.android.ui.components.shared.FlowChoice
 import app.mawja.android.ui.components.shared.FlowChoiceDialog
 import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.screens.settings.appearance.theme.PremiumThemeUpsellSheet
 import app.mawja.android.ui.screens.settings.index.AppearanceIndex
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.theme.AppFont
 import app.mawja.android.ui.theme.GridItemSize
 import app.mawja.android.ui.theme.ThemeCatalog
 import app.mawja.android.ui.theme.ThemeMode
+import app.mawja.android.util.PremiumIcons
 import kotlinx.coroutines.launch
 
 /** Everything about how Flow looks: theme, icon, layout, and the sub-pages for finer control. */
@@ -54,6 +58,12 @@ internal fun AppearanceScreen(
     val interfaceMode by viewModel.interfaceMode.collectAsStateWithLifecycle()
     val font by viewModel.font.collectAsStateWithLifecycle()
     val appIcon by viewModel.appIcon.collectAsStateWithLifecycle()
+    val entitlements by viewModel.entitlements.collectAsStateWithLifecycle()
+    var iconUpsellName by rememberSaveable { mutableStateOf<Int?>(null) }
+    val uiSounds by viewModel.uiSounds.collectAsStateWithLifecycle()
+    var showSoundsUpsell by rememberSaveable { mutableStateOf(false) }
+    val soundsLocked = !entitlements.has(MawjaFeature.UI_SOUNDS)
+    val soundsLockedSummary = stringResource(R.string.premium_available_in_pro)
     val homeViewMode by viewModel.homeViewMode.collectAsStateWithLifecycle()
     val homeColumns by viewModel.homeColumns.collectAsStateWithLifecycle()
     val gridItemSize by viewModel.gridItemSize.collectAsStateWithLifecycle()
@@ -131,6 +141,15 @@ internal fun AppearanceScreen(
                 showChevron = false,
                 onClick = { showIconDialog = true },
             )
+            switch(
+                AppearanceIndex.uiSounds,
+                checked = uiSounds && !soundsLocked,
+                onCheckedChange = { on ->
+                    if (soundsLocked) showSoundsUpsell = true else viewModel.setUiSounds(on)
+                },
+                summary = if (soundsLocked) soundsLockedSummary else null,
+                icon = Icons.Outlined.MusicNote,
+            )
             nav(
                 AppearanceIndex.interfaceMode,
                 value = interfaceSummary,
@@ -171,9 +190,40 @@ internal fun AppearanceScreen(
             selected = appIcon,
             onApply = { suffix ->
                 viewModel.setAppIcon(suffix)
+                viewModel.playSuccess()
                 scope.launch { snackbarHostState.showSnackbar(iconAppliedMessage) }
             },
             onDismiss = { showIconDialog = false },
+            isLocked = { PremiumIcons.isLocked(it, entitlements) },
+            onLockedClick = { icon -> iconUpsellName = icon.nameRes },
+        )
+    }
+
+    if (showSoundsUpsell) {
+        PremiumThemeUpsellSheet(
+            themeName = stringResource(R.string.settings_item_ui_sounds),
+            titleRes = R.string.premium_available_in_pro,
+            bodyRes = R.string.premium_sounds_upsell_body,
+            freeNoteRes = R.string.premium_sounds_upsell_free_note,
+            onSeePlans = {
+                showSoundsUpsell = false
+                onNavigate(SettingsTarget(SettingsDestination.UPGRADE))
+            },
+            onDismiss = { showSoundsUpsell = false },
+        )
+    }
+
+    iconUpsellName?.let { nameRes ->
+        PremiumThemeUpsellSheet(
+            themeName = stringResource(nameRes),
+            bodyRes = R.string.premium_icon_upsell_body,
+            freeNoteRes = R.string.premium_icon_upsell_free_note,
+            onSeePlans = {
+                iconUpsellName = null
+                showIconDialog = false
+                onNavigate(SettingsTarget(SettingsDestination.UPGRADE))
+            },
+            onDismiss = { iconUpsellName = null },
         )
     }
 

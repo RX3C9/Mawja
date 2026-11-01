@@ -69,6 +69,13 @@ internal object PlayerAppearanceIndex {
         )
     val musicBackground =
         entry("music_background", R.string.player_background_style_title, section = R.string.settings_section_music_player)
+    val liveBackground =
+        entry(
+            "live_background",
+            R.string.live_background_title,
+            R.string.live_background_subtitle,
+            R.string.settings_section_music_player,
+        )
     val followLightTheme =
         entry(
             "music_follow_light_theme",
@@ -187,6 +194,7 @@ internal object PlayerAppearanceIndex {
             frameStep,
             screenshot,
             musicBackground,
+            liveBackground,
             followLightTheme,
             hideMusicArtwork,
             animatedArtwork,

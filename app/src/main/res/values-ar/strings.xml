@@ -1887,7 +1887,7 @@
     <string name="content_settings_hide_watched_subscriptions_title">إخفاء الفيديوهات التي تمت مشاهدتها من صفحة الاشتراكات</string>
     <string name="content_settings_hide_watched_subscriptions_subtitle">إخفاء الفيديوهات التي شاهدتها من الاشتراكات</string>
     <string name="desc_more">المزيد...</string>
-    <string name="widget_now_playing_label">يعرض الأن</string>
+    <string name="widget_now_playing_label">يُعرض الآن</string>
     <string name="widget_now_playing_description">تحكم في الموسيقى التي يتم تشغيلها في موجة</string>
     <string name="widget_quick_actions_label">الاجراءات السريعة</string>
     <string name="widget_recognize_label">التعرف علي الموسيقى</string>
@@ -1909,7 +1909,7 @@
     <string name="widget_open_history">‎فتح السجل</string>
     <string name="widget_no_recent">ستظهر مقاطع الفيديو التي تشاهدها هنا</string>
     <string name="widget_no_downloads">ستظهر تنزيلاتك هنا</string>
-    <string name="widget_quick_actions_description">إبحث في موجة و انتقل إلى التنزيلات أو السجل أو التعرف علي الموسيقى</string>
+    <string name="widget_quick_actions_description">ابحث في موجة وانتقل إلى التنزيلات أو مكتبتك أو متابعة المشاهدة</string>
     <string name="widget_turntable_label">قرص دوار</string>
     <string name="widget_turntable_description">إجعل موسيقاك كقرص دوار</string>
     <string name="playlist_creation_menu_open">إنشاء قائمة تشغيل</string>
@@ -5223,4 +5223,63 @@
         <item>الغرب</item>
         <item>الشمال الغربي</item>
     </string-array>
+    <!-- ratings -->
+    <string name="rating_label">تقييمي</string>
+    <string name="rating_my_rating">تقييمي</string>
+    <string name="rating_not_rated">لم يتم التقييم</string>
+    <string name="rating_clear">امسح التقييم</string>
+    <plurals name="rating_n_of_5">
+        <item quantity="zero">%1$d من 5 نجوم</item>
+        <item quantity="one">نجمة واحدة من 5</item>
+        <item quantity="two">نجمتان من 5</item>
+        <item quantity="few">%1$d نجوم من 5</item>
+        <item quantity="many">%1$d نجمة من 5</item>
+        <item quantity="other">%1$d نجمة من 5</item>
+    </plurals>
+    <string name="history_smart_rated">قيّمتها أنت</string>
+
+    <!-- widgets -->
+    <string name="widget_next_prayer_label">الصلاة القادمة</string>
+    <string name="widget_next_prayer_description">عدّ تنازلي للصلاة القادمة ومواقيت الصلوات الخمس اليوم</string>
+    <string name="widget_next_prayer_off">فعّل مواقيت الصلاة من الإعدادات</string>
+    <string name="widget_next_prayer_no_place">اختر مدينة لعرض مواقيت الصلاة</string>
+    <string name="widget_next_prayer_soon">%1$s قريبًا</string>
+    <string name="widget_next_prayer_now">حان وقت %1$s</string>
+    <string name="widget_next_prayer_at">الساعة %1$s</string>
+    <string name="widget_next_prayer_cd">الصلاة القادمة: %1$s الساعة %2$s، بعد %3$s</string>
+    <string name="widget_next_prayer_now_cd">حان وقت %1$s منذ %2$s</string>
+    <!-- visual-themes -->
+    <string name="theme_name_sahara">الصحراء</string>
+    <string name="theme_desc_sahara">رمال الصحراء الدافئة بلمسة كهرمانية.</string>
+    <string name="theme_name_andalus">الأندلس</string>
+    <string name="theme_desc_andalus">فيروزي الزليج والطين المحروق، مستوحى من زخارف الأندلس.</string>
+    <string name="theme_name_midnight_oud">عود منتصف الليل</string>
+    <string name="theme_desc_midnight_oud">بنفسجي عميق يضيئه ذهب العود.</string>
+    <string name="theme_name_delta">الدلتا</string>
+    <string name="theme_desc_delta">أخضر دلتا النيل على ورق البردي.</string>
+    <string name="theme_name_red_sea_reef">شعاب البحر الأحمر</string>
+    <string name="theme_desc_red_sea_reef">المرجان وفيروزي الشعاب من البحر الأحمر.</string>
+    <string name="icon_name_sahara">الصحراء</string>
+    <string name="icon_name_andalus">الأندلس</string>
+    <string name="icon_name_midnight_oud">عود منتصف الليل</string>
+    <string name="icon_name_gold_mono">ذهبي</string>
+    <string name="premium_icon_upsell_body">هذه الأيقونة من مزايا موجة بلس. يستطيع أعضاء بلس وبرو ومدى الحياة والعائلة استخدامها على كل جهاز سجّلوا الدخول عليه.</string>
+    <string name="premium_icon_upsell_free_note">كل الأيقونات الأصلية تبقى مجانية دائمًا.</string>
+    <string name="settings_item_ui_sounds">أصوات الواجهة</string>
+    <string name="settings_item_ui_sounds_subtitle">نقرات خفيفة عند اللمس والمفاتيح والتأكيد. تتبع أصوات اللمس في هاتفك والوضع الصامت وعدم الإزعاج.</string>
+    <string name="settings_keywords_ui_sounds">صوت، أصوات، نقرة، لمس، استجابة، مؤثرات</string>
+    <string name="premium_available_in_pro">متاح في برو</string>
+    <string name="premium_sounds_upsell_body">أصوات الواجهة من مزايا موجة برو. يستطيع أعضاء برو ومدى الحياة والعائلة تفعيلها.</string>
+    <string name="premium_sounds_upsell_free_note">موجة صامتة افتراضيًا، وكل الميزات الأصلية تبقى مجانية.</string>
+    <!-- visual-player -->
+    <string name="live_background_title">خلفية حية</string>
+    <string name="live_background_subtitle">ألوان متحركة من الغلاف خلف المشغل الكامل. تبقى تدرجًا ثابتًا عند تشغيل تقليل الحركة أو توفير البطارية.</string>
+    <string name="live_background_off">إيقاف (مظهر Flow)</string>
+    <string name="live_background_waves">أمواج</string>
+    <string name="live_background_aurora">شفق</string>
+    <string name="live_background_particles">جزيئات</string>
+    <string name="live_background_static_blur">ضبابية ثابتة</string>
+    <string name="live_background_upsell_body">تلوّن الخلفيات الحية المشغل الكامل بأمواج هادئة أو شفق أو ضوء منساب بألوان كل غلاف.</string>
+    <string name="live_background_upsell_free_note">يبقى خيار الإيقاف بمظهر مشغل Flow الأصلي مجانيًا دائمًا.</string>
+    <string name="wave_loading_label">جارٍ التحميل</string>
 </resources>

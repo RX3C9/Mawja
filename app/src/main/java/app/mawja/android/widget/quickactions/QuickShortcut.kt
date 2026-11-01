@@ -21,11 +21,20 @@ enum class QuickShortcut(
     SHORTS("shorts", R.drawable.ic_shorts, R.string.nav_shorts, WidgetDeepLink.ROUTE_SHORTS),
     SUBSCRIPTIONS("subscriptions", R.drawable.ic_widget_subscriptions, R.string.nav_subs, WidgetDeepLink.ROUTE_SUBSCRIPTIONS),
     LIBRARY("library", R.drawable.ic_widget_library, R.string.nav_library, WidgetDeepLink.ROUTE_LIBRARY),
+
+    /** Resumes the newest part-watched video; opens History when there is none. */
+    CONTINUE_WATCHING(
+        "continue",
+        R.drawable.ic_widget_history,
+        R.string.widget_recently_played_label,
+        WidgetDeepLink.ROUTE_CONTINUE_WATCHING,
+    ),
     ;
 
     companion object {
         const val MAX = 4
-        val DEFAULT = listOf(DOWNLOADS, HISTORY, RECOGNIZE)
+        // Only for widgets with no saved choice; a saved list is decoded as it was stored.
+        val DEFAULT = listOf(DOWNLOADS, LIBRARY, CONTINUE_WATCHING)
         val KEY = stringPreferencesKey("quick_shortcuts")
 
         fun decode(stored: String?): List<QuickShortcut> =

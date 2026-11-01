@@ -28,7 +28,8 @@ fun FlowLoadingIndicator(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        LoadingIndicator()
+        // Mawja: first loads show the wave loader instead of the expressive morph.
+        WaveLoadingIndicator()
     }
 }
 

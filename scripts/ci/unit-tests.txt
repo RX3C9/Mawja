@@ -187,6 +187,7 @@ app.mawja.android.ui.screens.settings.index.SettingsIndexTest
 app.mawja.android.ui.screens.music.ArabicMusicDiscoveryTest
 app.mawja.android.accessibility.AccessibilityPolicyTest
 app.mawja.android.ui.theme.HighContrastSchemeTest
+app.mawja.android.ui.theme.InversePrimaryContrastTest
 app.mawja.android.ui.theme.ThemeMigrationTest
 app.mawja.android.data.local.CustomThemeCodecTest
 app.mawja.android.ui.components.musicplayer.common.MusicPlayerThemeTest
@@ -215,3 +216,13 @@ app.mawja.android.islamic.QiblaTest
 app.mawja.android.islamic.HijriCalendarTest
 app.mawja.android.islamic.PrayerScheduleTest
 app.mawja.android.islamic.IslamicSettingsTest
+app.mawja.android.data.ratings.RatingsTest
+app.mawja.android.widget.prayer.NextPrayerModelTest
+app.mawja.android.widget.quickactions.ContinueWatchingPickTest
+app.mawja.android.platform.LauncherAliasManifestTest
+app.mawja.android.ui.startup.SplashThemesTest
+app.mawja.android.util.PremiumIconsTest
+app.mawja.android.sound.UiSoundPolicyTest
+app.mawja.android.ui.components.musicplayer.live.LiveBackgroundRulesTest
+app.mawja.android.ui.components.motion.MicroMotionTest
+app.mawja.android.ui.components.shared.WaveLoadingTest

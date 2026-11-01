@@ -25,6 +25,9 @@ enum class MawjaFeature {
 
     /** Shared plan for up to six people. */
     FAMILY_SHARING,
+
+    /** Live full-player backgrounds: waves, aurora, particles and static blur (#165). */
+    LIVE_BACKGROUNDS,
 }
 
 /** What the current user may use, derived from their [tier]. */
@@ -37,7 +40,7 @@ data class Entitlements(
     val isFree: Boolean get() = tier == MawjaTier.FREE
 
     companion object {
-        private val PLUS_FEATURES = setOf(MawjaFeature.PREMIUM_THEMES, MawjaFeature.PREMIUM_ICONS, MawjaFeature.CLOUD_SYNC)
+        private val PLUS_FEATURES = setOf(MawjaFeature.PREMIUM_THEMES, MawjaFeature.PREMIUM_ICONS, MawjaFeature.CLOUD_SYNC, MawjaFeature.LIVE_BACKGROUNDS)
         private val PRO_FEATURES = PLUS_FEATURES + setOf(MawjaFeature.UI_SOUNDS, MawjaFeature.VISUALIZER)
 
         val FREE = Entitlements(MawjaTier.FREE, emptySet())
