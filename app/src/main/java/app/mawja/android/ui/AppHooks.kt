@@ -15,6 +15,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import app.mawja.android.R
 import app.mawja.android.data.shorts.queue.ShortsQueueSource
+import app.mawja.android.network.OfflineMode
+import app.mawja.android.network.OfflineReason
 import app.mawja.android.utils.NetworkConnectivityObserver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -99,19 +101,19 @@ fun OfflineMonitor(
     LaunchedEffect(isConnected, route) {
         if (isConnected) return@LaunchedEffect
 
-        val isSafeRoute =
-            route == "downloads" ||
-                route.startsWith("player") ||
-                route.startsWith("musicPlayer") ||
-                route == "settings" ||
-                route == "notes"
-        if (isSafeRoute) return@LaunchedEffect
+        val airplane =
+            android.provider.Settings.Global.getInt(context.contentResolver, android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) == 1
+        val reason = OfflineMode.reason(isConnected, airplane)
+        if (!OfflineMode.shouldNotify(reason, route)) return@LaunchedEffect
 
         delay(OFFLINE_NOTICE_DELAY_MS)
 
         val result =
             snackbarHostState.showSnackbar(
-                message = context.getString(R.string.error_no_internet_found),
+                message =
+                    context.getString(
+                        if (reason == OfflineReason.AIRPLANE_MODE) R.string.offline_airplane_mode else R.string.error_no_internet_found,
+                    ),
                 actionLabel = context.getString(R.string.downloads_title),
                 duration = SnackbarDuration.Short,
             )

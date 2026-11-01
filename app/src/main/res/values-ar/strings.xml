@@ -5106,4 +5106,5 @@
         <item quantity="many">%1$d ثانية</item>
         <item quantity="other">%1$d ثانية</item>
     </plurals>
+    <string name="offline_airplane_mode">وضع الطيران مفعّل. تنزيلاتك ما زالت متاحة.</string>
 </resources>

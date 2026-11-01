@@ -209,3 +209,4 @@ app.mawja.android.data.transcript.VideoTranscriptTest
 app.mawja.android.player.stream.CaptionTrackResolverTest
 app.mawja.android.player.subtitle.SubtitleChoiceTest
 app.mawja.android.player.subtitle.SubtitleTracksTest
+app.mawja.android.network.OfflineModeTest
