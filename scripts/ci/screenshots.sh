@@ -395,7 +395,6 @@ core_pass() {
   step battery_saver s_settings battery_saver battery_saver
   step widgets s_settings widgets widgets
   step language s_settings language language_region
-  step admin_main s_companion admin_main "$ADMIN_PKG"
   step downloader_main s_companion downloader_main "$DL_PKG"
 }
 extras_pass() {
