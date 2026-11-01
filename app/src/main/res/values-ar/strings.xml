@@ -5107,4 +5107,120 @@
         <item quantity="other">%1$d ثانية</item>
     </plurals>
     <string name="offline_airplane_mode">وضع الطيران مفعّل. تنزيلاتك ما زالت متاحة.</string>
+    <!-- Mawja optional Islamic section (#147) -->
+    <string name="islamic_title">مواقيت الصلاة والقبلة</string>
+    <string name="islamic_summary">اختياري: مواقيت الصلاة والقبلة والتاريخ الهجري، تُحسب على هاتفك</string>
+    <string name="islamic_keywords">صلاة، مواقيت الصلاة، أذان، آذان، قبلة، القبلة، الكعبة، مكة، هجري، رمضان، إسلامي، فجر، ظهر، عصر، مغرب، عشاء، prayer, salah, adhan, qibla, hijri</string>
+    <string name="islamic_enable">إظهار مواقيت الصلاة والقبلة</string>
+    <string name="islamic_enable_summary">مُطفأ افتراضيًا. كل شيء يُحسب على هاتفك ولا يُرسل أي شيء لأي جهة.</string>
+    <string name="islamic_section_today">اليوم</string>
+    <string name="islamic_section_location">الموقع</string>
+    <string name="islamic_section_calculation">طريقة الحساب</string>
+    <string name="islamic_section_adhan">عند وقت الصلاة</string>
+    <string name="islamic_section_hijri">التاريخ الهجري</string>
+    <string name="islamic_fajr">الفجر</string>
+    <string name="islamic_sunrise">الشروق</string>
+    <string name="islamic_dhuhr">الظهر</string>
+    <string name="islamic_asr">العصر</string>
+    <string name="islamic_maghrib">المغرب</string>
+    <string name="islamic_isha">العشاء</string>
+    <string name="islamic_next">التالية: %1$s بعد %2$s</string>
+    <string name="islamic_countdown_hm">%1$d س %2$d د</string>
+    <string name="islamic_countdown_m">%1$d دقيقة</string>
+    <string name="islamic_time_cd">%1$s الساعة %2$s</string>
+    <string name="islamic_time_next_cd">%1$s الساعة %2$s، الصلاة التالية</string>
+    <string name="islamic_no_place">اختر مدينتك أو استخدم موقعك لعرض مواقيت الصلاة.</string>
+    <string name="islamic_choose_city">اختر مدينة</string>
+    <string name="islamic_place_city">لمدينة %1$s</string>
+    <string name="islamic_place_device">لموقعك، بالقرب من %1$s</string>
+    <string name="islamic_place_manual">للإحداثيات %1$s، %2$s</string>
+    <string name="islamic_use_location">استخدام موقعي</string>
+    <string name="islamic_use_location_summary">يستخدم آخر موقع تقريبي معروف لهاتفك، ويبقى على هاتفك.</string>
+    <string name="islamic_location_unavailable">لا يوجد موقع حديث على هاتفك بعد. افتح تطبيق خرائط مرة واحدة أو اختر مدينة.</string>
+    <string name="islamic_location_denied">لم يُمنح إذن الموقع. اختر مدينة بدلًا من ذلك.</string>
+    <string name="islamic_location_updated">تم تحديث الموقع</string>
+    <string name="islamic_city">المدينة</string>
+    <string name="islamic_city_none">لم تُختر</string>
+    <string name="islamic_city_search">ابحث عن مدينة</string>
+    <string name="islamic_city_no_match">لا توجد مدينة مطابقة. جرّب الإحداثيات.</string>
+    <string name="islamic_manual">الإحداثيات</string>
+    <string name="islamic_manual_summary">اكتب خط العرض وخط الطول</string>
+    <string name="islamic_latitude">خط العرض</string>
+    <string name="islamic_longitude">خط الطول</string>
+    <string name="islamic_manual_invalid">أدخل خط عرض من ‎-90 إلى 90 وخط طول من ‎-180 إلى 180.</string>
+    <string name="islamic_method">طريقة الحساب</string>
+    <string name="islamic_method_auto">تلقائي (%1$s)</string>
+    <string name="islamic_method_auto_label">تلقائي حسب بلدي</string>
+    <string name="islamic_method_egyptian">الهيئة المصرية العامة للمساحة</string>
+    <string name="islamic_method_umm_al_qura">أم القرى، مكة المكرمة</string>
+    <string name="islamic_method_mwl">رابطة العالم الإسلامي</string>
+    <string name="islamic_method_isna">الجمعية الإسلامية لأمريكا الشمالية</string>
+    <string name="islamic_method_karachi">جامعة العلوم الإسلامية، كراتشي</string>
+    <string name="islamic_asr_method">وقت العصر</string>
+    <string name="islamic_asr_summary">الجمهور: الشافعي والمالكي والحنبلي. الحنفي: عصر متأخر.</string>
+    <string name="islamic_asr_standard">الجمهور</string>
+    <string name="islamic_asr_hanafi">الحنفي</string>
+    <string name="islamic_high_lat">خطوط العرض العليا</string>
+    <string name="islamic_high_lat_summary">للفجر والعشاء حيث تبقى ليالي الصيف مضيئة، مثل شمال أوروبا</string>
+    <string name="islamic_high_lat_none">بدون تعديل</string>
+    <string name="islamic_high_lat_middle">منتصف الليل</string>
+    <string name="islamic_high_lat_seventh">سُبع الليل</string>
+    <string name="islamic_high_lat_angle">حسب الزاوية (مُستحسن)</string>
+    <string name="islamic_offsets">تعديل المواقيت</string>
+    <string name="islamic_offsets_summary">أضف أو أنقص دقائق لتطابق مسجدك</string>
+    <string name="islamic_offset_value">%1$s دقيقة</string>
+    <string name="islamic_offset_later">%1$s متأخرًا دقيقة</string>
+    <string name="islamic_offset_earlier">%1$s مبكرًا دقيقة</string>
+    <string name="islamic_reset">إعادة الضبط</string>
+    <string name="islamic_adhan">عند وقت الأذان</string>
+    <string name="islamic_adhan_summary">الإيقاف يوقف فيديو أو موسيقى موجة مؤقتًا ويعرض إشعارًا بصوت الإشعارات العادي في هاتفك. قد يتأخر بضع دقائق إذا كان الهاتف خاملًا.</string>
+    <string name="islamic_adhan_off">لا شيء</string>
+    <string name="islamic_adhan_notify">إشعار</string>
+    <string name="islamic_adhan_pause">إيقاف مؤقت</string>
+    <string name="islamic_notifications_blocked">إشعارات موجة مُطفأة، لذا لن يظهر إشعار الصلاة. سيستمر الإيقاف المؤقت.</string>
+    <string name="islamic_channel_name">مواقيت الصلاة</string>
+    <string name="islamic_channel_description">تنبيه عند كل صلاة، عند تفعيله في مواقيت الصلاة والقبلة</string>
+    <string name="islamic_notification_title">حان وقت صلاة %1$s</string>
+    <string name="islamic_notification_text">حان وقت الصلاة.</string>
+    <string name="islamic_notification_paused">أوقفت موجة التشغيل مؤقتًا من أجل الصلاة.</string>
+    <string name="islamic_show_hijri">إظهار التاريخ الهجري</string>
+    <string name="islamic_hijri_adjust">تعديل التاريخ الهجري</string>
+    <string name="islamic_hijri_adjust_summary">قدّم أو أخّر يومًا أو يومين إذا اختلف تقويم بلدك</string>
+    <string name="islamic_hijri_format">%1$d %2$s %3$d هـ</string>
+    <string name="islamic_days_value">%1$s يوم</string>
+    <string name="islamic_qibla">اتجاه القبلة</string>
+    <string name="islamic_qibla_title">القبلة</string>
+    <string name="islamic_qibla_summary">%1$d° من الشمال (%2$s) · %3$s كم إلى مكة</string>
+    <string name="islamic_qibla_turn_left">استدر %1$d° لليسار</string>
+    <string name="islamic_qibla_turn_right">استدر %1$d° لليمين</string>
+    <string name="islamic_qibla_aligned">أنت متجه إلى القبلة</string>
+    <string name="islamic_qibla_no_sensor">لا توجد بوصلة في هذا الهاتف. اتجه %1$d° من الشمال الحقيقي (%2$s).</string>
+    <string name="islamic_qibla_calibrate">إذا انحرف السهم، حرّك هاتفك على شكل رقم 8 وأبعده عن المعادن والمغناطيس. أمسكه مستويًا.</string>
+    <string name="islamic_qibla_unreliable">البوصلة تحتاج إلى معايرة. حرّك هاتفك على شكل رقم 8.</string>
+    <string name="islamic_qibla_cd">البوصلة. %1$s</string>
+    <string name="islamic_qibla_need_place">اختر مدينتك أو استخدم موقعك أولًا.</string>
+    <string-array name="islamic_hijri_months">
+        <item>محرم</item>
+        <item>صفر</item>
+        <item>ربيع الأول</item>
+        <item>ربيع الآخر</item>
+        <item>جمادى الأولى</item>
+        <item>جمادى الآخرة</item>
+        <item>رجب</item>
+        <item>شعبان</item>
+        <item>رمضان</item>
+        <item>شوال</item>
+        <item>ذو القعدة</item>
+        <item>ذو الحجة</item>
+    </string-array>
+    <string-array name="islamic_compass_points">
+        <item>الشمال</item>
+        <item>الشمال الشرقي</item>
+        <item>الشرق</item>
+        <item>الجنوب الشرقي</item>
+        <item>الجنوب</item>
+        <item>الجنوب الغربي</item>
+        <item>الغرب</item>
+        <item>الشمال الغربي</item>
+    </string-array>
 </resources>

@@ -8,12 +8,14 @@ import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.Devices
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.NightsStay
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.PlayCircle
@@ -53,6 +55,8 @@ internal fun destinationIcon(destination: SettingsDestination): ImageVector =
         SettingsDestination.NOTIFICATIONS -> Icons.Outlined.NotificationsNone
         SettingsDestination.NETWORK -> Icons.Outlined.Public
         SettingsDestination.WELLBEING -> Icons.Outlined.SelfImprovement
+        SettingsDestination.ISLAMIC -> Icons.Outlined.NightsStay
+        SettingsDestination.QIBLA -> Icons.Outlined.Explore
         SettingsDestination.WIDGETS -> Icons.Outlined.Widgets
         SettingsDestination.ABOUT -> Icons.Outlined.Info
         SettingsDestination.DIAGNOSTICS -> Icons.Outlined.BugReport

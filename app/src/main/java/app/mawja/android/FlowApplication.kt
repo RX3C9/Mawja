@@ -99,6 +99,8 @@ class FlowApplication :
         app.mawja.android.battery.BatterySaver.start(this)
         // Mawja accessibility (#161-#163): text size, high contrast, colour vision, reduce motion.
         app.mawja.android.accessibility.MawjaAccessibility.start(this)
+        // Mawja optional Islamic section (#147): reads its settings; re-arms the prayer alarm only when on.
+        app.mawja.android.islamic.MawjaIslamic.start(this)
         YouTube.cacheDirectory = cacheDir.resolve("innertube_http_cache")
 
         DiscordPresenceRuntime.initialize(this, okHttpClient)

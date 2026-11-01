@@ -194,6 +194,16 @@ internal fun SettingsDetail(
             NetworkSettingsScreen(onBack = onBack, highlight = target.highlight)
         }
 
+        SettingsDestination.ISLAMIC -> {
+            app.mawja.android.ui.screens.settings.islamic
+                .IslamicScreen(onBack = onBack, highlight = target.highlight, onNavigate = onNavigate)
+        }
+
+        SettingsDestination.QIBLA -> {
+            app.mawja.android.ui.screens.settings.islamic
+                .QiblaScreen(onBack = onBack)
+        }
+
         SettingsDestination.WELLBEING -> {
             WellbeingScreen(onBack = onBack, highlight = target.highlight)
         }

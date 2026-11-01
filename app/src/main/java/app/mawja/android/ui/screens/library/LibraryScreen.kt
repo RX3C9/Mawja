@@ -60,6 +60,7 @@ fun LibraryScreen(
     onNavigateToLocalMedia: () -> Unit,
     onNavigateToNotes: () -> Unit,
     onManageData: () -> Unit,
+    onOpenIslamic: () -> Unit = {},
     onOpenRecap: (RecapPeriod?) -> Unit,
     onVideoClick: (Video) -> Unit,
     onMusicClick: (MusicTrack, List<MusicTrack>, String) -> Unit,
@@ -79,6 +80,8 @@ fun LibraryScreen(
     val notesCount by viewModel.notesCount.collectAsStateWithLifecycle()
     val hiddenSections by viewModel.hiddenSections.collectAsStateWithLifecycle()
     val sectionOrder by viewModel.sectionOrder.collectAsStateWithLifecycle()
+    val islamic by app.mawja.android.islamic.MawjaIslamic.settings
+        .collectAsStateWithLifecycle()
     val locale = LocalConfiguration.current.locales[0]
     val listState = rememberLazyListState()
     app.mawja.android.resume.ResumableScroll(listState, "library")
@@ -169,6 +172,10 @@ fun LibraryScreen(
 
             // An empty library has no shelves, but downloads from an earlier install can still be found.
             val emptyLibraryDownloads = shelfPreviewsEnabled && isLibraryEmpty && LibrarySection.DOWNLOADS in contentSections
+            if (islamic.enabled) item(key = "islamic", contentType = "islamic") {
+                app.mawja.android.ui.screens.library
+                    .LibraryIslamicRow(onOpen = onOpenIslamic)
+            }
             if (emptyLibraryDownloads || settingsSections.isNotEmpty()) {
                 item(key = "settings-data", contentType = "navigation-section") {
                     Column(modifier = Modifier.widthIn(max = FlowMaxContentWidth).padding(horizontal = 16.dp)) {

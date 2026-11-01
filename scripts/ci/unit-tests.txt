@@ -210,3 +210,8 @@ app.mawja.android.player.stream.CaptionTrackResolverTest
 app.mawja.android.player.subtitle.SubtitleChoiceTest
 app.mawja.android.player.subtitle.SubtitleTracksTest
 app.mawja.android.network.OfflineModeTest
+app.mawja.android.islamic.PrayerTimesTest
+app.mawja.android.islamic.QiblaTest
+app.mawja.android.islamic.HijriCalendarTest
+app.mawja.android.islamic.PrayerScheduleTest
+app.mawja.android.islamic.IslamicSettingsTest

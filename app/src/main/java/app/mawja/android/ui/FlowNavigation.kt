@@ -213,6 +213,9 @@ fun NavGraphBuilder.flowAppGraph(
             onNavigateToNotes = {
                 navController.navigate("notes")
             },
+            onOpenIslamic = {
+                navController.navigate("settings?target=${SettingsTarget(SettingsDestination.ISLAMIC).encode()}")
+            },
             onManageData = {
                 navController.navigate("settings")
             },

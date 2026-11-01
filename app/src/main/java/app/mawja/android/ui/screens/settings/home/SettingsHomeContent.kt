@@ -138,6 +138,7 @@ internal fun SettingsListScope.homeContent(
         page(SettingsDestination.NOTIFICATIONS)
         page(SettingsDestination.NETWORK)
         page(SettingsDestination.WELLBEING)
+        page(SettingsDestination.ISLAMIC)
     }
     group(key = "home.about", header = R.string.settings_header_about) {
         page(SettingsDestination.ABOUT)

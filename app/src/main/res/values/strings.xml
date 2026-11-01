@@ -4733,4 +4733,120 @@
         <item quantity="other">%1$d seconds</item>
     </plurals>
     <string name="offline_airplane_mode">Airplane mode is on. Your downloads still work.</string>
+    <!-- Mawja optional Islamic section (#147) -->
+    <string name="islamic_title">Prayer times &amp; qibla</string>
+    <string name="islamic_summary">Optional: prayer times, qibla and Hijri date, calculated on your phone</string>
+    <string name="islamic_keywords">prayer, prayer times, salah, salat, adhan, azan, qibla, kaaba, makkah, mecca, hijri, ramadan, islam, islamic, muslim, fajr, dhuhr, asr, maghrib, isha</string>
+    <string name="islamic_enable">Show prayer times and qibla</string>
+    <string name="islamic_enable_summary">Off by default. Everything is calculated on your phone and nothing is sent anywhere.</string>
+    <string name="islamic_section_today">Today</string>
+    <string name="islamic_section_location">Location</string>
+    <string name="islamic_section_calculation">Calculation</string>
+    <string name="islamic_section_adhan">At prayer time</string>
+    <string name="islamic_section_hijri">Hijri date</string>
+    <string name="islamic_fajr">Fajr</string>
+    <string name="islamic_sunrise">Sunrise</string>
+    <string name="islamic_dhuhr">Dhuhr</string>
+    <string name="islamic_asr">Asr</string>
+    <string name="islamic_maghrib">Maghrib</string>
+    <string name="islamic_isha">Isha</string>
+    <string name="islamic_next">Next: %1$s in %2$s</string>
+    <string name="islamic_countdown_hm">%1$d h %2$d min</string>
+    <string name="islamic_countdown_m">%1$d min</string>
+    <string name="islamic_time_cd">%1$s at %2$s</string>
+    <string name="islamic_time_next_cd">%1$s at %2$s, next prayer</string>
+    <string name="islamic_no_place">Choose your city or use your location to see prayer times.</string>
+    <string name="islamic_choose_city">Choose a city</string>
+    <string name="islamic_place_city">For %1$s</string>
+    <string name="islamic_place_device">For your location, near %1$s</string>
+    <string name="islamic_place_manual">For %1$s, %2$s</string>
+    <string name="islamic_use_location">Use my location</string>
+    <string name="islamic_use_location_summary">Uses your phone\'s last known approximate location. It stays on your phone.</string>
+    <string name="islamic_location_unavailable">Your phone has no recent location yet. Open a maps app once, or choose a city.</string>
+    <string name="islamic_location_denied">Location permission was not given. Choose a city instead.</string>
+    <string name="islamic_location_updated">Location updated</string>
+    <string name="islamic_city">City</string>
+    <string name="islamic_city_none">Not chosen</string>
+    <string name="islamic_city_search">Search cities</string>
+    <string name="islamic_city_no_match">No city matches. Try coordinates instead.</string>
+    <string name="islamic_manual">Coordinates</string>
+    <string name="islamic_manual_summary">Type a latitude and longitude</string>
+    <string name="islamic_latitude">Latitude</string>
+    <string name="islamic_longitude">Longitude</string>
+    <string name="islamic_manual_invalid">Enter a latitude from -90 to 90 and a longitude from -180 to 180.</string>
+    <string name="islamic_method">Calculation method</string>
+    <string name="islamic_method_auto">Automatic (%1$s)</string>
+    <string name="islamic_method_auto_label">Automatic for my country</string>
+    <string name="islamic_method_egyptian">Egyptian General Authority of Survey</string>
+    <string name="islamic_method_umm_al_qura">Umm al-Qura, Makkah</string>
+    <string name="islamic_method_mwl">Muslim World League</string>
+    <string name="islamic_method_isna">ISNA (North America)</string>
+    <string name="islamic_method_karachi">University of Islamic Sciences, Karachi</string>
+    <string name="islamic_asr_method">Asr time</string>
+    <string name="islamic_asr_summary">Standard: Shafi\'i, Maliki and Hanbali. Hanafi: later Asr.</string>
+    <string name="islamic_asr_standard">Standard</string>
+    <string name="islamic_asr_hanafi">Hanafi</string>
+    <string name="islamic_high_lat">High latitudes</string>
+    <string name="islamic_high_lat_summary">For Fajr and Isha where summer nights stay light, such as northern Europe</string>
+    <string name="islamic_high_lat_none">No adjustment</string>
+    <string name="islamic_high_lat_middle">Middle of the night</string>
+    <string name="islamic_high_lat_seventh">One seventh of the night</string>
+    <string name="islamic_high_lat_angle">Angle-based (recommended)</string>
+    <string name="islamic_offsets">Adjust times</string>
+    <string name="islamic_offsets_summary">Add or take away minutes to match your local mosque</string>
+    <string name="islamic_offset_value">%1$s min</string>
+    <string name="islamic_offset_later">%1$s one minute later</string>
+    <string name="islamic_offset_earlier">%1$s one minute earlier</string>
+    <string name="islamic_reset">Reset</string>
+    <string name="islamic_adhan">At adhan time</string>
+    <string name="islamic_adhan_summary">Pause stops Mawja\'s video or music and shows a notification with your phone\'s normal notification sound. On an idle phone it can come a few minutes late.</string>
+    <string name="islamic_adhan_off">Nothing</string>
+    <string name="islamic_adhan_notify">Notify</string>
+    <string name="islamic_adhan_pause">Pause</string>
+    <string name="islamic_notifications_blocked">Notifications are off for Mawja, so no prayer notification can show. Playback still pauses.</string>
+    <string name="islamic_channel_name">Prayer times</string>
+    <string name="islamic_channel_description">A note at each prayer time, when turned on in Prayer times &amp; qibla</string>
+    <string name="islamic_notification_title">Time for %1$s</string>
+    <string name="islamic_notification_text">It\'s prayer time.</string>
+    <string name="islamic_notification_paused">Mawja paused playback for the prayer.</string>
+    <string name="islamic_show_hijri">Show Hijri date</string>
+    <string name="islamic_hijri_adjust">Hijri date adjustment</string>
+    <string name="islamic_hijri_adjust_summary">Shift by a day or two if your country\'s calendar differs</string>
+    <string name="islamic_hijri_format">%1$d %2$s %3$d AH</string>
+    <string name="islamic_days_value">%1$s days</string>
+    <string name="islamic_qibla">Qibla direction</string>
+    <string name="islamic_qibla_title">Qibla</string>
+    <string name="islamic_qibla_summary">%1$d° from north (%2$s) · %3$s km to Makkah</string>
+    <string name="islamic_qibla_turn_left">Turn %1$d° left</string>
+    <string name="islamic_qibla_turn_right">Turn %1$d° right</string>
+    <string name="islamic_qibla_aligned">You are facing the qibla</string>
+    <string name="islamic_qibla_no_sensor">This phone has no compass. Face %1$d° from true north (%2$s).</string>
+    <string name="islamic_qibla_calibrate">If the arrow drifts, move your phone in a figure 8 and keep it away from metal and magnets. Hold it flat.</string>
+    <string name="islamic_qibla_unreliable">The compass needs calibrating. Move your phone in a figure 8.</string>
+    <string name="islamic_qibla_cd">Compass. %1$s</string>
+    <string name="islamic_qibla_need_place">Choose your city or use your location first.</string>
+    <string-array name="islamic_hijri_months">
+        <item>Muharram</item>
+        <item>Safar</item>
+        <item>Rabi al-Awwal</item>
+        <item>Rabi al-Thani</item>
+        <item>Jumada al-Ula</item>
+        <item>Jumada al-Akhirah</item>
+        <item>Rajab</item>
+        <item>Shaban</item>
+        <item>Ramadan</item>
+        <item>Shawwal</item>
+        <item>Dhu al-Qadah</item>
+        <item>Dhu al-Hijjah</item>
+    </string-array>
+    <string-array name="islamic_compass_points">
+        <item>north</item>
+        <item>north-east</item>
+        <item>east</item>
+        <item>south-east</item>
+        <item>south</item>
+        <item>south-west</item>
+        <item>west</item>
+        <item>north-west</item>
+    </string-array>
 </resources>
