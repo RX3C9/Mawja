@@ -5013,4 +5013,5 @@
     <string name="export_playlist_csv">تصدير كـ CSV</string>
     <string name="download_while_charging_only">التنزيل أثناء الشحن فقط</string>
     <string name="download_while_charging_only_summary">التنزيلات في الطابور تستنى لحد ما الموبايل يتشحن، مثلاً بالليل</string>
+    <string name="why_shown_show_less">اعرض أقل من هذا النوع</string>
 </resources>

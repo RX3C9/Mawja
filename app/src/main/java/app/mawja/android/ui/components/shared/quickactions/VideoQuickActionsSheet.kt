@@ -67,7 +67,7 @@ private enum class VideoMenuPage { Actions, Details, Collaborators, Save }
  * same in the menu. [showChannel] is false where the screen already is the channel. A playlist that
  * can drop the video passes [onRemoveFromCollection] with its [removeFromCollectionLabel] and icon;
  * it is the last row of the Options group. [whyShown] says why a feed shows
- * the video, on the Details page. [onPlayNow] puts Play now first in the Playback group, for a video
+ * the video, first in the Your feed group (#139) and on the Details page. [onPlayNow] puts Play now first in the Playback group, for a video
  * that is not open yet, such as one shared to Flow.
  */
 @Composable
@@ -141,7 +141,10 @@ fun VideoQuickActionsBottomSheet(
                             ),
                     )
                 }
-                QuickActionsGroup(title = stringResource(R.string.section_algorithm), rows = feedRows(video, viewModel, close))
+                QuickActionsGroup(
+                    title = stringResource(R.string.section_algorithm),
+                    rows = listOfNotNull(whyShownRow(whyShown) { page = VideoMenuPage.Details }) + feedRows(video, viewModel, close, explained = whyShown != null),
+                )
                 val removeRow =
                     if (onRemoveFromCollection != null && removeFromCollectionLabel != null) {
                         actionRow("remove", removeFromCollectionIcon, removeFromCollectionLabel, destructive = true) {
@@ -298,6 +301,7 @@ private fun feedRows(
     video: Video,
     viewModel: QuickActionsViewModel,
     onDismiss: () -> Unit,
+    explained: Boolean = false,
 ): List<QuickActionRow> {
     val haptics = LocalHapticFeedback.current
     val isWatched = isWatchedProgress(rememberWatchProgress(video.id))
@@ -307,7 +311,12 @@ private fun feedRows(
             viewModel.markAsInteresting(video)
             onDismiss()
         },
-        actionRow("not_interested", Icons.Outlined.ThumbDown, stringResource(R.string.not_interested)) {
+        actionRow(
+            "not_interested",
+            Icons.Outlined.ThumbDown,
+            stringResource(R.string.not_interested),
+            supporting = if (explained) stringResource(R.string.why_shown_show_less) else null,
+        ) {
             haptics.performHapticFeedback(HapticFeedbackType.Reject)
             viewModel.markNotInterested(video)
             onDismiss()
@@ -382,6 +391,28 @@ private fun moreRows(
             )
         },
     )
+}
+
+/**
+ * "Why you see this" (#139): the reason a feed put the video here, first in the Your feed group so it
+ * sits right above Not interested ("show less like this"). Tapping it opens the Details page.
+ */
+@Composable
+private fun whyShownRow(
+    whyShown: String?,
+    onOpenDetails: () -> Unit,
+): QuickActionRow? {
+    val reason = whyShown?.takeIf { it.isNotBlank() } ?: return null
+    val label = stringResource(R.string.details_why_shown)
+    return QuickActionRow("why_shown") { shape ->
+        FlowNavRow(
+            title = reason,
+            supportingText = label,
+            leadingIcon = Icons.Outlined.Info,
+            onClick = onOpenDetails,
+            shape = shape,
+        )
+    }
 }
 
 /** A row that runs an action and closes the menu, so it carries no chevron. */

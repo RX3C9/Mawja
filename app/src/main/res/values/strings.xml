@@ -4651,4 +4651,5 @@
     <string name="export_playlist_csv">Export as CSV</string>
     <string name="download_while_charging_only">Download only while charging</string>
     <string name="download_while_charging_only_summary">Queued downloads wait until the phone is on the charger, e.g. overnight</string>
+    <string name="why_shown_show_less">Show less like this</string>
 </resources>

@@ -157,3 +157,25 @@ app.mawja.android.player.stream.MultiAudioTrackPipelineTest
 app.mawja.android.ui.components.videoplayer.overlay.SponsorBlockSkipPolicyTest
 app.mawja.android.ui.components.videoplayer.sheet.ChapterSelectionTest
 app.mawja.android.ui.screens.history.BestWatchTimeTest
+# discovery/search/library batch (#139 #141-#154 audit): why-shown origins, search history + suggestions, subscription import, RSS, notes, stream codec stats
+app.mawja.android.ui.screens.home.HomeCardOriginTest
+app.mawja.android.data.local.SearchHistoryEntriesTest
+app.mawja.android.ui.components.search.SearchHistoryMatchingTest
+app.mawja.android.innertube.pages.search.SearchSuggestionsPageTest
+app.mawja.android.data.backup.ImportSourceTest
+app.mawja.android.data.backup.NewPipeSubscriptionCodecTest
+app.mawja.android.data.local.YouTubeTakeoutActivityParserTest
+app.mawja.android.data.local.YouTubeTakeoutCsvParserTest
+app.mawja.android.data.local.YouTubeTakeoutHtmlReaderTest
+app.mawja.android.data.local.SubscriptionRecordCodecTest
+app.mawja.android.data.innertube.RssSubscriptionServiceTest
+app.mawja.android.data.subscriptions.ChannelRssClientTest
+app.mawja.android.data.subscriptions.ChannelRssParserTest
+app.mawja.android.data.notes.NotesRepositoryTest
+app.mawja.android.data.notes.NoteMomentsTest
+app.mawja.android.ui.screens.notes.NotesFilteringTest
+app.mawja.android.sync.merge.NotesMergerTest
+app.mawja.android.player.stream.VideoCodecUtilsTest
+app.mawja.android.player.stream.VideoCodecUtilsFrameRateTest
+app.mawja.android.player.stream.VideoCodecUtilsPreferenceTest
+app.mawja.android.ui.screens.subscriptions.SubscriptionFeedFilterTest
