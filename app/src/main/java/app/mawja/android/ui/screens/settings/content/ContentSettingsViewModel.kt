@@ -14,6 +14,7 @@ class ContentSettingsViewModel
     constructor(
         private val preferences: PlayerPreferences,
     ) : SettingsViewModel() {
+        val focusMode = preferences.focusModeEnabled.asState(false)
         val homeFeed = preferences.homeFeedEnabled.asState(true)
         val refreshOnReselect = preferences.refreshHomeOnReselect.asState(true)
         val continueWatching = preferences.continueWatchingEnabled.asState(true)
@@ -42,6 +43,8 @@ class ContentSettingsViewModel
         val channelNotes = preferences.channelNotesEnabled.asState(true)
         val videoNotes = preferences.videoNotesEnabled.asState(true)
         val shareWithoutText = preferences.shareWithoutText.asState(false)
+
+        fun setFocusMode(value: Boolean) = write { preferences.setFocusModeEnabled(value) }
 
         fun setHomeFeed(value: Boolean) = write { preferences.setHomeFeedEnabled(value) }
 

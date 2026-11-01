@@ -85,6 +85,8 @@ fun HistoryScreen(
     val bestWatchStart by viewModel.bestWatchWindowStart.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val contentFilter by viewModel.contentFilter.collectAsStateWithLifecycle()
+    val smartList by viewModel.smartList.collectAsStateWithLifecycle()
+    val grouping by viewModel.grouping.collectAsStateWithLifecycle()
     val sortOrder by viewModel.sortOrder.collectAsStateWithLifecycle()
     val yearFilter by viewModel.yearFilter.collectAsStateWithLifecycle()
 
@@ -225,6 +227,10 @@ fun HistoryScreen(
                 shortsEnabled = uiState.shortsEnabled,
                 selectedFilter = contentFilter,
                 onFilterSelected = viewModel::setContentFilter,
+                selectedSmartList = smartList,
+                onSmartListSelected = viewModel::setSmartList,
+                grouping = grouping,
+                onGroupingChange = viewModel::setGrouping,
                 selectedSort = sortOrder,
                 onSortSelected = viewModel::setSortOrder,
                 selectedYear = yearFilter,
@@ -281,6 +287,7 @@ fun HistoryScreen(
                         onRemove = onRemove,
                         selection = selection,
                         onSelectionChange = { selection = it },
+                        grouping = grouping,
                     )
                 }
             }

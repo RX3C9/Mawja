@@ -222,6 +222,8 @@ class PlayerPreferences(
         val SEEK_SWIPE_GESTURES_ENABLED = booleanPreferencesKey("seek_swipe_gestures_enabled")
         val CONTINUE_WATCHING_ENABLED = booleanPreferencesKey("continue_watching_enabled")
         val SHOW_RELATED_VIDEOS = booleanPreferencesKey("show_related_videos")
+        val FOCUS_MODE_ENABLED = booleanPreferencesKey("focus_mode_enabled")
+        val FOCUS_MODE_SNAPSHOT = stringPreferencesKey("focus_mode_snapshot")
         val DOUBLE_TAP_SEEK_SECONDS = intPreferencesKey("double_tap_seek_seconds")
         val DOUBLE_TAP_SEEK_ZONE = stringPreferencesKey("double_tap_seek_zone")
         val HOME_VIEW_MODE = stringPreferencesKey("home_view_mode")
@@ -1329,6 +1331,35 @@ class PlayerPreferences(
             .map { preferences ->
                 preferences[Keys.HOME_FEED_ENABLED] ?: true
             }
+
+    /** Focus mode (#154): see [FocusMode]. */
+    val focusModeEnabled: Flow<Boolean> =
+        context.playerPreferencesDataStore.data
+            .map { preferences -> preferences[Keys.FOCUS_MODE_ENABLED] ?: false }
+
+    suspend fun setFocusModeEnabled(enabled: Boolean) {
+        context.playerPreferencesDataStore.edit { preferences ->
+            if ((preferences[Keys.FOCUS_MODE_ENABLED] ?: false) == enabled) return@edit
+            val current =
+                FocusModeSettings(
+                    homeFeed = preferences[Keys.HOME_FEED_ENABLED] ?: true,
+                    shorts = preferences[Keys.SHORTS_CONTENT_ENABLED] ?: true,
+                    comments = preferences[Keys.COMMENTS_ENABLED] ?: true,
+                    relatedVideos = preferences[Keys.SHOW_RELATED_VIDEOS] ?: true,
+                )
+            val change = FocusMode.change(enabled, current, preferences[Keys.FOCUS_MODE_SNAPSHOT])
+            preferences[Keys.HOME_FEED_ENABLED] = change.apply.homeFeed
+            preferences[Keys.SHORTS_CONTENT_ENABLED] = change.apply.shorts
+            preferences[Keys.COMMENTS_ENABLED] = change.apply.comments
+            preferences[Keys.SHOW_RELATED_VIDEOS] = change.apply.relatedVideos
+            if (change.snapshot == null) {
+                preferences.remove(Keys.FOCUS_MODE_SNAPSHOT)
+            } else {
+                preferences[Keys.FOCUS_MODE_SNAPSHOT] = change.snapshot
+            }
+            preferences[Keys.FOCUS_MODE_ENABLED] = enabled
+        }
+    }
 
     suspend fun setHomeFeedEnabled(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->

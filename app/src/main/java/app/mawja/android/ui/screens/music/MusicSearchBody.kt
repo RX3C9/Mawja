@@ -162,6 +162,14 @@ internal fun MusicSearchBody(
                         },
                     )
                 }
+                item(key = "arabic_music") {
+                    ArabicMusicShelf(
+                        onSectionClick = { section ->
+                            viewModel.performSearch(section.query)
+                            dismissSearchInput()
+                        },
+                    )
+                }
             }
         }
     } else {

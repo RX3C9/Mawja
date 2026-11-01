@@ -5014,4 +5014,22 @@
     <string name="download_while_charging_only">التنزيل أثناء الشحن فقط</string>
     <string name="download_while_charging_only_summary">التنزيلات في الطابور تستنى لحد ما الموبايل يتشحن، مثلاً بالليل</string>
     <string name="why_shown_show_less">اعرض أقل من هذا النوع</string>
+    <string name="focus_mode_title">وضع التركيز</string>
+    <string name="focus_mode_subtitle">يخفي اقتراحات الصفحة الرئيسية والفيديوهات القصيرة والتعليقات والفيديوهات ذات الصلة، ويُبقي البحث والاشتراكات. عند إيقافه تعود إعداداتك السابقة.</string>
+    <string name="history_smart_lists">قوائم ذكية</string>
+    <string name="history_smart_none">السجل كاملاً</string>
+    <string name="history_smart_unfinished">لم تكتمل</string>
+    <string name="history_smart_long_ago">لم تُشغَّل منذ مدة</string>
+    <string name="history_smart_top_channels">من قنواتك الأكثر مشاهدة</string>
+    <string name="history_group_by_week">حسب الأسبوع</string>
+    <string name="history_this_week">هذا الأسبوع</string>
+    <string name="history_last_week">الأسبوع الماضي</string>
+    <string name="history_week_of">أسبوع %1$s</string>
+    <string name="arabic_music_title">الموسيقى العربية</string>
+    <string name="arabic_music_tarab">طرب</string>
+    <string name="arabic_music_mahraganat">مهرجانات</string>
+    <string name="arabic_music_khaleeji">خليجي</string>
+    <string name="arabic_music_maghrebi">مغربي</string>
+    <string name="arabic_music_levantine">شامي</string>
+    <string name="arabic_music_indie">إندي عربي</string>
 </resources>

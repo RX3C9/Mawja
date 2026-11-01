@@ -7,6 +7,14 @@ import app.mawja.android.ui.components.settings.SettingsDestination
 internal object ContentIndex {
     private val page = SettingsDestination.CONTENT
 
+    val focusMode =
+        SettingEntry(
+            key = "content.focus.mode",
+            title = R.string.focus_mode_title,
+            summary = R.string.focus_mode_subtitle,
+            section = R.string.focus_mode_title,
+            destination = page,
+        )
     val homeFeed =
         SettingEntry(
             key = "content.home.feed",
@@ -222,6 +230,7 @@ internal object ContentIndex {
 
     val all =
         listOf(
+            focusMode,
             homeFeed,
             refreshOnReselect,
             continueWatching,

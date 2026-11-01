@@ -89,6 +89,12 @@ class HistoryViewModel
         private val _sortOrder = MutableStateFlow(HistorySort.Newest)
         val sortOrder: StateFlow<HistorySort> = _sortOrder.asStateFlow()
 
+        private val _grouping = MutableStateFlow(HistoryGrouping.Day)
+        val grouping: StateFlow<HistoryGrouping> = _grouping.asStateFlow()
+
+        private val _smartList = MutableStateFlow<HistorySmartList?>(null)
+        val smartList: StateFlow<HistorySmartList?> = _smartList.asStateFlow()
+
         private val _yearFilter = MutableStateFlow<Int?>(null)
         val yearFilter: StateFlow<Int?> = _yearFilter.asStateFlow()
 
@@ -114,14 +120,14 @@ class HistoryViewModel
             combine(
                 _uiState.map { it.historyEntries }.distinctUntilChanged(),
                 _searchQuery,
-                _contentFilter,
+                combine(_contentFilter, _smartList) { filter, smart -> filter to smart },
                 _sortOrder,
                 _yearFilter,
-            ) { entries, query, filter, sort, year ->
+            ) { entries, query, (filter, smart), sort, year ->
                 val trimmed = query.trim()
-                entries
+                HistorySmartLists
+                    .apply(smart, entries.filter { filter.matches(it) }, System.currentTimeMillis())
                     .asSequence()
-                    .filter { filter.matches(it) }
                     .filter { year == null || historyYear(it.timestamp) == year }
                     .filter {
                         trimmed.isBlank() ||
@@ -192,6 +198,14 @@ class HistoryViewModel
 
         fun setContentFilter(filter: HistoryContentFilter) {
             _contentFilter.value = filter
+        }
+
+        fun setGrouping(grouping: HistoryGrouping) {
+            _grouping.value = grouping
+        }
+
+        fun setSmartList(list: HistorySmartList?) {
+            _smartList.value = list
         }
 
         fun setSortOrder(sort: HistorySort) {

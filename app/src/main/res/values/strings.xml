@@ -4652,4 +4652,22 @@
     <string name="download_while_charging_only">Download only while charging</string>
     <string name="download_while_charging_only_summary">Queued downloads wait until the phone is on the charger, e.g. overnight</string>
     <string name="why_shown_show_less">Show less like this</string>
+    <string name="focus_mode_title">Focus mode</string>
+    <string name="focus_mode_subtitle">Hide Home recommendations, Shorts, comments and related videos, and keep search and subscriptions. Turning it off brings back your previous settings.</string>
+    <string name="history_smart_lists">Smart lists</string>
+    <string name="history_smart_none">Whole history</string>
+    <string name="history_smart_unfinished">Not finished</string>
+    <string name="history_smart_long_ago">Not played in a while</string>
+    <string name="history_smart_top_channels">From your top channels</string>
+    <string name="history_group_by_week">By week</string>
+    <string name="history_this_week">This week</string>
+    <string name="history_last_week">Last week</string>
+    <string name="history_week_of">Week of %1$s</string>
+    <string name="arabic_music_title">Arabic music</string>
+    <string name="arabic_music_tarab">Tarab</string>
+    <string name="arabic_music_mahraganat">Mahraganat</string>
+    <string name="arabic_music_khaleeji">Khaleeji</string>
+    <string name="arabic_music_maghrebi">Maghrebi</string>
+    <string name="arabic_music_levantine">Levantine</string>
+    <string name="arabic_music_indie">Arabic indie</string>
 </resources>

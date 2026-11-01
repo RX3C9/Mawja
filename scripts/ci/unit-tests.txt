@@ -179,3 +179,9 @@ app.mawja.android.player.stream.VideoCodecUtilsTest
 app.mawja.android.player.stream.VideoCodecUtilsFrameRateTest
 app.mawja.android.player.stream.VideoCodecUtilsPreferenceTest
 app.mawja.android.ui.screens.subscriptions.SubscriptionFeedFilterTest
+# library batch (#148 #149 #151 #154): focus mode preset, history smart lists, weekly timeline, settings index, Arabic music sections
+app.mawja.android.data.local.FocusModeTest
+app.mawja.android.ui.screens.history.HistorySmartListsTest
+app.mawja.android.ui.screens.history.HistoryTimelineTest
+app.mawja.android.ui.screens.settings.index.SettingsIndexTest
+app.mawja.android.ui.screens.music.ArabicMusicDiscoveryTest

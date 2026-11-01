@@ -52,6 +52,9 @@ internal fun ContentSettingsScreen(
         onBack = onBack,
         highlight = highlight,
     ) {
+        group(key = "content.focus", header = R.string.focus_mode_title) {
+            switch(ContentIndex.focusMode, viewModel.focusMode, viewModel::setFocusMode)
+        }
         group(key = "content.home", header = R.string.settings_section_home) {
             switch(ContentIndex.homeFeed, viewModel.homeFeed, viewModel::setHomeFeed)
             switch(ContentIndex.refreshOnReselect, viewModel.refreshOnReselect, viewModel::setRefreshOnReselect)

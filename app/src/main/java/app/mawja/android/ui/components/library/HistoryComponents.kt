@@ -51,6 +51,9 @@ import app.mawja.android.ui.components.shared.MediaThumbnailDefaults
 import app.mawja.android.ui.components.shared.ShortCardDefaults
 import app.mawja.android.ui.components.shared.animateMediaListItem
 import app.mawja.android.ui.screens.history.HistoryContentFilter
+import app.mawja.android.ui.screens.history.HistoryGrouping
+import app.mawja.android.ui.screens.history.HistorySmartList
+import app.mawja.android.ui.screens.history.HistoryTimeline
 import app.mawja.android.ui.screens.history.HistorySort
 import app.mawja.android.ui.selection.MultiSelection
 import java.text.SimpleDateFormat
@@ -71,6 +74,10 @@ internal fun HistoryFilterRow(
     shortsEnabled: Boolean,
     selectedFilter: HistoryContentFilter,
     onFilterSelected: (HistoryContentFilter) -> Unit,
+    selectedSmartList: HistorySmartList?,
+    onSmartListSelected: (HistorySmartList?) -> Unit,
+    grouping: HistoryGrouping,
+    onGroupingChange: (HistoryGrouping) -> Unit,
     selectedSort: HistorySort,
     onSortSelected: (HistorySort) -> Unit,
     selectedYear: Int?,
@@ -78,6 +85,7 @@ internal fun HistoryFilterRow(
     onYearSelected: (Int?) -> Unit,
 ) {
     var sortExpanded by remember { mutableStateOf(false) }
+    var smartExpanded by remember { mutableStateOf(false) }
     var yearExpanded by remember { mutableStateOf(false) }
     val visibleFilters =
         remember(shortsEnabled) {
@@ -94,6 +102,47 @@ internal fun HistoryFilterRow(
                 label = filter.label(),
                 selected = selectedFilter == filter,
                 onClick = { onFilterSelected(filter) },
+            )
+        }
+
+        item(key = "smart") {
+            Box {
+                FlowFilterChip(
+                    label = selectedSmartList?.label() ?: stringResource(R.string.history_smart_lists),
+                    selected = selectedSmartList != null,
+                    onClick = { smartExpanded = true },
+                )
+                DropdownMenu(
+                    expanded = smartExpanded,
+                    onDismissRequest = { smartExpanded = false },
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.history_smart_none)) },
+                        onClick = {
+                            smartExpanded = false
+                            onSmartListSelected(null)
+                        },
+                    )
+                    HistorySmartList.entries.forEach { list ->
+                        DropdownMenuItem(
+                            text = { Text(list.label()) },
+                            onClick = {
+                                smartExpanded = false
+                                onSmartListSelected(list)
+                            },
+                        )
+                    }
+                }
+            }
+        }
+
+        item(key = "grouping") {
+            FlowFilterChip(
+                label = stringResource(R.string.history_group_by_week),
+                selected = grouping == HistoryGrouping.Week,
+                onClick = {
+                    onGroupingChange(if (grouping == HistoryGrouping.Week) HistoryGrouping.Day else HistoryGrouping.Week)
+                },
             )
         }
 
@@ -166,10 +215,11 @@ internal fun HistoryList(
     onRemove: (VideoHistoryEntry) -> Unit,
     selection: MultiSelection = MultiSelection(),
     onSelectionChange: (MultiSelection) -> Unit = {},
+    grouping: HistoryGrouping = HistoryGrouping.Day,
 ) {
     val groupedEntries =
-        remember(entries) {
-            entries.groupBy { historySectionKey(it.timestamp) }
+        remember(entries, grouping) {
+            entries.groupBy { HistoryTimeline.sectionStart(it.timestamp, grouping).toString() }
         }
     val musicQueue =
         remember(entries) {
@@ -189,8 +239,9 @@ internal fun HistoryList(
             groupedEntries.forEach { (sectionKey, sectionEntries) ->
                 stickyHeader(key = SECTION_HEADER_KEY_PREFIX + sectionKey, contentType = "header") {
                     HistorySectionHeader(
-                        timestamp = sectionEntries.first().timestamp,
+                        timestamp = sectionKey.toLong(),
                         today = today,
+                        grouping = grouping,
                     )
                 }
 
@@ -277,7 +328,7 @@ internal fun HistoryList(
                 }
                 sectionTimestamp?.let { timestamp ->
                     Text(
-                        text = sectionTitle(timestamp, today),
+                        text = sectionTitle(timestamp, today, grouping),
                         style = MaterialTheme.typography.titleSmall,
                     )
                 }
@@ -290,10 +341,11 @@ internal fun HistoryList(
 internal fun HistorySectionHeader(
     timestamp: Long,
     today: Long,
+    grouping: HistoryGrouping = HistoryGrouping.Day,
 ) {
     Surface(color = MaterialTheme.colorScheme.background) {
         Text(
-            text = sectionTitle(timestamp, today),
+            text = sectionTitle(timestamp, today, grouping),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
@@ -400,6 +452,14 @@ internal fun HistoryContentFilter.label(): String =
     }
 
 @Composable
+internal fun HistorySmartList.label(): String =
+    when (this) {
+        HistorySmartList.Unfinished -> stringResource(R.string.history_smart_unfinished)
+        HistorySmartList.LongAgo -> stringResource(R.string.history_smart_long_ago)
+        HistorySmartList.TopChannels -> stringResource(R.string.history_smart_top_channels)
+    }
+
+@Composable
 internal fun HistorySort.label(): String =
     when (this) {
         HistorySort.Newest -> stringResource(R.string.history_sort_newest)
@@ -431,7 +491,9 @@ private fun LazyListState.firstVisibleSectionTimestamp(): Long? =
 internal fun sectionTitle(
     timestamp: Long,
     today: Long,
+    grouping: HistoryGrouping = HistoryGrouping.Day,
 ): String {
+    if (grouping == HistoryGrouping.Week) return weekSectionTitle(timestamp, today)
     val locale = Locale.getDefault()
     val weekdayFormat = remember(locale) { SimpleDateFormat("EEEE", locale) }
     val dateFormat = remember(locale) { SimpleDateFormat("MMMM d, yyyy", locale) }
@@ -443,5 +505,20 @@ internal fun sectionTitle(
         1 -> stringResource(R.string.time_yesterday)
         in 2 until DAYS_IN_WEEK -> weekdayFormat.format(target)
         else -> dateFormat.format(target)
+    }
+}
+
+/** "This week", "Last week", or "Week of <first day>" for a section that starts at [weekStart]. */
+@Composable
+private fun weekSectionTitle(
+    weekStart: Long,
+    today: Long,
+): String {
+    val locale = Locale.getDefault()
+    val dateFormat = remember(locale) { SimpleDateFormat("MMMM d, yyyy", locale) }
+    return when (HistoryTimeline.weeksAgo(weekStart, today)) {
+        0 -> stringResource(R.string.history_this_week)
+        1 -> stringResource(R.string.history_last_week)
+        else -> stringResource(R.string.history_week_of, dateFormat.format(weekStart))
     }
 }
