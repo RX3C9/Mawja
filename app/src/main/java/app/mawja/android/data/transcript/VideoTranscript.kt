@@ -50,6 +50,19 @@ object VideoTranscript {
         return groupIntoSegments(cues)
     }
 
+    /**
+     * The track's own timed lines, rolling repeats dropped but not joined into sentences: what a
+     * second subtitle line shows at each moment (dual subtitles).
+     */
+    fun parseCaptions(body: String): List<TranscriptCue> {
+        val trimmed = body.trimStart()
+        return when {
+            trimmed.startsWith("{") -> parseJson3(body)
+            trimmed.startsWith("<") -> parseSrv3(body)
+            else -> parseVtt(body)
+        }.sortedBy { it.startMs }
+    }
+
     private fun parseJson3(body: String): List<TranscriptCue> =
         runCatching {
             json

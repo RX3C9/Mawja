@@ -83,6 +83,9 @@ class PlaybackSettingsViewModel
         val audioLanguage = preferences.preferredAudioLanguage.asState(ORIGINAL_AUDIO)
         val subtitleLanguage = preferences.preferredSubtitleLanguage.asState(CaptionTrackResolver.NO_PREFERRED_LANGUAGE)
         val autoCaptions = preferences.autoEnableSubtitles.asState(false)
+        val secondarySubtitleLanguage = preferences.secondarySubtitleLanguage.asState(app.mawja.android.player.subtitle.DualSubtitles.OFF)
+        val secondarySubtitlePosition =
+            preferences.secondarySubtitlePosition.asState(app.mawja.android.player.subtitle.SecondSubtitlePosition.ABOVE)
 
         val relatedVideos = preferences.showRelatedVideos.asState(true)
         val relatedCardStyle = preferences.playerRelatedCardStyle.asState(PlayerRelatedCardStyle.FULL_WIDTH)
@@ -216,6 +219,11 @@ class PlaybackSettingsViewModel
         fun setSubtitleLanguage(value: String) = write { preferences.setPreferredSubtitleLanguage(value) }
 
         fun setAutoCaptions(value: Boolean) = write { preferences.setAutoEnableSubtitles(value) }
+
+        fun setSecondarySubtitleLanguage(value: String) = write { preferences.setSecondarySubtitleLanguage(value) }
+
+        fun setSecondarySubtitlePosition(value: app.mawja.android.player.subtitle.SecondSubtitlePosition) =
+            write { preferences.setSecondarySubtitlePosition(value) }
 
         fun setRelatedVideos(value: Boolean) = write { preferences.setShowRelatedVideos(value) }
 

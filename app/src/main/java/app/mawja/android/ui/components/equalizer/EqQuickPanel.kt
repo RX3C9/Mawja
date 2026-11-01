@@ -21,6 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -122,10 +125,17 @@ internal fun EqBassBoostSlider(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        val label = stringResource(R.string.eq_bass_boost)
+        val state = if (value > 0.0) formatGain(value) else stringResource(R.string.off)
         Slider(
             value = value.toFloat(),
             onValueChange = { onValueChange(it.roundToInt().toDouble()) },
             valueRange = 0f..EqLimits.MAX_BASS_BOOST.toFloat(),
+            modifier =
+                Modifier.semantics {
+                    contentDescription = label
+                    stateDescription = state
+                },
         )
     }
 }

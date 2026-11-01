@@ -15,6 +15,8 @@ import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.data.local.PlayerRelatedCardStyle
 import app.mawja.android.data.local.SpeedSwipeSide
 import app.mawja.android.player.stream.CaptionTrackResolver
+import app.mawja.android.player.subtitle.DualSubtitles
+import app.mawja.android.player.subtitle.SecondSubtitlePosition
 import app.mawja.android.ui.components.videoplayer.subtitle.SubtitleStyle
 
 /**
@@ -50,6 +52,8 @@ internal class VideoPlayerPreferencesState(
     val lockModeEnabled: Boolean,
     val commentsEnabled: Boolean,
     val preferredSubtitleLanguage: String,
+    val secondarySubtitleLanguage: String,
+    val secondarySubtitlePosition: SecondSubtitlePosition,
     val commentsPreviewEnabled: Boolean,
     val showRelatedVideos: Boolean,
     val relatedCardStyle: PlayerRelatedCardStyle,
@@ -88,6 +92,9 @@ internal fun rememberVideoPlayerPreferences(context: Context): VideoPlayerPrefer
     val commentsEnabled by playerPreferences.commentsEnabled.collectAsState(initial = true)
     val preferredSubtitleLanguage by playerPreferences.preferredSubtitleLanguage
         .collectAsState(initial = CaptionTrackResolver.NO_PREFERRED_LANGUAGE)
+    val secondarySubtitleLanguage by playerPreferences.secondarySubtitleLanguage.collectAsState(initial = DualSubtitles.OFF)
+    val secondarySubtitlePosition by playerPreferences.secondarySubtitlePosition
+        .collectAsState(initial = SecondSubtitlePosition.ABOVE)
     val commentsPreviewEnabled by playerPreferences.commentsPreviewEnabled.collectAsState(initial = true)
     val showRelatedVideos by playerPreferences.showRelatedVideos.collectAsState(initial = true)
     val relatedCardStyle by playerPreferences.playerRelatedCardStyle.collectAsState(initial = PlayerRelatedCardStyle.FULL_WIDTH)
@@ -122,6 +129,8 @@ internal fun rememberVideoPlayerPreferences(context: Context): VideoPlayerPrefer
         lockModeEnabled = lockModeEnabled,
         commentsEnabled = commentsEnabled,
         preferredSubtitleLanguage = preferredSubtitleLanguage,
+        secondarySubtitleLanguage = secondarySubtitleLanguage,
+        secondarySubtitlePosition = secondarySubtitlePosition,
         commentsPreviewEnabled = commentsPreviewEnabled,
         showRelatedVideos = showRelatedVideos,
         relatedCardStyle = relatedCardStyle,

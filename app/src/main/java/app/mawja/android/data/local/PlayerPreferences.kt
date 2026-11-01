@@ -83,6 +83,8 @@ class PlayerPreferences(
         val VIDEO_LOOP_ENABLED = booleanPreferencesKey("video_loop_enabled")
         val VIDEO_AMBIENT_MODE_ENABLED = booleanPreferencesKey("video_ambient_mode_enabled")
         val PREFERRED_SUBTITLE_LANGUAGE = stringPreferencesKey("preferred_subtitle_language")
+        val SECONDARY_SUBTITLE_LANGUAGE = stringPreferencesKey("secondary_subtitle_language")
+        val SECONDARY_SUBTITLE_POSITION = stringPreferencesKey("secondary_subtitle_position")
         val SUBTITLE_FONT_SIZE = floatPreferencesKey("subtitle_font_size")
         val SUBTITLE_TEXT_COLOR = intPreferencesKey("subtitle_text_color")
         val SUBTITLE_BACKGROUND_COLOR = intPreferencesKey("subtitle_background_color")
@@ -2114,6 +2116,35 @@ class PlayerPreferences(
     suspend fun setPreferredSubtitleLanguage(language: String) {
         context.playerPreferencesDataStore.edit { preferences ->
             preferences[Keys.PREFERRED_SUBTITLE_LANGUAGE] = language
+        }
+    }
+
+    /**
+     * Dual subtitles: the language of a second caption line shown with the primary one, as a BCP-47
+     * tag or [app.mawja.android.player.subtitle.DualSubtitles.OFF]. Kept across videos.
+     */
+    val secondarySubtitleLanguage: Flow<String> =
+        context.playerPreferencesDataStore.data
+            .map { preferences ->
+                preferences[Keys.SECONDARY_SUBTITLE_LANGUAGE] ?: app.mawja.android.player.subtitle.DualSubtitles.OFF
+            }.distinctUntilChanged()
+
+    suspend fun setSecondarySubtitleLanguage(language: String) {
+        context.playerPreferencesDataStore.edit { preferences ->
+            preferences[Keys.SECONDARY_SUBTITLE_LANGUAGE] = language
+        }
+    }
+
+    /** Where the second line sits: above (default) or below the primary captions. */
+    val secondarySubtitlePosition: Flow<app.mawja.android.player.subtitle.SecondSubtitlePosition> =
+        context.playerPreferencesDataStore.data
+            .map { preferences ->
+                app.mawja.android.player.subtitle.SecondSubtitlePosition.of(preferences[Keys.SECONDARY_SUBTITLE_POSITION])
+            }.distinctUntilChanged()
+
+    suspend fun setSecondarySubtitlePosition(position: app.mawja.android.player.subtitle.SecondSubtitlePosition) {
+        context.playerPreferencesDataStore.edit { preferences ->
+            preferences[Keys.SECONDARY_SUBTITLE_POSITION] = position.key
         }
     }
 

@@ -143,6 +143,25 @@ internal fun PlaybackDialogs(
             )
         }
 
+        PlaybackDialog.SECONDARY_SUBTITLE_LANGUAGE -> {
+            val code by viewModel.secondarySubtitleLanguage.collectAsStateWithLifecycle()
+            FlowChoiceDialog(
+                title = stringResource(R.string.dual_subtitles_language),
+                description = stringResource(R.string.dual_subtitles_dialog_body),
+                options =
+                    listOf(
+                        FlowChoice(
+                            app.mawja.android.player.subtitle.DualSubtitles.OFF,
+                            stringResource(R.string.off),
+                            stringResource(R.string.dual_subtitles_off_desc),
+                        ),
+                    ) + languageChoices(),
+                selected = code,
+                onSelect = viewModel::setSecondarySubtitleLanguage,
+                onDismiss = onDismiss,
+            )
+        }
+
         PlaybackDialog.SHORTS_MODE -> {
             ShortsModeDialog(viewModel = viewModel, onDismiss = onDismiss)
         }

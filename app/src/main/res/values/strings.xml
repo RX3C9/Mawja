@@ -1389,6 +1389,17 @@
     <string name="player_settings_subtitle_language_dialog_body">Captions open in this language when available. Otherwise Mawja translates an existing track.</string>
     <string name="player_settings_subtitle_language_none">No preference</string>
     <string name="player_settings_subtitle_language_none_desc">Use the first caption track the video offers</string>
+    <string name="dual_subtitles_language">Second subtitle language</string>
+    <string name="dual_subtitles_language_summary">Show a second line in another language with the main subtitles</string>
+    <string name="dual_subtitles_keywords">dual subtitles, two subtitles, bilingual, translation, captions</string>
+    <string name="dual_subtitles_position">Second line position</string>
+    <string name="dual_subtitles_position_summary">Where the second subtitle line sits next to the main one</string>
+    <string name="dual_subtitles_position_above">Above</string>
+    <string name="dual_subtitles_position_below">Below</string>
+    <string name="dual_subtitles_dialog_body">While subtitles are on, a second line shows in this language. If the video has no track in it, YouTube\'s automatic translation is used when it is offered.</string>
+    <string name="dual_subtitles_off_desc">Show only the main subtitles</string>
+    <string name="dual_subtitles_player_header">Second line</string>
+    <string name="dual_subtitles_same_as_primary">Same language as the main subtitles</string>
     <string name="player_settings_auto_enable_subtitles">Turn Captions On Automatically</string>
     <string name="player_settings_auto_enable_subtitles_subtitle">Turn on captions in your preferred language</string>
     <string name="player_settings_video_codec">Default Video Codec</string>
@@ -2236,6 +2247,9 @@
     <string name="action_save_preset">Save preset</string>
     <string name="label_preset_name">Preset name</string>
     <string name="eq_preset_flat">Flat</string>
+    <string name="eq_preset_tarab">Tarab (warm vocals)</string>
+    <string name="eq_preset_quran">Quran and speech clarity</string>
+    <string name="eq_preset_mahraganat">Mahraganat</string>
     <string name="eq_preset_acoustic">Acoustic</string>
     <string name="eq_preset_bass_boost">Bass boost</string>
     <string name="eq_preset_classical">Classical</string>

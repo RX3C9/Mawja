@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import app.mawja.android.data.audio.eq.GraphicEq
@@ -63,6 +64,7 @@ private fun GraphicBand(
     val interactions = remember { MutableInteractionSource() }
     val label = formatFrequencyShort(frequency)
     val spoken = formatFrequency(frequency)
+    val spokenGain = formatGain(state.value.toDouble())
 
     LaunchedEffect(gain) { if (!state.isDragging) state.value = gain.toFloat() }
     state.onValueChange = { raw ->
@@ -87,7 +89,10 @@ private fun GraphicBand(
             modifier =
                 Modifier
                     .height(SliderHeight)
-                    .semantics { contentDescription = spoken },
+                    .semantics {
+                        contentDescription = spoken
+                        stateDescription = spokenGain
+                    },
         )
         Text(text = label, style = MaterialTheme.typography.labelSmall, maxLines = 1)
     }

@@ -197,3 +197,15 @@ app.mawja.android.player.shorts.ShortsPreferenceObserversTest
 app.mawja.android.ui.components.FeedGridLayoutTest
 app.mawja.android.ui.components.FeedGridPolicyTest
 app.mawja.android.ui.components.shared.FeedGridPlanTest
+app.mawja.android.data.audio.eq.BuiltInEqPresetsTest
+app.mawja.android.data.audio.eq.AutoEqFormatTest
+app.mawja.android.data.audio.eq.EqFilterMathTest
+app.mawja.android.data.audio.eq.EqLegacyMigrationTest
+app.mawja.android.data.audio.eq.EqStateOpsTest
+app.mawja.android.data.audio.eq.EqualizerRepositoryTest
+app.mawja.android.player.audio.eq.EqualizerAudioProcessorTest
+app.mawja.android.player.subtitle.DualSubtitlesTest
+app.mawja.android.data.transcript.VideoTranscriptTest
+app.mawja.android.player.stream.CaptionTrackResolverTest
+app.mawja.android.player.subtitle.SubtitleChoiceTest
+app.mawja.android.player.subtitle.SubtitleTracksTest

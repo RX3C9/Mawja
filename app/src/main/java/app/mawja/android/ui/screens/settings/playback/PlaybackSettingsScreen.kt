@@ -23,6 +23,7 @@ internal enum class PlaybackDialog {
     SPEED_SWIPE_STEP,
     AUDIO_LANGUAGE,
     SUBTITLE_LANGUAGE,
+    SECONDARY_SUBTITLE_LANGUAGE,
     SHORTS_MODE,
     LYRICS,
 }

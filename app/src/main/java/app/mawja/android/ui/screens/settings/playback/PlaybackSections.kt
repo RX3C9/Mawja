@@ -9,6 +9,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.local.PlayerRelatedCardStyle
 import app.mawja.android.data.local.SpeedSwipeSide
+import app.mawja.android.player.subtitle.DualSubtitles
+import app.mawja.android.player.subtitle.SecondSubtitlePosition
 import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsListScope
 import app.mawja.android.ui.components.settings.SettingsTarget
@@ -136,6 +138,27 @@ internal fun SettingsListScope.playbackSections(
         choice(PlaybackIndex.subtitleLanguage, onClick = { openDialog(PlaybackDialog.SUBTITLE_LANGUAGE) }) {
             val code by viewModel.subtitleLanguage.collectAsStateWithLifecycle()
             subtitleLanguageLabel(code)
+        }
+        choice(PlaybackIndex.secondarySubtitleLanguage, onClick = { openDialog(PlaybackDialog.SECONDARY_SUBTITLE_LANGUAGE) }) {
+            val code by viewModel.secondarySubtitleLanguage.collectAsStateWithLifecycle()
+            secondarySubtitleLanguageLabel(code)
+        }
+        row(PlaybackIndex.secondarySubtitlePosition.key) { shape ->
+            val selected by viewModel.secondarySubtitlePosition.collectAsStateWithLifecycle()
+            val code by viewModel.secondarySubtitleLanguage.collectAsStateWithLifecycle()
+            SettingsToggleGroupRow(
+                title = stringResource(PlaybackIndex.secondarySubtitlePosition.title),
+                summary = stringResource(R.string.dual_subtitles_position_summary),
+                options =
+                    listOf(
+                        FlowToggleOption(SecondSubtitlePosition.ABOVE, stringResource(R.string.dual_subtitles_position_above)),
+                        FlowToggleOption(SecondSubtitlePosition.BELOW, stringResource(R.string.dual_subtitles_position_below)),
+                    ),
+                selected = selected,
+                onSelected = viewModel::setSecondarySubtitlePosition,
+                enabled = code != DualSubtitles.OFF,
+                shape = shape,
+            )
         }
         switch(PlaybackIndex.autoCaptions, viewModel.autoCaptions, viewModel::setAutoCaptions)
     }

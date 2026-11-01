@@ -78,3 +78,11 @@ internal fun shortsModeLabel(
             stringResource(R.string.player_settings_shorts_playback_mode_loop)
         }
     }
+
+@Composable
+internal fun secondarySubtitleLanguageLabel(code: String): String =
+    if (code == app.mawja.android.player.subtitle.DualSubtitles.OFF) {
+        stringResource(R.string.off)
+    } else {
+        LanguageCatalog.displayName(code)
+    }

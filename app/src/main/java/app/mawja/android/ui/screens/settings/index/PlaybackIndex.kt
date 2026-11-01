@@ -358,6 +358,23 @@ internal object PlaybackIndex {
             section = R.string.settings_section_language_captions,
             destination = page,
         )
+    val secondarySubtitleLanguage =
+        SettingEntry(
+            key = "playback.secondary_subtitle_language",
+            title = R.string.dual_subtitles_language,
+            summary = R.string.dual_subtitles_language_summary,
+            keywords = R.string.dual_subtitles_keywords,
+            section = R.string.settings_section_language_captions,
+            destination = page,
+        )
+    val secondarySubtitlePosition =
+        SettingEntry(
+            key = "playback.secondary_subtitle_position",
+            title = R.string.dual_subtitles_position,
+            keywords = R.string.dual_subtitles_keywords,
+            section = R.string.settings_section_language_captions,
+            destination = page,
+        )
     val autoCaptions =
         SettingEntry(
             key = "playback.auto_captions",
@@ -540,6 +557,8 @@ internal object PlaybackIndex {
             openMusicPlayerOnPlay,
             audioLanguage,
             subtitleLanguage,
+            secondarySubtitleLanguage,
+            secondarySubtitlePosition,
             autoCaptions,
             relatedVideos,
             relatedCardStyle,

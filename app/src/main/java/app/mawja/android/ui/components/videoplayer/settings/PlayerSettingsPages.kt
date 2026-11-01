@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -20,8 +21,12 @@ import app.mawja.android.player.QualityOption
 import app.mawja.android.player.SubtitleOption
 import app.mawja.android.player.state.SubtitleOrigin
 import app.mawja.android.player.stream.VideoCodecUtils
+import app.mawja.android.player.subtitle.DualSubtitles
+import app.mawja.android.utils.LanguageCatalog
+import kotlinx.coroutines.launch
 import app.mawja.android.ui.components.shared.FlowNavRow
 import app.mawja.android.ui.components.shared.FlowRowGroup
+import app.mawja.android.ui.components.shared.FlowSectionHeader
 import app.mawja.android.ui.components.shared.FlowSelectionRow
 import app.mawja.android.ui.components.shared.MediaAudioTrackRow
 import app.mawja.android.ui.components.shared.MediaPlaybackSpeedPicker
@@ -167,6 +172,12 @@ internal fun PlayerSettingsSubtitlesPage(
         Spacer(modifier = Modifier.height(SubtitleStyleRowSpacing))
         SubtitleTimingCard(offsetMs = subtitleOffsetMs, onOffsetChange = onSubtitleOffsetChange)
     }
+    if (subtitlesEnabled) {
+        Spacer(modifier = Modifier.height(SubtitleStyleRowSpacing))
+        SecondSubtitleRows(
+            primaryLanguage = availableSubtitles.firstOrNull { it.url == selectedSubtitleUrl }?.language,
+        )
+    }
     Spacer(modifier = Modifier.height(SubtitleStyleRowSpacing))
     val navRows = if (onAddSubtitleFile != null) 2 else 1
     FlowRowGroup {
@@ -184,6 +195,48 @@ internal fun PlayerSettingsSubtitlesPage(
             shape = flowRowGroupShape(navRows - 1, navRows),
             onClick = onShowStyleCustomizer,
         )
+    }
+}
+
+/**
+ * Dual subtitles in the player: Off, Arabic, English, and the saved language when it is another
+ * one. The choice is the same saved setting as Settings > Player > Second subtitle language.
+ */
+@Composable
+private fun SecondSubtitleRows(primaryLanguage: String?) {
+    val context = LocalContext.current
+    val preferences = remember { app.mawja.android.data.local.PlayerPreferences(context) }
+    val scope = rememberCoroutineScope()
+    val saved by preferences.secondarySubtitleLanguage.collectAsState(initial = DualSubtitles.OFF)
+    val choices =
+        buildList {
+            add(DualSubtitles.OFF)
+            add("ar")
+            add("en")
+            if (saved != DualSubtitles.OFF && none { DualSubtitles.sameLanguage(it, saved) }) add(saved)
+        }.filter { it == DualSubtitles.OFF || !DualSubtitles.sameLanguage(it, primaryLanguage) || it == saved }
+    FlowSectionHeader(text = stringResource(R.string.dual_subtitles_player_header))
+    FlowRowGroup {
+        choices.forEachIndexed { index, code ->
+            val title =
+                if (code == DualSubtitles.OFF) {
+                    stringResource(R.string.off)
+                } else {
+                    LanguageCatalog.displayName(code)
+                }
+            FlowSelectionRow(
+                title = title,
+                supportingText =
+                    if (code != DualSubtitles.OFF && DualSubtitles.sameLanguage(code, primaryLanguage)) {
+                        stringResource(R.string.dual_subtitles_same_as_primary)
+                    } else {
+                        null
+                    },
+                selected = if (code == DualSubtitles.OFF) saved == DualSubtitles.OFF else DualSubtitles.sameLanguage(code, saved),
+                shape = flowRowGroupShape(index, choices.size),
+                onClick = { scope.launch { preferences.setSecondarySubtitleLanguage(code) } },
+            )
+        }
     }
 }
 

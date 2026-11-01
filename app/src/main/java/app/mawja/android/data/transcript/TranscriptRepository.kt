@@ -6,6 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,6 +28,34 @@ class TranscriptRepository
         private val httpClient: OkHttpClient,
     ) {
         private val cache = LruCache<String, List<TranscriptCue>>(CACHE_SIZE)
+
+        private val captionCache = LruCache<String, List<TranscriptCue>>(CACHE_SIZE)
+
+        /** The track's timed lines as captions (not joined into transcript sentences), for dual subtitles. */
+        suspend fun captionCues(trackUrl: String): List<TranscriptCue> =
+            withContext(Dispatchers.IO) {
+                if (trackUrl.isBlank()) return@withContext emptyList()
+                captionCache.get(trackUrl)?.let { return@withContext it }
+                val body = fetch(trackUrl) ?: return@withContext emptyList()
+                VideoTranscript.parseCaptions(body).also { cues ->
+                    if (cues.isNotEmpty()) captionCache.put(trackUrl, cues)
+                }
+            }
+
+        private fun fetch(trackUrl: String): String? =
+            try {
+                httpClient.newCall(Request.Builder().url(transcriptFormatUrl(trackUrl)).build()).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        Log.w(TAG, "Caption track returned HTTP ${response.code}")
+                        null
+                    } else {
+                        response.body?.string().orEmpty()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Caption track fetch failed: ${e.message}")
+                null
+            }
 
         suspend fun cues(trackUrl: String): List<TranscriptCue> =
             withContext(Dispatchers.IO) {
@@ -66,4 +97,11 @@ internal fun transcriptFormatUrl(trackUrl: String): String {
             .split('&')
             .filter { it.isNotEmpty() && !it.startsWith("fmt=") }
     return (listOf(path) + listOf((query + "fmt=json3").joinToString("&"))).joinToString("?")
+}
+
+/** Reaches [TranscriptRepository] from the subtitle overlay composable, which Hilt does not construct. */
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface TranscriptEntryPoint {
+    fun transcriptRepository(): TranscriptRepository
 }

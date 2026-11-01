@@ -205,6 +205,10 @@ internal fun VideoStage(
                         ),
                     videoAspectRatio = videoAspectRatio,
                     resizeMode = screenState.resizeMode,
+                    secondaryLanguage = prefs.secondarySubtitleLanguage,
+                    secondaryPosition = prefs.secondarySubtitlePosition,
+                    availableSubtitles = playerState.availableSubtitles,
+                    selectedSubtitleUrl = playerState.selectedSubtitleUrl,
                     modifier = Modifier.fillMaxSize().placedWhen(expandedSurfacesPlaced),
                 )
             }

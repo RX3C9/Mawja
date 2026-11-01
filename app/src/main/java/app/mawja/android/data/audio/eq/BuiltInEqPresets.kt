@@ -2,6 +2,7 @@ package app.mawja.android.data.audio.eq
 
 import androidx.annotation.StringRes
 import app.mawja.android.R
+import app.mawja.android.data.audio.eq.EqFilterType.HIGH_PASS
 import app.mawja.android.data.audio.eq.EqFilterType.HIGH_SHELF
 import app.mawja.android.data.audio.eq.EqFilterType.LOW_SHELF
 import app.mawja.android.data.audio.eq.EqFilterType.PEAK
@@ -17,15 +18,61 @@ data class BuiltInEqPreset(
  * The presets Flow ships, with stable ids. [BuiltInEqPreset.legacyName] is the English name older
  * versions stored as the selection, read once by the migration. Shelves use the Butterworth Q the old
  * processor applied, so each preset sounds as it did.
+ *
+ * Mawja adds three Arabic-friendly presets right after Flat (ids are stable; their legacy names
+ * never matched anything older versions stored): Tarab (warm voice and oud/qanun mids), Quran and
+ * speech (rumble cut, clear consonants, gentle sibilance) and Mahraganat (sub-bass punch, crisp
+ * top). Auto preamp and the processor's soft clip keep every one of them from clipping.
  */
 object BuiltInEqPresets {
     const val FLAT_ID = "builtin:flat"
+    const val TARAB_KEY = "tarab"
+    const val QURAN_KEY = "quran"
+    const val MAHRAGANAT_KEY = "mahraganat"
+
+    /** The Arabic-friendly presets Mawja adds, in the order they are listed. */
+    val ARABIC_IDS = listOf("builtin:$TARAB_KEY", "builtin:$QURAN_KEY", "builtin:$MAHRAGANAT_KEY")
 
     private const val SHELF_Q = EqLimits.DEFAULT_SHELF_Q
 
     val all: List<BuiltInEqPreset> =
         listOf(
             BuiltInEqPreset(FLAT_ID, R.string.eq_preset_flat, "Flat", EqCurve()),
+            preset(
+                TARAB_KEY,
+                R.string.eq_preset_tarab,
+                "Mawja Tarab",
+                0.0,
+                EqBand(80.0, 1.5, SHELF_Q, LOW_SHELF),
+                EqBand(250.0, 1.5, 0.9, PEAK),
+                EqBand(500.0, -1.0, 1.2, PEAK),
+                EqBand(1_800.0, 2.5, 1.0, PEAK),
+                EqBand(3_500.0, 2.0, 1.2, PEAK),
+                EqBand(9_000.0, 1.5, SHELF_Q, HIGH_SHELF),
+            ),
+            preset(
+                QURAN_KEY,
+                R.string.eq_preset_quran,
+                "Mawja Quran and speech",
+                0.0,
+                EqBand(70.0, 0.0, 0.707, HIGH_PASS),
+                EqBand(200.0, -3.0, 0.8, PEAK),
+                EqBand(1_200.0, 1.5, 1.0, PEAK),
+                EqBand(3_000.0, 4.0, 1.0, PEAK),
+                EqBand(7_500.0, -1.5, 2.0, PEAK),
+            ),
+            preset(
+                MAHRAGANAT_KEY,
+                R.string.eq_preset_mahraganat,
+                "Mawja Mahraganat",
+                -1.0,
+                EqBand(45.0, 8.0, SHELF_Q, LOW_SHELF),
+                EqBand(120.0, 2.0, 1.0, PEAK),
+                EqBand(450.0, -2.5, 1.0, PEAK),
+                EqBand(2_500.0, 1.5, 1.0, PEAK),
+                EqBand(6_000.0, 3.0, 1.2, PEAK),
+                EqBand(11_000.0, 3.0, SHELF_Q, HIGH_SHELF),
+            ),
             preset(
                 "acoustic",
                 R.string.eq_preset_acoustic,

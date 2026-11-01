@@ -2297,6 +2297,17 @@
     <string name="player_settings_subtitle_language_dialog_body">تُفتح الترجمة بهذا اللغة عند توفرها. وإلا يترجم موجة مسارًا موجودًا.</string>
     <string name="player_settings_subtitle_language_none">لا يوجد تفضيلات</string>
     <string name="player_settings_subtitle_language_none_desc">‎استخدم مسار الترجمة الأول الذي يقدمه الفيديو</string>
+    <string name="dual_subtitles_language">لغة الترجمة الثانية</string>
+    <string name="dual_subtitles_language_summary">عرض سطر ثانٍ بلغة أخرى مع الترجمة الأساسية</string>
+    <string name="dual_subtitles_keywords">ترجمة مزدوجة، ترجمتان، لغتان، ترجمة، تسميات توضيحية</string>
+    <string name="dual_subtitles_position">مكان السطر الثاني</string>
+    <string name="dual_subtitles_position_summary">أين يظهر سطر الترجمة الثاني بجانب الأساسي</string>
+    <string name="dual_subtitles_position_above">فوق</string>
+    <string name="dual_subtitles_position_below">تحت</string>
+    <string name="dual_subtitles_dialog_body">أثناء تشغيل الترجمة يظهر سطر ثانٍ بهذه اللغة. إذا لم يكن في الفيديو مسار بها، تُستخدم ترجمة يوتيوب التلقائية عند توفرها.</string>
+    <string name="dual_subtitles_off_desc">عرض الترجمة الأساسية فقط</string>
+    <string name="dual_subtitles_player_header">السطر الثاني</string>
+    <string name="dual_subtitles_same_as_primary">نفس لغة الترجمة الأساسية</string>
     <string name="player_settings_auto_enable_subtitles">‎تشغيل الترجمة تلقائيًا</string>
     <string name="player_settings_auto_enable_subtitles_subtitle">فعّل الترجمة باللغة المفضلة لديك</string>
     <string name="subtitle_translated">مترجم</string>
@@ -3434,6 +3445,9 @@
     <string name="concurrent_downloads_summary">عدد الملفات التي يتم تنزيلها في الوقت نفسه</string>
     <string name="download_location_not_writable">لا يمكن الحفظ هناك. سيتم استخدام %1$s</string>
     <string name="eq_preset_flat">مسطح</string>
+    <string name="eq_preset_tarab">طرب (صوت دافئ)</string>
+    <string name="eq_preset_quran">قرآن ووضوح الكلام</string>
+    <string name="eq_preset_mahraganat">مهرجانات</string>
     <plurals name="eq_band_total">
         <item quantity="zero">%d نطاقات ترددية</item>
         <item quantity="one">‪نطاق ترددي واحد</item>
