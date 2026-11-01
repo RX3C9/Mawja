@@ -29,7 +29,12 @@ T=10 a logcat -c >/dev/null 2>&1 || true
 # 1) Video playback (real stream from the runner's network).
 stop_app
 start_app --ez $BYPASS true --es video_id "$VIDEO_ID"
-if wait_playing 45; then sres video_playback ok; else sres video_playback "FAILED (state $(cat "$WORK/last_state" 2>/dev/null))"; fi
+if wait_playing 45; then sres video_playback ok; else sres video_playback "FAILED (state $(cat "$WORK/last_state" 2>/dev/null))"
+  T=30 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | head -60 > "$WORK/diag-session.txt"
+  T=30 a logcat -d -t 400 2>/dev/null | tr -d '\r' | grep -iE "exoplayer|extractor|playback|player|FATAL|Exception|video_id|http|network" | tail -80 > "$WORK/diag-logcat.txt"
+  T=10 a shell "ping -c1 -W3 8.8.8.8; getprop net.dns1" 2>&1 | tail -4 > "$WORK/diag-net.txt"
+  cat "$WORK/diag-net.txt" "$WORK/diag-session.txt" "$WORK/diag-logcat.txt" > "$WORK/smoke-diag.txt"
+fi
 sleep 5; pos1=$(T=20 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | grep -o 'position=[0-9]*' | head -1)
 sleep 6; pos2=$(T=20 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | grep -o 'position=[0-9]*' | head -1)
 [ -n "$pos1" ] && [ "$pos1" != "$pos2" ] && sres video_advances "ok ($pos1 -> $pos2)" || sres video_advances "unclear ($pos1 -> $pos2)"
@@ -60,7 +65,7 @@ fi
 # Crashes during the smoke test itself, with the first stack.
 post=$(T=30 a logcat -b crash -d 2>/dev/null | tr -d '\r')
 anr=$(T=30 a logcat -d -s ActivityManager:E 2>/dev/null | tr -d '\r' | grep -c "ANR in $PKG" || true)
-{ echo "=== crash buffer (screens) ==="; cat "$WORK/crash-screens.txt"; echo "=== crash buffer (smoke) ==="; echo "$post"; echo "=== monkey ==="; tail -120 "$WORK/monkey.txt"; } > "$WORK/smoke-log.txt"
+{ echo "=== crash buffer (screens) ==="; cat "$WORK/crash-screens.txt"; echo "=== crash buffer (smoke) ==="; echo "$post"; echo "=== playback diag ==="; cat "$WORK/smoke-diag.txt" 2>/dev/null; echo "=== monkey ==="; tail -120 "$WORK/monkey.txt"; } > "$WORK/smoke-log.txt"
 post_n=$(echo "$post" | grep -c "Process: $PKG" || true)
 first=$( { echo "$pre"; echo "$post"; } | grep -A3 'FATAL EXCEPTION' | grep -E 'Exception|Error' | head -2 | tr '\n' ' ' | cut -c1-300)
 sres crashes_during_smoke "$post_n anr=$anr ${first:+first: $first}"
