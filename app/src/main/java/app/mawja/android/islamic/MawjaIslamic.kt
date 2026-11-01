@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import app.mawja.android.widget.prayer.NextPrayerRefresh
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -179,7 +180,7 @@ object MawjaIslamic {
         _settings.value = next
         started = true
         if (next.enabled) PrayerAlarms.reschedule(app) else PrayerAlarms.cancel(app)
-        app.mawja.android.widget.prayer.NextPrayerRefresh.request(app)
+        NextPrayerRefresh.request(app)
     }
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

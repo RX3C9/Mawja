@@ -52,6 +52,7 @@ import app.mawja.android.R
 import app.mawja.android.islamic.MawjaIslamic
 import app.mawja.android.islamic.Prayer
 import app.mawja.android.islamic.PrayerAlarms
+import app.mawja.android.islamic.PrayerDay
 import app.mawja.android.islamic.PrayerSchedule
 import app.mawja.android.widget.core.action.WidgetDeepLink
 import app.mawja.android.widget.core.component.WidgetEmptyState
@@ -122,8 +123,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                     Prayer.ISHA to base + 7 * hour,
                 )
             val day =
-                app.mawja.android.islamic
-                    .PrayerDay(LocalDate.now(), times)
+                PrayerDay(LocalDate.now(), times)
             val tomorrow = day.copy(times = times.mapValues { it.value + 24 * hour })
             return NextPrayerModel.state(now, enabled = true, today = day, tomorrow = tomorrow)
         }
