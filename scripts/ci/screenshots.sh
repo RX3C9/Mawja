@@ -421,6 +421,11 @@ VARIANTS=${MAWJA_SCREEN_VARIANTS:-"en:dark ar:dark en:light ar:light"}
 for v in $VARIANTS; do set_variant "${v%%:*}" "${v##*:}"; core_pass; done
 for v in $VARIANTS; do over_budget && break; set_variant "${v%%:*}" "${v##*:}"; extras_pass; done
 stop_app; airplane off; a11y_reset
+# Device smoke test (playback, monkey, crashes) while the emulator is still up. MAWJA_SMOKE=0 skips.
+if [ "${MAWJA_SMOKE:-1}" = 1 ] && [ -f scripts/ci/smoke.sh ]; then
+  set_variant ar dark
+  source scripts/ci/smoke.sh || log "smoke script error"
+fi
 stop_emu
 
 # ---- manifest + blank detection (FLAG_SECURE windows and failed renders capture as one colour) ----

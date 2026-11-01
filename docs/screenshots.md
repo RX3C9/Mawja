@@ -98,3 +98,6 @@ variants before pass 2 starts, so a short budget drops the extras first.
 - Network screens (home, search, players, shorts, music) depend on YouTube answering the emulator.
 - Runtime: boot takes 5-9 minutes; pass 1 is about 4-5 minutes per variant. Use `MAWJA_SCREEN_VARIANTS` or
   `MAWJA_SCREEN_ONLY` for a narrower run.
+
+## Device smoke test
+`scripts/ci/smoke.sh` runs after the screenshot passes on the same emulator: real video and music playback (media session reaches PLAYING and position advances), 2000 seeded monkey events inside the app, downloader launch, and every crash/ANR seen during the whole run. Result: ntfy title "Mawja CI smoke PASS|FAIL". `MAWJA_SMOKE=0` skips it. Phone-installable APKs (arm64, universal, downloader) are posted as "Mawja CI apk" links (litterbox, 72 h).
