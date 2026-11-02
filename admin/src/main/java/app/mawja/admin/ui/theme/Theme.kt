@@ -9,6 +9,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.mawja.theme.mawjaColorScheme
+import app.mawja.theme.rememberMawjaThemeStore
 import androidx.compose.ui.graphics.Color
 
 /** Mawja brand: deep teal wave with a gold accent (gold = admin). */
@@ -85,5 +89,10 @@ fun AdminTheme(
             "light" -> false
             else -> isSystemInDarkTheme()
         }
-    MaterialTheme(colorScheme = if (dark) Dark else Light, content = content)
+    // The admin's gold look stays until a Mawja palette is picked in "Look & sound" (shared-theme).
+    val store = rememberMawjaThemeStore()
+    val chosen by store.paletteChosen.collectAsStateWithLifecycle()
+    val palette by store.palette.collectAsStateWithLifecycle()
+    val scheme = if (chosen) mawjaColorScheme(palette, dark) else if (dark) Dark else Light
+    MaterialTheme(colorScheme = scheme, content = content)
 }

@@ -115,6 +115,7 @@ class DownloadService :
     override fun onCreate() {
         super.onCreate()
         createChannel()
+        DownloadEngine.init(this)
         DownloadEngine.addListener(this)
         DownloaderRemoteConfig.refreshIfStale(this)
     }
@@ -134,6 +135,21 @@ class DownloadService :
     private fun blockDetail(block: DownloadBlock): String = "Mawja Downloader refused new downloads: ${block.name.lowercase()}"
 
     override fun onBind(intent: Intent?): IBinder = binder
+
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
+        when (intent?.action) {
+            ACTION_PAUSE_ALL -> DownloadEngine.pauseAll()
+            ACTION_RESUME_ALL -> DownloadEngine.resumeAll()
+        }
+        updateForeground()
+        // Nothing to carry: do not linger as a started service (a bound client still keeps it).
+        if (!foreground) stopSelf(startId)
+        return START_NOT_STICKY
+    }
 
     /**
      * Android 15+ caps dataSync foreground services (6 h a day). When the cap is hit the system
@@ -228,20 +244,43 @@ class DownloadService :
                 Intent(this, MainActivity::class.java),
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-        val running = DownloadEngine.items.value.filter { it.isActive }
+        val items = DownloadEngine.items.value
+        val running = items.filter { it.state == State.RUNNING }
         val totalBytes = running.sumOf { it.total.coerceAtLeast(0) }
         val doneBytes = running.sumOf { it.downloaded }
-        return NotificationCompat
-            .Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_download)
-            .setContentTitle(getString(R.string.notification_running, active))
-            .setContentText(running.firstOrNull()?.title ?: getString(R.string.notification_mawja_transfers))
-            .setOnlyAlertOnce(true)
-            .setOngoing(true)
-            .setContentIntent(open)
-            .setProgress(100, if (totalBytes > 0) ((doneBytes * 100) / totalBytes).toInt() else 0, totalBytes <= 0)
-            .build()
+        val speed = running.sumOf { it.speedBps }
+        val first = running.firstOrNull()
+        val text =
+            if (first != null) {
+                getString(R.string.notification_speed, first.title, android.text.format.Formatter.formatShortFileSize(this, speed))
+            } else {
+                getString(R.string.notification_mawja_transfers)
+            }
+        val builder =
+            NotificationCompat
+                .Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_stat_download)
+                .setContentTitle(getString(R.string.notification_running, active))
+                .setContentText(text)
+                .setOnlyAlertOnce(true)
+                .setOngoing(true)
+                .setContentIntent(open)
+                .setProgress(100, if (totalBytes > 0) ((doneBytes * 100) / totalBytes).toInt() else 0, totalBytes <= 0)
+        if (running.isNotEmpty()) {
+            builder.addAction(0, getString(R.string.action_pause_all), serviceIntent(ACTION_PAUSE_ALL))
+        } else if (items.any { it.isActive && it.paused }) {
+            builder.addAction(0, getString(R.string.action_resume_all), serviceIntent(ACTION_RESUME_ALL))
+        }
+        return builder.build()
     }
+
+    private fun serviceIntent(action: String): PendingIntent =
+        PendingIntent.getService(
+            this,
+            action.hashCode(),
+            Intent(this, DownloadService::class.java).setAction(action),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
 
     private fun createChannel() {
         val channel = NotificationChannel(CHANNEL_ID, getString(R.string.channel_name), NotificationManager.IMPORTANCE_LOW)
@@ -260,8 +299,15 @@ class DownloadService :
             putString(Item.SOURCE_ID, sourceId)
         }
 
-    private companion object {
-        const val CHANNEL_ID = "downloads"
-        const val NOTIFICATION_ID = 7001
+    companion object {
+        private const val CHANNEL_ID = "downloads"
+        private const val NOTIFICATION_ID = 7001
+        private const val ACTION_PAUSE_ALL = "app.mawja.downloader.action.PAUSE_ALL"
+        private const val ACTION_RESUME_ALL = "app.mawja.downloader.action.RESUME_ALL"
+
+        /** Starts the service from the Downloader's own screen so its downloads get the foreground notification. */
+        fun kick(context: android.content.Context) {
+            runCatching { context.startService(android.content.Intent(context, DownloadService::class.java)) }
+        }
     }
 }

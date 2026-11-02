@@ -247,6 +247,13 @@ fun SettingsScreen(
                         FilterChip(selected = theme == value, onClick = { session.setTheme(value) }, label = { Text(stringResource(label)) })
                     }
                 }
+                var showLook by remember { mutableStateOf(false) }
+                FilterChip(
+                    selected = false,
+                    onClick = { showLook = true },
+                    label = { Text(stringResource(app.mawja.theme.R.string.mawja_look_title)) },
+                )
+                if (showLook) app.mawja.theme.MawjaLookSheet(onDismiss = { showLook = false })
             }
             SectionCard(title = stringResource(R.string.account)) {
                 InfoRow(stringResource(R.string.email), staff.email, copy = true)

@@ -96,6 +96,7 @@ android {
 dependencies {
     implementation(project(":downloader-api"))
     implementation(project(":shared-remote"))
+    implementation(project(":shared-theme"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -106,4 +107,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
+    implementation(libs.androidx.work.runtime.ktx)
+    testImplementation(libs.junit)
 }

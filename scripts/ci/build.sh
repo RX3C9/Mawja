@@ -4,6 +4,8 @@
 set -uo pipefail
 TOPIC="${MAWJA_LOG_TOPIC:-mawja-ci-3998ee696e5d3e8578e1}"
 SHA=$(cat .mawja-sync 2>/dev/null || git rev-parse HEAD)
+# Fast mode for intermediate builds: scripts/ci/FAST present -> compile + unit tests only (no emulator screens/smoke).
+[ -f scripts/ci/FAST ] && export MAWJA_SCREENSHOTS=0
 TASKS=${MAWJA_TASKS:-":app:assembleGithubDebug :app:assembleFossDebug :downloader:assembleDebug :admin:assembleDebug"}
 chmod +x gradlew
 # The app's two flavours are compiled one after the other: compiled side by side they share one
@@ -24,12 +26,14 @@ done
 unit="skipped"
 if [ "$code" = 0 ] && [ -f scripts/ci/unit-tests.txt ]; then
   # app.mawja.admin.* classes are the admin app's tests; everything else runs in :app.
-  filters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | grep -v '^app\.mawja\.admin\.' | sed 's/^/--tests /' | xargs)
+  filters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | grep -v '^app\.mawja\.admin\.' | grep -v '^app\.mawja\.downloader\.' | sed 's/^/--tests /' | xargs)
+  dlFilters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | grep '^app\.mawja\.downloader\.' | sed 's/^/--tests /' | xargs)
   adminFilters=$(grep -v '^#' scripts/ci/unit-tests.txt | sed '/^\s*$/d' | grep '^app\.mawja\.admin\.' | sed 's/^/--tests /' | xargs)
-  if [ -n "$filters$adminFilters" ]; then
+  if [ -n "$filters$adminFilters$dlFilters" ]; then
     : > unit.log
     uc=0
     if [ -n "$filters" ]; then timeout 30m ./gradlew :app:testFossDebugUnitTest $filters --max-workers=2 >> unit.log 2>&1 || uc=1; fi
+    if [ -n "$dlFilters" ]; then timeout 15m ./gradlew :downloader:testDebugUnitTest $dlFilters --max-workers=2 >> unit.log 2>&1 || uc=1; fi
     if [ -n "$adminFilters" ]; then timeout 15m ./gradlew :admin:testDebugUnitTest $adminFilters --max-workers=2 >> unit.log 2>&1 || uc=1; fi
     if [ "$uc" = 0 ]; then
       unit="ok"

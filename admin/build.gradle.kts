@@ -99,6 +99,7 @@ android {
 
 dependencies {
     implementation(project(":shared-codes"))
+    implementation(project(":shared-theme"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

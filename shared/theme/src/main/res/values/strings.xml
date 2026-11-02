@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mawja_look_title">Look &amp; sound</string>
+    <string name="mawja_look_palette">Palette</string>
+    <string name="mawja_look_sounds">Touch sounds</string>
+    <string name="mawja_look_pack">Sound pack</string>
+    <string name="mawja_look_volume">Volume</string>
+    <string name="mawja_look_haptics">Light vibration on taps</string>
+    <string name="mawja_palette_nile">Mawja</string>
+    <string name="mawja_palette_sahara">Sahara</string>
+    <string name="mawja_palette_andalus">Andalus</string>
+    <string name="mawja_palette_midnight_oud">Midnight Oud</string>
+    <string name="mawja_palette_delta">Delta</string>
+    <string name="mawja_palette_red_sea_reef">Red Sea</string>
+    <string name="mawja_palette_cairo_nights">Cairo Nights</string>
+    <string name="mawja_palette_siwa_oasis">Siwa</string>
+    <string name="mawja_palette_aswan_sunset">Aswan</string>
+    <string name="mawja_palette_lotus">Lotus</string>
+    <string name="mawja_palette_alexandria">Alexandria</string>
+    <string name="mawja_pack_wave">Wave</string>
+    <string name="mawja_pack_drop">Drop</string>
+    <string name="mawja_pack_crystal">Crystal</string>
+    <string name="mawja_pack_soft">Soft</string>
+    <string name="mawja_pack_retro">Retro</string>
+    <string name="mawja_look_open">Look and sound settings</string>
+</resources>

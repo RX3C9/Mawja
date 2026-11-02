@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mawja_look_title">الشكل والصوت</string>
+    <string name="mawja_look_palette">الألوان</string>
+    <string name="mawja_look_sounds">أصوات اللمس</string>
+    <string name="mawja_look_pack">حزمة الأصوات</string>
+    <string name="mawja_look_volume">مستوى الصوت</string>
+    <string name="mawja_look_haptics">اهتزاز خفيف مع اللمس</string>
+    <string name="mawja_palette_nile">موجة</string>
+    <string name="mawja_palette_sahara">صحرا</string>
+    <string name="mawja_palette_andalus">أندلس</string>
+    <string name="mawja_palette_midnight_oud">عود الليل</string>
+    <string name="mawja_palette_delta">الدلتا</string>
+    <string name="mawja_palette_red_sea_reef">البحر الأحمر</string>
+    <string name="mawja_palette_cairo_nights">ليالي القاهرة</string>
+    <string name="mawja_palette_siwa_oasis">سيوة</string>
+    <string name="mawja_palette_aswan_sunset">أسوان</string>
+    <string name="mawja_palette_lotus">اللوتس</string>
+    <string name="mawja_palette_alexandria">الإسكندرية</string>
+    <string name="mawja_pack_wave">موجة</string>
+    <string name="mawja_pack_drop">قطرة</string>
+    <string name="mawja_pack_crystal">كريستال</string>
+    <string name="mawja_pack_soft">ناعم</string>
+    <string name="mawja_pack_retro">ريترو</string>
+    <string name="mawja_look_open">إعدادات الشكل والصوت</string>
+</resources>
