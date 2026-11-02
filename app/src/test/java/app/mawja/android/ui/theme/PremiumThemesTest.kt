@@ -14,9 +14,11 @@ class PremiumThemesTest {
     private val plus = Entitlements.forTier(MawjaTier.PLUS)
 
     @Test
-    fun flowDefaultIsFreeAndIsTheFallback() {
-        assertThat(PremiumThemes.FALLBACK).isEqualTo(ThemeMode.DARK)
-        assertThat(PremiumThemes.isPremium(ThemeMode.DARK)).isFalse()
+    fun mawjaDefaultIsFreeAndIsTheFallback() {
+        // Since 678b816 the free Mawja (Nile) look is the default and the fallback; Flow's dark stays free.
+        assertThat(PremiumThemes.FALLBACK).isEqualTo(ThemeMode.NILE)
+        assertThat(PremiumThemes.isPremium(ThemeMode.NILE)).isFalse()
+        assertThat(PremiumThemes.isLocked(ThemeMode.NILE, free)).isFalse()
         assertThat(PremiumThemes.isLocked(ThemeMode.DARK, free)).isFalse()
     }
 
