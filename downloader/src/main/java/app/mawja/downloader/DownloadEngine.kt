@@ -277,7 +277,7 @@ object DownloadEngine {
         if (slots <= 0) return
         val candidates =
             _items.value
-                .filter { it.state == State.QUEUED && it.id !in jobs }
+                .filter { it.state == State.QUEUED && !jobs.containsKey(it.id) }
                 .map { QueuePolicy.Candidate(it.id, it.priority, it.createdAt, it.wifiOnly, it.notBefore, it.paused) }
         val picked =
             QueuePolicy.pick(candidates, slots, System.currentTimeMillis(), isUnmetered(ctx), DownloaderPrefs.wifiOnly(ctx))
