@@ -197,7 +197,14 @@ object LinkRules {
                 } ?: Regex("""filename="?([^";]+)"?""", RegexOption.IGNORE_CASE).find(cd)?.groupValues?.get(1)
             }
         val fromPath =
-            url.substringBefore('?').substringBefore('#').trimEnd('/').substringAfterLast('/').let {
+            url
+                .substringBefore('?')
+                .substringBefore('#')
+                .substringAfter("://", "")
+                .substringAfter('/', "")
+                .trimEnd('/')
+                .substringAfterLast('/')
+                .let {
                 runCatching { java.net.URLDecoder.decode(it, "UTF-8") }.getOrDefault(it)
             }
         return (fromHeader ?: fromPath).replace(Regex("[\\\\/:*?\"<>|]"), "_").trim().ifBlank { "download" }

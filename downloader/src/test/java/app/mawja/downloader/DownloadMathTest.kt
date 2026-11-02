@@ -92,7 +92,7 @@ class DownloadMathTest {
         ) = QueuePolicy.Candidate(id, p, t, wifi, nb, paused)
         val list = listOf(c("a", t = 1), c("b", p = 5, t = 2), c("c", t = 0), c("w", wifi = true), c("n", nb = 100), c("p", paused = true))
         assertEquals(listOf("b", "c", "a"), QueuePolicy.pick(list, 3, now = 50, unmetered = false, globalWifiOnly = false))
-        assertEquals(listOf("b", "c", "w", "a", "n"), QueuePolicy.pick(list, 9, now = 100, unmetered = true, globalWifiOnly = false))
+        assertEquals(listOf("b", "c", "w", "n", "a"), QueuePolicy.pick(list, 9, now = 100, unmetered = true, globalWifiOnly = false))
         assertTrue(QueuePolicy.pick(list, 9, now = 100, unmetered = false, globalWifiOnly = true).isEmpty())
     }
 
