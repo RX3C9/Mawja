@@ -8,6 +8,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
@@ -26,7 +27,10 @@ import kotlinx.coroutines.launch
 object NextPrayerRefresh {
     internal const val ACTION_TICK = "app.mawja.android.widget.prayer.TICK"
     private const val REQUEST = 47_164
-    private const val WINDOW_MS = 10 * 60_000L
+    // The countdown is a platform Chronometer, which runs on into negative time if the redraw at the
+    // prayer comes late, so the redraw is exact where allowed and otherwise held to a one-minute window.
+    // RTC (not wakeup): while the screen is off nobody sees it, and a missed alarm fires on wake.
+    private const val WINDOW_MS = 60_000L
 
     /** Asks every placed Next Prayer widget to redraw now, e.g. after a prayer setting changed. */
     fun request(context: Context) {
@@ -44,7 +48,12 @@ object NextPrayerRefresh {
             if (at == null) {
                 am.cancel(pending(app))
             } else {
-                am.setWindow(AlarmManager.RTC, at, WINDOW_MS, pending(app))
+                val exactAllowed = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || am.canScheduleExactAlarms()
+                if (exactAllowed) {
+                    am.setExact(AlarmManager.RTC, at, pending(app))
+                } else {
+                    am.setWindow(AlarmManager.RTC, at, WINDOW_MS, pending(app))
+                }
             }
         }.onFailure { Log.w(TAG, "Could not arm the next prayer refresh", it) }
     }

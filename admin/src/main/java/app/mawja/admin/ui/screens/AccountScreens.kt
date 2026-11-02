@@ -148,6 +148,7 @@ fun NotAuthorizedScreen(
     email: String?,
     busy: Boolean,
     onRecheck: () -> Unit,
+    readError: String? = null,
     onSignOut: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -159,6 +160,14 @@ fun NotAuthorizedScreen(
         Icon(Icons.Rounded.Shield, null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(56.dp))
         Text(stringResource(R.string.not_authorized_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
         Text(stringResource(R.string.not_authorized_body, email ?: "—"), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (readError != null) {
+            Text(
+                stringResource(R.string.role_read_failed, readError),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
         SectionCard(Modifier.widthIn(max = 480.dp), title = stringResource(R.string.your_uid)) {
             Text(uid, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodyLarge)
             Button(onClick = { copyText(context, uid, sensitive = false) }, modifier = Modifier.fillMaxWidth()) {

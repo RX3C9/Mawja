@@ -19,6 +19,7 @@
     <string name="copy_uid">نسخ المعرّف</string>
     <string name="owner_setup_hint">لجعل هذا الحساب المالك: لوحة Firebase ← Firestore ← أنشئ المستند admins/&lt;UID&gt; بحقل role = \"owner\". ثم اضغط «تحقق مرة أخرى».</string>
     <string name="check_again">تحقق مرة أخرى</string>
+    <string name="role_read_failed">تعذّرت قراءة صلاحيتك من الخادم (%1$s). تأكد من الاتصال ثم اضغط «تحقق مرة أخرى».</string>
     <string name="sign_out">تسجيل الخروج</string>
     <string name="admin_blocked">تطبيق الإدارة متوقف أو يحتاج إلى تحديث.</string>
     <string name="nav_dashboard">الرئيسية</string>

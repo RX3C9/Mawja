@@ -261,7 +261,7 @@ s_settings() { open_settings "$2"; shot "$1" "${3:-2}"; }
 s_player() { start_app --ez $BYPASS true --es video_id "$VIDEO_ID"; shot player 12; stop_app; }
 s_music() { music_flow; shot music_player 6; stop_app; }
 s_shorts() { open_route shorts; shot shorts 10; stop_app; }
-s_theme() { open_settings theme; shot theme 4; swipe_up; swipe_up; swipe_up; shot theme_premium 2; }
+s_theme() { open_settings theme; shot theme 4; stop_app; open_settings "theme%23theme.palettes"; shot theme_premium 4; }
 s_app_icon() {
   open_settings "appearance%23appearance.app_icon"; sleep 3
   tap_text 'App [Ii]con|أيقونة التطبيق' || { swipe_up; tap_text 'App [Ii]con|أيقونة التطبيق'; } || { miss app_icon "App icon row not found"; return 0; }
@@ -277,7 +277,7 @@ s_a11y_large() { # Mawja largest text + high contrast + colour-blind + reduce mo
 <string name="color_vision">red_green</string>' || { miss accessibility_large "could not write prefs"; return 0; }
   a shell settings put system font_scale 2.0
   open_settings accessibility; shot accessibility_large 6
-  open_route home; shot home_large 8
+  stop_app; start_app --ez $BYPASS true; shot home_large 10
   stop_app; a11y_reset
 }
 s_offline() {
@@ -376,7 +376,7 @@ core_pass() {
   step subscriptions s_route subscriptions subscriptions 6
   step music_home s_route music_home music 7
   step notifications_inbox s_route notifications_inbox notifications 3
-  step settings s_settings settings home 3
+  step settings s_route settings settings 3
   step appearance s_settings appearance appearance
   step theme s_theme
   step app_icon s_app_icon

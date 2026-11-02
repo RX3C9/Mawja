@@ -227,7 +227,7 @@ private fun AdminRoot(session: SessionViewModel) {
                 Session.NotConfigured -> Centered { Text(stringResource(R.string.not_configured)) }
                 Session.Loading -> Centered { LinearProgressIndicator(Modifier.fillMaxWidth(0.5f)) }
                 Session.SignedOut -> SignInScreen(session, busy)
-                is Session.NotStaff -> NotAuthorizedScreen(s.uid, s.email, busy, onRecheck = session::recheck, onSignOut = session::signOut)
+                is Session.NotStaff -> NotAuthorizedScreen(s.uid, s.email, busy, onRecheck = session::recheck, readError = s.readError, onSignOut = session::signOut)
                 is Session.Active -> {
                     val cfg by session.adminConfig.collectAsStateWithLifecycle()
                     if (s.staff.role != StaffRole.OWNER && session.blocked(cfg)) {

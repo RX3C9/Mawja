@@ -19,6 +19,7 @@
     <string name="copy_uid">Copy UID</string>
     <string name="owner_setup_hint">To make this account the owner: Firebase console → Firestore → create document admins/&lt;UID&gt; with field role = \"owner\". Then tap Check again.</string>
     <string name="check_again">Check again</string>
+    <string name="role_read_failed">Couldn\'t read your role from the server (%1$s). Check your connection, then tap Check again.</string>
     <string name="sign_out">Sign out</string>
     <string name="admin_blocked">The admin app is switched off or needs an update.</string>
     <string name="nav_dashboard">Dashboard</string>

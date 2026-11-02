@@ -39,6 +39,8 @@ sealed interface Session {
     data class NotStaff(
         val uid: String,
         val email: String?,
+        /** Set when the role could not be read at all (offline, rules), so "no role" is not claimed. */
+        val readError: String? = null,
     ) : Session
 
     data class Active(
@@ -63,11 +65,14 @@ class AuthRepository(
         val user = fb.auth.currentUser ?: return Session.SignedOut.also { _session.value = it }
         val claim = runCatching { user.getIdToken(true).await().claims["role"] as? String }.getOrNull()
         val fromClaim = StaffRole.of(claim)
+        var readError: String? = null
         val role =
-            fromClaim ?: runCatching { StaffRole.of(fb.db.document("admins/${user.uid}").get().await().getString("role")) }.getOrNull()
+            fromClaim ?: runCatching { StaffRole.of(fb.db.document("admins/${user.uid}").get().await().getString("role")) }
+                .onFailure { readError = it.message ?: it.javaClass.simpleName }
+                .getOrNull()
         val next =
             if (role == null) {
-                Session.NotStaff(user.uid, user.email)
+                Session.NotStaff(user.uid, user.email, readError)
             } else {
                 Session.Active(Staff(user.uid, user.email, user.displayName, role, viaClaim = fromClaim != null))
             }

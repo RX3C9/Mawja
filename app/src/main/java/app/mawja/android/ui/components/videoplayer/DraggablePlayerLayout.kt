@@ -225,6 +225,14 @@ fun DraggablePlayerLayout(
                         )
                     }
                 }
+            // This box is forced LTR, but the detail pane beside the video follows the system direction.
+            // In an RTL two-pane window the pane sits on the left, so the expanded video starts after it.
+            val expandedStartX =
+                if (isTwoPaneWindow && systemLayoutDirection == LayoutDirection.Rtl) {
+                    with(density) { detailPaneWidth.toPx() }
+                } else {
+                    0f
+                }
             val miniCornerRadiusPx = with(density) { MINI_PLAYER_CORNER_RADIUS_DP.dp.toPx() }
             val imeInsets = WindowInsets.ime
             val miniMarginPx = with(density) { MiniPlayerMargin.toPx() }
@@ -421,7 +429,7 @@ fun DraggablePlayerLayout(
                                     val expandedTopY =
                                         statusBarHeight + state.portraitFsFraction.coerceAtLeast(0f) * portraitFsTravelProvider()
                                     translationX =
-                                        lerpClamped(0f, origin?.left ?: state.offsetX.value, fraction) +
+                                        lerpClamped(expandedStartX, origin?.left ?: state.offsetX.value, fraction) +
                                         windowW * (1f - drag) / 2f
                                     translationY =
                                         lerpClamped(
