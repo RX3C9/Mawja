@@ -2066,7 +2066,7 @@
     <string name="about_creator_name">Omar Mahmoud</string>
     <string name="about_website_address">rx3c9.github.io/Mawja</string>
     <string name="about_reddit">Reddit</string>
-    <string name="about_reddit_subtitle">r/Flow_Official</string>
+    <string name="about_reddit_subtitle">GitHub · RX3C9/Mawja</string>
     <string name="about_license_name">GNU GPL v3</string>
     <string name="discord_presence_title">Discord Rich Presence</string>
     <string name="discord_presence_enable">Compartir actividad de reproducción</string>
@@ -2259,7 +2259,7 @@
     <string name="subscriptions_failed_channels_more">%1$s y %2$d más</string>
     <string name="comment_edited">Editado</string>
     <string name="notif_background_restricted_title">Las verificaciones en segundo plano están restringidas</string>
-    <string name="notif_background_restricted_subtitle">Android bloquea las comprobaciones cuando Flows está cerrado. Toca para permitir actividad en segundo plano.</string>
+    <string name="notif_background_restricted_subtitle">Android bloquea las comprobaciones cuando Mawja está cerrado. Toca para permitir actividad en segundo plano.</string>
     <string name="audio_track_original">Original</string>
     <string name="audio_track_dubbed">Doblado</string>
     <string name="empty_saved_shorts">Aún no tienes Shorts guardados</string>

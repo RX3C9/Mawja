@@ -1839,7 +1839,7 @@
     <string name="about_website">Website</string>
     <string name="about_website_address">rx3c9.github.io/Mawja</string>
     <string name="about_reddit">Reddit</string>
-    <string name="about_reddit_subtitle">r/Flow_Official</string>
+    <string name="about_reddit_subtitle">GitHub · RX3C9/Mawja</string>
     <string name="github_subtitle">Source code &amp; Issues</string>
     <string name="newpipe_extractor_title">NewPipe Extractor</string>
     <string name="newpipe_extractor_subtitle">Core extraction library</string>

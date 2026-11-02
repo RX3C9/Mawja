@@ -244,7 +244,7 @@
     <string name="new_update_available">有新更新</string>
     <string name="update_available_template">%1$s 现已可用</string>
     <string name="release_notes">发行说明</string>
-    <string name="update_flow">更新Flow</string>
+    <string name="update_flow">更新Mawja</string>
     <string name="maybe_later">也许稍后</string>
     <string name="nav_home">首页</string>
     <string name="nav_shorts">Shorts</string>
@@ -476,10 +476,10 @@
     <string name="settings_item_export_data_subtitle">备份您的数据</string>
     <string name="settings_item_import_data">导入数据</string>
     <string name="settings_item_import_data_subtitle">从备份恢复或从其他应用程序导入</string>
-    <string name="settings_item_about_flow">关于Flow</string>
+    <string name="settings_item_about_flow">关于Mawja</string>
     <string name="settings_item_about_flow_subtitle">版本、许可证、贡献者</string>
     <string name="settings_item_support">支持与捐赠</string>
-    <string name="settings_item_support_subtitle">帮助支持Flow的发展</string>
+    <string name="settings_item_support_subtitle">帮助支持Mawja的发展</string>
     <string name="settings_region_dialog_title">选择地区</string>
     <string name="settings_language_dialog_title">选择应用程序语言</string>
     <string name="settings_language_system_default">系统默认</string>
@@ -648,7 +648,7 @@
     <string name="theme_name_cream_paper">奶油纸</string>
     <string name="theme_desc_cream_paper">温暖舒适</string>
     <string name="theme_name_classic_dark">经典</string>
-    <string name="theme_desc_classic_dark">Flow的原始调色板</string>
+    <string name="theme_desc_classic_dark">Mawja的原始调色板</string>
     <string name="theme_name_true_black">纯黑</string>
     <string name="theme_desc_true_black">纯OLED</string>
     <string name="theme_name_monochrome">单色</string>
@@ -1103,7 +1103,7 @@
     <string name="import_flow_backup_failed_template">无法导入 Mawja 备份：%1$s</string>
     <string name="import_newpipe_failed_template">无法导入 NewPipe 备份：%1$s</string>
     <string name="import_youtube_failed_template">无法导入 YouTube 备份：%1$s</string>
-    <string name="import_flow_backup_item_title">导入Flow备份</string>
+    <string name="import_flow_backup_item_title">导入Mawja备份</string>
     <string name="import_flow_backup_desc">从 Mawja 备份文件恢复您的历史记录、设置和订阅。</string>
     <string name="import_from_newpipe">从 NewPipe 导入</string>
     <string name="import_from_newpipe_desc">从 NewPipe 导出文件 (JSON) 导入订阅。</string>
@@ -1189,13 +1189,13 @@
     <string name="location_badge_active">活跃</string>
     <string name="select_threads_count_desc">选择线程数 (1-8)：</string>
     <string name="support_donations_title">支持与捐赠</string>
-    <string name="support_flow_dev_title">支持Flow开发</string>
+    <string name="support_flow_dev_title">支持Mawja开发</string>
     <string name="support_flow_dev_desc">如果您发现 Mawja 有用并愿意支持其开发，您可以在 Patreon 上支持它或通过下面的加密地址进行捐赠。您的支持有助于使项目保持活力！</string>
     <string name="support_flow_patreon">在 Patreon 上支持 Mawja</string>
     <string name="thank_you_support_message">感谢您的支持！ ❤️</string>
     <string name="address_copied_toast">地址已复制到剪贴板</string>
     <string name="donation_address_clip_label">捐款地址</string>
-    <string name="donation_prompt_title">喜欢Flow吗？</string>
+    <string name="donation_prompt_title">喜欢Mawja吗？</string>
     <string name="donation_prompt_message">Mawja 是免费、开源的，并且没有广告或跟踪器。如果它在您的设备上赢得了一席之地，请考虑支持其开发 - 它确实有助于保持项目的活力。</string>
     <string name="donation_prompt_methods">Patreon · 比特币 · 以太坊 · Solana · USDT · 门罗币</string>
     <string name="donation_prompt_support">支持发展</string>
@@ -1258,7 +1258,7 @@
     <string name="playlist_sort_date_published_oldest">发布日期（最旧）</string>
     <string name="remove_selected_playlist_text">它们将从该播放列表中删除。</string>
     <string name="remove_selected_watch_later_text">它们将从“稍后观看”中移除。</string>
-    <string name="welcome_to_flow">欢迎来到Flow</string>
+    <string name="welcome_to_flow">欢迎来到Mawja</string>
     <string name="onboarding_subtitle">告诉我们您对什么感兴趣</string>
     <string name="onboarding_instructions">选择至少 3 个主题来个性化您的体验</string>
     <string name="onboarding_interests_title">你喜欢什么？</string>
@@ -1878,7 +1878,7 @@
     <string name="no_match_found">未找到匹配项</string>
     <string name="recognition_error">识别失败</string>
     <string name="try_again">再试一次</string>
-    <string name="search_in_flow">搜索Flow</string>
+    <string name="search_in_flow">搜索Mawja</string>
     <string name="recognition_search_history">搜索已识别的歌曲</string>
     <string name="recognition_history_empty">已识别的歌曲将出现在此处</string>
     <string name="recognition_clear_history">清除历史记录？</string>
@@ -1919,12 +1919,12 @@
     <plurals name="subscriptions_failed_channels_title">
         <item quantity="other">%d 频道无法被加载</item>
     </plurals>
-    <string name="notif_background_restricted_subtitle">Android正在阻止Flow在关闭时检查新视频，因此只有在您打开应用时才会收到警报。点击以允许不受限制的后台活动。</string>
+    <string name="notif_background_restricted_subtitle">Android正在阻止Mawja在关闭时检查新视频，因此只有在您打开应用时才会收到警报。点击以允许不受限制的后台活动。</string>
     <string name="player_appearance_seek_gesture_title">搜索姿势</string>
     <string name="content_settings_hide_unplayable_subscriptions_subtitle">过滤出年龄限制，私人，仅限会员和已删除的视频后，他们无法播放</string>
     <string name="player_settings_subtitle_language">首选字幕语言</string>
     <string name="player_settings_subtitle_language_dialog_title">字幕语言</string>
-    <string name="player_settings_subtitle_language_dialog_body">如果可用，标题将以该语言打开。如果视频中没有轨道，Flow将使用YouTube对现有轨道的翻译。在播放期间拾取字幕也会更新此内容。</string>
+    <string name="player_settings_subtitle_language_dialog_body">如果可用，标题将以该语言打开。如果视频中没有轨道，Mawja将使用YouTube对现有轨道的翻译。在播放期间拾取字幕也会更新此内容。</string>
     <string name="player_settings_subtitle_language_none">无偏好</string>
     <string name="player_settings_subtitle_language_none_desc">使用视频提供的第一个字幕轨道</string>
     <string name="player_settings_auto_enable_subtitles">自动打开字幕</string>

@@ -2125,7 +2125,7 @@
     <string name="about_creator_name">Omar Mahmoud</string>
     <string name="about_website_address">rx3c9.github.io/Mawja</string>
     <string name="about_reddit">Reddit</string>
-    <string name="about_reddit_subtitle">r/Flow_Official</string>
+    <string name="about_reddit_subtitle">GitHub · RX3C9/Mawja</string>
     <string name="about_license_name">GNU GPL v3</string>
     <string name="discord_presence_risk_dialog_body">عند الاتصال، تمنح موجة رمز Discord الخاص بك. يبقى مشفّرًا على هذا الجهاز ولا يُرسل إلا إلى Discord. تخالف هذه الطريقة شروط خدمة Discord، لذا قد يتم تقييد حسابك أو حظره.</string>
     <string name="discord_presence_risk_accept">أنا أفهم، اتصل</string>

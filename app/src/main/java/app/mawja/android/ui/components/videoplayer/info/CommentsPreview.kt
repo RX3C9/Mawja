@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,16 +29,35 @@ internal fun CommentsPreview(
     totalText: String? = null,
     showPreviewText: Boolean = true,
 ) {
+    // Mawja: the comments entry looks like the top of a drawer (handle, chevron), with a soft
+    // primary wash and a layered shadow; tapping it pulls the comments drawer up.
+    val primary = MaterialTheme.colorScheme.primary
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 3.dp,
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 8.dp),
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Box(
+            Modifier.background(
+                androidx.compose.ui.graphics.Brush.verticalGradient(
+                    listOf(primary.copy(alpha = 0.10f), androidx.compose.ui.graphics.Color.Transparent),
+                ),
+            ),
+        ) {
+        Box(
+            Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 6.dp)
+                .size(width = 32.dp, height = 4.dp)
+                .clip(RoundedCornerShape(50))
+                .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)),
+        )
+        Column(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 16.dp, bottom = 12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text =
@@ -48,6 +69,12 @@ internal fun CommentsPreview(
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Rounded.KeyboardArrowUp,
+                    contentDescription = null,
+                    tint = primary,
                 )
             }
 
@@ -95,5 +122,6 @@ internal fun CommentsPreview(
                 )
             }
         }
+    }
     }
 }

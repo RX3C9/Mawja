@@ -19,6 +19,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,7 +76,8 @@ fun FlowCommentsBottomSheet(
         expandedHeight = expandedHeight ?: defaultSheetExpandedHeight(),
         collapsedHeight = collapsedHeight,
         dismissOnOutsideTap = dismissOnOutsideTap,
-        shape = RectangleShape,
+        // Mawja: comments open as a drawer with rounded top corners over the watch page.
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = MaterialTheme.colorScheme.surface,
         onProgressChange = onSheetProgressChange,
         header = { dragModifier ->
@@ -156,7 +160,12 @@ private fun CommentsSheetHeader(
                     Text(
                         text = totalText,
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier =
+                            Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(horizontal = 10.dp, vertical = 2.dp),
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))

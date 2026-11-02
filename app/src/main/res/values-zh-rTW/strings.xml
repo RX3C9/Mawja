@@ -283,7 +283,7 @@
     <string name="new_update_available">有新的更新可用</string>
     <string name="update_available_template">%1$s 現已推出</string>
     <string name="release_notes">版本資訊</string>
-    <string name="update_flow">更新Flow</string>
+    <string name="update_flow">更新Mawja</string>
     <string name="maybe_later">稍後再說</string>
     <string name="nav_home">首頁</string>
     <string name="nav_shorts">Shorts</string>
@@ -631,18 +631,18 @@
     <string name="settings_reset_everything">全部重設</string>
     <string name="settings_analyzing_interactions">正在分析你的互動...</string>
     <string name="settings_view_analytics">查看分析資料</string>
-    <string name="deep_flow_mode_title">Deep Flow模式</string>
+    <string name="deep_flow_mode_title">Deep Mawja模式</string>
     <string name="deep_flow_mode_subtitle">瀏覽時暫停學習</string>
     <string name="deep_flow_learning_paused">已暫停學習</string>
     <string name="deep_flow_expires_in">將於 %s 後結束</string>
-    <string name="deep_flow_expire_duration_title">Deep Flow停用計時器</string>
+    <string name="deep_flow_expire_duration_title">Deep Mawja停用計時器</string>
     <string name="deep_flow_expire_duration_subtitle">%s 後自動恢復學習</string>
     <string name="deep_flow_dialog_title">暫停時長</string>
     <string name="deep_flow_dialog_body">您要暫停學習多久？</string>
-    <string name="deep_flow_enabled_message">已啟用Deep Flow模式</string>
-    <string name="deep_flow_disabled_message">已停用Deep Flow模式</string>
-    <string name="deep_flow_expired_message">Deep Flow模式計時器已結束</string>
-    <string name="deep_flow_active_until_disabled">Deep Flow模式會持續啟用，直到你將其關閉</string>
+    <string name="deep_flow_enabled_message">已啟用Deep Mawja模式</string>
+    <string name="deep_flow_disabled_message">已停用Deep Mawja模式</string>
+    <string name="deep_flow_expired_message">Deep Mawja模式計時器已結束</string>
+    <string name="deep_flow_active_until_disabled">Deep Mawja模式會持續啟用，直到你將其關閉</string>
     <string name="deep_flow_duration_never">永不</string>
     <string name="deep_flow_duration_1h">1小時</string>
     <string name="deep_flow_duration_2h">2小時</string>
@@ -1538,8 +1538,8 @@
         <item quantity="other">將移除 %d 則通知，且無法復原。</item>
     </plurals>
     <string name="notifications_clear_confirm">全部清除</string>
-    <string name="deep_flow_scrobble_title">Deep Flow模式播放期間記錄聆聽紀錄</string>
-    <string name="taste_learning_paused">Deep Flow模式已開啟，偏好學習已暫停</string>
+    <string name="deep_flow_scrobble_title">Deep Mawja模式播放期間記錄聆聽紀錄</string>
+    <string name="taste_learning_paused">Deep Mawja模式已開啟，偏好學習已暫停</string>
     <string name="deep_flow_scrobble_subtitle">持續將聆聽紀錄傳送至 Last.fm、Libre.fm 和 ListenBrainz</string>
     <string name="notif_type_shorts">Shorts</string>
     <string name="notif_type_shorts_subtitle">在訂閱頻道的新影片通知中包含 Shorts</string>
@@ -1976,7 +1976,7 @@
     <string name="about_website">網站</string>
     <string name="about_website_address">rx3c9.github.io/Mawja</string>
     <string name="about_reddit">Reddit</string>
-    <string name="about_reddit_subtitle">r/Flow_Official</string>
+    <string name="about_reddit_subtitle">GitHub · RX3C9/Mawja</string>
     <string name="github_subtitle">原始碼與問題回報</string>
     <string name="newpipe_extractor_title">NewPipe Extractor</string>
     <string name="newpipe_extractor_subtitle">核心擷取函式庫</string>
