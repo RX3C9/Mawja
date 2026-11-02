@@ -4929,4 +4929,17 @@
     <string name="theme_desc_lotus">Soft lotus pink with a cool jade accent.</string>
     <string name="theme_name_alexandria">Alexandria</string>
     <string name="theme_desc_alexandria">Mediterranean blue with a warm coral edge.</string>
+    <string name="moderation_banned_title">This account is banned</string>
+    <string name="moderation_suspended_title">This account is suspended</string>
+    <string name="moderation_until">Until %1$s</string>
+    <string name="moderation_no_end">Until the Mawja team lifts it</string>
+    <string name="moderation_reason">Reason: %1$s</string>
+    <plurals name="moderation_warnings">
+        <item quantity="one">%1$d warning</item>
+        <item quantity="other">%1$d warnings</item>
+    </plurals>
+    <string name="moderation_sign_out">Sign out</string>
+    <string name="moderation_message_title">A message from the Mawja team</string>
+    <string name="moderation_message_ok">Got it</string>
+    <string name="moderation_muted">Your account can\'t send reports until %1$s</string>
 </resources>

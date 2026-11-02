@@ -228,6 +228,67 @@ class UsersViewModel(
         }
     }
 
+    fun tempBan(
+        hours: Int,
+        reason: String,
+    ) {
+        val u = _state.value.selected ?: return
+        launchSafe(R.string.saved) {
+            repo.tempBan(u.uid, java.util.Date(app.mawja.admin.core.ModerationActions.until(System.currentTimeMillis(), hours)), reason)
+            reloadSelected()
+        }
+    }
+
+    fun warn(reason: String) {
+        val u = _state.value.selected ?: return
+        val w = app.mawja.admin.core.ModerationActions.warn(u.warnings)
+        launchSafe(if (w.autoBan) R.string.mod_auto_banned else R.string.saved) {
+            repo.warn(u.uid, w.warnings, w.autoBan, reason)
+            reloadSelected()
+        }
+    }
+
+    fun clearWarnings() {
+        val u = _state.value.selected ?: return
+        launchSafe(R.string.saved) {
+            repo.clearWarnings(u.uid)
+            reloadSelected()
+        }
+    }
+
+    /** [hours] 0 lifts the mute. */
+    fun mute(hours: Int) {
+        val u = _state.value.selected ?: return
+        launchSafe(R.string.saved) {
+            repo.mute(u.uid, if (hours <= 0) null else java.util.Date(app.mawja.admin.core.ModerationActions.until(System.currentTimeMillis(), hours)))
+            reloadSelected()
+        }
+    }
+
+    fun lockFeatures(features: List<String>) {
+        val u = _state.value.selected ?: return
+        launchSafe(R.string.saved) {
+            repo.lockFeatures(u.uid, features)
+            reloadSelected()
+        }
+    }
+
+    fun sendMessage(text: String?) {
+        val u = _state.value.selected ?: return
+        launchSafe(R.string.saved) {
+            repo.message(u.uid, text)
+            reloadSelected()
+        }
+    }
+
+    fun signOutEverywhere() {
+        val u = _state.value.selected ?: return
+        launchSafe(R.string.mod_signed_out) {
+            repo.signOutEverywhere(u.uid)
+            reloadSelected()
+        }
+    }
+
     fun setNote(note: String) {
         val u = _state.value.selected ?: return
         launchSafe(R.string.saved) {

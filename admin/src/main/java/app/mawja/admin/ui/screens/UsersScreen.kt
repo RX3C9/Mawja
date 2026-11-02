@@ -39,6 +39,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -289,6 +290,10 @@ private fun UserDetail(
                 }
             }
 
+            if (Permissions.can(role, Perm.USERS_STATUS) && u.uid != staff.uid) {
+                ModerationCard(u, vm, busy) { text, action -> confirm = text to action }
+            }
+
             if (Permissions.can(role, Perm.USERS_BADGES)) {
                 var badges by remember(u.uid, u.badges) { mutableStateOf(u.badges) }
                 var verified by remember(u.uid, u.verified) { mutableStateOf(u.verified) }
@@ -346,3 +351,113 @@ private fun UserDetail(
         ConfirmDialog(text = text, confirm = stringResource(R.string.confirm), danger = false, onConfirm = action, onDismiss = { confirm = null })
     }
 }
+
+/** Mawja 2.0 moderation: temporary ban, warnings (3 = ban), mute, feature locks, private message, sign out everywhere. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ModerationCard(
+    u: UserRecord,
+    vm: UsersViewModel,
+    busy: Boolean,
+    ask: (String, () -> Unit) -> Unit,
+) {
+    val now = System.currentTimeMillis()
+    var reason by remember(u.uid) { mutableStateOf("") }
+    var hours by remember(u.uid) { mutableIntStateOf(24) }
+    var custom by remember(u.uid) { mutableStateOf("") }
+    val customDays = app.mawja.admin.core.ModerationActions.customDays(custom)
+    val chosenHours = customDays?.let { it * 24 } ?: hours
+    SectionCard(title = stringResource(R.string.mod_title)) {
+        // Current state
+        if (u.banUntil != null && u.banUntil.time > now) InfoRow(stringResource(R.string.mod_banned_until), dateTime(u.banUntil))
+        InfoRow(stringResource(R.string.mod_warnings), "${u.warnings} / ${app.mawja.admin.core.ModerationActions.AUTO_BAN_WARNINGS}")
+        if (u.mutedUntil != null && u.mutedUntil.time > now) InfoRow(stringResource(R.string.mod_muted_until), dateTime(u.mutedUntil))
+        if (u.lockedFeatures.isNotEmpty()) InfoRow(stringResource(R.string.mod_locked), u.lockedFeatures.joinToString(", "))
+        u.adminMessage?.let { InfoRow(stringResource(R.string.mod_message_current), it) }
+
+        OutlinedTextField(reason, { reason = it.take(500) }, label = { Text(stringResource(R.string.reason)) }, modifier = Modifier.fillMaxWidth())
+        Text(stringResource(R.string.mod_duration), style = MaterialTheme.typography.labelLarge)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            app.mawja.admin.core.ModerationActions.DURATIONS_H.forEach { h ->
+                FilterChip(
+                    selected = customDays == null && hours == h,
+                    onClick = {
+                        hours = h
+                        custom = ""
+                    },
+                    label = { Text(durationLabel(h)) },
+                )
+            }
+        }
+        OutlinedTextField(
+            custom,
+            { custom = it.filter(Char::isDigit).take(4) },
+            label = { Text(stringResource(R.string.mod_custom_days)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        val banText = stringResource(R.string.mod_confirm_temp_ban, durationLabel(chosenHours))
+        val muteText = stringResource(R.string.mod_confirm_mute, durationLabel(chosenHours))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            OutlinedButton(onClick = { ask(banText) { vm.tempBan(chosenHours, reason) } }, enabled = !busy) {
+                Text(stringResource(R.string.mod_temp_ban), color = MaterialTheme.colorScheme.error)
+            }
+            OutlinedButton(onClick = { ask(muteText) { vm.mute(chosenHours) } }, enabled = !busy) { Text(stringResource(R.string.mod_mute)) }
+            if (u.mutedUntil != null && u.mutedUntil.time > now) {
+                TextButton(onClick = { vm.mute(0) }, enabled = !busy) { Text(stringResource(R.string.mod_unmute)) }
+            }
+        }
+
+        val next = app.mawja.admin.core.ModerationActions.warn(u.warnings)
+        val warnText = stringResource(if (next.autoBan) R.string.mod_confirm_warn_ban else R.string.mod_confirm_warn, next.warnings)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = { ask(warnText) { vm.warn(reason) } }, enabled = !busy) { Text(stringResource(R.string.mod_warn)) }
+            if (u.warnings > 0) TextButton(onClick = vm::clearWarnings, enabled = !busy) { Text(stringResource(R.string.mod_clear_warnings)) }
+        }
+
+        HorizontalDivider()
+        Text(stringResource(R.string.mod_locks), style = MaterialTheme.typography.labelLarge)
+        var locks by remember(u.uid, u.lockedFeatures) { mutableStateOf(u.lockedFeatures.toSet()) }
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            app.mawja.admin.core.ModerationActions.LOCKABLE.forEach { f ->
+                FilterChip(selected = f in locks, onClick = { locks = if (f in locks) locks - f else locks + f }, label = { Text(f) })
+            }
+        }
+        OutlinedButton(onClick = { vm.lockFeatures(locks.toList()) }, enabled = !busy && locks != u.lockedFeatures.toSet()) { Text(stringResource(R.string.save)) }
+
+        HorizontalDivider()
+        var message by remember(u.uid) { mutableStateOf("") }
+        OutlinedTextField(
+            message,
+            { message = it.take(app.mawja.admin.core.ModerationActions.MAX_MESSAGE) },
+            label = { Text(stringResource(R.string.mod_message)) },
+            minLines = 2,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(
+                onClick = {
+                    vm.sendMessage(message)
+                    message = ""
+                },
+                enabled = !busy && app.mawja.admin.core.ModerationActions.messageOk(message),
+            ) { Text(stringResource(R.string.mod_send_message)) }
+            if (u.adminMessage != null) TextButton(onClick = { vm.sendMessage(null) }, enabled = !busy) { Text(stringResource(R.string.mod_clear_message)) }
+        }
+
+        HorizontalDivider()
+        val outText = stringResource(R.string.mod_confirm_sign_out)
+        OutlinedButton(onClick = { ask(outText) { vm.signOutEverywhere() } }, enabled = !busy) {
+            Text(stringResource(R.string.mod_sign_out_all), color = MaterialTheme.colorScheme.error)
+        }
+        u.signOutAt?.let { InfoRow(stringResource(R.string.mod_last_sign_out), dateTime(it)) }
+    }
+}
+
+@Composable
+private fun durationLabel(hours: Int): String =
+    when {
+        hours == 24 * 7 -> stringResource(R.string.mod_week)
+        hours % 24 == 0 -> stringResource(R.string.days_n, hours / 24)
+        else -> stringResource(R.string.mod_hours_n, hours)
+    }

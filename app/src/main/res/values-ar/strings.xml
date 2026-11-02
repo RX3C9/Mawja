@@ -5307,4 +5307,21 @@
     <string name="theme_desc_lotus">وردي اللوتس الهادئ مع لمسة يشب باردة.</string>
     <string name="theme_name_alexandria">الإسكندرية</string>
     <string name="theme_desc_alexandria">أزرق البحر المتوسط مع حافة مرجانية دافئة.</string>
+    <string name="moderation_banned_title">الحساب ده محظور</string>
+    <string name="moderation_suspended_title">الحساب ده موقوف</string>
+    <string name="moderation_until">لحد %1$s</string>
+    <string name="moderation_no_end">لحد ما فريق موجة يرفع الإيقاف</string>
+    <string name="moderation_reason">السبب: %1$s</string>
+    <plurals name="moderation_warnings">
+        <item quantity="zero">%1$d إنذار</item>
+        <item quantity="one">إنذار واحد</item>
+        <item quantity="two">إنذارين</item>
+        <item quantity="few">%1$d إنذارات</item>
+        <item quantity="many">%1$d إنذار</item>
+        <item quantity="other">%1$d إنذار</item>
+    </plurals>
+    <string name="moderation_sign_out">تسجيل الخروج</string>
+    <string name="moderation_message_title">رسالة من فريق موجة</string>
+    <string name="moderation_message_ok">تمام</string>
+    <string name="moderation_muted">حسابك مش هيقدر يبعت بلاغات لحد %1$s</string>
 </resources>

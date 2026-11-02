@@ -108,6 +108,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var remoteConfig: app.mawja.android.remote.RemoteConfigRepository
 
+    @Inject
+    lateinit var accountBackend: app.mawja.android.account.AccountBackend
+
     /** Cloud sync (#61): created with the activity so it can keep its periodic job scheduled. */
     @Inject
     lateinit var cloudSync: app.mawja.android.cloudsync.CloudSyncRepository
@@ -357,6 +360,7 @@ class MainActivity : ComponentActivity() {
                                 }
                                 app.mawja.android.ui.components.shared.DownloaderInstallPrompt()
                                 app.mawja.android.remote.RemoteControlOverlay(remoteConfig, entitlementsRepository)
+                                app.mawja.android.account.ModerationOverlay(accountBackend)
                             }
                         }
                     }

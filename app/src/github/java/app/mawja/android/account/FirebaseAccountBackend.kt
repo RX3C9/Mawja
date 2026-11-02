@@ -100,7 +100,13 @@ class FirebaseAccountBackend(
             val result = fetchFields(user)
             if (auth.currentUser?.uid != user.uid) return
             if (result != null) {
-                _state.value = AccountState.SignedIn(basicProfile(user, result.fields))
+                val profile = basicProfile(user, result.fields)
+                // "Sign out of every device" from the admin app: a sign-in older than the request ends.
+                if (profile.moderation.mustSignOut(user.metadata?.lastSignInTimestamp ?: 0L)) {
+                    signOut()
+                    return
+                }
+                _state.value = AccountState.SignedIn(profile)
                 // Without the functions (Spark plan) there is no Mawja ID to wait for.
                 if (result.fields["mawjaId"] != null || !result.fromFunction) return
             }
@@ -195,6 +201,7 @@ class FirebaseAccountBackend(
             badges = MawjaBadge.of(badges),
             status = str("status") ?: "active",
             tierUntil = tierUntil,
+            moderation = Moderation.from(doc),
         )
     }
 

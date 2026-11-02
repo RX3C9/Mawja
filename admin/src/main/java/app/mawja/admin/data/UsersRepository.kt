@@ -103,8 +103,69 @@ class UsersRepository(
         status: String,
         reason: String,
     ) = write(uid, "user.status", mapOf("status" to status, "reason" to reason)) {
-        mapOf("status" to status, "banReason" to reason.take(500), "statusUpdatedAt" to FieldValue.serverTimestamp(), "statusBy" to fb.uid)
+        statusFields(status, reason, null)
     }
+
+    /** Temporary ban: a suspension that ends by itself at [until]. */
+    suspend fun tempBan(
+        uid: String,
+        until: Date,
+        reason: String,
+    ) = write(uid, "user.temp_ban", mapOf("until" to until.time, "reason" to reason)) { statusFields("suspended", reason, until) }
+
+    /** Adds a warning; the third one bans the account in the same write. */
+    suspend fun warn(
+        uid: String,
+        warnings: Int,
+        autoBan: Boolean,
+        reason: String,
+    ) = write(uid, "user.warning", mapOf("warnings" to warnings, "autoBan" to autoBan)) {
+        moderationFields(mapOf("warnings" to warnings)) +
+            (if (autoBan) statusFields("banned", reason.ifBlank { "$warnings warnings" }, null) else emptyMap())
+    }
+
+    suspend fun clearWarnings(uid: String) = write(uid, "user.warning_clear", emptyMap()) { moderationFields(mapOf("warnings" to 0)) }
+
+    suspend fun mute(
+        uid: String,
+        until: Date?,
+    ) = write(uid, "user.mute", mapOf("until" to until?.time)) { moderationFields(mapOf("mutedUntil" to until?.let { Timestamp(it) })) }
+
+    suspend fun lockFeatures(
+        uid: String,
+        features: List<String>,
+    ) = write(uid, "user.feature_lock", mapOf("features" to features)) { moderationFields(mapOf("lockedFeatures" to features.distinct().take(20))) }
+
+    /** A private message shown once when the app opens; null clears it. */
+    suspend fun message(
+        uid: String,
+        text: String?,
+    ) = write(uid, "user.message", mapOf("length" to (text?.length ?: 0))) {
+        val msg = text?.trim()?.takeIf { it.isNotEmpty() }?.let {
+            mapOf("id" to app.mawja.admin.core.ModerationActions.messageId(System.currentTimeMillis()), "text" to it.take(1000), "at" to Timestamp.now())
+        }
+        moderationFields(mapOf("adminMessage" to msg))
+    }
+
+    /** Signs the account out of every device (each app compares it with its own sign-in time). */
+    suspend fun signOutEverywhere(uid: String) =
+        write(uid, "user.sign_out_all", emptyMap()) { moderationFields(mapOf("signOutAt" to FieldValue.serverTimestamp())) }
+
+    private fun statusFields(
+        status: String,
+        reason: String,
+        until: Date?,
+    ): Map<String, Any?> =
+        mapOf(
+            "status" to status,
+            "banReason" to reason.take(500),
+            "banUntil" to until?.let { Timestamp(it) },
+            "statusUpdatedAt" to FieldValue.serverTimestamp(),
+            "statusBy" to fb.uid,
+        )
+
+    private fun moderationFields(fields: Map<String, Any?>): Map<String, Any?> =
+        fields + mapOf("moderatedAt" to FieldValue.serverTimestamp(), "moderatedBy" to fb.uid)
 
     suspend fun setBadges(
         uid: String,
@@ -165,6 +226,12 @@ class UsersRepository(
                 staffNote = d.str("staffNote").orEmpty(),
                 createdAt = d.date("createdAt"),
                 lastSeenAt = d.date("lastSeenAt"),
+                banUntil = d.date("banUntil"),
+                warnings = (d.get("warnings") as? Number)?.toInt() ?: 0,
+                mutedUntil = d.date("mutedUntil"),
+                lockedFeatures = d.strings("lockedFeatures"),
+                adminMessage = (d.get("adminMessage") as? Map<*, *>)?.get("text") as? String,
+                signOutAt = d.date("signOutAt"),
             )
 
         fun display(v: Any?): String =

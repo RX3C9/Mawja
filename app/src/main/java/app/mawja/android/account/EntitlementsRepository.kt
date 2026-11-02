@@ -46,7 +46,8 @@ class EntitlementsRepository
 
         val entitlements: StateFlow<Entitlements> =
             combine(account.state, cachedTier, remote.settings) { state, cached, settings ->
-                Entitlements.forTier(effectiveTier(state, cached)).withRemote(settings)
+                val base = Entitlements.forTier(effectiveTier(state, cached)).withRemote(settings)
+                if (state is AccountState.SignedIn) base.withModeration(state.profile.moderation, System.currentTimeMillis()) else base
             }
                 .distinctUntilChanged()
                 .stateIn(scope, SharingStarted.Eagerly, Entitlements.FREE)

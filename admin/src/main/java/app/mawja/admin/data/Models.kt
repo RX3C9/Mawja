@@ -25,6 +25,12 @@ data class UserRecord(
     val staffNote: String = "",
     val createdAt: Date? = null,
     val lastSeenAt: Date? = null,
+    val banUntil: Date? = null,
+    val warnings: Int = 0,
+    val mutedUntil: Date? = null,
+    val lockedFeatures: List<String> = emptyList(),
+    val adminMessage: String? = null,
+    val signOutAt: Date? = null,
 )
 
 data class Device(

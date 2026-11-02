@@ -245,22 +245,52 @@ service cloud.firestore {
     function staffUserWrite(uid, keys) {
       let d = request.resource.data;
       return isStaff() && audited('users/' + uid)
-        && keys.hasOnly(['status', 'banReason', 'statusUpdatedAt', 'statusBy',
+        && keys.hasOnly(['status', 'banReason', 'banUntil', 'statusUpdatedAt', 'statusBy',
              'tier', 'tierUntil', 'tierSource', 'tierUpdatedAt', 'tierUpdatedBy',
-             'badges', 'verified', 'syncResetAt', 'staffNote', 'auditId'])
-        && (!keys.hasAny(['status', 'banReason', 'statusUpdatedAt', 'statusBy']) || staffStatusOk(uid, d))
+             'badges', 'verified', 'syncResetAt', 'staffNote', 'auditId',
+             'warnings', 'mutedUntil', 'lockedFeatures', 'adminMessage', 'signOutAt', 'moderatedAt', 'moderatedBy'])
+        && (!keys.hasAny(['status', 'banReason', 'banUntil', 'statusUpdatedAt', 'statusBy']) || staffStatusOk(uid, d))
+        && (!keys.hasAny(['warnings', 'mutedUntil', 'lockedFeatures', 'adminMessage', 'signOutAt', 'moderatedAt', 'moderatedBy'])
+             || staffModerationOk(uid, d))
         && (!keys.hasAny(['tier', 'tierUntil', 'tierSource', 'tierUpdatedAt', 'tierUpdatedBy']) || staffTierOk(d))
         && (!keys.hasAny(['badges', 'verified']) || staffBadgesOk(d))
         && (!keys.hasAny(['syncResetAt']) || (isAdmin() && d.syncResetAt == request.time))
         && optString(d, 'staffNote', 1000);
     }
     // Moderators suspend and restore; only owner/admin ban. Nobody changes their own status.
+    // A suspension may carry banUntil (temporary ban); none means until lifted. A third warning lets
+    // a moderator ban (automatic ban after 3 warnings).
     function staffStatusOk(uid, d) {
       return isModerator() && uid != request.auth.uid
         && d.status in ['active', 'suspended', 'banned']
-        && (d.status != 'banned' || isAdmin())
+        && (d.status != 'banned' || isAdmin() || d.get('warnings', 0) >= 3)
         && d.statusUpdatedAt == request.time && d.statusBy == request.auth.uid
-        && optString(d, 'banReason', 500);
+        && optString(d, 'banReason', 500) && optTime(d, 'banUntil')
+        && (d.status == 'suspended' || d.get('banUntil', null) == null);
+    }
+    // Warnings, mute, feature locks, a private message and "sign out everywhere": moderators and up.
+    function staffModerationOk(uid, d) {
+      let msg = d.get('adminMessage', null);
+      let locks = d.get('lockedFeatures', []);
+      return isModerator() && uid != request.auth.uid
+        && d.moderatedAt == request.time && d.moderatedBy == request.auth.uid
+        && (!('warnings' in d) || (d.warnings is int && d.warnings >= 0 && d.warnings <= 10))
+        && optTime(d, 'mutedUntil') && optTime(d, 'signOutAt')
+        && locks is list && locks.size() <= 20
+        && (msg == null || (msg is map && msg.keys().hasOnly(['id', 'text', 'at'])
+             && msg.id is string && msg.id.size() <= 64
+             && msg.text is string && msg.text.size() > 0 && msg.text.size() <= 1000
+             && msg.at is timestamp));
+    }
+    // The account's own moderation state, read from users/{uid} (works without custom claims).
+    function userDoc(uid) { return get(/databases/$(database)/documents/users/$(uid)).data; }
+    function docRestricted(uid) {
+      let u = exists(/databases/$(database)/documents/users/$(uid)) ? userDoc(uid) : {};
+      let st = u.get('status', 'active');
+      let until = u.get('banUntil', null);
+      let muted = u.get('mutedUntil', null);
+      return st == 'banned' || (st == 'suspended' && (until == null || until > request.time))
+        || (muted != null && muted > request.time);
     }
     // Manual membership: owner/admin; free and lifetime have no end date.
     function staffTierOk(d) {
@@ -390,7 +420,7 @@ service cloud.firestore {
     }
 
     match /reports/{id} {
-      allow create: if signedIn() && notBanned() && request.resource.data.uid == request.auth.uid
+      allow create: if signedIn() && notBanned() && !docRestricted(request.auth.uid) && request.resource.data.uid == request.auth.uid
         && request.resource.data.message is string && request.resource.data.message.size() < 5000;
       allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
       // Inbox handling by any staff role: status, assignee, internal note, reply to the reporter.

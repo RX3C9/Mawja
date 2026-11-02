@@ -57,6 +57,8 @@ data class MawjaProfile(
     val status: String,
     /** When a code-activated membership ends (epoch ms); null for Free, Lifetime and open-ended grants. */
     val tierUntil: Long? = null,
+    /** Ban, warnings, mute, locks and the private message staff set (Mawja 2.0). */
+    val moderation: Moderation = Moderation(),
 )
 
 /** Who is using the app. Guest is the default and keeps every original feature. */
