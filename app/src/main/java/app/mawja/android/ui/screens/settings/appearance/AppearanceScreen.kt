@@ -83,6 +83,7 @@ internal fun AppearanceScreen(
     var showInterfaceDialog by rememberSaveable { mutableStateOf(false) }
     var showSoundPackDialog by rememberSaveable { mutableStateOf(false) }
     val uiSoundPack by viewModel.uiSoundPack.collectAsStateWithLifecycle()
+    val soundPackName = stringResource(soundPackLabel(uiSoundPack))
 
     val themeSummary =
         if (themeMode == ThemeMode.SYSTEM) {
@@ -157,7 +158,7 @@ internal fun AppearanceScreen(
             if (uiSounds && !soundsLocked) {
                 nav(
                     AppearanceIndex.uiSoundPack,
-                    value = stringResource(soundPackLabel(uiSoundPack)),
+                    value = soundPackName,
                     icon = Icons.Outlined.GraphicEq,
                     showChevron = false,
                     onClick = { showSoundPackDialog = true },
