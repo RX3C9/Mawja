@@ -15,6 +15,7 @@ import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.platform.AppIconController
 import app.mawja.android.platform.AppUiMode
 import app.mawja.android.sound.UiSound
+import app.mawja.android.sound.UiSoundPack
 import app.mawja.android.sound.UiSoundPlayer
 import app.mawja.android.ui.components.layout.navigation.NavigationVisibility
 import app.mawja.android.ui.screens.settings.SettingsViewModel
@@ -23,6 +24,7 @@ import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
 import app.mawja.android.util.AppIcons
 import app.mawja.android.util.PremiumIcons
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -98,6 +100,17 @@ class AppearanceViewModel
 
         fun playSuccess() = uiSoundPlayer.play(UiSound.SUCCESS)
 
+        /** The chosen UI sound pack (five packs, Wave by default). */
+        val uiSoundPack: StateFlow<UiSoundPack> = uiSoundPlayer.pack
+
+        /** Switches packs and plays the new pack's success clip once it has loaded, as a preview. */
+        fun setUiSoundPack(pack: UiSoundPack) =
+            write {
+                uiSoundPlayer.setPack(pack)
+                delay(PACK_PREVIEW_DELAY_MS)
+                uiSoundPlayer.play(UiSound.SUCCESS)
+            }
+
         fun setInterfaceMode(mode: AppUiMode) = write { uiModePreferences.setMode(mode) }
 
         fun setAppIcon(suffix: String) =
@@ -143,3 +156,5 @@ class AppearanceViewModel
 
         fun setDefaultNavTab(index: Int) = write { preferences.setDefaultNavTabIndex(index) }
     }
+
+private const val PACK_PREVIEW_DELAY_MS = 350L

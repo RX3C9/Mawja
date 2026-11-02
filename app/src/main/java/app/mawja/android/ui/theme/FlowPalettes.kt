@@ -888,6 +888,147 @@ object FlowPalettes {
                             error = Color(0xFFFFB4AB),
                         ),
                 ),
+            // Mawja premium palettes, wave two: Cairo Nights, Siwa Oasis, Aswan Sunset, Lotus, Alexandria.
+            ThemeMode.CAIRO_NIGHTS to
+                PalettePair(
+                    id = "cairo-nights",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF814BCB),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF927215),
+                            background = Color(0xFFFBFAFC),
+                            surface = Color(0xFFF1F1F6),
+                            onSurface = Color(0xFF201E2C),
+                            onSurfaceVariant = Color(0xFF5D5681),
+                            outline = Color(0xFFD6D3E5),
+                            error = Color(0xFFA8201A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFBB9FE3),
+                            onPrimary = Color(0xFF241040),
+                            secondary = Color(0xFFE4BA3F),
+                            background = Color(0xFF181524),
+                            surface = Color(0xFF242036),
+                            onSurface = Color(0xFFF1F1F5),
+                            onSurfaceVariant = Color(0xFFBDBAD1),
+                            outline = Color(0xFF3E375C),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            ThemeMode.SIWA_OASIS to
+                PalettePair(
+                    id = "siwa-oasis",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF2D774C),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF9E6D27),
+                            background = Color(0xFFF8FBF8),
+                            surface = Color(0xFFECF3EC),
+                            onSurface = Color(0xFF172317),
+                            onSurfaceVariant = Color(0xFF426342),
+                            outline = Color(0xFFC4DCC4),
+                            error = Color(0xFFA8201A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFF55BE81),
+                            onPrimary = Color(0xFF082012),
+                            secondary = Color(0xFFE0B882),
+                            background = Color(0xFF101B10),
+                            surface = Color(0xFF172717),
+                            onSurface = Color(0xFFEDF3ED),
+                            onSurfaceVariant = Color(0xFFA7C4A7),
+                            outline = Color(0xFF284328),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            ThemeMode.ASWAN_SUNSET to
+                PalettePair(
+                    id = "aswan-sunset",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFFAB4D1E),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFFC34A86),
+                            background = Color(0xFFFBFAF9),
+                            surface = Color(0xFFF4F0EE),
+                            onSurface = Color(0xFF261E19),
+                            onSurfaceVariant = Color(0xFF6D5748),
+                            outline = Color(0xFFDFD2CA),
+                            error = Color(0xFFA8201A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFE69972),
+                            onPrimary = Color(0xFF2B160B),
+                            secondary = Color(0xFFE5B1CB),
+                            background = Color(0xFF1D1612),
+                            surface = Color(0xFF2C211A),
+                            onSurface = Color(0xFFF4F1EE),
+                            onSurfaceVariant = Color(0xFFC9B9AE),
+                            outline = Color(0xFF4A392C),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            ThemeMode.LOTUS to
+                PalettePair(
+                    id = "lotus",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFFAA4187),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF328376),
+                            background = Color(0xFFFCF9FC),
+                            surface = Color(0xFFF5EFF5),
+                            onSurface = Color(0xFF291B28),
+                            onSurfaceVariant = Color(0xFF754E75),
+                            outline = Color(0xFFE3D0E3),
+                            error = Color(0xFFA8201A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFD797C2),
+                            onPrimary = Color(0xFF330D26),
+                            secondary = Color(0xFF7CCDC0),
+                            background = Color(0xFF201420),
+                            surface = Color(0xFF301D30),
+                            onSurface = Color(0xFFF5F0F5),
+                            onSurfaceVariant = Color(0xFFCDB5CD),
+                            outline = Color(0xFF513051),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            ThemeMode.ALEXANDRIA to
+                PalettePair(
+                    id = "alexandria",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF286E9F),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFFC25531),
+                            background = Color(0xFFF9FAFB),
+                            surface = Color(0xFFEDF1F4),
+                            onSurface = Color(0xFF182025),
+                            onSurfaceVariant = Color(0xFF485F6B),
+                            outline = Color(0xFFC9D8DF),
+                            error = Color(0xFFA8201A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFF75B1DD),
+                            onPrimary = Color(0xFF0B1D2A),
+                            secondary = Color(0xFFE8B3A2),
+                            background = Color(0xFF11181C),
+                            surface = Color(0xFF19242A),
+                            onSurface = Color(0xFFEEF2F3),
+                            onSurfaceVariant = Color(0xFFADC0C9),
+                            outline = Color(0xFF2B3E48),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
             ThemeMode.CREAM_LIGHT to
                 PalettePair(
                     id = "cream-paper",

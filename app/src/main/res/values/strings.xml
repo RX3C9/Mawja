@@ -471,7 +471,7 @@
     <string name="you">You</string>
     <string name="empty_downloads">No downloads yet</string>
     <string name="downloads_recover_title">Find downloads from an earlier install</string>
-    <string name="downloads_recover_body">Flow saves downloads in Download/Flow and Music/Flow. To list the files an earlier install saved there, allow access to videos and audio.</string>
+    <string name="downloads_recover_body">Earlier versions saved downloads in Download/Flow and Music/Flow. To list the files an earlier install saved there, allow access to videos and audio.</string>
     <string name="downloads_recover_allow">Allow access</string>
     <string name="downloads_recover_dismiss">Not now</string>
     <plurals name="downloads_recovered_count">
@@ -866,7 +866,7 @@
     <string name="app_icon_picker_subtitle">Choose a launcher icon style. The change takes effect immediately and the launcher will briefly refresh.</string>
     <string name="app_icon_picker_warning">Changing the icon may remove Mawja from your home screen for a moment. Add it back from the app drawer if needed.</string>
     <string name="app_icon_apply_toast">Icon updated - your launcher will refresh</string>
-    <string name="icon_name_flow_red">Mawja Red</string>
+    <string name="icon_name_flow_red">Mawja Wave</string>
     <string name="icon_name_flow_light">Mawja Light</string>
     <string name="icon_name_flow_play">Mawja Play</string>
     <string name="icon_name_amoled">AMOLED Dark</string>
@@ -998,7 +998,7 @@
     <string name="theme_desc_sky_blue">A light, airy palette with open sky blues.</string>
     <string name="theme_name_cream_paper">Cream Paper</string>
     <string name="theme_desc_cream_paper">Warm paper tones for cosy daytime reading.</string>
-    <string name="theme_name_classic_dark">Mawja Default</string>
+    <string name="theme_name_classic_dark">Classic Dark</string>
     <string name="theme_desc_classic_dark">The original Mawja palette with the YouTube red accent.</string>
     <string name="theme_name_true_black">True Black</string>
     <string name="theme_desc_true_black">Pure OLED</string>
@@ -1835,14 +1835,16 @@
     <string name="donation_prompt_never">Don\'t show again</string>
     <!-- About Screen -->
     <string name="about_creator">Creator</string>
-    <string name="about_creator_name">A-EDev</string>
+    <string name="about_creator_name">Omar Mahmoud</string>
     <string name="about_website">Website</string>
-    <string name="about_website_address">flow-tube.org</string>
+    <string name="about_website_address">rx3c9.github.io/Mawja</string>
     <string name="about_reddit">Reddit</string>
     <string name="about_reddit_subtitle">r/Flow_Official</string>
     <string name="github_subtitle">Source code &amp; Issues</string>
     <string name="newpipe_extractor_title">NewPipe Extractor</string>
     <string name="newpipe_extractor_subtitle">Core extraction library</string>
+    <string name="about_based_on">Based on Flow</string>
+    <string name="about_based_on_subtitle">Flow Android Client by A-EDev, GPL-3.0. Thank you!</string>
     <string name="about_license">License</string>
     <string name="about_notices">Open source notices</string>
     <string name="about_notices_summary">Word lists and code from other projects</string>
@@ -3592,6 +3594,7 @@
     <string name="settings_font_title">Font</string>
     <string name="settings_font_summary">The typeface used across Mawja</string>
     <string name="settings_keywords_font">typeface, text, letters, ttf, otf</string>
+    <string name="font_mawja">Mawja (IBM Plex Sans Arabic)</string>
     <string name="font_system_default">System default</string>
     <string name="font_condensed">Condensed</string>
     <string name="font_serif">Serif</string>
@@ -4388,13 +4391,13 @@
     <string name="account_error_network">No connection. Check your network and try again.</string>
     <string name="account_error_disabled">This account has been disabled.</string>
     <string name="account_error_unknown">Something went wrong. Try again.</string>
-    <string name="theme_name_nile">Nile (Mawja)</string>
+    <string name="theme_name_nile">Mawja</string>
     <string name="theme_desc_nile">Mawja\'s own colours: Nile teal and coral on night blue.</string>
     <string name="premium_badge_plus">Plus</string>
     <string name="premium_locked_content_description">Locked, available with Mawja Plus</string>
     <string name="premium_available_in_plus">Available in Plus</string>
     <string name="premium_theme_upsell_body">This palette is a Mawja Plus extra. Plus, Pro, Lifetime and Family members can use it on every device they\'re signed in on.</string>
-    <string name="premium_theme_upsell_free_note">Flow Default and every original palette stay free, always.</string>
+    <string name="premium_theme_upsell_free_note">Mawja Classic and every original palette stay free, always.</string>
     <string name="premium_see_plans">See membership</string>
     <string name="premium_not_now">Not now</string>
     <string name="smart_notify_channel_name">Mawja suggestions</string>
@@ -4896,12 +4899,34 @@
     <!-- visual-player -->
     <string name="live_background_title">Live background</string>
     <string name="live_background_subtitle">Moving colours from the cover behind the full player. Rests as a still gradient with reduce motion or battery saver on.</string>
-    <string name="live_background_off">Off (Flow look)</string>
+    <string name="live_background_off">Off (classic look)</string>
     <string name="live_background_waves">Waves</string>
     <string name="live_background_aurora">Aurora</string>
     <string name="live_background_particles">Particles</string>
     <string name="live_background_static_blur">Static blur</string>
     <string name="live_background_upsell_body">Live backgrounds paint the full player with slow waves, aurora or drifting light in the colours of each cover.</string>
-    <string name="live_background_upsell_free_note">Off keeps the original Flow player look, free always.</string>
+    <string name="live_background_upsell_free_note">Off keeps the classic player look, free always.</string>
     <string name="wave_loading_label">Loading</string>
+    <string name="settings_item_ui_sound_pack">Sound pack</string>
+    <string name="settings_item_ui_sound_pack_subtitle">The style of Mawja\'s tap, toggle and success sounds</string>
+    <string name="sound_pack_wave">Wave</string>
+    <string name="sound_pack_wave_summary">Mawja\'s original soft clicks</string>
+    <string name="sound_pack_drop">Drop</string>
+    <string name="sound_pack_drop_summary">Water droplets</string>
+    <string name="sound_pack_crystal">Crystal</string>
+    <string name="sound_pack_crystal_summary">Bright glass bells</string>
+    <string name="sound_pack_soft">Soft</string>
+    <string name="sound_pack_soft_summary">Muted wooden taps</string>
+    <string name="sound_pack_retro">Retro</string>
+    <string name="sound_pack_retro_summary">8-bit game blips</string>
+    <string name="theme_name_cairo_nights">Cairo Nights</string>
+    <string name="theme_desc_cairo_nights">Violet dusk over the city with lantern gold.</string>
+    <string name="theme_name_siwa_oasis">Siwa Oasis</string>
+    <string name="theme_desc_siwa_oasis">Palm green and warm date brown.</string>
+    <string name="theme_name_aswan_sunset">Aswan Sunset</string>
+    <string name="theme_desc_aswan_sunset">Burnt orange and granite rose at golden hour.</string>
+    <string name="theme_name_lotus">Lotus</string>
+    <string name="theme_desc_lotus">Soft lotus pink with a cool jade accent.</string>
+    <string name="theme_name_alexandria">Alexandria</string>
+    <string name="theme_desc_alexandria">Mediterranean blue with a warm coral edge.</string>
 </resources>

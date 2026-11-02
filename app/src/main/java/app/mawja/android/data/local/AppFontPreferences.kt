@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 /** The font as Settings shows it. [customName] is set only while the custom font file is present. */
 data class AppFontSelection(
-    val font: AppFont = AppFont.SYSTEM,
+    val font: AppFont = AppFont.MAWJA,
     val customName: String? = null,
 )
 
@@ -44,7 +44,7 @@ class AppFontPreferences
                     val hasFile = customFonts.file() != null
                     val stored = AppFont.fromStorage(prefs[FONT])
                     AppFontSelection(
-                        font = if (stored == AppFont.CUSTOM && !hasFile) AppFont.SYSTEM else stored,
+                        font = if (stored == AppFont.CUSTOM && !hasFile) AppFont.MAWJA else stored,
                         customName = prefs[CUSTOM_NAME].takeIf { hasFile },
                     )
                 }.flowOn(Dispatchers.IO)

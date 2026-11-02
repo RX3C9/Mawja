@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#0F0F0F</color>
+    <color name="ic_launcher_background">#0B1020</color>
     <color name="flow_primary">#6200EE</color>
     <color name="flow_primary_variant">#3700B3</color>
     <color name="flow_secondary">#03DAC6</color>
@@ -23,7 +23,7 @@
     <color name="icon_bg_expressive_cookie">#000000</color>
     <color name="icon_bg_expressive_oval">#EB0000</color>
     <color name="icon_bg_expressive_pill">#FFF8F6</color>
-    <color name="splash_background">#FFFFFF</color>
+    <color name="splash_background">#F6FAFA</color>
     <color name="splash_background_light">#FFFFFF</color>
     <color name="splash_background_dark">#0F0F0F</color>
     <color name="splash_background_black">#000000</color>

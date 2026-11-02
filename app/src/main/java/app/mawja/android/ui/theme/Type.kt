@@ -3,12 +3,23 @@ package app.mawja.android.ui.theme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import app.mawja.android.R
 
 /** The system font (Roboto on most devices); the app font when the user has not picked another. */
 val FlowFontFamily: FontFamily = FontFamily.Default
+
+/** Mawja's own typeface: IBM Plex Sans Arabic (SIL OFL 1.1), Arabic and Latin in one family. */
+val MawjaFontFamily: FontFamily =
+    FontFamily(
+        Font(R.font.ibm_plex_sans_arabic_regular, FontWeight.Normal),
+        Font(R.font.ibm_plex_sans_arabic_medium, FontWeight.Medium),
+        Font(R.font.ibm_plex_sans_arabic_semibold, FontWeight.SemiBold),
+        Font(R.font.ibm_plex_sans_arabic_bold, FontWeight.Bold),
+    )
 
 /** Material's own scale, for the roles Flow keeps at their Material size. */
 private val MaterialScale = Typography()

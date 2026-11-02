@@ -51,4 +51,12 @@ class UiSoundPolicyTest {
         assertThat(UiSoundPolicy.outsideCooldown(1_000L, 1_010L)).isFalse()
         assertThat(UiSoundPolicy.outsideCooldown(1_000L, 1_000L + UiSoundPolicy.MIN_INTERVAL_MS)).isTrue()
     }
+
+    @Test
+    fun soundPacksRoundTripAndUnknownIsWave() {
+        assertThat(UiSoundPack.entries).hasSize(5)
+        UiSoundPack.entries.forEach { assertThat(UiSoundPack.fromStorage(it.storageId)).isEqualTo(it) }
+        assertThat(UiSoundPack.fromStorage(null)).isEqualTo(UiSoundPack.WAVE)
+        assertThat(UiSoundPack.fromStorage("nope")).isEqualTo(UiSoundPack.WAVE)
+    }
 }

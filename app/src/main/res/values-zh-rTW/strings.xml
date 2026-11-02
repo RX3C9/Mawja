@@ -1972,9 +1972,9 @@
     <string name="donation_prompt_later">以後再說</string>
     <string name="donation_prompt_never">不再顯示</string>
     <string name="about_creator">開發者</string>
-    <string name="about_creator_name">A-EDev</string>
+    <string name="about_creator_name">Omar Mahmoud</string>
     <string name="about_website">網站</string>
-    <string name="about_website_address">flow-tube.org</string>
+    <string name="about_website_address">rx3c9.github.io/Mawja</string>
     <string name="about_reddit">Reddit</string>
     <string name="about_reddit_subtitle">r/Flow_Official</string>
     <string name="github_subtitle">原始碼與問題回報</string>

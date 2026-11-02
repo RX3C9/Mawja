@@ -2063,8 +2063,8 @@
     <string name="download_url_expired">URL caducada (403). Es necesario volver a obtenerla.</string>
     <string name="download_sabr_failed">Error en la descarga SABR</string>
     <string name="download_sabr_failed_try_again">Error en la descarga SABR. Inténtalo de nuevo.</string>
-    <string name="about_creator_name">A-EDev</string>
-    <string name="about_website_address">flow-tube.org</string>
+    <string name="about_creator_name">Omar Mahmoud</string>
+    <string name="about_website_address">rx3c9.github.io/Mawja</string>
     <string name="about_reddit">Reddit</string>
     <string name="about_reddit_subtitle">r/Flow_Official</string>
     <string name="about_license_name">GNU GPL v3</string>

@@ -29,27 +29,25 @@ class PremiumThemesTest {
     }
 
     @Test
-    fun nileIsLockedForFreeAndOpenForPlus() {
-        assertThat(PremiumThemes.isLocked(ThemeMode.NILE, free)).isTrue()
-        assertThat(PremiumThemes.isLocked(ThemeMode.NILE, plus)).isFalse()
-        MawjaTier.entries.filter { it != MawjaTier.FREE }.forEach { tier ->
+    fun mawjaDefaultNileIsFreeForEveryone() {
+        assertThat(PremiumThemes.isPremium(ThemeMode.NILE)).isFalse()
+        MawjaTier.entries.forEach { tier ->
             assertThat(PremiumThemes.isLocked(ThemeMode.NILE, Entitlements.forTier(tier))).isFalse()
         }
     }
 
     @Test
-    fun downgradeFallsBackToFlowDefaultAndUpgradeRestores() {
-        assertThat(PremiumThemes.effective(ThemeMode.NILE, plus)).isEqualTo(ThemeMode.NILE)
-        assertThat(PremiumThemes.effective(ThemeMode.NILE, free)).isEqualTo(ThemeMode.DARK)
-        // The stored choice is untouched, so the same input resolves to Nile again after re-upgrading.
-        assertThat(PremiumThemes.effective(ThemeMode.NILE, plus)).isEqualTo(ThemeMode.NILE)
+    fun downgradeFallsBackToMawjaDefaultAndUpgradeRestores() {
+        assertThat(PremiumThemes.effective(ThemeMode.SAHARA, plus)).isEqualTo(ThemeMode.SAHARA)
+        assertThat(PremiumThemes.effective(ThemeMode.SAHARA, free)).isEqualTo(ThemeMode.NILE)
+        assertThat(PremiumThemes.effective(ThemeMode.SAHARA, plus)).isEqualTo(ThemeMode.SAHARA)
     }
 
     @Test
     fun mawjaVisualThemesArePlusOnly() {
-        listOf(ThemeMode.SAHARA, ThemeMode.ANDALUS, ThemeMode.MIDNIGHT_OUD, ThemeMode.DELTA, ThemeMode.RED_SEA_REEF).forEach { mode ->
+        listOf(ThemeMode.SAHARA, ThemeMode.ANDALUS, ThemeMode.MIDNIGHT_OUD, ThemeMode.DELTA, ThemeMode.RED_SEA_REEF, ThemeMode.CAIRO_NIGHTS, ThemeMode.SIWA_OASIS, ThemeMode.ASWAN_SUNSET, ThemeMode.LOTUS, ThemeMode.ALEXANDRIA).forEach { mode ->
             assertThat(PremiumThemes.isPremium(mode)).isTrue()
-            assertThat(PremiumThemes.effective(mode, free)).isEqualTo(ThemeMode.DARK)
+            assertThat(PremiumThemes.effective(mode, free)).isEqualTo(ThemeMode.NILE)
             assertThat(PremiumThemes.effective(mode, plus)).isEqualTo(mode)
         }
     }

@@ -24,14 +24,19 @@ object ThemeCatalog {
      */
     val palettes: List<ThemeCatalogEntry> =
         listOf(
+            ThemeCatalogEntry(ThemeMode.NILE, R.string.theme_name_nile, R.string.theme_desc_nile),
             ThemeCatalogEntry(ThemeMode.DARK, R.string.theme_name_classic_dark, R.string.theme_desc_classic_dark),
             ThemeCatalogEntry(ThemeMode.MATERIAL_YOU, R.string.theme_name_material_you, R.string.theme_desc_material_you),
-            ThemeCatalogEntry(ThemeMode.NILE, R.string.theme_name_nile, R.string.theme_desc_nile),
             ThemeCatalogEntry(ThemeMode.SAHARA, R.string.theme_name_sahara, R.string.theme_desc_sahara),
             ThemeCatalogEntry(ThemeMode.ANDALUS, R.string.theme_name_andalus, R.string.theme_desc_andalus),
             ThemeCatalogEntry(ThemeMode.MIDNIGHT_OUD, R.string.theme_name_midnight_oud, R.string.theme_desc_midnight_oud),
             ThemeCatalogEntry(ThemeMode.DELTA, R.string.theme_name_delta, R.string.theme_desc_delta),
             ThemeCatalogEntry(ThemeMode.RED_SEA_REEF, R.string.theme_name_red_sea_reef, R.string.theme_desc_red_sea_reef),
+            ThemeCatalogEntry(ThemeMode.CAIRO_NIGHTS, R.string.theme_name_cairo_nights, R.string.theme_desc_cairo_nights),
+            ThemeCatalogEntry(ThemeMode.SIWA_OASIS, R.string.theme_name_siwa_oasis, R.string.theme_desc_siwa_oasis),
+            ThemeCatalogEntry(ThemeMode.ASWAN_SUNSET, R.string.theme_name_aswan_sunset, R.string.theme_desc_aswan_sunset),
+            ThemeCatalogEntry(ThemeMode.LOTUS, R.string.theme_name_lotus, R.string.theme_desc_lotus),
+            ThemeCatalogEntry(ThemeMode.ALEXANDRIA, R.string.theme_name_alexandria, R.string.theme_desc_alexandria),
             ThemeCatalogEntry(ThemeMode.MONOCHROME, R.string.theme_name_monochrome, R.string.theme_desc_monochrome),
             ThemeCatalogEntry(ThemeMode.CATPPUCCIN, R.string.theme_name_catppuccin, R.string.theme_desc_catppuccin),
             ThemeCatalogEntry(ThemeMode.GREEN_APPLE, R.string.theme_name_green_apple, R.string.theme_desc_green_apple),

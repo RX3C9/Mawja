@@ -10,6 +10,7 @@ import java.io.File
 enum class AppFont(
     val storageId: String,
 ) {
+    MAWJA("mawja"),
     SYSTEM("system"),
     CONDENSED("condensed"),
     SERIF("serif"),
@@ -17,7 +18,7 @@ enum class AppFont(
     ;
 
     companion object {
-        fun fromStorage(id: String?): AppFont = entries.firstOrNull { it.storageId == id } ?: SYSTEM
+        fun fromStorage(id: String?): AppFont = entries.firstOrNull { it.storageId == id } ?: MAWJA
     }
 }
 
@@ -34,8 +35,9 @@ fun appFontFamily(
     loadCustom: (File) -> FontFamily?,
 ): FontFamily =
     when (font) {
+        AppFont.MAWJA -> MawjaFontFamily
         AppFont.SYSTEM -> FlowFontFamily
         AppFont.CONDENSED -> FontFamily(CondensedWeights.map { Font(DeviceFontFamilyName("sans-serif-condensed"), it) })
         AppFont.SERIF -> FontFamily.Serif
-        AppFont.CUSTOM -> customFile?.takeIf { it.isFile }?.let(loadCustom) ?: FlowFontFamily
+        AppFont.CUSTOM -> customFile?.takeIf { it.isFile }?.let(loadCustom) ?: MawjaFontFamily
     }

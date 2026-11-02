@@ -27,6 +27,16 @@ internal object AppearanceIndex {
             destination = page,
             availability = SettingAvailability.NotOnTv,
         )
+    val uiSoundPack =
+        SettingEntry(
+            key = "appearance.ui_sound_pack",
+            title = R.string.settings_item_ui_sound_pack,
+            summary = R.string.settings_item_ui_sound_pack_subtitle,
+            keywords = R.string.settings_keywords_ui_sounds,
+            section = R.string.settings_section_style,
+            destination = page,
+            availability = SettingAvailability.NotOnTv,
+        )
     val interfaceMode =
         SettingEntry(
             key = "appearance.interface_mode",
@@ -121,6 +131,7 @@ internal object AppearanceIndex {
         listOf(
             appIcon,
             uiSounds,
+            uiSoundPack,
             interfaceMode,
             homeViewMode,
             homeColumns,

@@ -11,6 +11,22 @@ enum class UiSound {
     SUCCESS,
 }
 
+/** The five Mawja sound packs; each has its own tap, toggle and success clip in res/raw. Stored by [storageId]. */
+enum class UiSoundPack(
+    val storageId: String,
+) {
+    WAVE("wave"),
+    DROP("drop"),
+    CRYSTAL("crystal"),
+    SOFT("soft"),
+    RETRO("retro"),
+    ;
+
+    companion object {
+        fun fromStorage(id: String?): UiSoundPack = entries.firstOrNull { it.storageId == id } ?: WAVE
+    }
+}
+
 /** The device state a UI sound has to respect, read fresh before every play. */
 data class UiSoundConditions(
     /** The user's Mawja switch (off by default). */

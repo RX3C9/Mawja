@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.AppShortcut
 import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.GraphicEq
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.TextFields
@@ -31,6 +32,7 @@ import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
+import app.mawja.android.sound.UiSoundPack
 import app.mawja.android.ui.components.shared.FlowChoice
 import app.mawja.android.ui.components.shared.FlowChoiceDialog
 import app.mawja.android.ui.components.shared.FlowToggleOption
@@ -79,6 +81,8 @@ internal fun AppearanceScreen(
     val iconAppliedMessage = stringResource(R.string.app_icon_apply_toast)
     var showIconDialog by rememberSaveable { mutableStateOf(false) }
     var showInterfaceDialog by rememberSaveable { mutableStateOf(false) }
+    var showSoundPackDialog by rememberSaveable { mutableStateOf(false) }
+    val uiSoundPack by viewModel.uiSoundPack.collectAsStateWithLifecycle()
 
     val themeSummary =
         if (themeMode == ThemeMode.SYSTEM) {
@@ -150,6 +154,15 @@ internal fun AppearanceScreen(
                 summary = if (soundsLocked) soundsLockedSummary else null,
                 icon = Icons.Outlined.MusicNote,
             )
+            if (uiSounds && !soundsLocked) {
+                nav(
+                    AppearanceIndex.uiSoundPack,
+                    value = stringResource(soundPackLabel(uiSoundPack)),
+                    icon = Icons.Outlined.GraphicEq,
+                    showChevron = false,
+                    onClick = { showSoundPackDialog = true },
+                )
+            }
             nav(
                 AppearanceIndex.interfaceMode,
                 value = interfaceSummary,
@@ -227,6 +240,15 @@ internal fun AppearanceScreen(
         )
     }
 
+    if (showSoundPackDialog) {
+        FlowChoiceDialog(
+            title = stringResource(R.string.settings_item_ui_sound_pack),
+            options = UiSoundPack.entries.map { pack -> FlowChoice(pack, stringResource(soundPackLabel(pack)), stringResource(soundPackSummary(pack))) },
+            selected = uiSoundPack,
+            onSelect = viewModel::setUiSoundPack,
+            onDismiss = { showSoundPackDialog = false },
+        )
+    }
     if (showInterfaceDialog) {
         FlowChoiceDialog(
             title = stringResource(R.string.interface_mode_title),
@@ -240,6 +262,24 @@ internal fun AppearanceScreen(
         )
     }
 }
+
+private fun soundPackLabel(pack: UiSoundPack): Int =
+    when (pack) {
+        UiSoundPack.WAVE -> R.string.sound_pack_wave
+        UiSoundPack.DROP -> R.string.sound_pack_drop
+        UiSoundPack.CRYSTAL -> R.string.sound_pack_crystal
+        UiSoundPack.SOFT -> R.string.sound_pack_soft
+        UiSoundPack.RETRO -> R.string.sound_pack_retro
+    }
+
+private fun soundPackSummary(pack: UiSoundPack): Int =
+    when (pack) {
+        UiSoundPack.WAVE -> R.string.sound_pack_wave_summary
+        UiSoundPack.DROP -> R.string.sound_pack_drop_summary
+        UiSoundPack.CRYSTAL -> R.string.sound_pack_crystal_summary
+        UiSoundPack.SOFT -> R.string.sound_pack_soft_summary
+        UiSoundPack.RETRO -> R.string.sound_pack_retro_summary
+    }
 
 private fun interfaceModeLabel(mode: AppUiMode): Int =
     when (mode) {
@@ -258,6 +298,7 @@ private fun interfaceModeSummary(mode: AppUiMode): Int =
 @Composable
 private fun fontLabel(font: AppFontSelection): String =
     when (font.font) {
+        AppFont.MAWJA -> stringResource(R.string.font_mawja)
         AppFont.SYSTEM -> stringResource(R.string.font_system_default)
         AppFont.CONDENSED -> stringResource(R.string.font_condensed)
         AppFont.SERIF -> stringResource(R.string.font_serif)

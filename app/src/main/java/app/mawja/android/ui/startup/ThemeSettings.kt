@@ -7,7 +7,7 @@ import app.mawja.android.account.Entitlements
 import app.mawja.android.data.local.AppFontPreferences
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.ui.theme.CustomTheme
-import app.mawja.android.ui.theme.FlowFontFamily
+import app.mawja.android.ui.theme.MawjaFontFamily
 import app.mawja.android.ui.theme.FlowTheme
 import app.mawja.android.ui.theme.PremiumThemes
 import app.mawja.android.ui.theme.ThemeMode
@@ -24,7 +24,7 @@ data class ThemeSettings(
     val systemLightThemeMode: ThemeMode = ThemeMode.DARK,
     val systemDarkThemeMode: ThemeMode = ThemeMode.DARK,
     val systemDarkThemeVariant: ThemeVariant = ThemeVariant.DARK,
-    val fontFamily: FontFamily = FlowFontFamily,
+    val fontFamily: FontFamily = MawjaFontFamily,
 )
 
 fun LocalDataManager.themeSettings(fonts: AppFontPreferences): Flow<ThemeSettings> =

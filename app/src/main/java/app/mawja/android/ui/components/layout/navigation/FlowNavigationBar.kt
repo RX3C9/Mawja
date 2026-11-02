@@ -1,7 +1,16 @@
 package app.mawja.android.ui.components.layout.navigation
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.DropdownMenuGroup
@@ -13,6 +22,7 @@ import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.NavigationItemIconPosition
 import androidx.compose.material3.ShortNavigationBar
 import androidx.compose.material3.ShortNavigationBarArrangement
+import androidx.compose.material3.ShortNavigationBarDefaults
 import androidx.compose.material3.ShortNavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +30,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
 import app.mawja.android.ui.utils.LocalWindowSizeClass
@@ -47,9 +61,31 @@ internal fun FlowNavigationBar(
     val overflowTabs = tabs.drop(barTabs.size)
     val sounds = rememberUiSounds()
 
+    // Mawja look: a floating capsule over the content, with a soft tinted shadow and a hairline edge.
+    val shape = RoundedCornerShape(percent = 50)
+    val colors = MaterialTheme.colorScheme
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(
+                    ShortNavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+                ).padding(start = CapsuleSideMargin, end = CapsuleSideMargin, bottom = CapsuleBottomMargin),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
     ShortNavigationBar(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
+        modifier =
+            Modifier
+                .widthIn(max = CapsuleMaxWidth)
+                .shadow(
+                    elevation = CapsuleElevation,
+                    shape = shape,
+                    ambientColor = colors.primary.copy(alpha = 0.22f),
+                    spotColor = colors.primary.copy(alpha = 0.32f),
+                ).clip(shape)
+                .border(1.dp, colors.outlineVariant.copy(alpha = 0.45f), shape),
+        containerColor = colors.surfaceContainerHigh,
+        windowInsets = WindowInsets(0, 0, 0, 0),
         arrangement =
             if (horizontalItems) ShortNavigationBarArrangement.Centered else ShortNavigationBarArrangement.EqualWeight,
     ) {
@@ -75,7 +111,13 @@ internal fun FlowNavigationBar(
             )
         }
     }
+    }
 }
+
+private val CapsuleSideMargin = 16.dp
+private val CapsuleBottomMargin = 10.dp
+private val CapsuleMaxWidth = 560.dp
+private val CapsuleElevation = 14.dp
 
 @Composable
 private fun OverflowItem(

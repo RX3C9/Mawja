@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoFixHigh
 import androidx.compose.material.icons.rounded.NotificationsActive
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,9 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.ui.components.shared.MediaIconBadge
 import app.mawja.android.ui.components.shared.MediaThumbnail
@@ -44,7 +48,14 @@ internal fun VideoCardThumbnail(
         shape = shape,
         showWatchProgress = LocalVideoCardPreferences.current.showWatchProgress,
         onModelLoaded = state.deArrowFrameUrl?.let { frame -> { loaded -> deArrowFrameShown = loaded == frame } },
-        modifier = modifier,
+        // Mawja look: thumbnails float on a soft layered shadow tinted with the theme accent.
+        modifier =
+            modifier.shadow(
+                elevation = ThumbnailElevation,
+                shape = shape,
+                ambientColor = Color.Black.copy(alpha = 0.28f),
+                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.22f),
+            ),
     ) {
         val badgeModifier = Modifier.padding(MediaThumbnailDefaults.BadgePadding)
         VideoStatusBadge(
@@ -69,3 +80,5 @@ internal fun VideoCardThumbnail(
         }
     }
 }
+
+private val ThumbnailElevation = 6.dp

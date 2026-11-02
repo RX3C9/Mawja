@@ -49,6 +49,20 @@ class UiSoundPlayer
         /** The user's switch; off by default. */
         val enabled: StateFlow<Boolean> get() = _enabled.asStateFlow()
 
+        private val _pack by lazy { MutableStateFlow(UiSoundPack.fromStorage(prefs.getString(KEY_PACK, null))) }
+
+        /** The chosen sound pack; Wave (Mawja's original clips) by default. */
+        val pack: StateFlow<UiSoundPack> get() = _pack.asStateFlow()
+
+        fun setPack(pack: UiSoundPack) {
+            if (pack == _pack.value) return
+            prefs.edit { putString(KEY_PACK, pack.storageId) }
+            _pack.value = pack
+            // Reload the pool with the new clips.
+            release()
+            if (_enabled.value) ensurePool()
+        }
+
         private var pool: SoundPool? = null
         private val loaded = mutableMapOf<UiSound, Int>()
         private val ready = mutableSetOf<Int>()
@@ -108,9 +122,7 @@ class UiSoundPlayer
                             .build(),
                     ).build()
             created.setOnLoadCompleteListener { _, sampleId, status -> if (status == 0) synchronized(ready) { ready += sampleId } }
-            loaded[UiSound.TAP] = created.load(context, R.raw.ui_tap, 1)
-            loaded[UiSound.TOGGLE] = created.load(context, R.raw.ui_toggle, 1)
-            loaded[UiSound.SUCCESS] = created.load(context, R.raw.ui_success, 1)
+            UiSound.entries.forEach { sound -> loaded[sound] = created.load(context, clipFor(_pack.value, sound), 1) }
             pool = created
             return created
         }
@@ -126,6 +138,44 @@ class UiSoundPlayer
         private companion object {
             const val PREFS = "mawja_ui_sounds"
             const val KEY_ENABLED = "enabled"
+            const val KEY_PACK = "pack"
+
+            fun clipFor(
+                pack: UiSoundPack,
+                sound: UiSound,
+            ): Int =
+                when (pack) {
+                    UiSoundPack.WAVE ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_tap
+                            UiSound.TOGGLE -> R.raw.ui_toggle
+                            UiSound.SUCCESS -> R.raw.ui_success
+                        }
+                    UiSoundPack.DROP ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_drop_tap
+                            UiSound.TOGGLE -> R.raw.ui_drop_toggle
+                            UiSound.SUCCESS -> R.raw.ui_drop_success
+                        }
+                    UiSoundPack.CRYSTAL ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_crystal_tap
+                            UiSound.TOGGLE -> R.raw.ui_crystal_toggle
+                            UiSound.SUCCESS -> R.raw.ui_crystal_success
+                        }
+                    UiSoundPack.SOFT ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_soft_tap
+                            UiSound.TOGGLE -> R.raw.ui_soft_toggle
+                            UiSound.SUCCESS -> R.raw.ui_soft_success
+                        }
+                    UiSoundPack.RETRO ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_retro_tap
+                            UiSound.TOGGLE -> R.raw.ui_retro_toggle
+                            UiSound.SUCCESS -> R.raw.ui_retro_success
+                        }
+                }
         }
     }
 

@@ -8,3 +8,6 @@
 - Memberships pay for Mawja's own services (cloud sync, AI, themes, devices). They never sell access to YouTube content.
 
 Please consider supporting the original Flow project as well.
+
+## IBM Plex Sans Arabic
+Mawja's default typeface, IBM Plex Sans Arabic (c) IBM Corp., is bundled under the SIL Open Font License 1.1 (https://openfontlicense.org).

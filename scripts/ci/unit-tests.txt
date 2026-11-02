@@ -226,3 +226,4 @@ app.mawja.android.sound.UiSoundPolicyTest
 app.mawja.android.ui.components.musicplayer.live.LiveBackgroundRulesTest
 app.mawja.android.ui.components.motion.MicroMotionTest
 app.mawja.android.ui.components.shared.WaveLoadingTest
+app.mawja.android.ui.theme.AppFontTest

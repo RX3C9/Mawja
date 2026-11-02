@@ -12,17 +12,21 @@ import app.mawja.android.account.MawjaFeature
  * free; only Mawja's additions sit behind [MawjaFeature.PREMIUM_THEMES].
  */
 object PremiumThemes {
-    /** Flow Default: what a locked palette falls back to. */
-    val FALLBACK: ThemeMode = ThemeMode.DARK
+    /** Mawja's own default palette (Nile, free): what a locked palette falls back to. */
+    val FALLBACK: ThemeMode = ThemeMode.NILE
 
     val modes: Set<ThemeMode> =
         setOf(
-            ThemeMode.NILE,
             ThemeMode.SAHARA,
             ThemeMode.ANDALUS,
             ThemeMode.MIDNIGHT_OUD,
             ThemeMode.DELTA,
             ThemeMode.RED_SEA_REEF,
+            ThemeMode.CAIRO_NIGHTS,
+            ThemeMode.SIWA_OASIS,
+            ThemeMode.ASWAN_SUNSET,
+            ThemeMode.LOTUS,
+            ThemeMode.ALEXANDRIA,
         )
 
     fun isPremium(mode: ThemeMode): Boolean = mode in modes

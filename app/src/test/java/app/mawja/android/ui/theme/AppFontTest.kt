@@ -12,10 +12,10 @@ class AppFontTest {
     val temp = TemporaryFolder()
 
     @Test
-    fun `stored ids round trip and anything unknown is the system font`() {
+    fun `stored ids round trip and anything unknown is the Mawja font`() {
         AppFont.entries.forEach { assertThat(AppFont.fromStorage(it.storageId)).isEqualTo(it) }
-        assertThat(AppFont.fromStorage(null)).isEqualTo(AppFont.SYSTEM)
-        assertThat(AppFont.fromStorage("inter")).isEqualTo(AppFont.SYSTEM)
+        assertThat(AppFont.fromStorage(null)).isEqualTo(AppFont.MAWJA)
+        assertThat(AppFont.fromStorage("inter")).isEqualTo(AppFont.MAWJA)
     }
 
     @Test
@@ -38,11 +38,11 @@ class AppFontTest {
     fun `a custom font is used only when its file loads`() {
         val file = temp.newFile("custom.ttf")
         assertThat(appFontFamily(AppFont.CUSTOM, file) { FontFamily.Monospace }).isEqualTo(FontFamily.Monospace)
-        assertThat(appFontFamily(AppFont.CUSTOM, file) { null }).isEqualTo(FlowFontFamily)
+        assertThat(appFontFamily(AppFont.CUSTOM, file) { null }).isEqualTo(MawjaFontFamily)
     }
 
     @Test
-    fun `a custom choice without its file falls back to the system font`() {
+    fun `a custom choice without its file falls back to the Mawja font`() {
         var loaded = false
         val missing = temp.root.resolve("custom.otf")
         assertThat(
@@ -50,13 +50,13 @@ class AppFontTest {
                 loaded = true
                 FontFamily.Monospace
             },
-        ).isEqualTo(FlowFontFamily)
+        ).isEqualTo(MawjaFontFamily)
         assertThat(
             appFontFamily(AppFont.CUSTOM, missing) {
                 loaded = true
                 FontFamily.Monospace
             },
-        ).isEqualTo(FlowFontFamily)
+        ).isEqualTo(MawjaFontFamily)
         assertThat(loaded).isFalse()
     }
 
@@ -65,5 +65,6 @@ class AppFontTest {
         val file = temp.newFile("custom.ttf")
         assertThat(appFontFamily(AppFont.SYSTEM, file) { error("not loaded") }).isEqualTo(FlowFontFamily)
         assertThat(appFontFamily(AppFont.SERIF, file) { error("not loaded") }).isEqualTo(FontFamily.Serif)
+        assertThat(appFontFamily(AppFont.MAWJA, file) { error("not loaded") }).isEqualTo(MawjaFontFamily)
     }
 }
