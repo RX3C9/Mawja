@@ -83,6 +83,16 @@ class UsersRepository(
             Device(d.id, d.data.orEmpty().mapValues { (_, v) -> display(v) })
         }
 
+    /** This account's reports, newest first (equality query: no composite index). */
+    suspend fun reportsOf(uid: String): List<Report> =
+        db.collection("reports").whereEqualTo("uid", uid).limit(50).get().await().documents
+            .map(ReportsRepository::report).sortedByDescending { it.createdAt }
+
+    /** Every staff action on this account, newest first (owner/admin can read the audit log). */
+    suspend fun historyOf(uid: String): List<AuditEntry> =
+        db.collection("auditLog").whereEqualTo("target", "users/$uid").limit(100).get().await().documents
+            .map(AuditRepository::entry).sortedByDescending { it.at }
+
     suspend fun setTier(
         uid: String,
         tier: String,

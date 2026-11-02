@@ -6,6 +6,7 @@ package app.mawja.admin.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -95,7 +96,7 @@ fun UsersScreen(
     BackHandler(enabled = selected != null) { vm.close() }
     if (wide) {
         Row(Modifier.fillMaxSize()) {
-            Box(Modifier.weight(0.45f).fillMaxHeight()) { UserList(vm, busy) }
+            Box(Modifier.weight(0.45f).fillMaxHeight()) { UserList(staff, vm, busy) }
             VerticalDivider()
             Box(Modifier.weight(0.55f).fillMaxHeight()) {
                 if (selected != null) UserDetail(staff, selected, vm, busy, showBack = false) else EmptyState(stringResource(R.string.pick_user))
@@ -104,17 +105,19 @@ fun UsersScreen(
     } else if (selected != null) {
         UserDetail(staff, selected, vm, busy, showBack = true)
     } else {
-        UserList(vm, busy)
+        UserList(staff, vm, busy)
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun UserList(
+    staff: Staff,
     vm: UsersViewModel,
     busy: Boolean,
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+    val canBulk = Permissions.can(staff.role, Perm.USERS_STATUS)
     var query by rememberSaveable { mutableStateOf(state.query) }
     val filters =
         listOf<Pair<String, String>?>(null) + Tiers.PAID.map { "tier" to it } + listOf("status" to UserStatus.SUSPENDED, "status" to UserStatus.BANNED)
@@ -141,10 +144,11 @@ private fun UserList(
             )
         }
         if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) }
+        if (canBulk && state.picked.isNotEmpty()) item { BulkBar(staff, vm, state.picked.size, busy) }
         if (state.searched) {
             item { Text(stringResource(R.string.search_results), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(16.dp, 8.dp)) }
             if (state.results.isEmpty()) item { EmptyState(stringResource(R.string.not_found)) }
-            items(state.results, key = { "s_" + it.uid }) { UserRow(it) { vm.open(it.uid) } }
+            items(state.results, key = { "s_" + it.uid }) { UserRow(it, picked = it.uid in state.picked, onLongClick = if (canBulk) ({ vm.togglePick(it.uid) }) else null) { if (state.picked.isNotEmpty() && canBulk) vm.togglePick(it.uid) else vm.open(it.uid) } }
             item { HorizontalDivider(Modifier.padding(vertical = 8.dp)) }
         }
         item {
@@ -167,7 +171,7 @@ private fun UserList(
             }
         }
         if (state.list.isEmpty() && !busy) item { EmptyState(stringResource(R.string.no_users_hint)) }
-        items(state.list, key = { "l_" + it.uid }) { UserRow(it) { vm.open(it.uid) } }
+        items(state.list, key = { "l_" + it.uid }) { UserRow(it, picked = it.uid in state.picked, onLongClick = if (canBulk) ({ vm.togglePick(it.uid) }) else null) { if (state.picked.isNotEmpty() && canBulk) vm.togglePick(it.uid) else vm.open(it.uid) } }
         if (state.list.isNotEmpty()) item { LoadMore(state.end, busy, vm::more) }
     }
 }
@@ -175,11 +179,16 @@ private fun UserList(
 @Composable
 private fun UserRow(
     u: UserRecord,
+    picked: Boolean = false,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     ListItem(
-        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-        modifier = Modifier.clickable(onClick = onClick),
+        colors =
+            ListItemDefaults.colors(
+                containerColor = if (picked) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+            ),
+        modifier = Modifier.combinedClickable(onClick = onClick, onLongClick = onLongClick),
         headlineContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(u.displayName ?: u.username?.let { "@$it" } ?: u.email ?: u.uid, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
@@ -191,6 +200,7 @@ private fun UserRow(
             Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 TierPill(ManualTier.effective(u.tier, u.tierUntil?.time, System.currentTimeMillis()))
                 if (u.status != UserStatus.ACTIVE) StatusPill(u.status)
+                if (u.warnings > 0) Text("⚠ ${u.warnings}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
             }
         },
     )
@@ -329,6 +339,20 @@ private fun UserDetail(
                     InfoRow(dateTime(r.createdAt), "${tierLabel(r.codeTier)} · ${stringResource(R.string.days_n, r.days)} → ${tierLabel(r.tier)} ${day(r.tierUntil)}")
                 }
             }
+            SectionCard(title = stringResource(R.string.mod_user_reports, state.reports.size)) {
+                if (state.reports.isEmpty()) Text(stringResource(R.string.nothing), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                state.reports.take(20).forEach { r ->
+                    InfoRow("${dateTime(r.createdAt)} · ${r.type} · ${r.status}", r.message.take(200))
+                }
+            }
+            if (Permissions.can(role, Perm.AUDIT_VIEW)) {
+                SectionCard(title = stringResource(R.string.mod_history)) {
+                    if (state.history.isEmpty()) Text(stringResource(R.string.nothing), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    state.history.take(30).forEach { e ->
+                        InfoRow("${dateTime(e.at)} · ${e.action}", e.details.entries.joinToString(", ") { "${it.key}: ${it.value}" }.ifBlank { e.actorUid })
+                    }
+                }
+            }
             SectionCard(title = stringResource(R.string.devices)) {
                 if (state.devices.isEmpty()) Text(stringResource(R.string.nothing), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 state.devices.forEach { d ->
@@ -461,3 +485,41 @@ private fun durationLabel(hours: Int): String =
         hours % 24 == 0 -> stringResource(R.string.days_n, hours / 24)
         else -> stringResource(R.string.mod_hours_n, hours)
     }
+
+/** Bulk moderation on the accounts picked by long-press. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun BulkBar(
+    staff: Staff,
+    vm: UsersViewModel,
+    count: Int,
+    busy: Boolean,
+) {
+    var text by remember { mutableStateOf("") }
+    var confirm by remember { mutableStateOf<Pair<String, () -> Unit>?>(null) }
+    SectionCard(title = stringResource(R.string.mod_bulk_title, count), modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        OutlinedTextField(
+            text,
+            { text = it.take(app.mawja.admin.core.ModerationActions.MAX_MESSAGE) },
+            label = { Text(stringResource(R.string.mod_bulk_text)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        val sure = stringResource(R.string.mod_bulk_confirm, count)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = { confirm = sure to { vm.bulk(UsersViewModel.Bulk.WARN, staff.uid, text) } }, enabled = !busy) { Text(stringResource(R.string.mod_warn)) }
+            OutlinedButton(onClick = { confirm = sure to { vm.bulk(UsersViewModel.Bulk.BAN_24H, staff.uid, text) } }, enabled = !busy) {
+                Text(stringResource(R.string.mod_bulk_ban_day), color = MaterialTheme.colorScheme.error)
+            }
+            OutlinedButton(onClick = { confirm = sure to { vm.bulk(UsersViewModel.Bulk.MUTE_24H, staff.uid) } }, enabled = !busy) { Text(stringResource(R.string.mod_bulk_mute_day)) }
+            OutlinedButton(
+                onClick = { confirm = sure to { vm.bulk(UsersViewModel.Bulk.MESSAGE, staff.uid, text) } },
+                enabled = !busy && app.mawja.admin.core.ModerationActions.messageOk(text),
+            ) { Text(stringResource(R.string.mod_send_message)) }
+            OutlinedButton(onClick = { confirm = sure to { vm.bulk(UsersViewModel.Bulk.SIGN_OUT, staff.uid) } }, enabled = !busy) { Text(stringResource(R.string.mod_sign_out_all)) }
+            TextButton(onClick = vm::clearPicks) { Text(stringResource(R.string.clear)) }
+        }
+    }
+    confirm?.let { (t, action) ->
+        ConfirmDialog(text = t, confirm = stringResource(R.string.confirm), danger = true, onConfirm = action, onDismiss = { confirm = null })
+    }
+}

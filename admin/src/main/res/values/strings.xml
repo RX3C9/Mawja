@@ -306,4 +306,11 @@
     <string name="mod_confirm_sign_out">Sign this account out of every device?</string>
     <string name="mod_auto_banned">Third warning: account banned</string>
     <string name="mod_signed_out">Signed out everywhere</string>
+    <string name="mod_user_reports">Reports from this account (%1$d)</string>
+    <string name="mod_history">Action history</string>
+    <string name="mod_bulk_title">%1$d accounts picked</string>
+    <string name="mod_bulk_text">Reason or message</string>
+    <string name="mod_bulk_confirm">Apply this to %1$d accounts?</string>
+    <string name="mod_bulk_ban_day">Ban 1 day</string>
+    <string name="mod_bulk_mute_day">Mute 1 day</string>
 </resources>

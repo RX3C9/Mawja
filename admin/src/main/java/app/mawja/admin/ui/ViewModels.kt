@@ -141,6 +141,10 @@ data class UsersState(
     val selected: UserRecord? = null,
     val redemptions: List<Redemption> = emptyList(),
     val devices: List<Device> = emptyList(),
+    val reports: List<app.mawja.admin.data.Report> = emptyList(),
+    val history: List<app.mawja.admin.data.AuditEntry> = emptyList(),
+    /** Accounts picked for a bulk action (long-press in the list). */
+    val picked: Set<String> = emptySet(),
 )
 
 class UsersViewModel(
@@ -177,19 +181,62 @@ class UsersViewModel(
     fun open(uid: String) =
         launchSafe {
             val user = repo.byUid(uid) ?: return@launchSafe
-            _state.update { it.copy(selected = user, redemptions = emptyList(), devices = emptyList()) }
+            _state.update { it.copy(selected = user, redemptions = emptyList(), devices = emptyList(), reports = emptyList(), history = emptyList()) }
             val r = runCatching { repo.redemptions(uid) }.getOrDefault(emptyList())
             val d = runCatching { repo.devices(uid) }.getOrDefault(emptyList())
-            _state.update { if (it.selected?.uid == uid) it.copy(redemptions = r, devices = d) else it }
+            val rep = runCatching { repo.reportsOf(uid) }.getOrDefault(emptyList())
+            val h = runCatching { repo.historyOf(uid) }.getOrDefault(emptyList())
+            _state.update { if (it.selected?.uid == uid) it.copy(redemptions = r, devices = d, reports = rep, history = h) else it }
         }
 
     fun close() = _state.update { it.copy(selected = null) }
+
+    fun togglePick(uid: String) = _state.update { it.copy(picked = if (uid in it.picked) it.picked - uid else it.picked + uid) }
+
+    fun clearPicks() = _state.update { it.copy(picked = emptySet()) }
+
+    enum class Bulk { WARN, BAN_24H, MUTE_24H, MESSAGE, SIGN_OUT }
+
+    /** Runs one action on every picked account (never on yourself), one audited write each. */
+    fun bulk(
+        action: Bulk,
+        selfUid: String,
+        text: String = "",
+    ) {
+        val uids = _state.value.picked - selfUid
+        if (uids.isEmpty()) return
+        launchSafe(R.string.saved) {
+            val now = System.currentTimeMillis()
+            for (uid in uids) {
+                when (action) {
+                    Bulk.WARN -> {
+                        val current = repo.byUid(uid)?.warnings ?: 0
+                        val w = app.mawja.admin.core.ModerationActions.warn(current)
+                        repo.warn(uid, w.warnings, w.autoBan, text)
+                    }
+                    Bulk.BAN_24H -> repo.tempBan(uid, java.util.Date(app.mawja.admin.core.ModerationActions.until(now, 24)), text)
+                    Bulk.MUTE_24H -> repo.mute(uid, java.util.Date(app.mawja.admin.core.ModerationActions.until(now, 24)))
+                    Bulk.MESSAGE -> repo.message(uid, text)
+                    Bulk.SIGN_OUT -> repo.signOutEverywhere(uid)
+                }
+            }
+            val fresh = uids.mapNotNull { runCatching { repo.byUid(it) }.getOrNull() }.associateBy { it.uid }
+            _state.update { st ->
+                st.copy(
+                    picked = emptySet(),
+                    list = st.list.map { fresh[it.uid] ?: it },
+                    results = st.results.map { fresh[it.uid] ?: it },
+                )
+            }
+        }
+    }
 
     private fun reloadSelected() {
         val uid = _state.value.selected?.uid ?: return
         launchSafe {
             val user = repo.byUid(uid) ?: return@launchSafe
-            _state.update { s -> s.copy(selected = user, list = s.list.map { if (it.uid == uid) user else it }, results = s.results.map { if (it.uid == uid) user else it }) }
+            val h = runCatching { repo.historyOf(uid) }.getOrNull()
+            _state.update { s -> s.copy(selected = user, history = h ?: s.history, list = s.list.map { if (it.uid == uid) user else it }, results = s.results.map { if (it.uid == uid) user else it }) }
         }
     }
 

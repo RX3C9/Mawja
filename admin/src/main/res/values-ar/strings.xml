@@ -303,4 +303,11 @@
     <string name="mod_confirm_sign_out">تخرّج الحساب ده من كل الأجهزة؟</string>
     <string name="mod_auto_banned">الإنذار التالت: الحساب اتحظر</string>
     <string name="mod_signed_out">اتعمل تسجيل خروج من كل الأجهزة</string>
+    <string name="mod_user_reports">بلاغات الحساب ده (%1$d)</string>
+    <string name="mod_history">سجل الإجراءات</string>
+    <string name="mod_bulk_title">%1$d حساب متحدد</string>
+    <string name="mod_bulk_text">السبب أو الرسالة</string>
+    <string name="mod_bulk_confirm">تطبّق ده على %1$d حساب؟</string>
+    <string name="mod_bulk_ban_day">حظر يوم</string>
+    <string name="mod_bulk_mute_day">كتم يوم</string>
 </resources>
