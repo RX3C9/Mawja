@@ -8,6 +8,10 @@ on:
       run_id:
         description: "Mawja run id whose mawja-debug-apks artifact to test"
         required: true
+      fetch:
+        description: "Only re-read results at <bucket>/<dir> (no device run)"
+        required: false
+        default: ""
 
 jobs:
   testlab:
@@ -18,6 +22,7 @@ jobs:
       actions: read
     env:
       MAWJA_SA_B64: ${{ secrets.MAWJA_SA_B64 }}
+      MAWJA_TL_FETCH: ${{ inputs.fetch }}
     steps:
       - uses: actions/checkout@v5
         with:
