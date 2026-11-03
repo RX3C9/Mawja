@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Debug builds only: Firebase Test Lab "game loop" entry used by CI to check real playback on real devices. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name="app.mawja.android.smoke.SmokeLoopActivity"
+            android:exported="true"
+            android:taskAffinity="app.mawja.android.smoke"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="com.google.intent.action.TEST_LOOP" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/javascript" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
