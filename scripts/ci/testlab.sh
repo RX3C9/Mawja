@@ -27,16 +27,25 @@ if [ -z "$PHYS" ]; then
 fi
 VIRT="${MAWJA_TL_VIRTUAL:-model=MediumPhone.arm,version=34}"
 dev=(); [ -n "$PHYS" ] && dev+=(--device "$PHYS,locale=en,orientation=portrait"); dev+=(--device "$VIRT,locale=en,orientation=portrait")
-DIR="mawja-${SHA:0:7}-$(date +%s)"
-echo "testlab devices: $PHYS | $VIRT"
-timeout 1500 gcloud firebase test android run --type game-loop --app "$apk" --scenario-numbers 1 "${dev[@]}" \
-  --timeout 6m --results-dir "$DIR" --no-record-video --format=json > /tmp/tl.json 2> /tmp/tl.err
-rc=$?
-bucket=$(grep -oE 'gs://[^/ ]+' /tmp/tl.err | head -1)
-tail -20 /tmp/tl.err
+if [ -n "${MAWJA_TL_FETCH:-}" ]; then
+  # Re-read an earlier run's results (no new device run, no quota): "<bucket>/<dir>".
+  bucket="gs://${MAWJA_TL_FETCH%%/*}"; DIR="${MAWJA_TL_FETCH#*/}"; rc=0
+else
+  DIR="mawja-${SHA:0:7}-$(date +%s)"
+  echo "testlab devices: $PHYS | $VIRT"
+  timeout 1500 gcloud firebase test android run --type game-loop --app "$apk" --scenario-numbers 1 "${dev[@]}" \
+    --timeout 6m --results-dir "$DIR" --no-record-video --format=json > /tmp/tl.json 2> /tmp/tl.err
+  rc=$?
+  b=$(grep -oE 'storage/browser/[^/ ]+' /tmp/tl.err | head -1 | sed 's#storage/browser/##')
+  bucket=$(grep -oE 'gs://[^/ ]+' /tmp/tl.err | head -1); [ -n "$b" ] && bucket="gs://$b"
+  grep -v "Test matrix status" /tmp/tl.err | tail -15
+  jq -r '.[]? | "outcome \(.axis_value // .axisValue): \(.outcome) \(.test_details // .testDetails // "")"' /tmp/tl.json 2>/dev/null
+fi
+gsutil ls -r "$bucket/$DIR" 2>/dev/null | head -60
 summary=""
 if [ -n "$bucket" ]; then
-  for log in $(gsutil ls "$bucket/$DIR/**/logcat" 2>/dev/null); do
+  for log in $(gsutil ls -r "$bucket/$DIR" 2>/dev/null | grep -E '/logcat$'); do
+    gsutil cat "$log" 2>/dev/null | grep -E "MAWJA_LOOP|MawjaSmokeLoop|BOT_WALL|FATAL EXCEPTION|AndroidRuntime" | head -40
     d=$(echo "$log" | awk -F/ '{print $(NF-1)}')
     v=$(gsutil cat "$log" 2>/dev/null | grep -o 'MAWJA_LOOP video [A-Za-z]*' | tail -1 | awk '{print $3}')
     m=$(gsutil cat "$log" 2>/dev/null | grep -o 'MAWJA_LOOP music [A-Za-z]*' | tail -1 | awk '{print $3}')
