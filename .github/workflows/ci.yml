@@ -122,3 +122,9 @@ jobs:
       - name: Sync bans to Firebase Auth
         run: |
           if [ -f scripts/ci/auth_sync.py ]; then python3 scripts/ci/auth_sync.py; else echo "authsync: skipped (script not synced yet)"; fi
+      - name: Report loop (apply Hark triage, export open reports encrypted)
+        env:
+          TRIAGE_URL: ${{ vars.TRIAGE_URL }}
+          TRIAGE_SHA: ${{ vars.TRIAGE_SHA }}
+        run: |
+          if [ -f scripts/ci/reports_sync.py ]; then python3 scripts/ci/reports_sync.py; else echo "reports: skipped (script not synced yet)"; fi
