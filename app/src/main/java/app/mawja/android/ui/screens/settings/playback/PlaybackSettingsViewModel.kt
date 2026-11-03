@@ -105,6 +105,7 @@ class PlaybackSettingsViewModel
 
         val endlessRadio = preferences.musicEndlessRadioEnabled.asState(true)
         val musicVideoSwitch = preferences.musicVideoSwitch.asState(false)
+        val backupMirrors = preferences.backupMirrors.asState(true)
         val pauseMusicWhenMuted = preferences.pauseMusicWhenMuted.asState(false)
         val lyricsProviders =
             combine(preferences.lyricsProviderOrder, preferences.allLyricsProviderEnabledStates()) { order, enabled ->
@@ -254,6 +255,8 @@ class PlaybackSettingsViewModel
         fun setEndlessRadio(value: Boolean) = write { preferences.setMusicEndlessRadioEnabled(value) }
 
         fun setMusicVideoSwitch(value: Boolean) = write { preferences.setMusicVideoSwitch(value) }
+
+        fun setBackupMirrors(value: Boolean) = write { preferences.setBackupMirrors(value) }
 
         fun setPauseMusicWhenMuted(value: Boolean) = write { preferences.setPauseMusicWhenMuted(value) }
 

@@ -35,6 +35,7 @@ class SmokeLoopActivity : Activity() {
         }
         scope.launch {
             val result = JSONObject()
+            result.put("pipeline", checkPipeline())
             result.put("video", checkVideo())
             result.put("music", checkMusic())
             Log.i(TAG, "MAWJA_LOOP done $result")
@@ -83,12 +84,44 @@ class SmokeLoopActivity : Activity() {
         return out
     }
 
+    /**
+     * Device media pipeline (decoders, audio output, surface) on a non-YouTube clip, so a lab whose
+     * network YouTube walls still proves the phone can decode and render what the app hands it.
+     */
+    private suspend fun checkPipeline(): JSONObject {
+        val out = JSONObject()
+        val player = androidx.media3.exoplayer.ExoPlayer.Builder(this).build()
+        try {
+            val surface = android.view.SurfaceView(this)
+            setContentView(surface)
+            player.setVideoSurfaceView(surface)
+            player.setMediaItem(androidx.media3.common.MediaItem.fromUri(PIPELINE_CLIP))
+            player.volume = 0f
+            player.prepare()
+            player.play()
+            val start = System.currentTimeMillis()
+            while (System.currentTimeMillis() - start < 20_000 && player.currentPosition < 4_000 && player.playerError == null) delay(250)
+            val pos = player.currentPosition
+            val size = player.videoSize
+            out.put("position_ms", pos)
+            out.put("video", "${size.width}x${size.height}")
+            player.playerError?.let { out.put("error", it.errorCodeName) }
+            val ok = pos >= 4_000 && size.width > 0
+            out.put("ok", ok)
+            Log.i(TAG, "MAWJA_LOOP pipeline ${if (ok) "ok" else "FAILED"} $out")
+        } finally {
+            player.release()
+        }
+        return out
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) scope.coroutineContext[kotlinx.coroutines.Job]?.cancel()
     }
 
     private companion object {
+        private const val PIPELINE_CLIP = "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
         const val TAG = "MawjaSmokeLoop"
         const val ACTION = "com.google.intent.action.TEST_LOOP"
         const val VIDEO_ID = "jNQXAC9IVRw"

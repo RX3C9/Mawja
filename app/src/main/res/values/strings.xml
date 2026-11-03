@@ -5004,4 +5004,6 @@
     <string name="ai_ask_video_note">Where the video talks about it. Found on your phone. Tap to jump.</string>
     <string name="ai_ask_video_none">The video doesn\'t seem to mention that. Try other words.</string>
     <string name="qr_camera_unavailable">The camera isn\'t available on this device. Use the sync code instead.</string>
+    <string name="settings_backup_mirrors_title">Backup servers</string>
+    <string name="settings_backup_mirrors_summary">If YouTube refuses to play (it sometimes blocks VPNs and shared networks), play through public Invidious servers instead. Only the video ID is sent to them; YouTube never sees your address.</string>
 </resources>

@@ -5390,4 +5390,6 @@
     <string name="ai_ask_video_note">الأماكن اللي الفيديو اتكلم فيها عن سؤالك، اتلقت على موبايلك. دوس تروح لها.</string>
     <string name="ai_ask_video_none">الفيديو شكله ما اتكلمش عن ده. جرّب كلمات تانية.</string>
     <string name="qr_camera_unavailable">الكاميرا مش متاحة على الجهاز ده. استخدم كود المزامنة بدلها.</string>
+    <string name="settings_backup_mirrors_title">خوادم احتياطية</string>
+    <string name="settings_backup_mirrors_summary">لو يوتيوب رفض التشغيل (بيحظر أحيانًا الـVPN والشبكات المشتركة)، يشغّل عبر خوادم Invidious العامة. بيتبعت لها رقم الفيديو بس، ويوتيوب مش بيشوف عنوانك.</string>
 </resources>

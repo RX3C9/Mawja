@@ -168,6 +168,9 @@ class FlowApplication :
         val warmups = StartupWarmups(this)
         warmups.startWithFirstActivity()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            playerPreferences.backupMirrors.collect { app.mawja.android.player.stream.MirrorFallback.enabled = it }
+        }
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             playerPreferences.proxyConfig
                 .distinctUntilChanged()
                 .flatMapLatest { config ->

@@ -503,6 +503,14 @@ internal object PlaybackIndex {
             section = R.string.settings_section_music,
             destination = page,
         )
+    val backupMirrors =
+        SettingEntry(
+            key = "playback.backup_mirrors",
+            title = R.string.settings_backup_mirrors_title,
+            summary = R.string.settings_backup_mirrors_summary,
+            section = R.string.settings_section_music,
+            destination = page,
+        )
     val lyricsProviders =
         SettingEntry(
             key = "playback.lyrics_providers",
@@ -575,6 +583,7 @@ internal object PlaybackIndex {
             endlessRadio,
             pauseMusicWhenMuted,
             musicVideoSwitch,
+            backupMirrors,
             lyricsProviders,
         )
 }

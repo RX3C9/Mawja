@@ -332,6 +332,7 @@ class PlayerPreferences(
         val REMEMBER_PLAYBACK_SPEED = booleanPreferencesKey("remember_playback_speed")
         val MUSIC_AT_NORMAL_SPEED = booleanPreferencesKey("music_at_normal_speed")
         val MUSIC_VIDEO_SWITCH = booleanPreferencesKey("music_video_switch")
+        val BACKUP_MIRRORS = booleanPreferencesKey("backup_mirrors")
         val ANIMATED_ARTWORK = booleanPreferencesKey("animated_artwork")
         val MUSIC_REPEAT_MODE = intPreferencesKey("music_repeat_mode")
         val PAUSE_MUSIC_WHEN_MUTED = booleanPreferencesKey("pause_music_when_muted")
@@ -2283,6 +2284,18 @@ class PlayerPreferences(
         context.playerPreferencesDataStore.data
             .map { preferences -> preferences[Keys.MUSIC_VIDEO_SWITCH] ?: false }
             .distinctUntilChanged()
+
+    /** Backup mirrors for when YouTube walls every client (see `MirrorFallback`); on by default. */
+    val backupMirrors: Flow<Boolean> =
+        context.playerPreferencesDataStore.data
+            .map { preferences -> preferences[Keys.BACKUP_MIRRORS] ?: true }
+            .distinctUntilChanged()
+
+    suspend fun setBackupMirrors(enabled: Boolean) {
+        context.playerPreferencesDataStore.edit { preferences ->
+            preferences[Keys.BACKUP_MIRRORS] = enabled
+        }
+    }
 
     suspend fun setMusicVideoSwitch(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->

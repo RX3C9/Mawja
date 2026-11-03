@@ -177,7 +177,7 @@ object MirrorFallback {
         val c = URL(url).openConnection() as HttpURLConnection
         c.connectTimeout = CONNECT_MS
         c.readTimeout = READ_MS
-        c.setRequestProperty("User-Agent", "Mawja/2.0 (+https://github.com/RX3C9/Mawja)")
+        c.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36")
         c.setRequestProperty("Accept", "application/json")
         try {
             if (c.responseCode != 200) error("HTTP ${c.responseCode}")

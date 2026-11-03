@@ -168,6 +168,7 @@ internal fun SettingsListScope.playbackSections(
         switch(PlaybackIndex.endlessRadio, viewModel.endlessRadio, viewModel::setEndlessRadio)
         switch(PlaybackIndex.pauseMusicWhenMuted, viewModel.pauseMusicWhenMuted, viewModel::setPauseMusicWhenMuted)
         switch(PlaybackIndex.musicVideoSwitch, viewModel.musicVideoSwitch, viewModel::setMusicVideoSwitch)
+        switch(PlaybackIndex.backupMirrors, viewModel.backupMirrors, viewModel::setBackupMirrors)
         choice(PlaybackIndex.lyricsProviders, onClick = { openDialog(PlaybackDialog.LYRICS) }) {
             val providers by viewModel.lyricsProviders.collectAsStateWithLifecycle()
             pluralStringResource(
