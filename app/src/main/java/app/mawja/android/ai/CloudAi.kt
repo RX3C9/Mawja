@@ -37,6 +37,7 @@ object CloudAi {
     const val MODEL = "gemini-2.5-flash"
     const val MAX_TRANSCRIPT_CHARS = 24_000
     const val PLUS_DAILY_CAP = 40
+    const val MAX_QUESTION_CHARS = 300
 
     sealed interface Outcome {
         data class Text(
@@ -139,6 +140,34 @@ object CloudAi {
         context: Context,
         cues: List<TranscriptCue>,
         languageTag: String,
+    ): Outcome = generate(context, cues) { summaryPrompt(it, languageTag) }
+
+    /** "Ask Mawja AI": a free-form question answered only from what this video says. */
+    suspend fun ask(
+        context: Context,
+        cues: List<TranscriptCue>,
+        question: String,
+        languageTag: String,
+    ): Outcome {
+        val q = question.trim().take(MAX_QUESTION_CHARS)
+        if (q.isEmpty()) return Outcome.Unavailable("empty question")
+        return generate(context, cues) { askPrompt(it, q, languageTag) }
+    }
+
+    fun askPrompt(
+        transcript: String,
+        question: String,
+        languageTag: String,
+    ): String =
+        "You answer a viewer's question about a video using only its transcript. Write in the language with tag " +
+            "\"$languageTag\" (Egyptian Arabic style is fine for ar). Be short and direct, and mention the [mm:ss] time where the " +
+            "answer is said. If the transcript does not contain the answer, say so plainly. Plain text, no markdown headings.\n\n" +
+            "Question: $question\n\nTranscript:\n$transcript"
+
+    private suspend fun generate(
+        context: Context,
+        cues: List<TranscriptCue>,
+        promptFor: (String) -> String,
     ): Outcome =
         withContext(Dispatchers.IO) {
             val appCtx = context.applicationContext
@@ -157,7 +186,7 @@ object CloudAi {
             try {
                 val url =
                     "https://firebasevertexai.googleapis.com/v1beta/projects/${BuildConfig.FIREBASE_PROJECT_ID}" +
-                        "/locations/global/publishers/google/models/$MODEL:generateContent"
+                        "/models/$MODEL:generateContent"
                 val request =
                     Request
                         .Builder()
@@ -165,7 +194,7 @@ object CloudAi {
                         .header("x-goog-api-key", BuildConfig.FIREBASE_API_KEY)
                         .header("X-Android-Package", appCtx.packageName)
                         .apply { certSha1(appCtx)?.let { header("X-Android-Cert", it) } }
-                        .post(requestBody(summaryPrompt(transcript, languageTag)).toRequestBody("application/json".toMediaType()))
+                        .post(requestBody(promptFor(transcript)).toRequestBody("application/json".toMediaType()))
                         .build()
                 client.newCall(request).execute().use { r ->
                     val body = r.body.string()

@@ -448,6 +448,8 @@ dependencies {
 
     // Compose UI tests in the JVM (Robolectric) so CI's unit-test task covers them
     testImplementation(libs.robolectric)
+    // real org.json for plain-JVM tests (android.jar's copy is a stub)
+    testImplementation("org.json:json:20240303")
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(platform(libs.androidx.compose.bom))

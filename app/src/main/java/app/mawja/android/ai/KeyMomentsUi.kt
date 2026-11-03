@@ -134,7 +134,7 @@ fun KeyMomentsPanel(
                 Text(stringResource(R.string.ai_study_notes))
             }
         }
-        item { CloudSummaryCard(cues, brush) }
+        item { CloudSummaryCard(cues, brush, question) }
         itemsIndexed(shown, key = { _, m -> "${answers != null}-${m.startMs}" }) { index, m ->
             val enter = remember { Animatable(if (still) 1f else 0f) }
             LaunchedEffect(Unit) { if (!still) enter.animateTo(1f, tween(380, delayMillis = 70 * index)) }
@@ -176,6 +176,7 @@ fun KeyMomentsPanel(
 private fun CloudSummaryCard(
     cues: List<app.mawja.android.data.transcript.TranscriptCue>,
     brush: Brush,
+    question: String,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
@@ -206,6 +207,20 @@ private fun CloudSummaryCard(
                 Icon(Icons.Rounded.AutoAwesome, contentDescription = null)
                 androidx.compose.foundation.layout.Spacer(Modifier.padding(horizontal = 4.dp))
                 Text(stringResource(R.string.ai_cloud_summary))
+            }
+            androidx.compose.material3.OutlinedButton(
+                enabled = !busy && cues.isNotEmpty() && question.isNotBlank(),
+                onClick = {
+                    busy = true
+                    scope.launch {
+                        outcome = CloudAi.ask(context, cues, question, java.util.Locale.getDefault().toLanguageTag())
+                        busy = false
+                    }
+                },
+            ) {
+                Icon(Icons.Rounded.AutoAwesome, contentDescription = null)
+                androidx.compose.foundation.layout.Spacer(Modifier.padding(horizontal = 4.dp))
+                Text(stringResource(R.string.ai_cloud_ask))
             }
             val o = outcome
             when {

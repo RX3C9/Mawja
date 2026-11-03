@@ -62,4 +62,13 @@ class CloudAiTest {
         assertThat(p).contains("ar-EG")
         assertThat(p).contains("[00:00] x")
     }
+
+    @Test
+    fun `the ask prompt carries the question, the language and the transcript`() {
+        val p = CloudAi.askPrompt("[00:05] hello", "what is said?", "ar")
+        assertThat(p).contains("what is said?")
+        assertThat(p).contains("\"ar\"")
+        assertThat(p).contains("[00:05] hello")
+        assertThat(p).contains("only its transcript")
+    }
 }

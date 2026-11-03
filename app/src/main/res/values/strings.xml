@@ -4994,6 +4994,7 @@
     <string name="admin_push_channel_desc">Messages from the Mawja team</string>
     <string name="admin_push_summary">Mawja team</string>
     <string name="ai_key_moments">Key moments</string>
+    <string name="ai_cloud_ask">Ask Mawja AI (your question above)</string>
     <string name="ai_cloud_summary">AI summary</string>
     <string name="ai_cloud_summary_loading">Reading the video…</string>
     <string name="ai_cloud_summary_note">Sends this video’s spoken words to Google Gemini when you tap. A Plus extra with a small daily allowance.</string>

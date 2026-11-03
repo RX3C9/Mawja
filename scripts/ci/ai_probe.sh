@@ -6,7 +6,7 @@ PKG=app.mawja.android.debug
 CERT=608A7F311D2DA0B388D7FD7B3FAAA7C39E0FB686
 for MODEL in gemini-2.5-flash gemini-2.0-flash gemini-2.5-flash-lite; do
   code=$(curl -sS -m 40 -o /tmp/ai_probe.json -w '%{http_code}' -X POST \
-    "https://firebasevertexai.googleapis.com/v1beta/projects/mawja-app/locations/global/publishers/google/models/${MODEL}:generateContent" \
+    "https://firebasevertexai.googleapis.com/v1beta/projects/mawja-app/models/${MODEL}:generateContent" \
     -H "x-goog-api-key: ${KEY}" -H "X-Android-Package: ${PKG}" -H "X-Android-Cert: ${CERT}" \
     -H 'Content-Type: application/json' \
     -d '{"contents":[{"role":"user","parts":[{"text":"Reply with the single word: pong"}]}]}')

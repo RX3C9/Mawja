@@ -5376,6 +5376,7 @@
     <string name="admin_push_channel_desc">رسائل من فريق موجة</string>
     <string name="admin_push_summary">فريق موجة</string>
     <string name="ai_key_moments">أهم اللحظات</string>
+    <string name="ai_cloud_ask">اسأل موجة AI (سؤالك فوق)</string>
     <string name="ai_cloud_summary">ملخص بالذكاء الاصطناعي</string>
     <string name="ai_cloud_summary_loading">بقرا الفيديو…</string>
     <string name="ai_cloud_summary_note">لما تدوس، بيتبعت كلام الفيديو ده لـGoogle Gemini. ميزة Plus وليها حد يومي صغير.</string>
