@@ -18,7 +18,7 @@ object ModerationActions {
     val LOCKABLE =
         listOf(
             "premium_themes", "premium_icons", "ui_sounds", "visualizer", "cloud_sync",
-            "family_sharing", "live_backgrounds", "reports", "codes",
+            "family_sharing", "live_backgrounds", "cloud_ai", "reports", "codes",
         )
 
     data class Warning(

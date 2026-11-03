@@ -35,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -133,6 +134,7 @@ fun KeyMomentsPanel(
                 Text(stringResource(R.string.ai_study_notes))
             }
         }
+        item { CloudSummaryCard(cues, brush) }
         itemsIndexed(shown, key = { _, m -> "${answers != null}-${m.startMs}" }) { index, m ->
             val enter = remember { Animatable(if (still) 1f else 0f) }
             LaunchedEffect(Unit) { if (!still) enter.animateTo(1f, tween(380, delayMillis = 70 * index)) }
@@ -164,6 +166,68 @@ fun KeyMomentsPanel(
                         Text(m.text, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
+            }
+        }
+    }
+}
+
+/** "AI summary": one tap sends this video's spoken words to Gemini (Plus) and shows the answer under a shimmering border. */
+@Composable
+private fun CloudSummaryCard(
+    cues: List<app.mawja.android.data.transcript.TranscriptCue>,
+    brush: Brush,
+) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    var busy by remember(cues) { androidx.compose.runtime.mutableStateOf(false) }
+    var outcome by remember(cues) { androidx.compose.runtime.mutableStateOf<CloudAi.Outcome?>(null) }
+    val shimmer by rememberInfiniteTransition(label = "summaryShimmer").animateFloat(
+        initialValue = 0.35f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
+        label = "summaryShimmerAlpha",
+    )
+    Surface(
+        shape = RoundedCornerShape(18.dp),
+        tonalElevation = 2.dp,
+        modifier = Modifier.fillMaxWidth().border(BorderStroke(1.5.dp, brush), RoundedCornerShape(18.dp)),
+    ) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            androidx.compose.material3.Button(
+                enabled = !busy && cues.isNotEmpty(),
+                onClick = {
+                    busy = true
+                    scope.launch {
+                        outcome = CloudAi.summarize(context, cues, java.util.Locale.getDefault().toLanguageTag())
+                        busy = false
+                    }
+                },
+            ) {
+                Icon(Icons.Rounded.AutoAwesome, contentDescription = null)
+                androidx.compose.foundation.layout.Spacer(Modifier.padding(horizontal = 4.dp))
+                Text(stringResource(R.string.ai_cloud_summary))
+            }
+            val o = outcome
+            when {
+                busy ->
+                    Text(
+                        stringResource(R.string.ai_cloud_summary_loading),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.graphicsLayer { alpha = if (MawjaAccessibility.reduceMotionNow()) 1f else shimmer },
+                    )
+                o is CloudAi.Outcome.Text ->
+                    androidx.compose.foundation.text.selection.SelectionContainer {
+                        Text(o.text, style = MaterialTheme.typography.bodyMedium)
+                    }
+                o is CloudAi.Outcome.Locked -> Text(stringResource(R.string.ai_cloud_locked), style = MaterialTheme.typography.bodyMedium)
+                o is CloudAi.Outcome.CapReached -> Text(stringResource(R.string.ai_cloud_cap), style = MaterialTheme.typography.bodyMedium)
+                o is CloudAi.Outcome.Unavailable -> Text(stringResource(R.string.ai_cloud_unavailable), style = MaterialTheme.typography.bodyMedium)
+                else ->
+                    Text(
+                        stringResource(R.string.ai_cloud_summary_note),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
             }
         }
     }

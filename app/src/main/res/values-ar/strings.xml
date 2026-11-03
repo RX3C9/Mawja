@@ -5376,6 +5376,12 @@
     <string name="admin_push_channel_desc">رسائل من فريق موجة</string>
     <string name="admin_push_summary">فريق موجة</string>
     <string name="ai_key_moments">أهم اللحظات</string>
+    <string name="ai_cloud_summary">ملخص بالذكاء الاصطناعي</string>
+    <string name="ai_cloud_summary_loading">بقرا الفيديو…</string>
+    <string name="ai_cloud_summary_note">لما تدوس، بيتبعت كلام الفيديو ده لـGoogle Gemini. ميزة Plus وليها حد يومي صغير.</string>
+    <string name="ai_cloud_locked">الملخص بالذكاء الاصطناعي ميزة Plus. رقّي من صفحة حسابك عشان تستخدمه.</string>
+    <string name="ai_cloud_cap">خلّصت ملخصات النهارده على الموبايل ده. بترجع بكرة.</string>
+    <string name="ai_cloud_unavailable">الملخص مش متاح دلوقتي. جرّب كمان شوية.</string>
     <string name="ai_study_notes">شارك ملاحظات المذاكرة</string>
     <string name="ai_study_notes_title">ملاحظات مذاكرة</string>
     <string name="ai_study_notes_empty">الكلام في الفيديو ده مش كفاية نطلّع منه ملاحظات.</string>
