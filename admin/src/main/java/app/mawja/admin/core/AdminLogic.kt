@@ -142,7 +142,7 @@ object DailyBuckets {
 enum class AnnouncementPhase { OFF, SCHEDULED, LIVE, ENDED }
 
 object Announcements {
-    val KINDS = listOf("banner", "dialog", "news")
+    val KINDS = listOf("banner", "dialog", "news", "push")
     val LOCALES = listOf("ar", "en")
     const val MAX_TITLE = 120
     const val MAX_BODY = 2000

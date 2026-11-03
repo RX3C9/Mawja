@@ -1368,6 +1368,30 @@ class BackupRepository(
         onProgress: ((label: String, current: Int, total: Int) -> Unit)? = null,
     ): Result<String> = takeoutImporter.import(uris, onProgress)
 
+    // ── Connect YouTube account (read-only OAuth) ──
+
+    suspend fun importYouTubeAccount(
+        accessToken: String,
+        onProgress: ((label: String, current: Int, total: Int) -> Unit)? = null,
+    ): Result<String> =
+        runCatching {
+            app.mawja.android.youtubeaccount.YouTubeAccountClient(accessToken).readAll { step, count ->
+                val label =
+                    when (step) {
+                        app.mawja.android.youtubeaccount.YouTubeAccountClient.Step.SUBSCRIPTIONS ->
+                            context.getString(R.string.import_takeout_step_subscriptions)
+                        app.mawja.android.youtubeaccount.YouTubeAccountClient.Step.PLAYLISTS ->
+                            context.getString(R.string.youtube_account_step_playlists)
+                        app.mawja.android.youtubeaccount.YouTubeAccountClient.Step.LIKES ->
+                            context.getString(R.string.youtube_account_step_likes)
+                    }
+                onProgress?.invoke(label, count, 0)
+            }
+        }.fold(
+            onSuccess = { data -> takeoutImporter.importAccount(data, onProgress) },
+            onFailure = { Result.failure(it) },
+        )
+
     // ── NewPipe playlist import (ZIP containing SQLite DB) ──
 
     suspend fun importNewPipePlaylists(

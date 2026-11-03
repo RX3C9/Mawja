@@ -66,6 +66,8 @@ enum class ImportKind(
     MASTER(R.string.import_master_backup_title, R.string.import_master_backup_desc, arrayOf(ZIP, BINARY)),
     ENGINE(R.string.import_engine_data, R.string.import_engine_data_desc, arrayOf(JSON)),
     MUSIC_BRAIN(R.string.import_music_brain_title, R.string.import_music_brain_desc, arrayOf(JSON)),
+    /** Read-only Google sign-in; no file to pick, so the screens start it themselves. */
+    YOUTUBE_ACCOUNT(R.string.youtube_account_connect, R.string.youtube_account_connect_desc, emptyArray()),
     TAKEOUT(R.string.import_yt_takeout_all, R.string.import_yt_takeout_all_desc, ZipTypes, takesSeveralFiles = true),
     YOUTUBE_SUBSCRIPTIONS(R.string.import_from_youtube, R.string.import_from_youtube_desc, CsvTypes),
     YOUTUBE_HISTORY(R.string.import_yt_watch_history, R.string.import_yt_watch_history_desc, arrayOf("text/html", "text/plain", ANY)),
@@ -86,11 +88,15 @@ enum class ImportKind(
     METROLIST(R.string.import_from_metrolist, R.string.import_from_metrolist_desc, ZipTypes),
     ;
 
+    /** Started by a Google sign-in rather than a file picker. */
+    val isAccountLink get() = this == YOUTUBE_ACCOUNT
+
     fun start(
         coordinator: BackupCoordinator,
         uris: List<Uri>,
     ): Boolean {
         if (uris.isEmpty()) return false
+        if (this == YOUTUBE_ACCOUNT) return false
         if (this == TAKEOUT) return coordinator.importYouTubeTakeout(uris)
         return start(coordinator, uris.first())
     }
@@ -103,6 +109,7 @@ enum class ImportKind(
         MASTER -> coordinator.importMaster(uri)
         ENGINE -> coordinator.importEngine(uri)
         MUSIC_BRAIN -> coordinator.importMusicBrain(uri)
+        YOUTUBE_ACCOUNT -> false
         TAKEOUT -> coordinator.importYouTubeTakeout(listOf(uri))
         YOUTUBE_SUBSCRIPTIONS -> coordinator.importYouTube(uri)
         YOUTUBE_HISTORY -> coordinator.importYouTubeWatchHistory(uri)

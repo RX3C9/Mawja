@@ -162,6 +162,11 @@ class OnboardingViewModel
             viewModelScope.launch { preferences.setNotifNewVideosEnabled(enabled) }
         }
 
+        fun startAccountImport(accessToken: String) {
+            pendingSource = ImportSource.YOUTUBE
+            if (!backup.importYouTubeAccount(accessToken)) pendingSource = null
+        }
+
         fun startImport(
             kind: ImportKind,
             uris: List<Uri>,

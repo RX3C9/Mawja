@@ -25,6 +25,7 @@ enum class ImportSource(
         R.string.onboarding_import_source_youtube,
         R.drawable.ic_youtube,
         listOf(
+            ImportKind.YOUTUBE_ACCOUNT,
             ImportKind.TAKEOUT,
             ImportKind.YOUTUBE_SUBSCRIPTIONS,
             ImportKind.YOUTUBE_HISTORY,

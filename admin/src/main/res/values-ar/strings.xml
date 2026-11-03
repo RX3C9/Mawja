@@ -189,6 +189,7 @@
     <string name="kind_banner">لافتة</string>
     <string name="kind_dialog">نافذة</string>
     <string name="kind_news">خبر</string>
+    <string name="kind_push">إشعار على الموبايل</string>
     <string name="title">العنوان</string>
     <string name="body">الرسالة</string>
     <string name="message">الرسالة</string>

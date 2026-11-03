@@ -494,7 +494,7 @@ service cloud.firestore {
         && d.body is string && d.body.size() > 0 && d.body.size() <= 2000
         && (d.get('targetTier', null) == null || d.targetTier in tiers())
         && (d.get('locale', null) == null || d.locale in ['ar', 'en'])
-        && d.get('kind', 'banner') in ['banner', 'dialog', 'news']
+        && d.get('kind', 'banner') in ['banner', 'dialog', 'news', 'push']
         && optString(d, 'ctaLabel', 40) && optString(d, 'ctaUrl', 500)
         && d.active is bool && d.startAt is timestamp && optTime(d, 'endAt')
         && d.updatedBy == request.auth.uid && d.updatedAt == request.time;

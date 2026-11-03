@@ -97,6 +97,11 @@ internal fun BackupScreen(
             pendingImport = null
             if (uris.isNotEmpty() && kind != null) start(kind.start(viewModel.coordinator, uris))
         }
+    val connectYouTube =
+        app.mawja.android.youtubeaccount.rememberYouTubeAccountConnect(
+            onToken = { token -> start(viewModel.coordinator.importYouTubeAccount(token)) },
+            onMessage = { message -> scope.launch { snackbarHostState.showSnackbar(message) } },
+        )
     val folderPicker =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
             uri?.let(viewModel::setFolder)
@@ -170,8 +175,12 @@ internal fun BackupScreen(
         when (selectedTab) {
             SettingsTabs.BACKUP_IMPORT -> {
                 importPage { kind ->
-                    pendingImport = kind
-                    if (kind.takesSeveralFiles) multiImportPicker.launch(kind.mimeTypes) else importPicker.launch(kind.mimeTypes)
+                    if (kind.isAccountLink) {
+                        connectYouTube()
+                    } else {
+                        pendingImport = kind
+                        if (kind.takesSeveralFiles) multiImportPicker.launch(kind.mimeTypes) else importPicker.launch(kind.mimeTypes)
+                    }
                 }
             }
 

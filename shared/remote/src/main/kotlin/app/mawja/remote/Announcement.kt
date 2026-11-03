@@ -38,7 +38,10 @@ data class Announcement(
         const val KIND_BANNER = "banner"
         const val KIND_DIALOG = "dialog"
         const val KIND_NEWS = "news"
-        val KINDS = listOf(KIND_BANNER, KIND_DIALOG, KIND_NEWS)
+
+        /** A system notification on the phone (the app's hourly check posts it), also shown as an in-app card. */
+        const val KIND_PUSH = "push"
+        val KINDS = listOf(KIND_BANNER, KIND_DIALOG, KIND_NEWS, KIND_PUSH)
 
         fun isSafeCta(url: String): Boolean = url.startsWith("https://") || url.startsWith("mawja://")
 

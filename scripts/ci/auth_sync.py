@@ -57,6 +57,82 @@ def should_block(f, now):
     return False
 
 
+IDT = f"https://identitytoolkit.googleapis.com/v1/projects/{P}"
+
+
+def sync_one(t, uid, f, now, by="system:authsync"):
+    """Applies one user's state to Auth. Returns True (disabled), False (enabled) or None (no change)."""
+    block = should_block(f, now)
+    was = f.get("authDisabled", {}).get("booleanValue", False)
+    if block == was:
+        return None
+    try:
+        call(t, IDT + "/accounts:update", {"localId": uid, "disableUser": block})
+    except urllib.error.HTTPError as e:
+        if e.code == 400 and b"USER_NOT_FOUND" in e.read():
+            return None
+        raise
+    call(t, FS + f"/users/{uid}?updateMask.fieldPaths=authDisabled", {"fields": {"authDisabled": {"booleanValue": block}}}, "PATCH")
+    call(t, FS + "/auditLog", {"fields": {
+        "action": {"stringValue": "auth.disable" if block else "auth.enable"},
+        "target": {"stringValue": "users/" + uid},
+        "by": {"stringValue": by},
+        "at": {"timestampValue": now.strftime("%Y-%m-%dT%H:%M:%SZ")}}})
+    return block
+
+
+def auth_disabled(t, uid):
+    r = call(t, IDT + "/accounts:lookup", {"localId": [uid]})
+    return bool(r["users"][0].get("disabled", False))
+
+
+def selftest(t):
+    """Live end-to-end ban check on a throwaway account, removed afterwards. Prints one line."""
+    import secrets
+    now = datetime.datetime.now(datetime.timezone.utc)
+    email = f"ban-selftest-{secrets.token_hex(4)}@selftest.mawja.invalid"
+    uid = call(t, IDT + "/accounts", {"email": email, "password": secrets.token_urlsafe(18)})["localId"]
+    doc = FS + f"/users/{uid}"
+    steps = []
+    try:
+        call(t, doc, {"fields": {"status": {"stringValue": "banned"}, "selftest": {"booleanValue": True}}}, "PATCH")
+        f = call(t, doc)["fields"]
+        steps.append(sync_one(t, uid, f, now, "system:selftest") is True and auth_disabled(t, uid))
+        f = call(t, doc)["fields"]
+        steps.append(f.get("authDisabled", {}).get("booleanValue") is True)
+        # the account can no longer get a token with its refresh flow: lookup says disabled; now lift the ban
+        call(t, doc + "?updateMask.fieldPaths=status", {"fields": {"status": {"stringValue": "active"}}}, "PATCH")
+        f = call(t, doc)["fields"]
+        steps.append(sync_one(t, uid, f, now, "system:selftest") is False and not auth_disabled(t, uid))
+    finally:
+        try: call(t, IDT + "/accounts:delete", {"localId": uid})
+        except Exception: pass
+        try: call(t, doc, None, "DELETE")
+        except Exception: pass
+    ok = all(steps) and len(steps) == 3
+    print(f"banselftest: {'ok' if ok else 'FAILED'} ban->disabled={steps[0] if steps else '-'} flag={steps[1] if len(steps)>1 else '-'} unban->enabled={steps[2] if len(steps)>2 else '-'}")
+    return ok
+
+
+RULES = f"https://firebaserules.googleapis.com/v1/projects/{P}"
+
+
+def deploy_rules(t):
+    """Keeps the live Firestore rules equal to backend/firestore.rules on main. Prints one line."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "backend", "firestore.rules")
+    if not os.path.exists(path):
+        print("rules: skipped (no file)"); return
+    src = open(path, encoding="utf-8").read()
+    live = call(t, RULES + "/releases/cloud.firestore")["rulesetName"]
+    files = call(t, "https://firebaserules.googleapis.com/v1/" + live)["source"]["files"]
+    if any(f.get("content") == src for f in files):
+        print("rules: ok unchanged " + live.rsplit("/", 1)[1][:8]); return
+    new = call(t, RULES + "/rulesets", {"source": {"files": [{"name": "firestore.rules", "content": src}]}})["name"]
+    call(t, RULES + "/releases/cloud.firestore",
+         {"release": {"name": f"projects/{P}/releases/cloud.firestore", "rulesetName": new}}, "PATCH")
+    print("rules: ok deployed " + new.rsplit("/", 1)[1][:8])
+
+
 def main():
     raw = os.environ.get("MAWJA_SA_B64", "")
     if not raw:
@@ -73,30 +149,19 @@ def main():
         r = call(t, u)
         for d in r.get("documents", []):
             uid = d["name"].rsplit("/", 1)[1]
-            f = d.get("fields", {})
-            block = should_block(f, now)
-            was = f.get("authDisabled", {}).get("booleanValue", False)
-            if block == was:
-                continue
-            try:
-                call(t, f"https://identitytoolkit.googleapis.com/v1/projects/{P}/accounts:update",
-                     {"localId": uid, "disableUser": block})
-            except urllib.error.HTTPError as e:
-                if e.code == 400 and b"USER_NOT_FOUND" in e.read():
-                    continue
-                raise
-            call(t, FS + f"/users/{uid}?updateMask.fieldPaths=authDisabled", {"fields": {"authDisabled": {"booleanValue": block}}}, "PATCH")
-            call(t, FS + "/auditLog", {"fields": {
-                "action": {"stringValue": "auth.disable" if block else "auth.enable"},
-                "target": {"stringValue": "users/" + uid},
-                "by": {"stringValue": "system:authsync"},
-                "at": {"timestampValue": now.strftime("%Y-%m-%dT%H:%M:%SZ")}}})
-            if block: dis += 1
-            else: en += 1
+            changed = sync_one(t, uid, d.get("fields", {}), now)
+            if changed is True: dis += 1
+            elif changed is False: en += 1
         page = r.get("nextPageToken")
         if not page:
             break
     print(f"authsync: ok disabled={dis} enabled={en}")
+    try:
+        deploy_rules(t)
+    except Exception as e:
+        print(f"rules: FAILED {type(e).__name__} {str(e)[:120]}")
+    if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "BAN_SELFTEST")):
+        return 0 if selftest(t) else 1
     return 0
 
 

@@ -82,7 +82,17 @@ fun OnboardingScreen(
             if (uris.isNotEmpty() && kind != null) viewModel.startImport(kind, uris)
         }
 
+    val connectYouTube =
+        app.mawja.android.youtubeaccount.rememberYouTubeAccountConnect(
+            onToken = { token -> viewModel.startAccountImport(token) },
+            onMessage = { message -> scope.launch { snackbarHostState.showSnackbar(message) } },
+        )
+
     fun pick(kind: ImportKind) {
+        if (kind.isAccountLink) {
+            connectYouTube()
+            return
+        }
         pendingImport = kind
         if (kind.takesSeveralFiles) multiImportPicker.launch(kind.mimeTypes) else importPicker.launch(kind.mimeTypes)
     }

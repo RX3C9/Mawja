@@ -314,6 +314,7 @@ dependencies {
     "githubImplementation"("androidx.credentials:credentials:1.5.0")
     "githubImplementation"("androidx.credentials:credentials-play-services-auth:1.5.0")
     "githubImplementation"("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    "githubImplementation"("com.google.android.gms:play-services-auth:21.3.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)

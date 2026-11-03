@@ -190,6 +190,7 @@
     <string name="kind_banner">Banner</string>
     <string name="kind_dialog">Dialog</string>
     <string name="kind_news">News</string>
+    <string name="kind_push">Phone notification</string>
     <string name="title">Title</string>
     <string name="body">Message</string>
     <string name="message">Message</string>

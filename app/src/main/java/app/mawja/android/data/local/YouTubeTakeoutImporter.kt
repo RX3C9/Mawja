@@ -106,6 +106,46 @@ internal class YouTubeTakeoutImporter(
             }
         }
 
+    /**
+     * What "Connect YouTube account" read, saved the same way as a Takeout export: same playlist
+     * ids (so a later Takeout or a second connect fills the same playlists instead of copying them),
+     * and subscriptions and likes merged, never duplicated.
+     */
+    suspend fun importAccount(
+        data: app.mawja.android.youtubeaccount.YouTubeAccountData,
+        onProgress: ((label: String, current: Int, total: Int) -> Unit)? = null,
+    ): Result<String> =
+        withContext(Dispatchers.IO) {
+            try {
+                if (data.isEmpty) return@withContext Result.failure(Exception("no_content"))
+                val subscriptionsImported = saveSubscriptions(data.subscriptions, onProgress)
+                var videos = 0
+                data.playlists.forEach { playlist ->
+                    savePlaylist("account/" + playlist.info.id, playlist.info.title, playlist.info, playlist.videoIds)
+                    videos += playlist.videoIds.size
+                }
+                val likesImported = if (data.likes.isNotEmpty()) saveLikes(data.likes) else 0
+                Result.success(
+                    buildList {
+                        if (subscriptionsImported > 0) add(plural(R.plurals.import_takeout_part_subscriptions, subscriptionsImported))
+                        if (data.playlists.isNotEmpty()) {
+                            add(
+                                context.resources.getQuantityString(
+                                    R.plurals.import_takeout_part_playlists,
+                                    data.playlists.size,
+                                    data.playlists.size,
+                                    videos,
+                                ),
+                            )
+                        }
+                        if (likesImported > 0) add(context.getString(R.string.import_takeout_part_likes, likesImported))
+                    }.joinToString(", "),
+                )
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
     /** A Takeout watch or search history HTML file on its own, as the single-file history import takes it; returns how many were saved. */
     suspend fun importHtmlHistory(input: InputStream): Int {
         val found = Found()

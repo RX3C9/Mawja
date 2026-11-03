@@ -172,6 +172,7 @@ private fun kindLabel(kind: String): String =
     when (kind) {
         "dialog" -> stringResource(R.string.kind_dialog)
         "news" -> stringResource(R.string.kind_news)
+        "push" -> stringResource(R.string.kind_push)
         else -> stringResource(R.string.kind_banner)
     }
 

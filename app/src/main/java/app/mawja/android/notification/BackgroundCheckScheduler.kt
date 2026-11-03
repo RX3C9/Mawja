@@ -57,6 +57,14 @@ internal object BackgroundCheckScheduler {
                     if (wanted) SmartNotifyWorker.schedule(context) else SmartNotifyWorker.cancel(context)
                 }
         }
+        launch {
+            // P8: admin notifications (free polling instead of FCM) follow the master switch only.
+            preferences.notificationsEnabled
+                .distinctUntilChanged()
+                .collect { on ->
+                    if (on) app.mawja.android.smartnotify.AdminPushWorker.schedule(context) else app.mawja.android.smartnotify.AdminPushWorker.cancel(context)
+                }
+        }
         if (BuildConfig.UPDATER_ENABLED) {
             launch {
                 combine(preferences.notificationsEnabled, preferences.notifUpdatesEnabled, ::updateCheckWanted)

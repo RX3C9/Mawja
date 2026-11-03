@@ -179,6 +179,8 @@ internal fun PlayerSettingsSubtitlesPage(
         )
     }
     Spacer(modifier = Modifier.height(SubtitleStyleRowSpacing))
+    app.mawja.android.dubbing.DubbingRows()
+    Spacer(modifier = Modifier.height(SubtitleStyleRowSpacing))
     val navRows = if (onAddSubtitleFile != null) 2 else 1
     FlowRowGroup {
         if (onAddSubtitleFile != null) {

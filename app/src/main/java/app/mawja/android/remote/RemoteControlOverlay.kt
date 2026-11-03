@@ -150,7 +150,7 @@ fun RemoteControlOverlay(
             card?.let { a ->
                 NoticeCard(
                     icon = Icons.Outlined.Campaign,
-                    label = if (a.kind == Announcement.KIND_NEWS) stringResource(R.string.remote_news_label) else null,
+                    label = if (a.kind == Announcement.KIND_NEWS || a.kind == Announcement.KIND_PUSH) stringResource(R.string.remote_news_label) else null,
                     title = a.title,
                     body = a.body,
                     actionLabel = a.ctaLabel.takeIf { a.hasCta },

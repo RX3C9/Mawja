@@ -101,6 +101,8 @@ class FlowApplication :
         app.mawja.android.accessibility.MawjaAccessibility.start(this)
         // Mawja optional Islamic section (#147): reads its settings; re-arms the prayer alarm only when on.
         app.mawja.android.islamic.MawjaIslamic.start(this)
+        // P3 Arabic AI dubbing: idle until the viewer turns it on in the player's subtitle settings.
+        app.mawja.android.dubbing.ArabicDubbing.start(this)
         YouTube.cacheDirectory = cacheDir.resolve("innertube_http_cache")
 
         DiscordPresenceRuntime.initialize(this, okHttpClient)

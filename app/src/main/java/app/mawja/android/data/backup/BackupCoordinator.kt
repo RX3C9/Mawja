@@ -244,6 +244,34 @@ class BackupCoordinator
         fun importLibreTubePlaylists(uri: Uri) =
             importCounted(R.string.import_label_libretube_playlists) { progress -> repository.importLibreTubePlaylists(uri, progress) }
 
+        /** Subscriptions, playlists and likes read from the user's own YouTube account (read-only). */
+        fun importYouTubeAccount(accessToken: String): Boolean {
+            val label = context.getString(R.string.import_label_youtube_account)
+            return run(label) {
+                repository
+                    .importYouTubeAccount(accessToken) { step, current, total -> progress("$label – $step", current, total) }
+                    .fold(
+                        onSuccess = { summary ->
+                            BackupOperation.Succeeded(
+                                context.getString(R.string.youtube_account_done, summary.ifBlank { context.getString(R.string.import_success, label) }),
+                            )
+                        },
+                        onFailure = { error ->
+                            val reason = (error as? app.mawja.android.youtubeaccount.YouTubeAccountException)?.reason
+                            val res =
+                                when (reason) {
+                                    "quota" -> R.string.youtube_account_error_quota
+                                    "unauthorized" -> R.string.youtube_account_error_auth
+                                    "no_channel" -> R.string.youtube_account_error_no_channel
+                                    "api_disabled" -> R.string.youtube_account_error_unavailable
+                                    else -> null
+                                }
+                            if (res != null) BackupOperation.Failed(context.getString(res)) else failed(R.string.import_failed_template, error)
+                        },
+                    )
+            }
+        }
+
         /** Every archive of one export; Google splits large exports into several. */
         fun importYouTubeTakeout(uris: List<Uri>): Boolean {
             val label = context.getString(R.string.import_label_youtube_takeout)

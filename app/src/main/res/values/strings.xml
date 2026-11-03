@@ -4970,4 +4970,27 @@
     <string name="report_sign_in">Sign in to your Mawja account to send reports.</string>
     <string name="report_unavailable">Reports aren\'t available in this build.</string>
     <string name="video_report">Report</string>
+    <string name="youtube_account_connect">Connect YouTube account</string>
+    <string name="youtube_account_connect_desc">Sign in with Google (read-only) and bring your subscriptions, playlists and likes in automatically, without duplicates</string>
+    <string name="import_label_youtube_account">YouTube account</string>
+    <string name="youtube_account_step_playlists">Playlists</string>
+    <string name="youtube_account_step_likes">Liked videos</string>
+    <string name="youtube_account_done">Moved over: %1$s</string>
+    <string name="youtube_account_error_quota">YouTube\'s daily limit for Mawja is used up. Try again tomorrow, or use Google Takeout now.</string>
+    <string name="youtube_account_error_auth">Google didn\'t give access. Try connecting again.</string>
+    <string name="youtube_account_error_no_channel">This Google account has no YouTube channel, so there is nothing to bring over.</string>
+    <string name="youtube_account_error_unavailable">Connecting to YouTube isn\'t available right now. Google Takeout still brings everything over.</string>
+    <string name="youtube_account_unavailable_foss">This build has no Google sign-in. Use Google Takeout to bring your YouTube data.</string>
+    <string name="youtube_account_cancelled">Connecting was cancelled.</string>
+    <string name="dubbing_header">Arabic dubbing (AI)</string>
+    <string name="dubbing_voice_over">Arabic voice-over</string>
+    <string name="dubbing_voice_over_desc">An Arabic voice speaks over a quiet original</string>
+    <string name="dubbing_replace">Arabic voice only</string>
+    <string name="dubbing_on">On: speaking the Arabic captions in time with the video</string>
+    <string name="dubbing_preparing">Preparing the Arabic voice…</string>
+    <string name="dubbing_no_captions">This video has no captions to dub from</string>
+    <string name="dubbing_no_voice">Install an Arabic voice: Android Settings › Text-to-speech › Speech Services by Google › Arabic</string>
+    <string name="admin_push_channel">Mawja news</string>
+    <string name="admin_push_channel_desc">Messages from the Mawja team</string>
+    <string name="admin_push_summary">Mawja team</string>
 </resources>

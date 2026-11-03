@@ -5352,4 +5352,27 @@
     <string name="report_sign_in">سجّل دخول بحساب موجة عشان تبعت بلاغات.</string>
     <string name="report_unavailable">البلاغات مش متاحة في النسخة دي.</string>
     <string name="video_report">إبلاغ</string>
+    <string name="youtube_account_connect">اربط حساب يوتيوب</string>
+    <string name="youtube_account_connect_desc">سجّل دخول بجوجل (قراءة فقط) وهات اشتراكاتك وقوائمك وإعجاباتك أوتوماتيك من غير تكرار</string>
+    <string name="import_label_youtube_account">حساب يوتيوب</string>
+    <string name="youtube_account_step_playlists">القوائم</string>
+    <string name="youtube_account_step_likes">الفيديوهات اللي عجبتك</string>
+    <string name="youtube_account_done">اتنقل: %1$s</string>
+    <string name="youtube_account_error_quota">الحد اليومي ليوتيوب في موجة خلص. جرّب بكرة، أو استخدم Google Takeout دلوقتي.</string>
+    <string name="youtube_account_error_auth">جوجل ما ادّاش صلاحية. جرّب تربط تاني.</string>
+    <string name="youtube_account_error_no_channel">حساب جوجل ده مالوش قناة يوتيوب، فمفيش حاجة تتنقل.</string>
+    <string name="youtube_account_error_unavailable">الربط بيوتيوب مش متاح دلوقتي. Google Takeout لسه بينقل كل حاجة.</string>
+    <string name="youtube_account_unavailable_foss">النسخة دي مفيهاش تسجيل دخول جوجل. استخدم Google Takeout عشان تنقل بيانات يوتيوب.</string>
+    <string name="youtube_account_cancelled">الربط اتلغى.</string>
+    <string name="dubbing_header">دبلجة عربية (ذكاء اصطناعي)</string>
+    <string name="dubbing_voice_over">تعليق صوتي عربي</string>
+    <string name="dubbing_voice_over_desc">صوت عربي فوق الصوت الأصلي وهو واطي</string>
+    <string name="dubbing_replace">صوت عربي بس</string>
+    <string name="dubbing_on">شغّالة: بتنطق الترجمة العربية متزامنة مع الفيديو</string>
+    <string name="dubbing_preparing">بيجهّز الصوت العربي…</string>
+    <string name="dubbing_no_captions">الفيديو ده مفيهوش ترجمة ندبلج منها</string>
+    <string name="dubbing_no_voice">نزّل صوت عربي: إعدادات أندرويد › تحويل النص إلى كلام › خدمات Google › العربية</string>
+    <string name="admin_push_channel">أخبار موجة</string>
+    <string name="admin_push_channel_desc">رسائل من فريق موجة</string>
+    <string name="admin_push_summary">فريق موجة</string>
 </resources>
