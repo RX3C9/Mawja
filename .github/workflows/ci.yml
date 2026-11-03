@@ -105,6 +105,28 @@ jobs:
           path: app/build/outputs/apk/**/*.apk
           retention-days: 14
 
+  testlab:
+    needs: build
+    if: always() && needs.build.result == 'success'
+    name: Real-device playback (Firebase Test Lab)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    env:
+      MAWJA_SA_B64: ${{ secrets.MAWJA_SA_B64 }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: mawja-debug-apks
+          path: apks
+      - name: Game loop on a real phone + a virtual one
+        run: |
+          if [ -f scripts/ci/testlab.sh ]; then bash scripts/ci/testlab.sh; else echo "testlab: skipped (script not synced yet)"; fi
+
   authsync:
     needs: sync
     if: always()
