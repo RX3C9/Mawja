@@ -56,4 +56,22 @@ class VideoInsightsTest {
         assertThat(moments.map { it.startMs }).isInOrder()
         assertThat(moments.none { it.text.startsWith("أهلا") }).isTrue()
     }
+
+    @Test
+    fun askFindsTheMomentThatAnswers() {
+        val cues =
+            listOf(
+                TranscriptCue(0, "أهلاً بيكم في الحلقة دي", 5_000),
+                TranscriptCue(60_000, "النهارده هنتكلم عن البطارية وإزاي تطول عمرها", 5_000),
+                TranscriptCue(120_000, "أول حاجة الشاشة والسطوع العالي", 5_000),
+                TranscriptCue(180_000, "شحن البطاريات طول الليل بيقصّر عمرها", 5_000),
+                TranscriptCue(240_000, "وفي الآخر نتكلم عن الكاميرا والتصوير", 5_000),
+                TranscriptCue(300_000, "شكراً على المشاهدة", 5_000),
+            )
+        assertThat(VideoInsights.ask("إمتى أشحن البطارية؟", cues).map { it.startMs }).containsExactly(180_000L, 60_000L).inOrder()
+        assertThat(VideoInsights.ask("شحن الموبايل طول الليل", cues).first().startMs).isEqualTo(180_000)
+        assertThat(VideoInsights.ask("الكاميرا", cues).map { it.startMs }).containsExactly(240_000L)
+        assertThat(VideoInsights.ask("طيارة صاروخ", cues)).isEmpty()
+        assertThat(VideoInsights.ask("  ", cues)).isEmpty()
+    }
 }

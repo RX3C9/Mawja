@@ -258,6 +258,7 @@ fun FlowTranscriptBottomSheet(
             showMoments && moments.isNotEmpty() -> {
                 app.mawja.android.ai.KeyMomentsPanel(
                     moments = moments,
+                    cues = cues,
                     onSeekMs = { ms ->
                         onSeekMs(ms)
                         showMoments = false

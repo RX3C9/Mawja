@@ -5386,4 +5386,7 @@
         <item quantity="many">%1$d اشتراك · %2$d فيديو · %3$d موسيقى</item>
         <item quantity="other">%1$d اشتراك · %2$d فيديو · %3$d موسيقى</item>
     </plurals>
+    <string name="ai_ask_video_hint">اسأل الفيديو…</string>
+    <string name="ai_ask_video_note">الأماكن اللي الفيديو اتكلم فيها عن سؤالك، اتلقت على موبايلك. دوس تروح لها.</string>
+    <string name="ai_ask_video_none">الفيديو شكله ما اتكلمش عن ده. جرّب كلمات تانية.</string>
 </resources>

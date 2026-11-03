@@ -37,10 +37,10 @@ tor_up() {
   command -v tor >/dev/null 2>&1 || { timeout 240 sudo apt-get update -qq >/dev/null 2>&1; timeout 300 sudo apt-get install -y -qq tor >/dev/null 2>&1 || return 1; }
   sudo systemctl stop tor 2>/dev/null || true
   mkdir -p "$WORK/tor"
-  printf 'SocksPort 9050\nHTTPTunnelPort 0.0.0.0:9080\nDataDirectory %s/tor\nExitNodes {us},{de},{nl},{gb},{fr},{ca}\nStrictNodes 0\n' "$WORK" > "$WORK/torrc"
+  printf 'SocksPort 9150\nHTTPTunnelPort 0.0.0.0:9080\nDataDirectory %s/tor\nExitNodes {us},{de},{nl},{gb},{fr},{ca}\nStrictNodes 0\n' "$WORK" > "$WORK/torrc"
   (tor -f "$WORK/torrc" > "$WORK/tor.log" 2>&1 &)
-  local i; for i in $(seq 1 60); do grep -q 'Bootstrapped 100%' "$WORK/tor.log" 2>/dev/null && return 0; sleep 2; done
-  return 1
+  local i; for i in $(seq 1 120); do grep -q 'Bootstrapped 100%' "$WORK/tor.log" 2>/dev/null && return 0; sleep 2; done
+  log "tor log: $(tail -3 "$WORK/tor.log" 2>/dev/null | tr '\n' ' ')"; return 1
 }
 tor_newnym() { # new circuit = new exit IP
   pkill -HUP -f "tor -f $WORK/torrc" 2>/dev/null; sleep 6
@@ -72,4 +72,16 @@ ytnet_cleanup() {
     warp) warp_down ;;
     tor) T=10 a shell settings put global http_proxy :0 >/dev/null 2>&1; pkill -f "tor -f $WORK/torrc" 2>/dev/null ;;
   esac
+}
+
+# Brings one route up for the emulator (used by smoke.sh's route loop); sets YT_ROUTE.
+ytnet_use() {
+  case "$1" in
+    warp) warp_up && { YT_ROUTE=warp; log "ytnet warp up: $(yt_probe)"; return 0; } ; log "ytnet warp: could not connect"; return 1 ;;
+    tor)
+      tor_up || { log "ytnet tor: did not bootstrap"; return 1; }
+      YT_PROXY="http://127.0.0.1:9080"; log "ytnet tor up: $(yt_probe)"
+      T=10 a shell settings put global http_proxy 10.0.2.2:9080 >/dev/null 2>&1; YT_ROUTE=tor; return 0 ;;
+  esac
+  return 1
 }

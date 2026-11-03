@@ -7,8 +7,10 @@
 SMOKE="$WORK/smoke.txt"; : > "$SMOKE"
 sres() { echo "$1: $2" >> "$SMOKE"; log "smoke $1: $2"; }
 
-# Network route that YouTube does not bot-wall (direct, else free WARP, else Tor).
-if [ -f scripts/ci/ytnet.sh ]; then source scripts/ci/ytnet.sh; ytnet_select; sres network "$YT_ROUTE"; fi
+# Network routes to try for playback: GitHub runner IPs are bot-walled by YouTube, so the app is
+# tried direct, then over free Cloudflare WARP, then over Tor; the first route that plays is kept.
+YT_ROUTES="direct"
+if [ -f scripts/ci/ytnet.sh ]; then source scripts/ci/ytnet.sh; YT_ROUTES="direct warp tor"; fi
 
 playback_state() { # -> numeric PlaybackState of the app's media session (3 = playing), or none
   T=20 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | awk -v p="$PKG" '
@@ -29,14 +31,21 @@ sres crashes_during_screens "$pre_n"
 T=10 a logcat -b crash -c >/dev/null 2>&1 || true
 T=10 a logcat -c >/dev/null 2>&1 || true
 
-# 1) Video playback (real stream from the runner's network).
-stop_app
-start_app --ez $BYPASS true --es video_id "$VIDEO_ID"
-if wait_playing 45; then sres video_playback ok; else sres video_playback "FAILED (state $(cat "$WORK/last_state" 2>/dev/null))"
+# 1) Video playback (real stream), route by route until one plays.
+video_ok=0; tried=""
+for route in $YT_ROUTES; do
+  if [ "$route" != direct ]; then ytnet_use "$route" || { tried="$tried $route(down)"; continue; }; fi
+  stop_app
+  start_app --ez $BYPASS true --es video_id "$VIDEO_ID"
+  if wait_playing 45; then video_ok=1; tried="$tried $route(plays)"; break; fi
+  tried="$tried $route(walled)"
+  T=30 a logcat -d -t 600 2>/dev/null | tr -d '\r' | grep -E "InnerTubeVideoExtractor|All clients failed" | tail -12 > "$WORK/diag-$route.txt"
+  [ "$route" != direct ] && ytnet_cleanup
+done
+sres network "${tried# }"
+if [ "$video_ok" = 1 ]; then sres video_playback "ok via $route"; else sres video_playback "FAILED (state $(cat "$WORK/last_state" 2>/dev/null))"
   T=30 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | head -60 > "$WORK/diag-session.txt"
-  T=30 a logcat -d -t 400 2>/dev/null | tr -d '\r' | grep -iE "exoplayer|extractor|playback|player|FATAL|Exception|video_id|http|network" | tail -80 > "$WORK/diag-logcat.txt"
-  T=10 a shell "ping -c1 -W3 8.8.8.8; getprop net.dns1" 2>&1 | tail -4 > "$WORK/diag-net.txt"
-  cat "$WORK/diag-net.txt" "$WORK/diag-session.txt" "$WORK/diag-logcat.txt" > "$WORK/smoke-diag.txt"
+  cat "$WORK"/diag-*.txt > "$WORK/smoke-diag.txt" 2>/dev/null
 fi
 sleep 5; pos1=$(T=20 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | grep -o 'position=[0-9]*' | head -1)
 sleep 6; pos2=$(T=20 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | grep -o 'position=[0-9]*' | head -1)

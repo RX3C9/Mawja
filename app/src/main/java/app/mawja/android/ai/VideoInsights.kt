@@ -205,4 +205,50 @@ object VideoInsights {
         }
         return chosen.sorted().map { Moment(sentences[it].startMs, sentences[it].text.trim()) }
     }
+
+    /**
+     * "Ask the video", entirely on the phone: the question's words (stemmed, Arabic spelling folded,
+     * stop words dropped) are ranked against short windows of the transcript (a cue with its neighbours)
+     * by TF-IDF, the cue itself counting fully and its neighbours at a third; a word sharing only its first letters
+     * (after a verb prefix) counts at 0.6. Returns the
+     * [count] best distinct moments, best first, or nothing when no window shares a meaningful word.
+     */
+    /** First four letters after a verb prefix (ا ي ن ت), so أشحن and شحن, بطارية and بطاريات meet. */
+    private fun fuzzyKey(w: String): String = (if (w.length >= 4 && w[0] in "اينت") w.substring(1) else w).take(4)
+
+    fun ask(
+        question: String,
+        cues: List<TranscriptCue>,
+        count: Int = 3,
+    ): List<Moment> {
+        val q = words(question).distinct()
+        if (q.isEmpty() || cues.isEmpty()) return emptyList()
+        val terms = cues.map { words(it.text) }
+        val idf = idf(terms)
+        val maxIdf = idf.values.maxOrNull() ?: 1.0
+        fun hit(
+            t: String,
+            ws: Set<String>,
+        ): Double =
+            when {
+                t in ws -> 1.0
+                fuzzyKey(t).length >= 3 && ws.any { fuzzyKey(it) == fuzzyKey(t) } -> 0.6
+                else -> 0.0
+            }
+        val scores =
+            cues.indices.map { i ->
+                val own = terms[i].toSet()
+                val near = (listOfNotNull(terms.getOrNull(i - 1), terms.getOrNull(i + 1)).flatten()).toSet()
+                val o = q.sumOf { (idf[it] ?: maxIdf) * hit(it, own) }
+                val n = q.sumOf { (idf[it] ?: maxIdf) * hit(it, near) }
+                if (o == 0.0) 0.0 else (o + 0.35 * n) / sqrt(1.0 + terms[i].size / 8.0)
+            }
+        val ranked = cues.indices.filter { scores[it] > 0.0 }.sortedByDescending { scores[it] }
+        val chosen = ArrayList<Int>()
+        for (i in ranked) {
+            if (chosen.size == count) break
+            if (chosen.none { kotlin.math.abs(it - i) <= 1 }) chosen += i
+        }
+        return chosen.map { Moment(cues[it].startMs, cues[it].text.trim()) }
+    }
 }

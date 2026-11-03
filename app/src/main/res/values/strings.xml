@@ -5000,4 +5000,7 @@
         <item quantity="one">%1$d subscription · %2$d video · %3$d music</item>
         <item quantity="other">%1$d subscriptions · %2$d video · %3$d music</item>
     </plurals>
+    <string name="ai_ask_video_hint">Ask the video…</string>
+    <string name="ai_ask_video_note">Where the video talks about it. Found on your phone. Tap to jump.</string>
+    <string name="ai_ask_video_none">The video doesn\'t seem to mention that. Try other words.</string>
 </resources>

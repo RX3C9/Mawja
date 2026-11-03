@@ -26,8 +26,8 @@ function Features() {
   const { busy, message, run } = useAction();
 
   const load = useCallback(async () => {
-    const snap = await getDoc(doc(db(), "config", "features")).catch(() => null);
-    setFeatures((snap?.data() as Record<string, Feature> | undefined) ?? {});
+    const snap = await getDoc(doc(db(), "config", "app")).catch(() => null);
+    setFeatures((snap?.data()?.features as Record<string, Feature> | undefined) ?? {});
   }, []);
   useEffect(() => {
     void load();

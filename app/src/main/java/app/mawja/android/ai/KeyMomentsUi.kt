@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,7 +56,7 @@ fun KeyMomentsToggle(
         selected = selected,
         onClick = onClick,
         label = { Text(stringResource(R.string.ai_key_moments)) },
-        leadingIcon = { Icon(Icons.Rounded.AutoAwesome, contentDescription = null, modifier = Modifier.padding(0.dp)) },
+        leadingIcon = { Icon(Icons.Rounded.AutoAwesome, contentDescription = null) },
         colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer),
     )
 }
@@ -64,10 +65,14 @@ fun KeyMomentsToggle(
 @Composable
 fun KeyMomentsPanel(
     moments: List<VideoInsights.Moment>,
+    cues: List<app.mawja.android.data.transcript.TranscriptCue>,
     onSeekMs: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val still = MawjaAccessibility.reduceMotionNow()
+    var question by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf("") }
+    val answers = remember(question, cues) { if (question.isBlank()) null else VideoInsights.ask(question, cues) }
+    val shown = answers ?: moments
     val sweep by rememberInfiniteTransition(label = "aurora").animateFloat(
         initialValue = 0f,
         targetValue = 1000f,
@@ -82,13 +87,30 @@ fun KeyMomentsPanel(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
     ) {
         item {
+            androidx.compose.material3.OutlinedTextField(
+                value = question,
+                onValueChange = { question = it.take(200) },
+                modifier = Modifier.fillMaxWidth().border(BorderStroke(1.dp, brush), RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true,
+                leadingIcon = { Icon(Icons.Rounded.AutoAwesome, contentDescription = null) },
+                placeholder = { Text(stringResource(R.string.ai_ask_video_hint)) },
+            )
+        }
+        item {
             Text(
-                stringResource(R.string.ai_key_moments_note),
+                stringResource(
+                    when {
+                        answers == null -> R.string.ai_key_moments_note
+                        answers.isEmpty() -> R.string.ai_ask_video_none
+                        else -> R.string.ai_ask_video_note
+                    },
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        itemsIndexed(moments, key = { _, m -> m.startMs }) { index, m ->
+        itemsIndexed(shown, key = { _, m -> "${answers != null}-${m.startMs}" }) { index, m ->
             val enter = remember { Animatable(if (still) 1f else 0f) }
             LaunchedEffect(Unit) { if (!still) enter.animateTo(1f, tween(380, delayMillis = 70 * index)) }
             Surface(

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { collection, getDocs, limit, orderBy, query, type DocumentData } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { TIERS } from "@/lib/roles";
+import { ANNOUNCEMENT_KINDS, type AnnouncementKind } from "@/lib/adminAction";
 import { formatWhen } from "@/lib/time";
 import { useApp } from "@/components/Providers";
 import { RequirePermission } from "@/components/Shell";
@@ -23,6 +24,8 @@ function Announcements() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [target, setTarget] = useState("");
+  const [kind, setKind] = useState<AnnouncementKind>("banner");
+  const [locale, setLocale] = useState("");
   const { busy, message, run } = useAction();
 
   const load = useCallback(async () => {
@@ -46,7 +49,19 @@ function Announcements() {
             {TIERS.map((x) => <option key={x} value={x}>{x}</option>)}
           </select>
         </label>
-        <button className="btn primary" disabled={busy || !title.trim() || !body.trim()} onClick={() => run({ action: "announcement.send", title: title.trim(), body: body.trim(), targetTier: target || undefined }, () => { setTitle(""); setBody(""); void load(); })}>
+        <label>{t("ann.kind")}
+          <select value={kind} onChange={(e) => setKind(e.target.value as AnnouncementKind)}>
+            {ANNOUNCEMENT_KINDS.map((k) => <option key={k} value={k}>{t(`ann.kind.${k}`)}</option>)}
+          </select>
+        </label>
+        <label>{t("ann.locale")}
+          <select value={locale} onChange={(e) => setLocale(e.target.value)}>
+            <option value="">{t("ann.everyone")}</option>
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+        <button className="btn primary" disabled={busy || !title.trim() || !body.trim()} onClick={() => run({ action: "announcement.send", title: title.trim(), body: body.trim(), targetTier: target || undefined, kind, locale: (locale || undefined) as "ar" | "en" | undefined }, () => { setTitle(""); setBody(""); void load(); })}>
           {t("ann.send")}
         </button>
         <StatusLine message={message} />
@@ -58,7 +73,7 @@ function Announcements() {
               <li key={a.id}>
                 <strong dir="auto">{a.data.title}</strong>
                 <p dir="auto">{a.data.body}</p>
-                <span className="muted small">{formatWhen(a.data.startAt, lang)} · {a.data.targetTier ?? t("ann.everyone")}</span>
+                <span className="muted small">{formatWhen(a.data.startAt, lang)} · {a.data.targetTier ?? t("ann.everyone")} · {t(`ann.kind.${a.data.kind ?? "banner"}`)}</span>
               </li>
             ))}
           </ul>
