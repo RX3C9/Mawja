@@ -292,6 +292,11 @@ service cloud.firestore {
       return st == 'banned' || (st == 'suspended' && (until == null || until > request.time))
         || (muted != null && muted > request.time);
     }
+    // A feature staff locked on this account (admin app: lockedFeatures, e.g. 'reports', 'codes').
+    function featureLocked(uid, f) {
+      return exists(/databases/$(database)/documents/users/$(uid))
+        && f in userDoc(uid).get('lockedFeatures', []);
+    }
     // Manual membership: owner/admin; free and lifetime have no end date.
     function staffTierOk(d) {
       let until = d.get('tierUntil', null);
@@ -328,7 +333,7 @@ service cloud.firestore {
       allow list: if isStaff();
       allow create: if canManageCodes() && isHash(codeId) && newCodeOk(request.resource.data);
       allow update: if (canManageCodes() && revokeOnly())
-        || (signedIn() && notBanned()
+        || (signedIn() && notBanned() && !featureLocked(request.auth.uid, 'codes')
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used'])
             && request.resource.data.used == resource.data.used + 1
             && codeOk(resource.data)
@@ -373,7 +378,7 @@ service cloud.firestore {
     match /redemptions/{rid} {
       allow get: if isStaff() || (signedIn() && rid.matches('^[0-9a-f]{64}_' + request.auth.uid + '$'));
       allow list: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
-      allow create: if signedIn() && notBanned() && redemptionOk(rid, request.resource.data);
+      allow create: if signedIn() && notBanned() && !featureLocked(request.auth.uid, 'codes') && redemptionOk(rid, request.resource.data);
       allow update, delete: if false;
     }
     function redemptionOk(rid, d) {
@@ -420,7 +425,7 @@ service cloud.firestore {
     }
 
     match /reports/{id} {
-      allow create: if signedIn() && notBanned() && !docRestricted(request.auth.uid) && request.resource.data.uid == request.auth.uid
+      allow create: if signedIn() && notBanned() && !docRestricted(request.auth.uid) && !featureLocked(request.auth.uid, 'reports') && request.resource.data.uid == request.auth.uid
         && request.resource.data.message is string && request.resource.data.message.size() < 5000;
       allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
       // Inbox handling by any staff role: status, assignee, internal note, reply to the reporter.
@@ -468,13 +473,19 @@ service cloud.firestore {
     function configOk(d) {
       return d.diff(resource == null ? {} : resource.data).affectedKeys().hasOnly(['killSwitch', 'maintenance', 'maintenanceMessage', 'maintenanceMessageAr',
              'minVersion', 'latestVersion', 'updateUrl', 'features', 'tierGates', 'checkoutUrl',
+             'updateReason', 'updateReasonAr', 'updateSha256', 'requiredAfter', 'rolloutPercent', 'pulledVersions',
              'updatedAt', 'updatedBy', 'auditId'])
         && d.updatedAt == request.time && d.updatedBy == request.auth.uid
         && optBool(d, 'killSwitch') && optBool(d, 'maintenance')
         && optString(d, 'maintenanceMessage', 500) && optString(d, 'maintenanceMessageAr', 500)
         && optInt(d, 'minVersion') && optInt(d, 'latestVersion')
         && optString(d, 'updateUrl', 500) && optString(d, 'checkoutUrl', 500)
-        && optMap(d, 'features') && optMap(d, 'tierGates');
+        && optMap(d, 'features') && optMap(d, 'tierGates')
+        && optString(d, 'updateReason', 500) && optString(d, 'updateReasonAr', 500)
+        && (!('updateSha256' in d) || (d.updateSha256 is string && d.updateSha256.matches('^([0-9a-f]{64})?$')))
+        && optTime(d, 'requiredAfter')
+        && (!('rolloutPercent' in d) || (d.rolloutPercent is int && d.rolloutPercent >= 0 && d.rolloutPercent <= 100))
+        && (!('pulledVersions' in d) || (d.pulledVersions is list && d.pulledVersions.size() <= 50));
     }
     function announcementOk(d) {
       return d.keys().hasOnly(['title', 'body', 'targetTier', 'locale', 'kind', 'ctaLabel', 'ctaUrl', 'active',

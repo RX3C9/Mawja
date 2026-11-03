@@ -61,6 +61,13 @@ class RemoteConfigRepository
             }.getOrNull()?.takeIf { it > 0 } ?: BuildConfig.VERSION_CODE.toLong()
         }
 
+        /** Stable 0..99 staged-rollout bucket of this install (random id kept in prefs). */
+        val bucket: Int by lazy {
+            val prefs = context.getSharedPreferences("mawja_rollout", Context.MODE_PRIVATE)
+            val id = prefs.getString("id", null) ?: java.util.UUID.randomUUID().toString().also { prefs.edit().putString("id", it).apply() }
+            RemoteSettings.bucketOf(id)
+        }
+
         val settings: StateFlow<RemoteSettings> =
             if (enabled) {
                 context.remoteStore.data
@@ -90,7 +97,7 @@ class RemoteConfigRepository
 
         val gate: StateFlow<RemoteGate> =
             if (enabled) {
-                settings.map { it.gate(versionCode) }.stateIn(scope, SharingStarted.Eagerly, RemoteGate.Open)
+                settings.map { it.gate(versionCode, bucket) }.stateIn(scope, SharingStarted.Eagerly, RemoteGate.Open)
             } else {
                 MutableStateFlow(RemoteGate.Open)
             }

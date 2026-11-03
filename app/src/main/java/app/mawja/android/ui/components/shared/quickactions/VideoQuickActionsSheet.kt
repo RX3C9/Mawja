@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.PlaylistRemove
@@ -94,6 +95,11 @@ fun VideoQuickActionsBottomSheet(
         SaveVideoSheet(video = video, onDismiss = onDismiss)
         return
     }
+    var reporting by rememberSaveable(video.id) { mutableStateOf(false) }
+    if (reporting) {
+        app.mawja.android.report.ReportSheet(onDismiss = onDismiss, videoId = video.id)
+        return
+    }
 
     QuickActionsSheet(
         onDismiss = onDismiss,
@@ -159,7 +165,10 @@ fun VideoQuickActionsBottomSheet(
                     }
                 QuickActionsGroup(
                     title = stringResource(R.string.section_options),
-                    rows = moreRows(video, viewModel, close) { page = VideoMenuPage.Details } + listOfNotNull(removeRow),
+                    rows =
+                        moreRows(video, viewModel, close) { page = VideoMenuPage.Details } +
+                            listOfNotNull(removeRow) +
+                            actionRow("report", Icons.Outlined.Flag, stringResource(R.string.video_report)) { sheet.hideThen { reporting = true } },
                 )
             }
         }

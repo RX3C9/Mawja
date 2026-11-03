@@ -30,6 +30,7 @@ internal object AboutIndex {
     val newPipe = entry("newpipe", R.string.newpipe_extractor_title, R.string.section_legal, R.string.newpipe_extractor_subtitle)
     val notices = entry("notices", R.string.about_notices, R.string.section_legal, R.string.about_notices_summary)
     val deviceInfo = entry("device_info", R.string.about_device_info, R.string.section_device)
+    val report = entry("report", R.string.report_title, R.string.section_app, R.string.report_about_summary)
 
-    val all = listOf(changelog, website, github, creator, license, basedOn, newPipe, notices, deviceInfo)
+    val all = listOf(report, changelog, website, github, creator, license, basedOn, newPipe, notices, deviceInfo)
 }

@@ -33,7 +33,17 @@ sealed interface RemoteGate {
 
     data class ForceUpdate(
         val updateUrl: String,
-    ) : RemoteGate
+        /** Why, in the user's language when staff wrote it (may be blank). */
+        val reasonAr: String = "",
+        val reasonEn: String = "",
+        /** SHA-256 (hex) the downloaded APK must match before it is offered for install. */
+        val sha256: String = "",
+    ) : RemoteGate {
+        fun reason(language: String): String {
+            val ar = language.lowercase().startsWith("ar")
+            return (if (ar) reasonAr else reasonEn).ifBlank { if (ar) reasonEn else reasonAr }
+        }
+    }
 }
 
 /**
@@ -51,21 +61,75 @@ data class RemoteSettings(
     val checkoutUrl: String = "",
     val features: Map<String, Boolean> = emptyMap(),
     val tierGates: Map<String, String> = emptyMap(),
+    /** Mawja 2.0 updates (P7): why to update, in Arabic and English. */
+    val updateReason: String = "",
+    val updateReasonAr: String = "",
+    /** SHA-256 (64 hex) of the APK at [updateUrl]; the in-app installer refuses any other file. */
+    val updateSha256: String = "",
+    /** After this moment (epoch ms; 0 = never) the latest version stops being optional. */
+    val requiredAfter: Long = 0,
+    /** Staged rollout of [latestVersion]: share of devices (0..100) that are offered it. */
+    val rolloutPercent: Int = 100,
+    /** Builds withdrawn for a serious problem: they must update to [latestVersion] right away. */
+    val pulledVersions: List<Long> = emptyList(),
 ) {
     /**
-     * Kill switch first, then maintenance (updating would not help), then minVersion. A
-     * [versionCode] <= 0 (unknown build) is never forced to update.
+     * Kill switch first, then maintenance (updating would not help), then the update policy. A
+     * [versionCode] <= 0 (unknown build) is never forced to update. [bucket] (0..99, stable per
+     * device) decides the staged rollout; [now] decides a grace period that has run out.
      */
-    fun gate(versionCode: Long): RemoteGate =
+    fun gate(
+        versionCode: Long,
+        bucket: Int = 0,
+        now: Long = System.currentTimeMillis(),
+    ): RemoteGate =
         when {
             killSwitch -> RemoteGate.Killed
             maintenance -> RemoteGate.Maintenance(maintenanceMessageAr, maintenanceMessage)
-            versionCode > 0 && minVersion > 0 && versionCode < minVersion -> RemoteGate.ForceUpdate(safeUrl(updateUrl))
+            update(versionCode, bucket, now) == UpdateLevel.FORCED ->
+                RemoteGate.ForceUpdate(safeUrl(updateUrl), updateReasonAr, updateReason, sha256OrEmpty)
             else -> RemoteGate.Open
         }
 
-    /** A newer build is published but this one may still run. */
-    fun softUpdate(versionCode: Long): Boolean = gate(versionCode) == RemoteGate.Open && versionCode > 0 && latestVersion > versionCode
+    /** How strongly this build is asked to update: the three levels of the plan plus none. */
+    fun update(
+        versionCode: Long,
+        bucket: Int = 0,
+        now: Long = System.currentTimeMillis(),
+    ): UpdateLevel {
+        if (versionCode <= 0) return UpdateLevel.NONE
+        if (minVersion > 0 && versionCode < minVersion) return UpdateLevel.FORCED
+        val newer = latestVersion > versionCode
+        if (!newer) return UpdateLevel.NONE
+        if (versionCode in pulledVersions) return UpdateLevel.FORCED
+        if (!inRollout(bucket)) return UpdateLevel.NONE
+        return when {
+            requiredAfter <= 0 -> UpdateLevel.SUGGESTED
+            now >= requiredAfter -> UpdateLevel.FORCED
+            else -> UpdateLevel.REQUIRED_SOON
+        }
+    }
+
+    /** Whether a device in [bucket] (0..99) is offered [latestVersion] yet. */
+    fun inRollout(bucket: Int): Boolean = bucket.coerceIn(0, 99) < rolloutPercent.coerceIn(0, 100)
+
+    /** A newer build is offered but this one may still run (suggested, or required after a deadline). */
+    fun softUpdate(
+        versionCode: Long,
+        bucket: Int = 0,
+        now: Long = System.currentTimeMillis(),
+    ): Boolean =
+        gate(versionCode, bucket, now) == RemoteGate.Open &&
+            update(versionCode, bucket, now).let { it == UpdateLevel.SUGGESTED || it == UpdateLevel.REQUIRED_SOON }
+
+    /** The reason for [language], falling back to the other language; blank if none. */
+    fun updateReason(language: String): String {
+        val ar = language.lowercase().startsWith("ar")
+        return (if (ar) updateReasonAr else updateReason).ifBlank { if (ar) updateReason else updateReasonAr }
+    }
+
+    /** [updateSha256] lower-cased when it is a real SHA-256, else blank (no in-app install). */
+    val sha256OrEmpty: String get() = updateSha256.trim().lowercase().takeIf { SHA.matches(it) }.orEmpty()
 
     /** A switch is on unless the config explicitly turns it off. */
     fun isEnabled(key: String): Boolean = features[key] ?: true
@@ -96,6 +160,12 @@ data class RemoteSettings(
             put("checkoutUrl", checkoutUrl)
             put("features", JsonObject(features.toSortedMap().mapValues { JsonPrimitive(it.value) }))
             put("tierGates", JsonObject(tierGates.toSortedMap().mapValues { JsonPrimitive(it.value) }))
+            put("updateReason", updateReason)
+            put("updateReasonAr", updateReasonAr)
+            put("updateSha256", updateSha256)
+            put("requiredAfter", requiredAfter)
+            put("rolloutPercent", rolloutPercent)
+            put("pulledVersions", kotlinx.serialization.json.JsonArray(pulledVersions.map { JsonPrimitive(it) }))
         }.toString()
 
     companion object {
@@ -103,6 +173,10 @@ data class RemoteSettings(
         private const val CACHE_VERSION = 1
         private val KEY = Regex("^[A-Za-z][A-Za-z0-9_]{0,47}$")
         private const val MAX_MESSAGE = 500
+        private val SHA = Regex("^[0-9a-f]{64}$")
+
+        /** Stable 0..99 rollout bucket for a device id (same id → same bucket on every run). */
+        fun bucketOf(deviceId: String): Int = Math.floorMod(deviceId.hashCode(), 100)
 
         /** Only https:// URLs leave this class. */
         internal fun safeUrl(url: String): String = url.trim().takeIf { it.startsWith("https://") }.orEmpty()
@@ -124,6 +198,12 @@ data class RemoteSettings(
                     FirestoreJson.map(f["features"]).mapNotNull { (k, v) -> FirestoreJson.bool(v)?.let { k to it } }.filter { KEY.matches(it.first) }.toMap(),
                 tierGates =
                     FirestoreJson.map(f["tierGates"]).mapNotNull { (k, v) -> FirestoreJson.string(v)?.let { k to it } }.filter { KEY.matches(it.first) }.toMap(),
+                updateReason = FirestoreJson.string(f["updateReason"]).orEmpty().take(MAX_MESSAGE),
+                updateReasonAr = FirestoreJson.string(f["updateReasonAr"]).orEmpty().take(MAX_MESSAGE),
+                updateSha256 = FirestoreJson.string(f["updateSha256"]).orEmpty(),
+                requiredAfter = (FirestoreJson.millis(f["requiredAfter"]) ?: 0).coerceAtLeast(0),
+                rolloutPercent = (FirestoreJson.long(f["rolloutPercent"]) ?: 100).coerceIn(0, 100).toInt(),
+                pulledVersions = FirestoreJson.longList(f["pulledVersions"]).filter { it > 0 }.take(50),
             )
         }
 
@@ -152,10 +232,19 @@ data class RemoteSettings(
                 features = (o["features"] as? JsonObject).orEmpty().mapNotNull { (k, v) -> (v as? JsonPrimitive)?.booleanOrNull?.let { k to it } }.toMap(),
                 tierGates =
                     (o["tierGates"] as? JsonObject).orEmpty().mapNotNull { (k, v) -> (v as? JsonPrimitive)?.takeIf { it.isString }?.contentOrNull?.let { k to it } }.toMap(),
+                updateReason = str("updateReason"),
+                updateReasonAr = str("updateReasonAr"),
+                updateSha256 = str("updateSha256"),
+                requiredAfter = num("requiredAfter"),
+                rolloutPercent = ((o["rolloutPercent"] as? JsonPrimitive)?.longOrNull ?: 100L).coerceIn(0, 100).toInt(),
+                pulledVersions = (o["pulledVersions"] as? kotlinx.serialization.json.JsonArray).orEmpty().mapNotNull { (it as? JsonPrimitive)?.longOrNull },
             )
         }
     }
 }
+
+/** The update levels of Mawja 2.0: nothing, a suggestion, required after a deadline, or now. */
+enum class UpdateLevel { NONE, SUGGESTED, REQUIRED_SOON, FORCED }
 
 /**
  * Tier order for remote gates: free < plus < pro = lifetime < family (family has everything pro has

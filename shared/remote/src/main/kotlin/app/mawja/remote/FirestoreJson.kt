@@ -43,6 +43,10 @@ internal object FirestoreJson {
 
     fun map(v: JsonElement?): Map<String, JsonElement> = (((v as? JsonObject)?.get("mapValue") as? JsonObject)?.get("fields") as? JsonObject).orEmpty()
 
+    /** Integers of an arrayValue (other types skipped). */
+    fun longList(v: JsonElement?): List<Long> =
+        ((((v as? JsonObject)?.get("arrayValue") as? JsonObject)?.get("values")) as? JsonArray).orEmpty().mapNotNull { long(it) }
+
     /** The last path segment of a document "name" (projects/.../documents/announcements/{id}). */
     fun docId(document: JsonElement?): String? =
         ((document as? JsonObject)?.get("name") as? JsonPrimitive)?.contentOrNull?.substringAfterLast('/')?.takeIf { it.isNotBlank() }

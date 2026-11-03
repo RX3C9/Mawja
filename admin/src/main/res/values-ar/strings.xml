@@ -310,4 +310,16 @@
     <string name="mod_bulk_confirm">تطبّق ده على %1$d حساب؟</string>
     <string name="mod_bulk_ban_day">حظر يوم</string>
     <string name="mod_bulk_mute_day">كتم يوم</string>
+    <string name="upd_title">التحديث من جوه التطبيق</string>
+    <string name="upd_reason_ar">سبب التحديث (عربي)</string>
+    <string name="upd_reason_en">سبب التحديث (إنجليزي)</string>
+    <string name="upd_sha">بصمة SHA-256 للـAPK (تفعّل التثبيت الموثّق من جوه التطبيق)</string>
+    <string name="upd_rollout">متاح لـ%1$d%% من الأجهزة</string>
+    <string name="upd_required_at">مطلوب من %1$s</string>
+    <string name="upd_optional">اختياري (من غير مهلة)</string>
+    <string name="upd_in_day">مطلوب بعد يوم</string>
+    <string name="upd_in_3days">مطلوب بعد 3 أيام</string>
+    <string name="upd_clear">شيل المهلة</string>
+    <string name="upd_pulled">نسخ متسحوبة (لازم تتحدث فوراً)، مثلاً 27, 28</string>
+    <string name="upd_hint">آخر نسخة ورابط التحديث فوق. مع البصمة التطبيق بيحمّل الملف ويتحقق منه ويثبّته بنفسه.</string>
 </resources>

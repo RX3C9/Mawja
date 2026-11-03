@@ -102,3 +102,11 @@ test("muted, suspended and banned accounts cannot file reports; a lapsed ban or 
   await assertSucceeds(report("fine"));
   await assertSucceeds(report("nodoc"));
 });
+
+test("a 'reports' lock stops new reports; other locks do not", async () => {
+  const report = (uid) => setDoc(doc(user(uid), `reports/${uid}-1`), { uid, type: "bug", message: "hi", status: "open", createdAt: serverTimestamp() });
+  await seed("users/locked", { status: "active", lockedFeatures: ["reports"] });
+  await seed("users/other", { status: "active", lockedFeatures: ["codes", "cloud_sync"] });
+  await assertFails(report("locked"));
+  await assertSucceeds(report("other"));
+});

@@ -313,4 +313,16 @@
     <string name="mod_bulk_confirm">Apply this to %1$d accounts?</string>
     <string name="mod_bulk_ban_day">Ban 1 day</string>
     <string name="mod_bulk_mute_day">Mute 1 day</string>
+    <string name="upd_title">In-app update</string>
+    <string name="upd_reason_ar">Why update (Arabic)</string>
+    <string name="upd_reason_en">Why update (English)</string>
+    <string name="upd_sha">APK SHA-256 (enables verified in-app install)</string>
+    <string name="upd_rollout">Offered to %1$d%% of devices</string>
+    <string name="upd_required_at">Required from %1$s</string>
+    <string name="upd_optional">Optional (no deadline)</string>
+    <string name="upd_in_day">Required in 1 day</string>
+    <string name="upd_in_3days">Required in 3 days</string>
+    <string name="upd_clear">Remove deadline</string>
+    <string name="upd_pulled">Pulled versions (forced to update), e.g. 27, 28</string>
+    <string name="upd_hint">Latest version and update link are above. With a SHA-256 the app downloads, verifies and installs the APK itself.</string>
 </resources>

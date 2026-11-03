@@ -203,6 +203,21 @@ test("remote config: owner/admin edit app, downloader and admin docs", async () 
   await assertFails(deleteDoc(doc(owner(), "config/app")));
 });
 
+test("remote config: Mawja 2.0 update fields (reason, SHA-256, deadline, staged rollout, pulled builds)", async () => {
+  const db = admin();
+  const upd = (extra) => audited(db, "boss", "config/app", "config.edit", (b, id) =>
+    b.set(doc(db, "config/app"), { latestVersion: 30, updatedAt: serverTimestamp(), updatedBy: "boss", auditId: id, ...extra }, { merge: true }));
+  await assertSucceeds(upd({ updateReason: "Security fix", updateReasonAr: "تصليح أمني", updateSha256: "a".repeat(64),
+    requiredAfter: Timestamp.fromMillis(Date.now() + 86400000), rolloutPercent: 10, pulledVersions: [27, 28] }));
+  await assertSucceeds(upd({ updateSha256: "", rolloutPercent: 100 }));
+  await assertFails(upd({ updateSha256: "XYZ" }));
+  await assertFails(upd({ updateSha256: "A".repeat(64) }));
+  await assertFails(upd({ rolloutPercent: 101 }));
+  await assertFails(upd({ rolloutPercent: 50.5 }));
+  await assertFails(upd({ requiredAfter: "tomorrow" }));
+  await assertFails(upd({ pulledVersions: Array.from({ length: 51 }, (_, i) => i + 1) }));
+});
+
 test("announcements: create, schedule, edit; never deleted; validated", async () => {
   const ann = (actor, id, extra = {}) => ({
     title: "Ramadan offer", body: "Plus for 3 months", targetTier: "free", locale: "ar", kind: "banner", ctaLabel: "Upgrade", ctaUrl: "mawja://upgrade",

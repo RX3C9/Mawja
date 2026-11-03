@@ -410,6 +410,40 @@ fun ConfigScreen(
                     }
                     Text(stringResource(R.string.versions_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
+                SectionCard(title = stringResource(R.string.upd_title)) {
+                    OutlinedTextField(d.updateReasonAr, { v -> vm.edit { it.copy(updateReasonAr = v.take(RemoteConfig.MAX_MESSAGE)) } }, label = { Text(stringResource(R.string.upd_reason_ar)) }, enabled = canEdit, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(d.updateReason, { v -> vm.edit { it.copy(updateReason = v.take(RemoteConfig.MAX_MESSAGE)) } }, label = { Text(stringResource(R.string.upd_reason_en)) }, enabled = canEdit, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(d.updateSha256, { v -> vm.edit { it.copy(updateSha256 = v.trim().lowercase().take(64)) } }, label = { Text(stringResource(R.string.upd_sha)) }, singleLine = true, enabled = canEdit, modifier = Modifier.fillMaxWidth())
+                    Text(stringResource(R.string.upd_rollout, d.rolloutPercent))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf(10, 50, 100).forEach { p ->
+                            FilterChip(selected = d.rolloutPercent == p, onClick = { vm.edit { it.copy(rolloutPercent = p) } }, enabled = canEdit, label = { Text("$p%") })
+                        }
+                    }
+                    Text(
+                        if (d.requiredAfter > 0) stringResource(R.string.upd_required_at, java.text.DateFormat.getDateTimeInstance().format(java.util.Date(d.requiredAfter))) else stringResource(R.string.upd_optional),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf(24 to R.string.upd_in_day, 72 to R.string.upd_in_3days).forEach { (h, label) ->
+                            OutlinedButton(onClick = { vm.edit { it.copy(requiredAfter = System.currentTimeMillis() + h * 3_600_000L) } }, enabled = canEdit) { Text(stringResource(label)) }
+                        }
+                        TextButton(onClick = { vm.edit { it.copy(requiredAfter = 0) } }, enabled = canEdit && d.requiredAfter > 0) { Text(stringResource(R.string.upd_clear)) }
+                    }
+                    var pulledText by remember(state.component, original) { mutableStateOf(d.pulledVersions.joinToString(", ")) }
+                    OutlinedTextField(
+                        pulledText,
+                        { v ->
+                            pulledText = v
+                            vm.edit { it.copy(pulledVersions = RemoteConfig.parseVersions(v)) }
+                        },
+                        label = { Text(stringResource(R.string.upd_pulled)) },
+                        singleLine = true,
+                        enabled = canEdit,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(stringResource(R.string.upd_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
                 SectionCard(title = stringResource(R.string.feature_flags)) {
                     val keys = (RemoteConfig.catalogue(state.component) + d.features.keys).distinct().sorted()
                     keys.forEach { key ->

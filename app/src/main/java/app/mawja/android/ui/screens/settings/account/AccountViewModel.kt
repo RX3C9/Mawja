@@ -89,6 +89,12 @@ class AccountViewModel
                 _redeem.value = RedeemUiState(error = error)
                 return
             }
+            // Staff locked codes on this account, or it is suspended: the rules refuse it anyway.
+            val mod = (backend.state.value as? AccountState.SignedIn)?.profile?.moderation
+            if (mod != null && (mod.locked(app.mawja.android.account.Moderation.FEATURE_CODES) || mod.blocked(System.currentTimeMillis()))) {
+                _redeem.value = RedeemUiState(error = RedeemError.ACCOUNT_RESTRICTED)
+                return
+            }
             _redeem.value = RedeemUiState(busy = true)
             viewModelScope.launch {
                 when (val result = backend.redeemCode(code)) {

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Person
@@ -50,7 +51,7 @@ import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.screens.settings.index.AboutIndex
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 
-private enum class AboutDialog { CHANGELOG, DEVICE, NOTICES }
+private enum class AboutDialog { CHANGELOG, DEVICE, NOTICES, REPORT }
 
 private const val WEBSITE_URL = "https://rx3c9.github.io/Mawja"
 private const val GITHUB_URL = "https://github.com/RX3C9/Mawja"
@@ -86,6 +87,7 @@ internal fun AboutScreen(
             row(AboutIndex.creator.key) { shape -> CreatorRow(shape = shape, onClick = { open(CREATOR_URL) }) }
         }
         group(key = "about.app", header = R.string.section_app) {
+            nav(AboutIndex.report, icon = Icons.Outlined.Flag, showChevron = false, onClick = { dialog = AboutDialog.REPORT })
             nav(AboutIndex.changelog, icon = Icons.Outlined.History, showChevron = false, onClick = { dialog = AboutDialog.CHANGELOG })
             nav(
                 DestinationIndex.entry(SettingsDestination.REMOTE_GUIDE),
@@ -118,6 +120,7 @@ internal fun AboutScreen(
         AboutDialog.CHANGELOG -> ChangelogSheet(onDismiss = { dialog = null })
         AboutDialog.DEVICE -> DeviceInfoDialog(onDismiss = { dialog = null })
         AboutDialog.NOTICES -> NoticesDialog(onDismiss = { dialog = null })
+        AboutDialog.REPORT -> app.mawja.android.report.ReportSheet(onDismiss = { dialog = null })
         null -> Unit
     }
 }

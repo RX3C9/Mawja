@@ -5,6 +5,8 @@
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
+    <!-- Mawja 2.0 in-app update: open the system installer for a verified Mawja APK. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Mawja: lets this app hand downloads to Mawja Downloader (same signing key only). -->
     <uses-permission android:name="${downloadPermission}" />

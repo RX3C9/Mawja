@@ -67,6 +67,7 @@ import app.mawja.remote.RemoteGate
 fun RemoteControlOverlay(
     remote: RemoteConfigRepository,
     entitlements: EntitlementsRepository,
+    updater: AppUpdater,
 ) {
     if (!remote.enabled) return
     val gate by remote.gate.collectAsStateWithLifecycle()
@@ -76,6 +77,7 @@ fun RemoteControlOverlay(
     val tier by entitlements.entitlements.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val language = LocalConfiguration.current.locales[0].language
+    val update by updater.state.collectAsStateWithLifecycle()
 
     when (val g = gate) {
         RemoteGate.Killed -> {
@@ -96,9 +98,11 @@ fun RemoteControlOverlay(
             BlockScreen(
                 Icons.Outlined.SystemUpdate,
                 stringResource(R.string.remote_force_update_title),
-                stringResource(R.string.remote_force_update_body),
-                actionLabel = stringResource(R.string.remote_update_button).takeIf { g.updateUrl.isNotBlank() },
-                onAction = { openLink(context, g.updateUrl) },
+                g.reason(language).ifBlank { stringResource(R.string.remote_force_update_body) },
+                actionLabel = updateLabel(update).takeIf { g.updateUrl.isNotBlank() },
+                actionEnabled = update !is UpdateState.Downloading,
+                onAction = { runUpdate(context, updater, update, g.updateUrl, g.sha256, remote.versionCode) },
+                note = updateNote(update),
             )
             return
         }
@@ -121,14 +125,25 @@ fun RemoteControlOverlay(
             modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(horizontal = 12.dp, vertical = 8.dp).widthIn(max = 560.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            if (!softUpdateHidden && settings.softUpdate(remote.versionCode)) {
+            if (!softUpdateHidden && settings.softUpdate(remote.versionCode, remote.bucket)) {
                 val url = settings.updateUrl.trim().takeIf { it.startsWith("https://") }
+                val level = settings.update(remote.versionCode, remote.bucket, System.currentTimeMillis())
+                val reason = settings.updateReason(language).ifBlank { stringResource(R.string.remote_soft_update_body) }
+                val deadline =
+                    if (level == app.mawja.remote.UpdateLevel.REQUIRED_SOON) {
+                        stringResource(
+                            R.string.remote_required_by,
+                            java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(java.util.Date(settings.requiredAfter)),
+                        )
+                    } else {
+                        null
+                    }
                 NoticeCard(
                     icon = Icons.Outlined.SystemUpdate,
                     title = stringResource(R.string.remote_soft_update_title),
-                    body = stringResource(R.string.remote_soft_update_body),
-                    actionLabel = url?.let { stringResource(R.string.remote_update_button) },
-                    onAction = { url?.let { openLink(context, it) } },
+                    body = listOfNotNull(reason, deadline, updateNote(update)).joinToString("\n"),
+                    actionLabel = url?.let { updateLabel(update) },
+                    onAction = { url?.let { runUpdate(context, updater, update, it, settings.sha256OrEmpty, remote.versionCode) } },
                     onDismiss = { softUpdateHidden = true },
                 )
             }
@@ -182,6 +197,8 @@ private fun BlockScreen(
     body: String,
     actionLabel: String? = null,
     onAction: () -> Unit = {},
+    actionEnabled: Boolean = true,
+    note: String? = null,
 ) {
     val context = LocalContext.current
     // Back leaves the app instead of navigating the screens hidden underneath.
@@ -200,8 +217,61 @@ private fun BlockScreen(
             Text(body, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
             if (actionLabel != null) {
                 Spacer(Modifier.height(24.dp))
-                Button(onClick = onAction) { Text(actionLabel) }
+                Button(onClick = onAction, enabled = actionEnabled) { Text(actionLabel) }
             }
+            if (note != null) {
+                Spacer(Modifier.height(12.dp))
+                Text(note, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+            }
+        }
+    }
+}
+
+/** The update button's words for where the in-app update stands. */
+@Composable
+private fun updateLabel(state: UpdateState): String =
+    when (state) {
+        is UpdateState.Downloading ->
+            state.fraction?.let { stringResource(R.string.remote_update_downloading, (it * 100).toInt()) }
+                ?: stringResource(R.string.remote_update_downloading_plain)
+        is UpdateState.Ready -> stringResource(R.string.remote_update_install)
+        is UpdateState.Failed -> stringResource(R.string.remote_update_retry)
+        UpdateState.Idle -> stringResource(R.string.remote_update_button)
+    }
+
+@Composable
+private fun updateNote(state: UpdateState): String? =
+    when ((state as? UpdateState.Failed)?.reason) {
+        null -> null
+        UpdateFailure.NETWORK -> stringResource(R.string.remote_update_failed_network)
+        UpdateFailure.STORAGE -> stringResource(R.string.remote_update_failed_storage)
+        UpdateFailure.HASH, UpdateFailure.NOT_MAWJA, UpdateFailure.SIGNER -> stringResource(R.string.remote_update_failed_verify)
+        UpdateFailure.NOT_NEWER -> stringResource(R.string.remote_update_failed_old)
+    }
+
+/**
+ * One tap of the update button: with a published SHA-256 the APK is downloaded and verified in
+ * the app, then the system installer opens (asking once for the install permission); without one,
+ * the update page opens in the browser.
+ */
+private fun runUpdate(
+    context: Context,
+    updater: AppUpdater,
+    state: UpdateState,
+    url: String,
+    sha256: String,
+    versionCode: Long,
+) {
+    if (sha256.isBlank()) {
+        openLink(context, url)
+        return
+    }
+    when (state) {
+        is UpdateState.Ready -> if (updater.canInstall()) updater.install(context, state.file) else updater.openInstallPermission(context)
+        is UpdateState.Downloading -> {}
+        is UpdateState.Failed, UpdateState.Idle -> {
+            updater.reset()
+            updater.start(url, sha256, versionCode)
         }
     }
 }

@@ -182,7 +182,9 @@ class ConfigRepository(
 
     suspend fun load(component: Component): Loaded {
         val doc = db.document("config/${component.id}").get().await()
-        return Loaded(RemoteConfig.from(doc.data), doc.date("updatedAt"), doc.str("updatedBy"))
+        // Timestamps arrive as SDK objects; the pure model reads java.util.Date.
+        val data = doc.data?.mapValues { (_, v) -> if (v is com.google.firebase.Timestamp) v.toDate() else v }
+        return Loaded(RemoteConfig.from(data), doc.date("updatedAt"), doc.str("updatedBy"))
     }
 
     /** Writes only what changed (maps whole, so removed flags disappear). */

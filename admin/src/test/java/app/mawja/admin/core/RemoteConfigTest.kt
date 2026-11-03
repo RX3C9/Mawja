@@ -65,4 +65,24 @@ class RemoteConfigTest {
         assertEquals(3, Component.entries.size)
         assertTrue("sync" in RemoteConfig.catalogue(Component.APP))
     }
+
+    @Test
+    fun updateFields() {
+        val sha = "c".repeat(64)
+        val old = RemoteConfig()
+        val new = old.copy(updateReasonAr = "تصليح", updateSha256 = sha.uppercase(), requiredAfter = 5000, rolloutPercent = 10, pulledVersions = listOf(28, 27, 28))
+        val ch = new.changesFrom(old)
+        assertEquals(sha, ch["updateSha256"])
+        assertEquals(java.util.Date(5000), ch["requiredAfter"])
+        assertEquals(10L, ch["rolloutPercent"])
+        assertEquals(listOf(27L, 28L), ch["pulledVersions"])
+        assertTrue(new.problems().isEmpty())
+        assertTrue("sha256" in RemoteConfig(updateSha256 = "xyz").problems())
+        assertTrue("rollout" in RemoteConfig(rolloutPercent = 120).problems())
+        assertEquals(listOf(27L, 28L), RemoteConfig.parseVersions("27, 28,x, 0"))
+        val back = RemoteConfig.from(mapOf("requiredAfter" to java.util.Date(5000), "rolloutPercent" to 10L, "pulledVersions" to listOf(27L)))
+        assertEquals(5000L, back.requiredAfter)
+        assertEquals(10, back.rolloutPercent)
+        assertEquals(100, RemoteConfig.from(emptyMap()).rolloutPercent)
+    }
 }
