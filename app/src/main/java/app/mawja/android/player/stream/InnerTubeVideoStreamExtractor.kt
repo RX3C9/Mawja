@@ -260,6 +260,14 @@ object InnerTubeVideoStreamExtractor {
                 }
             }
 
+            // 6) YouTube walled every client (datacenter/VPN/CGNAT address): try the backup mirrors.
+            if (!PlayabilityVerdict.isGone(failureReasons) && MirrorFallback.appliesTo(failureReasons)) {
+                MirrorFallback.extract(videoId)?.let {
+                    PlayerDiagnostics.logWarning(TAG, "extract OK $videoId via backup mirror (YouTube walled every client)")
+                    return@withContext it
+                }
+            }
+
             Log.e(TAG, "All clients failed for $videoId (forceSabr=$forceSabr). Reasons: ${failureReasons.joinToString(" | ")}")
             PlayerDiagnostics.logError(TAG, "ALL clients failed $videoId: ${failureReasons.joinToString(" | ")}")
             if (PlayabilityVerdict.isGone(failureReasons)) goneVideoIds += videoId

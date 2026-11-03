@@ -11,6 +11,11 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -82,6 +87,20 @@ fun QrScannerView(
     val lifecycleOwner = LocalLifecycleOwner.current
     val scanned = remember { AtomicBoolean(false) }
     val executor = remember { Executors.newSingleThreadExecutor() }
+    // No camera (tablets, emulators) or a camera that fails to start: show a message instead of crashing.
+    var cameraUnavailable by remember { mutableStateOf(false) }
+
+    if (cameraUnavailable) {
+        androidx.compose.foundation.layout.Box(modifier, contentAlignment = androidx.compose.ui.Alignment.Center) {
+            androidx.compose.material3.Text(
+                text = androidx.compose.ui.res.stringResource(app.mawja.android.R.string.qr_camera_unavailable),
+                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = androidx.compose.ui.Modifier.padding(24.dp),
+            )
+        }
+        return
+    }
 
     AndroidView(
         modifier = modifier,
@@ -89,7 +108,11 @@ fun QrScannerView(
             val previewView = PreviewView(ctx)
             val providerFuture = ProcessCameraProvider.getInstance(ctx)
             providerFuture.addListener({
-                val provider = providerFuture.get()
+                val provider = runCatching { providerFuture.get() }.getOrNull()
+                if (provider == null) {
+                    cameraUnavailable = true
+                    return@addListener
+                }
                 val preview =
                     Preview.Builder().build().also {
                         it.setSurfaceProvider(previewView.surfaceProvider)
@@ -106,6 +129,7 @@ fun QrScannerView(
                     },
                 )
                 runCatching {
+                    if (!provider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)) error("no back camera")
                     provider.unbindAll()
                     provider.bindToLifecycle(
                         lifecycleOwner,
@@ -113,7 +137,7 @@ fun QrScannerView(
                         preview,
                         analysis,
                     )
-                }
+                }.onFailure { cameraUnavailable = true }
             }, ContextCompat.getMainExecutor(ctx))
             previewView
         },

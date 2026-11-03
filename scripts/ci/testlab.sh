@@ -45,13 +45,14 @@ gsutil ls -r "$bucket/$DIR" 2>/dev/null | head -60
 summary=""
 if [ -n "$bucket" ]; then
   for log in $(gsutil ls -r "$bucket/$DIR" 2>/dev/null | grep -E '/logcat$'); do
-    gsutil cat "$log" 2>/dev/null | grep -E "MAWJA_LOOP|MawjaSmokeLoop|BOT_WALL|FATAL EXCEPTION|AndroidRuntime" | head -40
+    gsutil cat "$log" 2>/dev/null | grep -E "MAWJA_LOOP|MIRROR_|MirrorFallback|FATAL EXCEPTION|AndroidRuntime: (FATAL|Process|java|Caused)" | head -40
     d=$(echo "$log" | awk -F/ '{print $(NF-1)}')
     v=$(gsutil cat "$log" 2>/dev/null | grep -o 'MAWJA_LOOP video [A-Za-z]*' | tail -1 | awk '{print $3}')
     m=$(gsutil cat "$log" 2>/dev/null | grep -o 'MAWJA_LOOP music [A-Za-z]*' | tail -1 | awk '{print $3}')
     wall=$(gsutil cat "$log" 2>/dev/null | grep -c 'BOT_WALL' || true)
     crash=$(gsutil cat "$log" 2>/dev/null | grep -c 'FATAL EXCEPTION' || true)
-    summary="$summary $d:video=${v:-none},music=${m:-none},botwall=$wall,crash=$crash"
+    mir=$(gsutil cat "$log" 2>/dev/null | grep -c "MIRROR_OK" || true)
+    summary="$summary $d:video=${v:-none},music=${m:-none},botwall=$wall,mirror_ok=$mir,crash=$crash"
   done
 fi
 post "testlab: rc=$rc${summary:- no logcat (see run log)} bucket=${bucket:-none}"
