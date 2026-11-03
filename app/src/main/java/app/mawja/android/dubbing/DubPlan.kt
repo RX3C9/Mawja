@@ -73,7 +73,7 @@ object DubPlan {
             val joinable =
                 last != null && cue.startMs - lastEnd <= MERGE_GAP_MS && !endsSentence(last.text) &&
                     end(cue) - last.startMs <= MAX_LINE_MS
-            if (joinable && last != null) {
+            if (joinable) {
                 merged[merged.lastIndex] = last.copy(text = last.text + " " + cue.text, durationMs = end(cue) - last.startMs)
             } else if (last != null && last.text == cue.text) {
                 continue // rolling auto captions repeat the same words

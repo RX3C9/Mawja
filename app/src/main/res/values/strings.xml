@@ -4993,4 +4993,11 @@
     <string name="admin_push_channel">Mawja news</string>
     <string name="admin_push_channel_desc">Messages from the Mawja team</string>
     <string name="admin_push_summary">Mawja team</string>
+    <string name="ai_key_moments">Key moments</string>
+    <string name="ai_key_moments_note">Picked on your phone from what is said in the video. Tap one to jump there.</string>
+    <string name="my_channels_title">My channels</string>
+    <plurals name="my_channels_breakdown">
+        <item quantity="one">%1$d subscription · %2$d video · %3$d music</item>
+        <item quantity="other">%1$d subscriptions · %2$d video · %3$d music</item>
+    </plurals>
 </resources>

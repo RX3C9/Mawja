@@ -5375,4 +5375,15 @@
     <string name="admin_push_channel">أخبار موجة</string>
     <string name="admin_push_channel_desc">رسائل من فريق موجة</string>
     <string name="admin_push_summary">فريق موجة</string>
+    <string name="ai_key_moments">أهم اللحظات</string>
+    <string name="ai_key_moments_note">اتختارت على موبايلك من الكلام اللي في الفيديو. دوس على أي واحدة تروح لها.</string>
+    <string name="my_channels_title">قنواتي</string>
+    <plurals name="my_channels_breakdown">
+        <item quantity="zero">مفيش اشتراكات لسه</item>
+        <item quantity="one">اشتراك واحد · %2$d فيديو · %3$d موسيقى</item>
+        <item quantity="two">اشتراكين · %2$d فيديو · %3$d موسيقى</item>
+        <item quantity="few">%1$d اشتراكات · %2$d فيديو · %3$d موسيقى</item>
+        <item quantity="many">%1$d اشتراك · %2$d فيديو · %3$d موسيقى</item>
+        <item quantity="other">%1$d اشتراك · %2$d فيديو · %3$d موسيقى</item>
+    </plurals>
 </resources>

@@ -7,6 +7,9 @@
 SMOKE="$WORK/smoke.txt"; : > "$SMOKE"
 sres() { echo "$1: $2" >> "$SMOKE"; log "smoke $1: $2"; }
 
+# Network route that YouTube does not bot-wall (direct, else free WARP, else Tor).
+if [ -f scripts/ci/ytnet.sh ]; then source scripts/ci/ytnet.sh; ytnet_select; sres network "$YT_ROUTE"; fi
+
 playback_state() { # -> numeric PlaybackState of the app's media session (3 = playing), or none
   T=20 a shell dumpsys media_session 2>/dev/null | tr -d '\r' | awk -v p="$PKG" '
     /package=/ { inpkg = index($0, p) > 0 }
@@ -76,4 +79,5 @@ grep -qE 'FAILED|crashes=[1-9]|anrs=[1-9]' "$SMOKE" && verdict=FAIL
 [ "$pre_n" != 0 ] || [ "$post_n" != 0 ] && verdict=FAIL
 curl -fsS -H "Title: Mawja CI smoke $verdict" -d "smoke $verdict src=${SHA:0:7} log=$slogurl
 $(cat "$SMOKE")" "https://ntfy.sh/$TOPIC" >/dev/null || log "smoke ntfy post failed"
+command -v ytnet_cleanup >/dev/null && ytnet_cleanup
 log "smoke $verdict"

@@ -121,16 +121,10 @@ internal fun SubscriptionsManageContent(
             verticalArrangement = Arrangement.spacedBy(ListItemSpacing),
         ) {
             item {
-                Text(
-                    text =
-                        pluralStringResource(
-                            id = R.plurals.channels_count,
-                            count = filteredChannels.size,
-                            filteredChannels.size,
-                        ),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(bottom = 4.dp),
+                MyChannelsHero(
+                    shown = filteredChannels,
+                    total = channels.size,
+                    musicCount = channels.count { it.isMusic },
                 )
             }
 

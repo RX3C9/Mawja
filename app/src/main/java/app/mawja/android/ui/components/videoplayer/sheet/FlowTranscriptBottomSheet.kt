@@ -133,12 +133,23 @@ fun FlowTranscriptBottomSheet(
     val listState = rememberLazyListState()
     val tint = rememberMediaArtworkTint(artworkUrl)
     var query by remember { mutableStateOf("") }
+    var showMoments by remember { mutableStateOf(false) }
+    // P10: chapters made from the speech itself when the video has none, and key moments, on device.
+    val shownChapters =
+        remember(cues, chapters) {
+            chapters.ifEmpty {
+                app.mawja.android.ai.VideoInsights
+                    .autoChapters(cues)
+                    .map { TranscriptChapter(it.startMs, "✦ " + it.title) }
+            }
+        }
+    val moments = remember(cues) { app.mawja.android.ai.VideoInsights.keyMoments(cues) }
 
     val items =
-        remember(cues, chapters, query) {
+        remember(cues, shownChapters, query) {
             val matches =
-                if (query.isBlank()) cues else cues.filter { it.text.contains(query, ignoreCase = true) }
-            transcriptItems(matches, chapters)
+                if (query.isBlank()) cues else cues.filter { app.mawja.android.ai.VideoInsights.matches(it.text, query) }
+            transcriptItems(matches, shownChapters)
         }
 
     val activeStartMs by remember(cues) {
@@ -219,6 +230,9 @@ fun FlowTranscriptBottomSheet(
                                 modifier = Modifier.weight(1f),
                             )
                         }
+                        if (moments.isNotEmpty()) {
+                            app.mawja.android.ai.KeyMomentsToggle(selected = showMoments, onClick = { showMoments = !showMoments })
+                        }
                         if (tracks.size > 1) {
                             TranscriptLanguageMenu(
                                 tracks = tracks,
@@ -239,6 +253,17 @@ fun FlowTranscriptBottomSheet(
                 ) {
                     FlowLoadingIndicator()
                 }
+            }
+
+            showMoments && moments.isNotEmpty() -> {
+                app.mawja.android.ai.KeyMomentsPanel(
+                    moments = moments,
+                    onSeekMs = { ms ->
+                        onSeekMs(ms)
+                        showMoments = false
+                    },
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                )
             }
 
             items.isEmpty() -> {

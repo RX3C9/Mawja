@@ -426,7 +426,8 @@ service cloud.firestore {
 
     match /reports/{id} {
       allow create: if signedIn() && notBanned() && !docRestricted(request.auth.uid) && !featureLocked(request.auth.uid, 'reports') && request.resource.data.uid == request.auth.uid
-        && request.resource.data.message is string && request.resource.data.message.size() < 5000;
+        && request.resource.data.message is string && request.resource.data.message.size() < 5000
+        && optString(request.resource.data, 'log', 64000) && optString(request.resource.data, 'device', 200) && optString(request.resource.data, 'android', 100);
       allow read: if isStaff() || (signedIn() && resource.data.uid == request.auth.uid);
       // Inbox handling by any staff role: status, assignee, internal note, reply to the reporter.
       allow update: if isStaff() && audited('reports/' + id)
