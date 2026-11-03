@@ -104,3 +104,21 @@ jobs:
           name: mawja-debug-apks
           path: app/build/outputs/apk/**/*.apk
           retention-days: 14
+
+  authsync:
+    needs: sync
+    if: always()
+    name: Account enforcement (ban -> Firebase Auth disable)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      MAWJA_SA_B64: ${{ secrets.MAWJA_SA_B64 }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - name: Sync bans to Firebase Auth
+        run: |
+          if [ -f scripts/ci/auth_sync.py ]; then python3 scripts/ci/auth_sync.py; else echo "authsync: skipped (script not synced yet)"; fi
