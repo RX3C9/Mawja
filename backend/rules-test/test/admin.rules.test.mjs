@@ -297,3 +297,28 @@ test("audit log: staff append only, known actions, admins read", async () => {
   await assertFails(getDocs(collection(s, "auditLog")));
   await assertSucceeds(getDocs(collection(admin(), "auditLog")));
 });
+
+// The exact payloads admin-web/lib/adminAction.ts writes (set with merge, JS Date values, nulls).
+test("admin-web payloads: ban/unban, tier, feature toggle, config, report resolve", async () => {
+  await seed("users/alice", { tier: "free", status: "suspended", banUntil: Timestamp.fromMillis(Date.now() + DAY) });
+  const db = admin();
+  const merge = (path, action, fields) => audited(db, "boss", path, action, (b, id) => b.set(doc(db, path), { ...fields, auditId: id }, { merge: true }));
+  const status = (s) => ({ status: s, banReason: "spam", banUntil: null, statusUpdatedAt: serverTimestamp(), statusBy: "boss" });
+  await assertSucceeds(merge("users/alice", "user.status", status("banned")));
+  assert.equal((await read("users/alice")).banUntil, null);
+  await assertSucceeds(merge("users/alice", "user.status", status("active")));
+  await assertSucceeds(merge("users/alice", "user.tier", {
+    tier: "pro", tierUntil: new Date(Date.now() + 30 * DAY), tierSource: "admin", tierUpdatedAt: serverTimestamp(), tierUpdatedBy: "boss" }));
+  await assertSucceeds(merge("users/alice", "user.tier", {
+    tier: "lifetime", tierUntil: null, tierSource: "admin", tierUpdatedAt: serverTimestamp(), tierUpdatedBy: "boss" }));
+  await assertSucceeds(merge("config/app", "config.edit", {
+    features: { askVideo: { enabled: false, minTier: "plus" } }, updatedAt: serverTimestamp(), updatedBy: "boss" }));
+  await assertSucceeds(merge("config/app", "config.edit", {
+    requiredAfter: new Date(0), rolloutPercent: 10, updatedAt: serverTimestamp(), updatedBy: "boss" }));
+  assert.equal((await read("config/app")).features.askVideo.minTier, "plus");
+  await seed("reports/r9", { uid: "alice", message: "x", status: "open", log: "trace", device: "A70", android: "11" });
+  await assertSucceeds(audited(db, "boss", "reports/r9", "report.update", (b, id) => b.update(doc(db, "reports/r9"), {
+    status: "resolved", note: "done", updatedAt: serverTimestamp(), updatedBy: "boss", resolvedBy: "boss", auditId: id })));
+  // A report with the extra diagnostic fields is accepted from its author.
+  await assertSucceeds(setDoc(doc(user("bob"), "reports/r10"), { uid: "bob", message: "crash", log: "t".repeat(1000), device: "SM-A705F", android: "11" }));
+});

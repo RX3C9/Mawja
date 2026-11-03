@@ -236,3 +236,4 @@ app.mawja.android.youtubeaccount.YouTubeAccountJsonTest
 app.mawja.android.dubbing.DubPlanTest
 app.mawja.android.smartnotify.AdminPushTest
 app.mawja.android.ai.VideoInsightsTest
+app.mawja.android.ai.StudyNotesTest

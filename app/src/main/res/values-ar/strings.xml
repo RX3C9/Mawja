@@ -5376,6 +5376,9 @@
     <string name="admin_push_channel_desc">رسائل من فريق موجة</string>
     <string name="admin_push_summary">فريق موجة</string>
     <string name="ai_key_moments">أهم اللحظات</string>
+    <string name="ai_study_notes">شارك ملاحظات المذاكرة</string>
+    <string name="ai_study_notes_title">ملاحظات مذاكرة</string>
+    <string name="ai_study_notes_empty">الكلام في الفيديو ده مش كفاية نطلّع منه ملاحظات.</string>
     <string name="ai_key_moments_note">اتختارت على موبايلك من الكلام اللي في الفيديو. دوس على أي واحدة تروح لها.</string>
     <string name="my_channels_title">قنواتي</string>
     <plurals name="my_channels_breakdown">

@@ -110,6 +110,29 @@ fun KeyMomentsPanel(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        item {
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val title = stringResource(R.string.ai_study_notes_title)
+            val empty = stringResource(R.string.ai_study_notes_empty)
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    val notes = StudyNotes.text(cues, title)
+                    if (notes.isEmpty()) {
+                        android.widget.Toast.makeText(context, empty, android.widget.Toast.LENGTH_SHORT).show()
+                    } else {
+                        val send =
+                            android.content.Intent(android.content.Intent.ACTION_SEND)
+                                .setType("text/plain")
+                                .putExtra(android.content.Intent.EXTRA_TEXT, notes)
+                        context.startActivity(android.content.Intent.createChooser(send, title))
+                    }
+                },
+            ) {
+                Icon(Icons.Rounded.AutoAwesome, contentDescription = null)
+                androidx.compose.foundation.layout.Spacer(Modifier.padding(horizontal = 4.dp))
+                Text(stringResource(R.string.ai_study_notes))
+            }
+        }
         itemsIndexed(shown, key = { _, m -> "${answers != null}-${m.startMs}" }) { index, m ->
             val enter = remember { Animatable(if (still) 1f else 0f) }
             LaunchedEffect(Unit) { if (!still) enter.animateTo(1f, tween(380, delayMillis = 70 * index)) }

@@ -4994,6 +4994,9 @@
     <string name="admin_push_channel_desc">Messages from the Mawja team</string>
     <string name="admin_push_summary">Mawja team</string>
     <string name="ai_key_moments">Key moments</string>
+    <string name="ai_study_notes">Share study notes</string>
+    <string name="ai_study_notes_title">Study notes</string>
+    <string name="ai_study_notes_empty">Not enough spoken words in this video to make notes.</string>
     <string name="ai_key_moments_note">Picked on your phone from what is said in the video. Tap one to jump there.</string>
     <string name="my_channels_title">My channels</string>
     <plurals name="my_channels_breakdown">
