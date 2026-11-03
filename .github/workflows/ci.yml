@@ -144,6 +144,10 @@ jobs:
       - name: Sync bans to Firebase Auth
         run: |
           if [ -f scripts/ci/auth_sync.py ]; then python3 scripts/ci/auth_sync.py; else echo "authsync: skipped (script not synced yet)"; fi
+      - name: Cloud AI probe (free Gemini via Firebase AI Logic)
+        continue-on-error: true
+        run: |
+          if [ -f scripts/ci/ai_probe.sh ]; then bash scripts/ci/ai_probe.sh; else echo "aiprobe: skipped (script not synced yet)"; fi
       - name: Report loop (apply Hark triage, export open reports encrypted)
         env:
           TRIAGE_URL: ${{ vars.TRIAGE_URL }}
