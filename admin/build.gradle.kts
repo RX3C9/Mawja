@@ -37,7 +37,7 @@ android {
         applicationId = "app.mawja.admin"
         minSdk = 28
         targetSdk = 36
-        versionCode = 2
+        versionCode = 3
         versionName = "2.0.0"
         buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${cfg("firebase.projectId", "MAWJA_FIREBASE_PROJECT_ID", "mawjaFirebaseProjectId")}\"")
         buildConfigField("String", "FIREBASE_APP_ID", "\"${cfg("firebase.adminAppId", "MAWJA_FIREBASE_ADMIN_APP_ID", "mawjaFirebaseAdminAppId")}\"")

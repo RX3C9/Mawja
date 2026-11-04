@@ -71,8 +71,8 @@ android {
         applicationId = "app.mawja.android"
         minSdk = 26
         targetSdk = 36
-        versionCode = 19
-        versionName = "3.0.0"
+        versionCode = 20
+        versionName = "2.0.0"
 
         buildConfigField("int", "NIGHTLY_RUN", "0")
         // Mawja: downloads are handed to the separate Mawja Downloader app.
