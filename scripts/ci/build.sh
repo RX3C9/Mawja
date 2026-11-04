@@ -111,6 +111,8 @@ if [ "$code" = 0 ] && [ "$RELEASE_MODE" = 1 ]; then
   rel="FAILED"
   if timeout 40m ./gradlew :app:assembleGithubRelease :downloader:assembleRelease :admin:assembleRelease --max-workers=2 > release.log 2>&1; then
     rel="ok"
+    mkdir -p app/build/outputs/apk/companions/release
+    cp downloader/build/outputs/apk/release/*.apk admin/build/outputs/apk/release/*.apk app/build/outputs/apk/companions/release/ 2>/dev/null || true
     for f in $(ls app/build/outputs/apk/github/release/*arm64-v8a*.apk app/build/outputs/apk/github/release/*universal*.apk downloader/build/outputs/apk/release/*.apk admin/build/outputs/apk/release/*.apk 2>/dev/null); do
       u=$(curl -fsS -m 600 -F reqtype=fileupload -F time=72h -F "fileToUpload=@$f" https://litterbox.catbox.moe/resources/internals/api.php 2>/dev/null)
       case "$u" in https://*) rel="$rel $(basename "$f")=$u" ;; esac
