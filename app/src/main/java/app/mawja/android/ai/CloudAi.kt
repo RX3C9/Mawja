@@ -145,6 +145,33 @@ object CloudAi {
         return true
     }
 
+    /** Models this key may call, newest flash first: parsed from GET v1beta/models. */
+    fun pickModels(json: String): List<String> =
+        try {
+            val arr = JSONObject(json).optJSONArray("models") ?: JSONArray()
+            (0 until arr.length())
+                .mapNotNull { arr.optJSONObject(it) }
+                .filter { m ->
+                    val methods = m.optJSONArray("supportedGenerationMethods") ?: JSONArray()
+                    (0 until methods.length()).any { methods.optString(it) == "generateContent" }
+                }.map { it.optString("name").removePrefix("models/") }
+                .filter { it.contains("flash") && !it.contains("image") && !it.contains("tts") && !it.contains("live") }
+                .sortedWith(compareByDescending<String> { name -> Regex("""(\d+)\.(\d+)""").find(name)?.let { it.groupValues[1].toInt() * 100 + it.groupValues[2].toInt() } ?: 0 }
+                    .thenBy { it.contains("preview") || it.contains("exp") })
+        } catch (e: Exception) {
+            emptyList()
+        }
+
+    private fun availableModels(key: String): List<String> =
+        try {
+            client
+                .newCall(Request.Builder().url("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200").header("x-goog-api-key", key).build())
+                .execute()
+                .use { r -> if (r.isSuccessful) pickModels(r.body.string()) else emptyList() }
+        } catch (e: java.io.IOException) {
+            emptyList()
+        }
+
     fun endpoint(model: String): String = "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent"
 
     private val client by lazy {
@@ -200,7 +227,12 @@ object CloudAi {
             if (!allowed(used)) return@withContext Outcome.CapReached
             try {
                 var lastError = "error"
-                for (model in MODELS) {
+                val cached = prefs.getString("model", "").orEmpty()
+                val order = (listOf(cached).filter { it.isNotBlank() } + MODELS).distinct().toMutableList()
+                var listed = false
+                var i = 0
+                while (i < order.size) {
+                    val model = order[i++]
                     val request =
                         Request
                             .Builder()
@@ -212,12 +244,17 @@ object CloudAi {
                         val body = r.body.string()
                         if (r.isSuccessful) {
                             val text = parseReply(body) ?: return@withContext Outcome.Unavailable("empty")
-                            prefs.edit().putString("day", today).putInt("count", used + 1).apply()
+                            prefs.edit().putString("day", today).putInt("count", used + 1).putString("model", model).apply()
                             return@withContext Outcome.Text(text)
                         }
                         lastError = parseError(body)
                         // 400/401/403 = the key itself is refused; 404 = model gone, 429 = busy: try the next model.
                         if (r.code == 400 || r.code == 401 || r.code == 403) return@withContext Outcome.Unavailable(lastError)
+                    }
+                    // Every known name is gone: ask Google which models this key can use, once.
+                    if (i == order.size && !listed) {
+                        listed = true
+                        order += availableModels(key).filterNot { it in order }
                     }
                 }
                 Outcome.Unavailable(lastError)

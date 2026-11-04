@@ -87,4 +87,18 @@ class CloudAiTest {
             .isEqualTo("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent")
         assertThat(CloudAi.MODELS).isNotEmpty()
     }
+
+    @Test
+    fun pickModels_keepsTextFlashModels_newestFirst() {
+        val json =
+            """{"models":[
+            {"name":"models/gemini-2.0-flash","supportedGenerationMethods":["generateContent"]},
+            {"name":"models/gemini-2.5-flash","supportedGenerationMethods":["generateContent","countTokens"]},
+            {"name":"models/gemini-2.5-flash-preview-tts","supportedGenerationMethods":["generateContent"]},
+            {"name":"models/gemini-2.5-pro","supportedGenerationMethods":["generateContent"]},
+            {"name":"models/text-embedding-004","supportedGenerationMethods":["embedContent"]}
+            ]}"""
+        assertThat(CloudAi.pickModels(json)).containsExactly("gemini-2.5-flash", "gemini-2.0-flash").inOrder()
+        assertThat(CloudAi.pickModels("not json")).isEmpty()
+    }
 }
