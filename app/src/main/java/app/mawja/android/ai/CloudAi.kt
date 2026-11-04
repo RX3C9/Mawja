@@ -28,6 +28,7 @@ object CloudAi {
     /** Tried in order; the first one this key can use wins (free-tier models of the Gemini API). */
     val MODELS = listOf("gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash")
     const val KEY_PREF = "user_key"
+    const val KEY_PAGE = "https://aistudio.google.com/apikey"
     private const val MIN_KEY_LENGTH = 30
     const val MAX_TRANSCRIPT_CHARS = 24_000
     const val PLUS_DAILY_CAP = 100

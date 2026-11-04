@@ -5379,6 +5379,8 @@
     <string name="ai_cloud_need_key">الملخص بالذكاء الاصطناعي بيشتغل بمفتاح Google Gemini المجاني بتاعك، وبيتحفظ على موبايلك بس. هاته في دقيقة من aistudio.google.com/apikey وألصقه هنا.</string>
     <string name="ai_cloud_key_hint">مفتاح Gemini (بيبدأ بـ AIza)</string>
     <string name="ai_cloud_key_bad">ده مش شكل مفتاح Gemini.</string>
+    <string name="ai_cloud_key_get">هات مفتاح مجاني</string>
+    <string name="ai_cloud_key_change">غيّر المفتاح</string>
     <string name="ai_cloud_key_save">احفظ المفتاح</string>
     <string name="ai_cloud_ask">اسأل موجة AI (سؤالك فوق)</string>
     <string name="ai_cloud_summary">ملخص بالذكاء الاصطناعي</string>

@@ -434,13 +434,13 @@ import json, os, struct, sys, time, zlib
 rows_path, out, sha, api, variants = sys.argv[1:6]
 def blank(path):
     # Heuristic without decoding: a one-colour 1080x2400 capture (FLAG_SECURE window, nothing
-    # rendered) deflates >200x; real screens, even sparse dark settings pages, stay far below.
+    # rendered) deflates ~500-1000x; sparse real screens (equalizer, ~205x) stay well below 400x.
     try:
         data = open(path, "rb").read()
         if data[:8] != b"\x89PNG\r\n\x1a\n": return False
         w, h, _, ct = struct.unpack(">IIBB", data[16:26])
         raw = h * (w * {6: 4, 2: 3}.get(ct, 4) + 1)
-        return len(data) < 25000 or raw / max(1, len(data)) > 200
+        return len(data) < 25000 or raw / max(1, len(data)) > 400
     except Exception:
         return False
 shots, counts = [], {}
@@ -476,6 +476,16 @@ for pair in home:home subscriptions:subscriptions library:library settings:setti
     url=$(curl -fsS -m 60 -F "files[]=@$f" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null)
     [ -n "$url" ] && [ "$url" != "null" ] && links="$links ${pair##*:}-$l=$url"
   done
+done
+# Every capture the manifest flags as blank is uploaded on its own, so a human can look at it.
+for f in $(jq -r '.shots[] | select(.status=="blank") | .file' "$OUT/index.json" 2>/dev/null | head -8); do
+  url=$(curl -fsS -m 60 -F "files[]=@$OUT/$f" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null)
+  [ -n "$url" ] && [ "$url" != "null" ] && links="$links blank-${f%.png}=$url"
+done
+for f in equalizer_en_dark equalizer_ar_light upgrade_ar_dark; do
+  [ -f "$OUT/$f.png" ] || continue
+  url=$(curl -fsS -m 60 -F "files[]=@$OUT/$f.png" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null)
+  [ -n "$url" ] && [ "$url" != "null" ] && links="$links $f=$url"
 done
 f="$OUT/onboarding_en_dark.png"
 [ -f "$f" ] && url=$(curl -fsS -m 60 -F "files[]=@$f" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null) && [ -n "$url" ] && links="$links onboarding-en=$url"

@@ -185,6 +185,7 @@ private fun CloudSummaryCard(
     var hasKey by remember { androidx.compose.runtime.mutableStateOf(CloudAi.userKey(context).isNotBlank()) }
     var keyText by remember { androidx.compose.runtime.mutableStateOf("") }
     var keyBad by remember { androidx.compose.runtime.mutableStateOf(false) }
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     val shimmer by rememberInfiniteTransition(label = "summaryShimmer").animateFloat(
         initialValue = 0.35f,
         targetValue = 1f,
@@ -251,20 +252,26 @@ private fun CloudSummaryCard(
                             isError = keyBad,
                             label = { Text(stringResource(R.string.ai_cloud_key_hint)) },
                             supportingText = { if (keyBad) Text(stringResource(R.string.ai_cloud_key_bad)) },
+                            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth(),
                         )
-                        androidx.compose.material3.FilledTonalButton(
-                            enabled = keyText.isNotBlank(),
-                            onClick = {
-                                if (CloudAi.saveUserKey(context, keyText)) {
-                                    hasKey = true
-                                    keyText = ""
-                                    outcome = null
-                                } else {
-                                    keyBad = true
-                                }
-                            },
-                        ) { Text(stringResource(R.string.ai_cloud_key_save)) }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            androidx.compose.material3.TextButton(onClick = { uriHandler.openUri(CloudAi.KEY_PAGE) }) {
+                                Text(stringResource(R.string.ai_cloud_key_get))
+                            }
+                            androidx.compose.material3.FilledTonalButton(
+                                enabled = keyText.isNotBlank(),
+                                onClick = {
+                                    if (CloudAi.saveUserKey(context, keyText)) {
+                                        hasKey = true
+                                        keyText = ""
+                                        outcome = null
+                                    } else {
+                                        keyBad = true
+                                    }
+                                },
+                            ) { Text(stringResource(R.string.ai_cloud_key_save)) }
+                        }
                     }
                 }
                 o is CloudAi.Outcome.CapReached -> Text(stringResource(R.string.ai_cloud_cap), style = MaterialTheme.typography.bodyMedium)
@@ -275,6 +282,14 @@ private fun CloudSummaryCard(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+            }
+            // A pasted key can be replaced (a refused key, or a new one) without digging through settings.
+            if (hasKey && !busy && o !is CloudAi.Outcome.Text) {
+                androidx.compose.material3.TextButton(onClick = {
+                    CloudAi.saveUserKey(context, "")
+                    hasKey = false
+                    outcome = null
+                }) { Text(stringResource(R.string.ai_cloud_key_change)) }
             }
         }
     }

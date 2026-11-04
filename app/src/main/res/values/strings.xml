@@ -4997,6 +4997,8 @@
     <string name="ai_cloud_need_key">AI summary uses your own free Google Gemini key, kept on this phone only. Get one in a minute at aistudio.google.com/apikey, then paste it here.</string>
     <string name="ai_cloud_key_hint">Gemini API key (starts with AIza)</string>
     <string name="ai_cloud_key_bad">That doesn’t look like a Gemini key.</string>
+    <string name="ai_cloud_key_get">Get a free key</string>
+    <string name="ai_cloud_key_change">Change key</string>
     <string name="ai_cloud_key_save">Save key</string>
     <string name="ai_cloud_ask">Ask Mawja AI (your question above)</string>
     <string name="ai_cloud_summary">AI summary</string>
