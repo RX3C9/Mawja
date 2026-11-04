@@ -4994,10 +4994,14 @@
     <string name="admin_push_channel_desc">Messages from the Mawja team</string>
     <string name="admin_push_summary">Mawja team</string>
     <string name="ai_key_moments">Key moments</string>
+    <string name="ai_cloud_need_key">AI summary uses your own free Google Gemini key, kept on this phone only. Get one in a minute at aistudio.google.com/apikey, then paste it here.</string>
+    <string name="ai_cloud_key_hint">Gemini API key (starts with AIza)</string>
+    <string name="ai_cloud_key_bad">That doesn’t look like a Gemini key.</string>
+    <string name="ai_cloud_key_save">Save key</string>
     <string name="ai_cloud_ask">Ask Mawja AI (your question above)</string>
     <string name="ai_cloud_summary">AI summary</string>
     <string name="ai_cloud_summary_loading">Reading the video…</string>
-    <string name="ai_cloud_summary_note">Sends this video’s spoken words to Google Gemini when you tap. A Plus extra with a small daily allowance.</string>
+    <string name="ai_cloud_summary_note">Sends this video’s spoken words to Google Gemini with your own key when you tap.</string>
     <string name="ai_cloud_locked">AI summary is a Plus extra. Upgrade from your account page to use it.</string>
     <string name="ai_cloud_cap">You’ve used today’s AI summaries on this phone. They come back tomorrow.</string>
     <string name="ai_cloud_unavailable">The AI summary isn’t available right now. Try again in a bit.</string>

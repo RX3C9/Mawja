@@ -5,16 +5,7 @@
 package app.mawja.android.ai
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import app.mawja.android.BuildConfig
-import app.mawja.android.account.EntitlementsRepository
-import app.mawja.android.account.MawjaFeature
 import app.mawja.android.data.transcript.TranscriptCue
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -23,20 +14,23 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
-import java.security.MessageDigest
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 /**
- * Cloud AI on the free path: Gemini through Firebase AI Logic on the Spark plan, called with the
- * app's own Firebase key (no server of ours, no billing). Only what the user asks for is sent: the
- * spoken words of one video, when they tap "AI summary". It is a Plus extra, and each device has a
- * small daily allowance so the shared free quota lasts for everyone.
+ * Cloud AI on the free path: Gemini called directly with the member's OWN free Google AI Studio key
+ * (no server of ours, no billing, nothing shared). Google no longer lets an app-embedded key be tied
+ * to an Android app for Gemini, so the key is pasted once, kept on this phone only and sent to
+ * Google alone. Only what the user asks for is sent: the spoken words of one video, when they tap
+ * "AI summary". A small daily cap per device keeps the personal free quota from running out.
  */
 object CloudAi {
-    const val MODEL = "gemini-2.5-flash"
+    /** Tried in order; the first one this key can use wins (free-tier models of the Gemini API). */
+    val MODELS = listOf("gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash")
+    const val KEY_PREF = "user_key"
+    private const val MIN_KEY_LENGTH = 30
     const val MAX_TRANSCRIPT_CHARS = 24_000
-    const val PLUS_DAILY_CAP = 40
+    const val PLUS_DAILY_CAP = 100
     const val MAX_QUESTION_CHARS = 300
 
     sealed interface Outcome {
@@ -46,6 +40,9 @@ object CloudAi {
 
         /** The member's tier does not include cloud AI. */
         data object Locked : Outcome
+
+        /** No personal Gemini key has been pasted yet. */
+        data object NeedKey : Outcome
 
         /** Today's allowance for this device is used up. */
         data object CapReached : Outcome
@@ -122,11 +119,33 @@ object CloudAi {
         cap: Int = PLUS_DAILY_CAP,
     ): Boolean = used < cap
 
-    @EntryPoint
-    @InstallIn(SingletonComponent::class)
-    interface Dependencies {
-        fun entitlements(): EntitlementsRepository
+    /** A key looks usable when it is long enough, has no spaces and starts the way Google keys do. */
+    fun looksLikeKey(raw: String): Boolean {
+        val k = raw.trim()
+        return k.length >= MIN_KEY_LENGTH && k.none { it.isWhitespace() } && k.startsWith("AIza")
     }
+
+    fun userKey(context: Context): String =
+        context.applicationContext
+            .getSharedPreferences("mawja_cloud_ai", Context.MODE_PRIVATE)
+            .getString(KEY_PREF, "")
+            .orEmpty()
+
+    fun saveUserKey(
+        context: Context,
+        raw: String,
+    ): Boolean {
+        val prefs = context.applicationContext.getSharedPreferences("mawja_cloud_ai", Context.MODE_PRIVATE)
+        if (raw.isBlank()) {
+            prefs.edit().remove(KEY_PREF).apply()
+            return true
+        }
+        if (!looksLikeKey(raw)) return false
+        prefs.edit().putString(KEY_PREF, raw.trim()).apply()
+        return true
+    }
+
+    fun endpoint(model: String): String = "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent"
 
     private val client by lazy {
         OkHttpClient
@@ -171,12 +190,8 @@ object CloudAi {
     ): Outcome =
         withContext(Dispatchers.IO) {
             val appCtx = context.applicationContext
-            val entitlements = EntryPointAccessors.fromApplication(appCtx, Dependencies::class.java).entitlements().entitlements.value
-            if (!entitlements.has(MawjaFeature.CLOUD_AI)) return@withContext Outcome.Locked
-            if (BuildConfig.FLAVOR == "foss") return@withContext Outcome.Unavailable("foss")
-            if (BuildConfig.FIREBASE_API_KEY.isBlank() || BuildConfig.FIREBASE_PROJECT_ID.isBlank()) {
-                return@withContext Outcome.Unavailable("not configured")
-            }
+            val key = userKey(appCtx)
+            if (key.isBlank()) return@withContext Outcome.NeedKey
             val transcript = transcriptForPrompt(cues)
             if (transcript.length < 200) return@withContext Outcome.Unavailable("short")
             val prefs = appCtx.getSharedPreferences("mawja_cloud_ai", Context.MODE_PRIVATE)
@@ -184,46 +199,30 @@ object CloudAi {
             val used = usedToday(prefs.getString("day", "") ?: "", prefs.getInt("count", 0), today)
             if (!allowed(used)) return@withContext Outcome.CapReached
             try {
-                val url =
-                    "https://firebasevertexai.googleapis.com/v1beta/projects/${BuildConfig.FIREBASE_PROJECT_ID}" +
-                        "/models/$MODEL:generateContent"
-                val request =
-                    Request
-                        .Builder()
-                        .url(url)
-                        .header("x-goog-api-key", BuildConfig.FIREBASE_API_KEY)
-                        .header("X-Android-Package", appCtx.packageName)
-                        .apply { certSha1(appCtx)?.let { header("X-Android-Cert", it) } }
-                        .post(requestBody(promptFor(transcript)).toRequestBody("application/json".toMediaType()))
-                        .build()
-                client.newCall(request).execute().use { r ->
-                    val body = r.body.string()
-                    if (!r.isSuccessful) return@withContext Outcome.Unavailable(parseError(body))
-                    val text = parseReply(body) ?: return@withContext Outcome.Unavailable("empty")
-                    prefs.edit().putString("day", today).putInt("count", used + 1).apply()
-                    Outcome.Text(text)
+                var lastError = "error"
+                for (model in MODELS) {
+                    val request =
+                        Request
+                            .Builder()
+                            .url(endpoint(model))
+                            .header("x-goog-api-key", key)
+                            .post(requestBody(promptFor(transcript)).toRequestBody("application/json".toMediaType()))
+                            .build()
+                    client.newCall(request).execute().use { r ->
+                        val body = r.body.string()
+                        if (r.isSuccessful) {
+                            val text = parseReply(body) ?: return@withContext Outcome.Unavailable("empty")
+                            prefs.edit().putString("day", today).putInt("count", used + 1).apply()
+                            return@withContext Outcome.Text(text)
+                        }
+                        lastError = parseError(body)
+                        // 400/401/403 = the key itself is refused; 404 = model gone, 429 = busy: try the next model.
+                        if (r.code == 400 || r.code == 401 || r.code == 403) return@withContext Outcome.Unavailable(lastError)
+                    }
                 }
+                Outcome.Unavailable(lastError)
             } catch (e: java.io.IOException) {
                 Outcome.Unavailable("offline")
             }
         }
-
-    @Suppress("DEPRECATION")
-    private fun certSha1(context: Context): String? =
-        runCatching {
-            val signer =
-                if (Build.VERSION.SDK_INT >= 28) {
-                    context.packageManager
-                        .getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-                        .signingInfo
-                        ?.apkContentsSigners
-                        ?.firstOrNull()
-                } else {
-                    context.packageManager
-                        .getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
-                        .signatures
-                        ?.firstOrNull()
-                }
-            signer?.let { s -> MessageDigest.getInstance("SHA-1").digest(s.toByteArray()).joinToString("") { "%02X".format(it) } }
-        }.getOrNull()
 }

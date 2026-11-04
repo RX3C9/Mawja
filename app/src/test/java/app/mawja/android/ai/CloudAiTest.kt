@@ -71,4 +71,20 @@ class CloudAiTest {
         assertThat(p).contains("[00:05] hello")
         assertThat(p).contains("only its transcript")
     }
+
+    @Test
+    fun `a pasted key must look like a Google key`() {
+        assertThat(CloudAi.looksLikeKey("AIzaSyA1234567890abcdefghijklmnopqrstuv")).isTrue()
+        assertThat(CloudAi.looksLikeKey("  AIzaSyA1234567890abcdefghijklmnopqrstuv \n")).isTrue()
+        assertThat(CloudAi.looksLikeKey("AIza short")).isFalse()
+        assertThat(CloudAi.looksLikeKey("sk-1234567890abcdefghijklmnopqrstuvwxyz")).isFalse()
+        assertThat(CloudAi.looksLikeKey("")).isFalse()
+    }
+
+    @Test
+    fun `the endpoint goes straight to the Gemini API with the model name`() {
+        assertThat(CloudAi.endpoint("gemini-3.5-flash-lite"))
+            .isEqualTo("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent")
+        assertThat(CloudAi.MODELS).isNotEmpty()
+    }
 }

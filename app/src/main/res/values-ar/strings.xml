@@ -5376,10 +5376,14 @@
     <string name="admin_push_channel_desc">رسائل من فريق موجة</string>
     <string name="admin_push_summary">فريق موجة</string>
     <string name="ai_key_moments">أهم اللحظات</string>
+    <string name="ai_cloud_need_key">الملخص بالذكاء الاصطناعي بيشتغل بمفتاح Google Gemini المجاني بتاعك، وبيتحفظ على موبايلك بس. هاته في دقيقة من aistudio.google.com/apikey وألصقه هنا.</string>
+    <string name="ai_cloud_key_hint">مفتاح Gemini (بيبدأ بـ AIza)</string>
+    <string name="ai_cloud_key_bad">ده مش شكل مفتاح Gemini.</string>
+    <string name="ai_cloud_key_save">احفظ المفتاح</string>
     <string name="ai_cloud_ask">اسأل موجة AI (سؤالك فوق)</string>
     <string name="ai_cloud_summary">ملخص بالذكاء الاصطناعي</string>
     <string name="ai_cloud_summary_loading">بقرا الفيديو…</string>
-    <string name="ai_cloud_summary_note">لما تدوس، بيتبعت كلام الفيديو ده لـGoogle Gemini. ميزة Plus وليها حد يومي صغير.</string>
+    <string name="ai_cloud_summary_note">لما تدوس، بيتبعت كلام الفيديو ده لـGoogle Gemini بمفتاحك إنت.</string>
     <string name="ai_cloud_locked">الملخص بالذكاء الاصطناعي ميزة Plus. رقّي من صفحة حسابك عشان تستخدمه.</string>
     <string name="ai_cloud_cap">خلّصت ملخصات النهارده على الموبايل ده. بترجع بكرة.</string>
     <string name="ai_cloud_unavailable">الملخص مش متاح دلوقتي. جرّب كمان شوية.</string>

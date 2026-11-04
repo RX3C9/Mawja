@@ -182,6 +182,9 @@ private fun CloudSummaryCard(
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     var busy by remember(cues) { androidx.compose.runtime.mutableStateOf(false) }
     var outcome by remember(cues) { androidx.compose.runtime.mutableStateOf<CloudAi.Outcome?>(null) }
+    var hasKey by remember { androidx.compose.runtime.mutableStateOf(CloudAi.userKey(context).isNotBlank()) }
+    var keyText by remember { androidx.compose.runtime.mutableStateOf("") }
+    var keyBad by remember { androidx.compose.runtime.mutableStateOf(false) }
     val shimmer by rememberInfiniteTransition(label = "summaryShimmer").animateFloat(
         initialValue = 0.35f,
         targetValue = 1f,
@@ -195,7 +198,7 @@ private fun CloudSummaryCard(
     ) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             androidx.compose.material3.Button(
-                enabled = !busy && cues.isNotEmpty(),
+                enabled = !busy && cues.isNotEmpty() && hasKey,
                 onClick = {
                     busy = true
                     scope.launch {
@@ -209,7 +212,7 @@ private fun CloudSummaryCard(
                 Text(stringResource(R.string.ai_cloud_summary))
             }
             androidx.compose.material3.OutlinedButton(
-                enabled = !busy && cues.isNotEmpty() && question.isNotBlank(),
+                enabled = !busy && cues.isNotEmpty() && question.isNotBlank() && hasKey,
                 onClick = {
                     busy = true
                     scope.launch {
@@ -235,6 +238,35 @@ private fun CloudSummaryCard(
                         Text(o.text, style = MaterialTheme.typography.bodyMedium)
                     }
                 o is CloudAi.Outcome.Locked -> Text(stringResource(R.string.ai_cloud_locked), style = MaterialTheme.typography.bodyMedium)
+                o is CloudAi.Outcome.NeedKey || (!hasKey && o == null) -> {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.ai_cloud_need_key), style = MaterialTheme.typography.bodyMedium)
+                        androidx.compose.material3.OutlinedTextField(
+                            value = keyText,
+                            onValueChange = {
+                                keyText = it
+                                keyBad = false
+                            },
+                            singleLine = true,
+                            isError = keyBad,
+                            label = { Text(stringResource(R.string.ai_cloud_key_hint)) },
+                            supportingText = { if (keyBad) Text(stringResource(R.string.ai_cloud_key_bad)) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        androidx.compose.material3.FilledTonalButton(
+                            enabled = keyText.isNotBlank(),
+                            onClick = {
+                                if (CloudAi.saveUserKey(context, keyText)) {
+                                    hasKey = true
+                                    keyText = ""
+                                    outcome = null
+                                } else {
+                                    keyBad = true
+                                }
+                            },
+                        ) { Text(stringResource(R.string.ai_cloud_key_save)) }
+                    }
+                }
                 o is CloudAi.Outcome.CapReached -> Text(stringResource(R.string.ai_cloud_cap), style = MaterialTheme.typography.bodyMedium)
                 o is CloudAi.Outcome.Unavailable -> Text(stringResource(R.string.ai_cloud_unavailable), style = MaterialTheme.typography.bodyMedium)
                 else ->
