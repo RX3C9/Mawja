@@ -33,7 +33,6 @@ import app.mawja.android.player.EnhancedMusicPlayerManager
 import app.mawja.android.player.EnhancedPlayerManager
 import app.mawja.android.player.GlobalPlayerState
 import app.mawja.android.player.SleepTimerManager
-import app.mawja.android.ui.components.donation.DonationPromptHost
 import app.mawja.android.ui.components.equalizer.LocalEqualizerState
 import app.mawja.android.ui.components.layout.FlowBottomInsets
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
@@ -583,10 +582,5 @@ fun FlowApp(
         )
 
         UpdateLaunchEffect(needsOnboarding = needsOnboarding, onOpenUpdate = { navController.navigate(UPDATE_ROUTE) })
-
-        DonationPromptHost(
-            enabled = needsOnboarding == false && !isInPipMode && !playerVisible,
-            onNavigateToDonations = { navController.navigate("donations") },
-        )
     }
 }

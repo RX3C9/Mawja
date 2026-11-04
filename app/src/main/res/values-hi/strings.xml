@@ -776,9 +776,6 @@
     <string name="location_badge_recommended">अनुशंसित</string>
     <string name="location_badge_active">सक्रिय</string>
     <string name="select_threads_count_desc">थ्रेड्स की संख्या चुनें (1-8):</string>
-    <string name="support_donations_title">सहायता और दान</string>
-    <string name="support_flow_dev_title">फ्लो विकास का समर्थन करें</string>
-    <string name="support_flow_dev_desc">यदि आप फ्लो को उपयोगी पाते हैं और इसके विकास का समर्थन करना चाहते हैं, तो आप निम्न पतों पर दान कर सकते हैं। आपका समर्थन परियोजना को जीवित रखने में मदद करता है!</string>
     <string name="thank_you_support_message">आपके समर्थन के लिए धन्यवाद! ❤️</string>
     <string name="address_copied_toast">पता क्लिपबोर्ड पर कॉपी किया गया</string>
     <string name="donation_address_clip_label">दान पता</string>

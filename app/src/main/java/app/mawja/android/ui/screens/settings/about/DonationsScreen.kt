@@ -2,74 +2,47 @@ package app.mawja.android.ui.screens.settings.about
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.VolunteerActivism
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedListItem
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.donation.CryptoWallet
-import app.mawja.android.ui.components.donation.DonationWallets
-import app.mawja.android.ui.components.donation.OPEN_COLLECTIVE_URL
-import app.mawja.android.ui.components.donation.PATREON_URL
+import app.mawja.android.ui.components.donation.MAWJA_ISSUES_URL
+import app.mawja.android.ui.components.donation.MAWJA_REPO_URL
 import app.mawja.android.ui.components.settings.SettingsPage
-import app.mawja.android.utils.copyPlainText
-import kotlinx.coroutines.launch
 
-private val HeaderPadding = 24.dp
-private val HeaderSpacing = 12.dp
-private val HeroIconSize = 48.dp
-
-/** Ways to support the project: Open Collective, Patreon, or a wallet address copied with one tap. */
+/** Support Mawja: star the repository or report a problem. No donations, no third-party wallets. */
 @Composable
 fun DonationsScreen(onNavigateBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
-    val clipboard = LocalClipboard.current
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val clipLabel = stringResource(R.string.donation_address_clip_label)
-    val copiedMessage = stringResource(R.string.address_copied_toast)
-
     SettingsPage(
         title = stringResource(R.string.support_donations_title),
         onBack = onNavigateBack,
-        snackbarHostState = snackbarHostState,
     ) {
-        item("donations.header") {
+        item("support.header") {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = HeaderPadding),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(HeaderSpacing),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Icon(
-                    Icons.Outlined.VolunteerActivism,
+                    Icons.Outlined.Favorite,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(HeroIconSize),
+                    modifier = Modifier.size(48.dp),
                 )
                 Text(
                     text = stringResource(R.string.support_flow_dev_title),
@@ -83,57 +56,14 @@ fun DonationsScreen(onNavigateBack: () -> Unit) {
                     textAlign = TextAlign.Center,
                 )
                 Button(
-                    onClick = { runCatching { uriHandler.openUri(OPEN_COLLECTIVE_URL) } },
+                    onClick = { runCatching { uriHandler.openUri(MAWJA_REPO_URL) } },
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                ) {
-                    Icon(IconOpenCollective, contentDescription = null, modifier = Modifier.size(ButtonDefaults.IconSize))
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(stringResource(R.string.support_flow_open_collective))
-                }
+                ) { Text(stringResource(R.string.mawja_support_star)) }
                 FilledTonalButton(
-                    onClick = { runCatching { uriHandler.openUri(PATREON_URL) } },
+                    onClick = { runCatching { uriHandler.openUri(MAWJA_ISSUES_URL) } },
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                ) {
-                    Icon(IconPatreon, contentDescription = null, modifier = Modifier.size(ButtonDefaults.IconSize))
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(stringResource(R.string.support_flow_patreon))
-                }
+                ) { Text(stringResource(R.string.mawja_support_issue)) }
             }
         }
-        group(key = "donations.crypto", header = R.string.donations_cryptocurrency, footer = R.string.thank_you_support_message) {
-            DonationWallets.forEach { wallet ->
-                row("donations.${wallet.ticker}") { shape ->
-                    WalletRow(wallet, shape, clipLabel) {
-                        scope.launch {
-                            clipboard.copyPlainText(clipLabel, wallet.address)
-                            snackbarHostState.showSnackbar(copiedMessage)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun WalletRow(
-    wallet: CryptoWallet,
-    shape: Shape,
-    copyLabel: String,
-    onCopy: () -> Unit,
-) {
-    SegmentedListItem(
-        verticalAlignment = Alignment.CenterVertically,
-        onClick = onCopy,
-        shapes = ListItemDefaults.shapes(shape = shape),
-        colors = ListItemDefaults.segmentedColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
-        supportingContent = { Text(wallet.address, maxLines = 1, overflow = TextOverflow.MiddleEllipsis) },
-        trailingContent = { Icon(Icons.Outlined.ContentCopy, contentDescription = copyLabel) },
-        overlineContent = { Text(wallet.ticker) },
-    ) {
-        Text(stringResource(wallet.name))
     }
 }

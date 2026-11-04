@@ -1188,9 +1188,6 @@
     <string name="location_badge_recommended">推荐</string>
     <string name="location_badge_active">活跃</string>
     <string name="select_threads_count_desc">选择线程数 (1-8)：</string>
-    <string name="support_donations_title">支持与捐赠</string>
-    <string name="support_flow_dev_title">支持Mawja开发</string>
-    <string name="support_flow_dev_desc">如果您发现 Mawja 有用并愿意支持其开发，您可以在 Patreon 上支持它或通过下面的加密地址进行捐赠。您的支持有助于使项目保持活力！</string>
     <string name="support_flow_patreon">在 Patreon 上支持 Mawja</string>
     <string name="thank_you_support_message">感谢您的支持！ ❤️</string>
     <string name="address_copied_toast">地址已复制到剪贴板</string>

@@ -1317,9 +1317,6 @@
     <string name="player_settings_overlay_comments_subtitle">Добавить кнопку для отображения комментариев в полноэкранном режиме</string>
     <string name="play_next_video_desc">Добавить в начало очереди</string>
     <string name="add_video_to_queue_desc">Добавить в конец очереди</string>
-    <string name="support_donations_title">Поддержка и донаты</string>
-    <string name="support_flow_dev_title">Поддержка разработки Mawja</string>
-    <string name="support_flow_dev_desc">Если вам полезен Mawja, вы можете поддержать разработку и сделать пожертвование на Patreon или через указанные ниже криптовалютные адреса. Ваша поддержка помогает проекту оставаться в живых!</string>
     <string name="support_flow_patreon">Поддержать Mawja на Patreon</string>
     <string name="thank_you_support_message">Спасибо за вашу поддержку! ❤️</string>
     <string name="deep_flow_save_history_subtitle">Сохранять историю просмотров, не используя её для формирования рекомендаций</string>

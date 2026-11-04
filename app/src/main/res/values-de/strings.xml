@@ -1521,7 +1521,6 @@
     <string name="persona_scholar_title">Der Gelehrte</string>
     <string name="persona_scholar_description">Inhalte mit hohem Komplexitätsgrad. Wir sind hier, um uns weiterzuentwickeln – nicht nur, um uns unterhalten zu lassen.</string>
     <string name="persona_deep_diver_title">Der Tieftaucher</string>
-    <string name="support_flow_dev_desc">Wenn Sie Mawja nützlich finden und die Entwicklung des Projekts unterstützen möchten, können Sie dies auf Patreon tun oder über die unten angegebenen Krypto-Adressen spenden. Ihre Unterstützung hilft dabei, das Projekt am Leben zu erhalten!</string>
     <string name="support_flow_patreon">Unterstütze Mawja auf Patreon</string>
     <string name="persona_specialist_description">Ganz gezielt auf einige wenige Nischen ausgerichtet. Du weißt, was dir gefällt.</string>
     <string name="persona_explorer_description">Chaotisch und wunderschön. Von allem etwas.</string>
@@ -1624,7 +1623,6 @@
     <string name="cast_connecting">Verbindung zum Cast-Gerät wird hergestellt…</string>
     <string name="cast_connected">Casting</string>
     <string name="dlna_cast_to_device">Auf Gerät übertragen</string>
-    <string name="support_donations_title">Unterstützung &amp; Spenden</string>
     <string name="subtitle_bold_text">Fettgedruckter Text</string>
     <string name="subtitle_reset_default">Auf Standard zurücksetzen</string>
     <string name="check_for_updates_subtitle">Tippen Sie hier, um nach der neuesten Version zu suchen</string>
@@ -1652,7 +1650,6 @@
     <string name="notif_background_restricted_subtitle">Android hindert Mawja im Hintergrund nach neuen Videos zu suchen. Klicke hier um uneingeschränkte Hintergrundaktivitäten zuzulassen.</string>
     <string name="player_appearance_long_press_speed_title">Wiedergabetempo beim gedrückthalten</string>
     <string name="select_threads_count_desc">Wähle die Anzahl der Threads (1-8):</string>
-    <string name="support_flow_dev_title">Unterstützte die Mawja Entwicklung</string>
     <string name="topic_weights_subtitle">Volle Transparenz wodurch dein Feed beeinflusst wird</string>
     <string name="persona_deep_diver_description">Lamge Videobeiträge und Dokumentationen sind deine Welt</string>
     <string name="status_playing">Spielt</string>

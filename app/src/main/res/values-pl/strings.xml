@@ -3,7 +3,6 @@
     <string name="app_name">Mawja</string>
     <string name="subscribers_count_template">%1$s subskrybentów</string>
     <string name="error_yt_music_premium_hint">Ten utwór jest dostępny tylko dla subskrybentów YouTube Music Premium.</string>
-    <string name="support_flow_dev_desc">Jeśli uważasz, że Mawja jest przydatny i chcesz wesprzeć jego rozwój, możesz wesprzeć go na Patreonie lub przekazać darowiznę za pośrednictwem poniższych adresów. Twoje wsparcie pomoże utrzymać projekt przy życiu!</string>
     <string name="subscriptions_search_placeholder">Wyszukaj subskrypcje ...</string>
     <string name="top_bar_subscriptions_title">Subskrypcje</string>
     <string name="subscribed">Zasubskrybowano</string>
@@ -699,8 +698,6 @@
     <string name="internal_app_storage_label">Wewnętrzna Pamięć Aplikacji</string>
     <string name="preferences_header">Preferencje</string>
     <string name="default_video_quality_label">Domyślna Jakość Filmów</string>
-    <string name="support_donations_title">Wsparcie i Wpłaty</string>
-    <string name="support_flow_dev_title">Wesprzyj Rozwój Mawja</string>
     <string name="support_flow_patreon">Wesprzyj Mawja na Patreonie</string>
     <string name="thank_you_support_message">Dziękuję za wsparcie! ❤️</string>
     <string name="address_copied_toast">Adres skopiowany do schowka</string>

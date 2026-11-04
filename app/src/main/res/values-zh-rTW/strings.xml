@@ -1958,9 +1958,6 @@
     <plurals name="threads_count_label">
         <item quantity="other">%1$d 個執行緒</item>
     </plurals>
-    <string name="support_donations_title">支持與贊助</string>
-    <string name="support_flow_dev_title">支持 Mawja 開發</string>
-    <string name="support_flow_dev_desc">如果 Mawja 對你有幫助，歡迎透過 Open Collective、Patreon 或下方的加密貨幣支持。謝謝你！</string>
     <string name="support_flow_patreon">在 Patreon 上支持 Mawja</string>
     <string name="thank_you_support_message">感謝你的支持！❤️</string>
     <string name="address_copied_toast">位址已複製到剪貼簿</string>

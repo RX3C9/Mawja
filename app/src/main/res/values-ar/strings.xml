@@ -663,9 +663,11 @@
     <string name="location_badge_recommended">مستحسن</string>
     <string name="location_badge_active">نشط</string>
     <string name="select_threads_count_desc">حدد عدد التقسيمات (١-٨):</string>
-    <string name="support_donations_title">الدعم والتبرعات</string>
+    <string name="support_donations_title">ادعم موجة</string>
     <string name="support_flow_dev_title">إدعم تطوير موجة</string>
-    <string name="support_flow_dev_desc">إذا كان موجة مفيدًا لك، يمكنك دعمه عبر Open Collective, Patreon أو بالعملات الرقمية أدناه. شكرًا لك!</string>
+    <string name="support_flow_dev_desc">موجة مجاني ومش بيقبل تبرعات. أحسن دعم نجمة على GitHub أو بلاغ عن مشكلة.</string>
+    <string name="mawja_support_star">نجمة لموجة على GitHub</string>
+    <string name="mawja_support_issue">بلّغ عن مشكلة</string>
     <string name="thank_you_support_message">شكراً لدعمكم! ❤️</string>
     <string name="address_copied_toast">تم نسخ العنوان إلى الحافظة</string>
     <string name="donation_address_clip_label">عنوان التبرع</string>

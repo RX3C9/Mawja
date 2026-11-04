@@ -934,9 +934,6 @@
     <string name="location_custom_manual_desc">Введіть абсолютний шлях, наприклад /storage/emulated/0/MyFolder</string>
     <string name="location_badge_active">Активно</string>
     <string name="select_threads_count_desc">Виберіть кількість потоків (1–8):</string>
-    <string name="support_donations_title">Підтримка та пожертви</string>
-    <string name="support_flow_dev_title">Підтримайте розробку Mawja</string>
-    <string name="support_flow_dev_desc">Якщо Mawja вам корисний, ви можете підтримати його на Patreon або криптовалютою нижче. Дякуємо!</string>
     <string name="support_flow_patreon">Підтримайте Mawja на Patreon</string>
     <string name="thank_you_support_message">Дякую вам за вашу підтримку! ❤️</string>
     <string name="address_copied_toast">Адреса скопійована до буферу обміну</string>

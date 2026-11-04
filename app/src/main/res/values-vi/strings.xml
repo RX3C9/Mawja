@@ -1189,9 +1189,6 @@
     <string name="location_badge_recommended">Đề xuất</string>
     <string name="location_badge_active">Đang dùng</string>
     <string name="select_threads_count_desc">Chọn số luồng (1-8):</string>
-    <string name="support_donations_title">Hỗ trợ &amp; Quyên góp</string>
-    <string name="support_flow_dev_title">Hỗ trợ phát triển Mawja</string>
-    <string name="support_flow_dev_desc">Nếu bạn thấy Mawja hữu ích và muốn hỗ trợ phát triển, bạn có thể ủng hộ qua Patreon hoặc quyên góp qua địa chỉ tiền mã hóa bên dưới. Sự hỗ trợ của bạn giúp dự án tồn tại!</string>
     <string name="support_flow_patreon">Hỗ trợ Mawja trên Patreon</string>
     <string name="thank_you_support_message">Cảm ơn bạn đã ủng hộ! ❤️</string>
     <string name="address_copied_toast">Đã sao chép địa chỉ</string>

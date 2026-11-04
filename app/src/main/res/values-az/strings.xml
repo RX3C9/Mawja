@@ -1188,9 +1188,6 @@
     <string name="location_badge_recommended">Tövsiyə olunur</string>
     <string name="location_badge_active">Aktiv</string>
     <string name="select_threads_count_desc">İş axınlarının sayını seçin (1–8):</string>
-    <string name="support_donations_title">Dəstək və ianələr</string>
-    <string name="support_flow_dev_title">Mawja-un hazırlanmasına dəstək olun</string>
-    <string name="support_flow_dev_desc">Mawja-u faydalı hesab edir və hazırlanmasına dəstək olmaq istəyirsinizsə, Patreon-da dəstək verə və ya aşağıdakı kriptovalyuta ünvanlarına ianə göndərə bilərsiniz. Dəstəyiniz layihənin yaşamasına kömək edir!</string>
     <string name="support_flow_patreon">Patreon-da Mawja-u dəstəklə</string>
     <string name="thank_you_support_message">Dəstəyiniz üçün təşəkkürlər! ❤️</string>
     <string name="address_copied_toast">Ünvan mübadilə buferinə kopyalandı</string>

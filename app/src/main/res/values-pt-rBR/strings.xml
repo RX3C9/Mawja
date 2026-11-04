@@ -1223,9 +1223,6 @@
     <string name="location_badge_recommended">Recomendado</string>
     <string name="location_badge_active">Ativo</string>
     <string name="select_threads_count_desc">Selecione a quantidade de núcleos (1-8):</string>
-    <string name="support_donations_title">Apoio e Doações</string>
-    <string name="support_flow_dev_title">Apoie o Desenvolvimento do Mawja</string>
-    <string name="support_flow_dev_desc">Se o Mawja é útil para ti, você pode apoiar seu desenvolvimento no Patreon ou criptomoedas abaixo. Obrigado!</string>
     <string name="support_flow_patreon">Apoie o Mawja no Patreon</string>
     <string name="thank_you_support_message">Obrigada pelo seu apoio! ❤️</string>
     <string name="address_copied_toast">Endereço copiado para a área de transferência</string>

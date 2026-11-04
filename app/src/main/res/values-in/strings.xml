@@ -947,9 +947,6 @@
     <string name="location_badge_recommended">Direkomendasikan</string>
     <string name="location_badge_active">Aktif</string>
     <string name="select_threads_count_desc">Pilih jumlah thread (1-8):</string>
-    <string name="support_donations_title">Dukungan &amp; Donasi</string>
-    <string name="support_flow_dev_title">Dukung Pengembangan Mawja</string>
-    <string name="support_flow_dev_desc">Jika Mawja bermanfaat bagi Anda, Anda dapat mendukungnya melalui Patreon atau kripto di bawah ini. Terima kasih!</string>
     <string name="support_flow_patreon">Dukung Mawja di Patreon</string>
     <string name="thank_you_support_message">Terima kasih atas dukungan Anda! ❤️</string>
     <string name="address_copied_toast">Alamat disalin ke papan klip</string>

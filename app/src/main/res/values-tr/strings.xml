@@ -1045,9 +1045,6 @@
     <string name="location_badge_recommended">Önerilen</string>
     <string name="location_badge_active">Etkin</string>
     <string name="select_threads_count_desc">İş parçacığı sayısını seç (1-8):</string>
-    <string name="support_donations_title">Destek &amp; Bağışlar</string>
-    <string name="support_flow_dev_title">Mawja\'un Geliştirilmesine Destek Olun</string>
-    <string name="support_flow_dev_desc">Mawja\'u yararlı buluyorsan ve projenin geliştirilmesine destek olmak istiyorsan, Patreon üzerinden destek verebilir veya aşağıdaki kripto adreslerine bağışta bulunabilirsin. Desteğin, projenin devam etmesine önayak olur!</string>
     <string name="support_flow_patreon">Patreon\'da Mawja\'u destekle</string>
     <string name="thank_you_support_message">❤️ Desteğin için teşekkürler! ❤️</string>
     <string name="address_copied_toast">Adres panoya kopyalandı</string>

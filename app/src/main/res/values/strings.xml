@@ -1816,9 +1816,11 @@
         <item quantity="other">%1$d threads</item>
     </plurals>
     <!-- Donations Screen -->
-    <string name="support_donations_title">Support &amp; Donations</string>
+    <string name="support_donations_title">Support Mawja</string>
     <string name="support_flow_dev_title">Support Mawja Development</string>
-    <string name="support_flow_dev_desc">If Mawja is useful to you, you can support it on Open Collective, Patreon or with crypto below. Thank you!</string>
+    <string name="support_flow_dev_desc">Mawja is free and takes no donations. The best support is a star on GitHub or a bug report.</string>
+    <string name="mawja_support_star">Star Mawja on GitHub</string>
+    <string name="mawja_support_issue">Report a problem</string>
     <string name="support_flow_open_collective">Support Mawja on Open Collective</string>
     <string name="support_flow_patreon">Support Mawja on Patreon</string>
     <string name="thank_you_support_message">Thank you for your support! ❤️</string>

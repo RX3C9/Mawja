@@ -579,9 +579,6 @@
     <string name="location_badge_active">Actif</string>
     <string name="select_threads_count_desc">Sélectionnez le nombre de threads (1-8) :</string>
     <!-- Écran des Dons -->
-    <string name="support_donations_title">Soutien et dons</string>
-    <string name="support_flow_dev_title">Soutenir le développement de Mawja</string>
-    <string name="support_flow_dev_desc">Si vous trouvez Mawja utile et souhaitez soutenir son développement, vous pouvez le faire sur Patreon ou faire un don via les adresses de cryptomonnaie ci-dessous. Votre soutien contribue à la pérennité du projet !</string>
     <string name="thank_you_support_message">Merci pour votre soutien ! ❤️</string>
     <string name="address_copied_toast">Adresse copiée dans le presse-papiers</string>
     <string name="donation_address_clip_label">Adresse de Don</string>
