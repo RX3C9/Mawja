@@ -34,8 +34,8 @@ import app.mawja.android.R
 import app.mawja.android.sync.SyncState
 import app.mawja.android.sync.protocol.SyncRole
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
-import app.mawja.android.ui.components.layout.topbar.FlowGlobalActionsMode
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaGlobalActionsMode
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.shared.dpadFocusOnEnter
 
 /** Where the user is in the pre-session setup. Once a session starts, [SyncState] drives the UI. */
@@ -160,10 +160,10 @@ fun SyncScreen(
         contentWindowInsets = WindowInsets(0.dp),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = state.title(step),
                 onBack = if (atStart && onBack == null) null else ::goBack,
-                globalActions = FlowGlobalActionsMode.None,
+                globalActions = MawjaGlobalActionsMode.None,
             )
         },
     ) { padding ->

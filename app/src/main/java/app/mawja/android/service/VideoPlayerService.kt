@@ -18,7 +18,7 @@ import app.mawja.android.player.EnhancedPlayerManager
 import app.mawja.android.player.GlobalPlayerState
 import app.mawja.android.player.PopupPlayerWindow
 import app.mawja.android.player.error.PlayerDiagnostics
-import app.mawja.android.utils.FlowCrashHandler
+import app.mawja.android.utils.MawjaCrashHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -82,7 +82,7 @@ class VideoPlayerService : MediaSessionService() {
         setMediaNotificationProvider(notificationProvider)
         recordForegroundStartFailures("video-service")
 
-        FlowCrashHandler.recordPhase("video-service", "onCreate")
+        MawjaCrashHandler.recordPhase("video-service", "onCreate")
         serviceLog("onCreate")
 
         try {
@@ -125,7 +125,7 @@ class VideoPlayerService : MediaSessionService() {
         startId: Int,
     ): Int {
         val startResult = super.onStartCommand(intent, flags, startId)
-        FlowCrashHandler.recordPhase(
+        MawjaCrashHandler.recordPhase(
             "video-service",
             "onStartCommand action=${intent?.action} startId=$startId",
         )

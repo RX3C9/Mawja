@@ -19,8 +19,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,11 +75,11 @@ internal fun PlayerModeSwitch(
     onSelect: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FlowConnectedToggleGroup(
+    MawjaConnectedToggleGroup(
         options =
             listOf(
-                FlowToggleOption(false, stringResource(R.string.music_player_mode_song)),
-                FlowToggleOption(true, stringResource(R.string.music_player_mode_video)),
+                MawjaToggleOption(false, stringResource(R.string.music_player_mode_song)),
+                MawjaToggleOption(true, stringResource(R.string.music_player_mode_video)),
             ),
         selected = showsVideo,
         onSelected = onSelect,

@@ -88,7 +88,7 @@ import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.IslamicIndex
 import java.time.ZoneId
@@ -188,14 +188,14 @@ internal fun IslamicScreen(
     val methodValue = if (settings.methodKey == null) stringResource(R.string.islamic_method_auto, methodName) else methodName
     val adhanOptions =
         listOf(
-            FlowToggleOption(AdhanMode.OFF, stringResource(R.string.islamic_adhan_off)),
-            FlowToggleOption(AdhanMode.NOTIFY, stringResource(R.string.islamic_adhan_notify)),
-            FlowToggleOption(AdhanMode.PAUSE, stringResource(R.string.islamic_adhan_pause)),
+            MawjaToggleOption(AdhanMode.OFF, stringResource(R.string.islamic_adhan_off)),
+            MawjaToggleOption(AdhanMode.NOTIFY, stringResource(R.string.islamic_adhan_notify)),
+            MawjaToggleOption(AdhanMode.PAUSE, stringResource(R.string.islamic_adhan_pause)),
         )
     val asrOptions =
         listOf(
-            FlowToggleOption(AsrMethod.STANDARD, stringResource(R.string.islamic_asr_standard)),
-            FlowToggleOption(AsrMethod.HANAFI, stringResource(R.string.islamic_asr_hanafi)),
+            MawjaToggleOption(AsrMethod.STANDARD, stringResource(R.string.islamic_asr_standard)),
+            MawjaToggleOption(AsrMethod.HANAFI, stringResource(R.string.islamic_asr_hanafi)),
         )
     val cityValue =
         IslamicCities.byId(settings.cityId)?.name(arabic)?.takeIf { settings.locationSource == LocationSource.CITY }

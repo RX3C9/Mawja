@@ -28,8 +28,8 @@ import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.shared.FeedGridSkeleton
 import app.mawja.android.ui.components.shared.FeedGridTopPadding
 import app.mawja.android.ui.components.shared.FeedPagingFooter
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowErrorState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaErrorState
 import app.mawja.android.ui.components.shared.card.MediaVideoCard
 import app.mawja.android.ui.components.shared.card.VideoCardDefaults
 import app.mawja.android.ui.components.shared.card.VideoCardLayout
@@ -58,7 +58,7 @@ internal fun CategoryPagedGrid(
             }
 
             refresh is LoadState.Error -> {
-                FlowErrorState(
+                MawjaErrorState(
                     error = stringResource(categoryErrorRes(refresh.error)),
                     onRetry = pagingItems::retry,
                     modifier = modifier,
@@ -66,7 +66,7 @@ internal fun CategoryPagedGrid(
             }
 
             refresh.endOfPaginationReached -> {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(R.string.error_no_videos_for_category),
                     modifier = modifier,
                 )

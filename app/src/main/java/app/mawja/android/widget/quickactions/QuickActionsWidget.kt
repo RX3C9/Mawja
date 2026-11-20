@@ -37,7 +37,7 @@ import androidx.glance.layout.width
 import androidx.glance.text.Text
 import app.mawja.android.R
 import app.mawja.android.widget.core.action.WidgetDeepLink
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.WidgetDimens
 import app.mawja.android.widget.core.theme.WidgetText
 import app.mawja.android.widget.core.theme.widgetColorsFlow
@@ -56,7 +56,7 @@ class QuickActionsWidget : GlanceAppWidget() {
         widgetCategory: Int,
     ) {
         val colors = widgetColorsFlow(context).first()
-        provideContent { FlowGlanceTheme(colors) { QuickActionsContent(QuickShortcut.DEFAULT) } }
+        provideContent { MawjaGlanceTheme(colors) { QuickActionsContent(QuickShortcut.DEFAULT) } }
     }
 
     override suspend fun provideGlance(
@@ -68,7 +68,7 @@ class QuickActionsWidget : GlanceAppWidget() {
         provideContent {
             val colors by colorsFlow.collectAsState(initialColors)
             val shortcuts = QuickShortcut.from(currentState<Preferences>())
-            FlowGlanceTheme(colors) {
+            MawjaGlanceTheme(colors) {
                 QuickActionsContent(shortcuts)
             }
         }

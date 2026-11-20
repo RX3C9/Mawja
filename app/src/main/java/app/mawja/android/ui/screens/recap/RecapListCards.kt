@@ -23,7 +23,7 @@ import app.mawja.android.data.stats.RankedKind
 import app.mawja.android.data.stats.VideoRecap
 import app.mawja.android.data.stats.ViewFormat
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowArtistShape
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import app.mawja.android.ui.components.stats.StatBigNumber
@@ -63,7 +63,7 @@ private fun RankedRows(
     value: @Composable (RankedItem) -> String,
 ) {
     val navigator = LocalMediaNavigator.current
-    Column(verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap)) {
+    Column(verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap)) {
         items.forEachIndexed { index, item ->
             val link = item.link()
             StatRankRow(

@@ -20,8 +20,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 
 private val ControlRowHorizontalPadding = 16.dp
 private val ControlRowVerticalPadding = 14.dp
@@ -36,7 +36,7 @@ private const val DISABLED_ALPHA = 0.4f
 @Composable
 fun <T> SettingsToggleGroupRow(
     title: String,
-    options: List<FlowToggleOption<T>>,
+    options: List<MawjaToggleOption<T>>,
     selected: T,
     onSelected: (T) -> Unit,
     shape: Shape,
@@ -48,7 +48,7 @@ fun <T> SettingsToggleGroupRow(
     SettingsControlRowFrame(shape = shape, modifier = modifier) {
         SettingsControlRowTitle(title = title, summary = summary, enabled = enabled)
         preview?.invoke()
-        FlowConnectedToggleGroup(
+        MawjaConnectedToggleGroup(
             options = options,
             selected = selected,
             onSelected = onSelected,

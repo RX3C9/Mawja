@@ -17,9 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSelectionRow
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSelectionRow
 
 /**
  * Where a kind of download is saved: the default folder, a preset, a folder picked with the system
@@ -55,7 +55,7 @@ internal fun DownloadLocationDialog(
         }
     val selected = current?.takeUnless { it == defaultPath }
 
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -68,7 +68,7 @@ internal fun DownloadLocationDialog(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text(stringResource(R.string.location_dialog_subtitle))
                 presets.forEach { (path, label, supporting) ->
-                    FlowSelectionRow(
+                    MawjaSelectionRow(
                         title = label,
                         supportingText = supporting,
                         selected = selected == path,
@@ -79,14 +79,14 @@ internal fun DownloadLocationDialog(
                         },
                     )
                 }
-                FlowNavRow(
+                MawjaNavRow(
                     title = stringResource(R.string.location_custom_saf_label),
                     supportingText = stringResource(R.string.location_custom_saf_desc),
                     leadingIcon = Icons.Outlined.CreateNewFolder,
                     showChevron = false,
                     onClick = onBrowse,
                 )
-                FlowNavRow(
+                MawjaNavRow(
                     title = stringResource(R.string.location_custom_manual_label),
                     supportingText = stringResource(R.string.location_custom_manual_desc),
                     leadingIcon = Icons.Outlined.Edit,
@@ -106,7 +106,7 @@ private fun ManualPathDialog(
     onDismiss: () -> Unit,
 ) {
     var path by rememberSaveable { mutableStateOf(initial) }
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.location_manual_dialog_title)) },
         text = {

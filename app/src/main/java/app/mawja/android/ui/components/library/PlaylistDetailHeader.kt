@@ -61,9 +61,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowActionButtonPair
-import app.mawja.android.ui.components.shared.FlowPairAction
-import app.mawja.android.ui.components.shared.FlowSortChip
+import app.mawja.android.ui.components.shared.MawjaActionButtonPair
+import app.mawja.android.ui.components.shared.MawjaPairAction
+import app.mawja.android.ui.components.shared.MawjaSortChip
 import app.mawja.android.ui.components.shared.connectedButtonShapes
 import app.mawja.android.ui.components.shared.thumbnailUrlOrNull
 
@@ -204,9 +204,9 @@ private fun ColumnScope.PlaylistTitleBlock(state: PlaylistHeaderState) {
 
 @Composable
 private fun PlaylistPrimaryActions(actions: PlaylistHeaderActions) {
-    FlowActionButtonPair(
-        primary = FlowPairAction(Icons.Filled.PlayArrow, stringResource(R.string.play_all), actions.onPlayAll),
-        secondary = FlowPairAction(Icons.Filled.Shuffle, stringResource(R.string.shuffle), actions.onShuffle),
+    MawjaActionButtonPair(
+        primary = MawjaPairAction(Icons.Filled.PlayArrow, stringResource(R.string.play_all), actions.onPlayAll),
+        secondary = MawjaPairAction(Icons.Filled.Shuffle, stringResource(R.string.shuffle), actions.onShuffle),
     )
 }
 
@@ -315,7 +315,7 @@ internal fun PlaylistSortChip(
     modifier: Modifier = Modifier,
     default: PlaylistSortOrder = PlaylistSortOrder.MANUAL,
 ) {
-    FlowSortChip(
+    MawjaSortChip(
         options = options,
         selected = selected,
         default = default,

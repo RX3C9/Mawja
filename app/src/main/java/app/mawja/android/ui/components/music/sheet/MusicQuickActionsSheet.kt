@@ -37,7 +37,7 @@ import app.mawja.android.data.ratings.RatingSubject
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
 import app.mawja.android.ui.components.shared.ArtworkThumbnail
 import app.mawja.android.ui.components.shared.ChannelAvatarStack
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.components.shared.quickactions.MediaDetailsPage
 import app.mawja.android.ui.components.shared.quickactions.MediaDetailsSubject
 import app.mawja.android.ui.components.shared.quickactions.MyRatingGroup
@@ -162,7 +162,7 @@ fun MusicQuickActionsSheet(
                     rows =
                         listOf(
                             QuickActionRow("details") { shape ->
-                                FlowNavRow(
+                                MawjaNavRow(
                                     title = stringResource(R.string.details_metadata),
                                     leadingIcon = Icons.Outlined.Info,
                                     onClick = { page = SongMenuPage.Details },
@@ -314,7 +314,7 @@ private fun goToRows(
             val several = artists.size > 1
             add(
                 QuickActionRow("artist") { shape ->
-                    FlowNavRow(
+                    MawjaNavRow(
                         title = if (several) artists.joinToString { it.name } else artists.first().name.ifBlank { track.artist },
                         onClick = {
                             if (several) {
@@ -359,7 +359,7 @@ private fun artistRow(
     val navigator = LocalMediaNavigator.current
     val ringColor = MaterialTheme.colorScheme.surfaceContainerHigh
     return QuickActionRow(artist.id.orEmpty()) { shape ->
-        FlowNavRow(
+        MawjaNavRow(
             title = artist.name,
             onClick = {
                 navigator.openArtist(artist.id.orEmpty())

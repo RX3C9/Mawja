@@ -38,11 +38,11 @@ import app.mawja.android.data.audio.eq.EqMode
 import app.mawja.android.data.audio.eq.EqPreset
 import app.mawja.android.data.audio.eq.EqState
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
-import app.mawja.android.ui.components.shared.FlowSelectionRow
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSelectionRow
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 
 private val ItemInset = 12.dp
@@ -63,13 +63,13 @@ internal fun EqualizerPresetsPage(
     val selectedId = state.active.presetId
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap),
+        verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap),
         contentPadding = PaddingValues(top = 8.dp, bottom = bottom),
     ) {
         item("import") {
             EqFramed {
-                FlowRowGroup {
-                    FlowNavRow(
+                MawjaRowGroup {
+                    MawjaNavRow(
                         title = stringResource(R.string.eq_import_file),
                         supportingText = stringResource(R.string.eq_import_file_desc),
                         onClick = onImportFile,
@@ -77,7 +77,7 @@ internal fun EqualizerPresetsPage(
                         showChevron = false,
                         shape = flowRowGroupShape(0, 2),
                     )
-                    FlowNavRow(
+                    MawjaNavRow(
                         title = stringResource(R.string.eq_paste_text),
                         onClick = onPaste,
                         leadingIcon = Icons.Outlined.ContentPaste,
@@ -88,7 +88,7 @@ internal fun EqualizerPresetsPage(
             }
         }
         if (state.userPresets.isNotEmpty()) {
-            item("yours-header") { EqFramed { FlowSectionHeader(stringResource(R.string.eq_your_presets)) } }
+            item("yours-header") { EqFramed { MawjaSectionHeader(stringResource(R.string.eq_your_presets)) } }
             itemsIndexed(state.userPresets, key = { _, preset -> preset.id }) { index, preset ->
                 EqFramed(Modifier.padding(horizontal = ItemInset)) {
                     UserPresetRow(
@@ -107,10 +107,10 @@ internal fun EqualizerPresetsPage(
                 }
             }
         }
-        item("built-in-header") { EqFramed { FlowSectionHeader(stringResource(R.string.eq_built_in)) } }
+        item("built-in-header") { EqFramed { MawjaSectionHeader(stringResource(R.string.eq_built_in)) } }
         itemsIndexed(BuiltInEqPresets.all, key = { _, preset -> preset.id }) { index, preset ->
             EqFramed(Modifier.padding(horizontal = ItemInset)) {
-                FlowSelectionRow(
+                MawjaSelectionRow(
                     title = stringResource(preset.nameRes),
                     selected = preset.id == selectedId,
                     onClick = {
@@ -141,7 +141,7 @@ private fun UserPresetRow(
             preset.mode == EqMode.GRAPHIC -> stringResource(R.string.eq_mode_graphic)
             else -> pluralStringResource(R.plurals.eq_band_total, preset.curve.bands.size, preset.curve.bands.size)
         }
-    FlowNavRow(
+    MawjaNavRow(
         title = preset.name,
         supportingText = summary,
         onClick = onClick,

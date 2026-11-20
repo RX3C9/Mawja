@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import app.mawja.android.data.recommendation.NeuroTopicCatalog
 import app.mawja.android.data.recommendation.TopicCategory
-import app.mawja.android.ui.components.shared.FlowPillChip
-import app.mawja.android.ui.components.shared.FlowPillSection
+import app.mawja.android.ui.components.shared.MawjaPillChip
+import app.mawja.android.ui.components.shared.MawjaPillSection
 import app.mawja.android.ui.components.topicCategoryIcon
 import app.mawja.android.ui.components.topicCategoryNameRes
 import kotlinx.coroutines.delay
@@ -85,13 +85,13 @@ private fun InterestCategorySection(
     selectedTopics: Set<String>,
     onTopicToggle: (String) -> Unit,
 ) {
-    FlowPillSection(
+    MawjaPillSection(
         title = stringResource(topicCategoryNameRes(category.name)),
         icon = topicCategoryIcon(category.icon),
         selectedCount = category.topics.count(selectedTopics::contains),
     ) {
         category.topics.forEach { topic ->
-            FlowPillChip(
+            MawjaPillChip(
                 label = topic,
                 selected = selectedTopics.contains(topic),
                 onClick = { onTopicToggle(topic) },

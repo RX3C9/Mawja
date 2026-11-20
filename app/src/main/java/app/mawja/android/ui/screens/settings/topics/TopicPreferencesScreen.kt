@@ -22,10 +22,10 @@ import app.mawja.android.data.recommendation.NeuroTopicCatalog
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.SettingsTabs
 import app.mawja.android.ui.components.settings.notice
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowPillChip
-import app.mawja.android.ui.components.shared.FlowPillSection
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaPillChip
+import app.mawja.android.ui.components.shared.MawjaPillSection
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.components.topicCategoryIcon
 import app.mawja.android.ui.components.topicCategoryNameRes
 import app.mawja.android.ui.screens.settings.index.TopicsIndex
@@ -55,15 +55,15 @@ internal fun TopicPreferencesScreen(
         onBack = onBack,
         highlight = highlight,
         header = {
-            FlowConnectedToggleGroup(
+            MawjaConnectedToggleGroup(
                 options =
                     listOf(
-                        FlowToggleOption(
+                        MawjaToggleOption(
                             SettingsTabs.TOPICS_INTERESTS,
                             stringResource(R.string.settings_topics_tab_interests),
                             Icons.Outlined.Favorite,
                         ),
-                        FlowToggleOption(
+                        MawjaToggleOption(
                             SettingsTabs.TOPICS_BLOCKED,
                             stringResource(R.string.settings_topics_tab_blocked),
                             Icons.Outlined.Block,
@@ -110,14 +110,14 @@ internal fun TopicPreferencesScreen(
             notice("topics.interests.notice", text = { stringResource(R.string.your_interests_desc) }, icon = Icons.Outlined.TipsAndUpdates)
             NeuroTopicCatalog.TOPIC_CATEGORIES.forEach { category ->
                 item("topics.category.${category.name}") {
-                    FlowPillSection(
+                    MawjaPillSection(
                         title = stringResource(topicCategoryNameRes(category.name)),
                         icon = topicCategoryIcon(category.icon),
                         selectedCount = category.topics.count(interests::contains),
                         modifier = Modifier.padding(vertical = SectionVerticalPadding),
                     ) {
                         category.topics.forEach { topic ->
-                            FlowPillChip(label = topic, selected = topic in interests, onClick = { viewModel.toggleInterest(topic) })
+                            MawjaPillChip(label = topic, selected = topic in interests, onClick = { viewModel.toggleInterest(topic) })
                         }
                     }
                 }

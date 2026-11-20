@@ -49,8 +49,8 @@ class NeighbourChannelsRepository
             now: Long = System.currentTimeMillis(),
         ): List<NeighbourChannel> {
             val dropped = store.entries().filterValues { it.dropped }.keys
-            val names = FlowNeuroEngine.coWatchChannelNames() + subscribed
-            return FlowNeuroEngine
+            val names = MawjaNeuroEngine.coWatchChannelNames() + subscribed
+            return MawjaNeuroEngine
                 .neighbourChannels(subscribed.keys)
                 .filter { it.channelId !in dropped }
                 .map { neighbour ->

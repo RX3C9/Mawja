@@ -31,9 +31,9 @@ import app.mawja.android.data.local.LocalDataManager.AutoBackupFrequency
 import app.mawja.android.data.local.LocalDataManager.AutoBackupType
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.SettingsTabs
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowProgressBanner
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaProgressBanner
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
@@ -117,10 +117,10 @@ internal fun BackupScreen(
             running = operation is BackupOperation.Running,
             frequencyOptions =
                 listOf(
-                    FlowToggleOption(AutoBackupFrequency.NONE, stringResource(R.string.auto_backup_frequency_none)),
-                    FlowToggleOption(AutoBackupFrequency.DAILY, stringResource(R.string.auto_backup_frequency_daily)),
-                    FlowToggleOption(AutoBackupFrequency.WEEKLY, stringResource(R.string.auto_backup_frequency_weekly)),
-                    FlowToggleOption(AutoBackupFrequency.MONTHLY, stringResource(R.string.auto_backup_frequency_monthly)),
+                    MawjaToggleOption(AutoBackupFrequency.NONE, stringResource(R.string.auto_backup_frequency_none)),
+                    MawjaToggleOption(AutoBackupFrequency.DAILY, stringResource(R.string.auto_backup_frequency_daily)),
+                    MawjaToggleOption(AutoBackupFrequency.WEEKLY, stringResource(R.string.auto_backup_frequency_weekly)),
+                    MawjaToggleOption(AutoBackupFrequency.MONTHLY, stringResource(R.string.auto_backup_frequency_monthly)),
                 ),
             typeLabels =
                 mapOf(
@@ -137,20 +137,20 @@ internal fun BackupScreen(
         snackbarHostState = snackbarHostState,
         header = {
             Column {
-                FlowConnectedToggleGroup(
+                MawjaConnectedToggleGroup(
                     options =
                         listOf(
-                            FlowToggleOption(
+                            MawjaToggleOption(
                                 SettingsTabs.BACKUP_EXPORT,
                                 stringResource(R.string.settings_backup_tab_export),
                                 Icons.Outlined.FileUpload,
                             ),
-                            FlowToggleOption(
+                            MawjaToggleOption(
                                 SettingsTabs.BACKUP_IMPORT,
                                 stringResource(R.string.settings_backup_tab_import),
                                 Icons.Outlined.FileDownload,
                             ),
-                            FlowToggleOption(
+                            MawjaToggleOption(
                                 SettingsTabs.BACKUP_AUTO,
                                 stringResource(R.string.settings_backup_tab_auto),
                                 Icons.Outlined.Schedule,
@@ -161,7 +161,7 @@ internal fun BackupScreen(
                     modifier = Modifier.padding(bottom = HeaderSpacing),
                 )
                 (operation as? BackupOperation.Running)?.let { running ->
-                    FlowProgressBanner(
+                    MawjaProgressBanner(
                         headline = running.headline,
                         current = running.current,
                         total = running.total,

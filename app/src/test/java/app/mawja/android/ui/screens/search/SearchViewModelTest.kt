@@ -8,7 +8,7 @@ import app.mawja.android.data.local.SearchFilter
 import app.mawja.android.data.local.SearchHistoryRepository
 import app.mawja.android.data.local.SortType
 import app.mawja.android.data.local.UploadDate
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.search.SearchSuggestionsRepository
 import app.mawja.android.data.shorts.ShortsContentFilter
 import app.mawja.android.data.shorts.queue.ShortsQueueHandoff
@@ -56,8 +56,8 @@ class SearchViewModelTest {
         Dispatchers.setMain(testDispatcher)
         // A real engine built on the mocked context reads DataStore on its own scope and fails there,
         // which surfaces as an uncaught exception in whichever runTest comes next.
-        mockkObject(FlowNeuroEngine.Companion)
-        coEvery { FlowNeuroEngine.onSearchQuery(any(), any()) } just runs
+        mockkObject(MawjaNeuroEngine.Companion)
+        coEvery { MawjaNeuroEngine.onSearchQuery(any(), any()) } just runs
     }
 
     @After

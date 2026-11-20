@@ -778,7 +778,6 @@
     <string name="select_threads_count_desc">थ्रेड्स की संख्या चुनें (1-8):</string>
     <string name="thank_you_support_message">आपके समर्थन के लिए धन्यवाद! ❤️</string>
     <string name="address_copied_toast">पता क्लिपबोर्ड पर कॉपी किया गया</string>
-    <string name="donation_address_clip_label">दान पता</string>
     <string name="about_creator">निर्माता</string>
     <string name="about_website">वेबसाइट</string>
     <string name="github_subtitle">स्रोत कोड और मुद्दे</string>

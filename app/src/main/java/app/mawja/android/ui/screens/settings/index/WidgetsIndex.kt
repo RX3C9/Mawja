@@ -3,11 +3,11 @@ package app.mawja.android.ui.screens.settings.index
 import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingEntry
 import app.mawja.android.ui.components.settings.SettingsDestination
-import app.mawja.android.widget.core.FlowWidgetEntry
-import app.mawja.android.widget.core.FlowWidgets
+import app.mawja.android.widget.core.MawjaWidgetEntry
+import app.mawja.android.widget.core.MawjaWidgets
 
 internal object WidgetsIndex {
-    fun entryFor(widget: FlowWidgetEntry) =
+    fun entryFor(widget: MawjaWidgetEntry) =
         SettingEntry(
             key = "widgets.${widget.id}",
             title = widget.label,
@@ -17,5 +17,5 @@ internal object WidgetsIndex {
             destination = SettingsDestination.WIDGETS,
         )
 
-    val all = FlowWidgets.catalog.map(::entryFor)
+    val all = MawjaWidgets.catalog.map(::entryFor)
 }

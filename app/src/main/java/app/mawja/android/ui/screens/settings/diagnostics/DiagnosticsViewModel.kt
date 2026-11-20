@@ -10,7 +10,7 @@ import app.mawja.android.data.recommendation.snapshot.HomeSnapshotStore
 import app.mawja.android.player.stream.ClientGateTracker
 import app.mawja.android.ui.screens.settings.SettingsViewModel
 import app.mawja.android.utils.DeviceInfo
-import app.mawja.android.utils.FlowDiagnostics
+import app.mawja.android.utils.MawjaDiagnostics
 import app.mawja.android.utils.cipher.CipherDeobfuscator
 import app.mawja.android.utils.cipher.PlayerJsFetcher
 import app.mawja.android.utils.potoken.WebPoTokenSession
@@ -30,7 +30,7 @@ class DiagnosticsViewModel
         private val preferences: PlayerPreferences,
         private val snapshots: HomeSnapshotStore,
     ) : SettingsViewModel() {
-        val device: DeviceInfo by lazy { FlowDiagnostics.deviceInfo(context) }
+        val device: DeviceInfo by lazy { MawjaDiagnostics.deviceInfo(context) }
 
         private val _session = MutableStateFlow<LogState>(LogState.Loading)
         private val _crashes = MutableStateFlow<LogState>(LogState.Loading)
@@ -47,9 +47,9 @@ class DiagnosticsViewModel
         init {
             viewModelScope.launch { _snapshotCount.value = snapshots.count() }
             viewModelScope.launch(Dispatchers.IO) {
-                sessionText = FlowDiagnostics.readSessionLogs()
+                sessionText = MawjaDiagnostics.readSessionLogs()
                 _session.value = parseLog(sessionText, ::logcatLevel)
-                _crashes.value = parseLog(FlowDiagnostics.crashLogsOrNull(context), ::crashLevel)
+                _crashes.value = parseLog(MawjaDiagnostics.crashLogsOrNull(context), ::crashLevel)
             }
         }
 
@@ -69,11 +69,11 @@ class DiagnosticsViewModel
                     .getOrDefault(false)
             }
 
-        suspend fun report(): String = withContext(Dispatchers.IO) { FlowDiagnostics.buildFullReport(context, sessionText) }
+        suspend fun report(): String = withContext(Dispatchers.IO) { MawjaDiagnostics.buildFullReport(context, sessionText) }
 
         fun clearCrashes() =
             write {
-                withContext(Dispatchers.IO) { FlowDiagnostics.clearCrashLogs(context) }
+                withContext(Dispatchers.IO) { MawjaDiagnostics.clearCrashLogs(context) }
                 _crashes.value = LogState.Empty
             }
 

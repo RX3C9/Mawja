@@ -28,8 +28,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import app.mawja.android.R
 import app.mawja.android.data.newmusic.InnertubeMusicService
 import app.mawja.android.innertube.models.MediaInfo
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.components.shared.rememberDateDisplaySettings
 import app.mawja.android.utils.DateContext
 import app.mawja.android.utils.formatDuration
@@ -101,7 +101,7 @@ fun MediaDetailsPage(
     MediaDetailRows(details = mediaDetailLines(subject, state), quickActions = quickActions)
     if (state.isLoading) {
         Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-            FlowLoadingIndicator()
+            MawjaLoadingIndicator()
         }
     }
 }
@@ -119,7 +119,7 @@ fun MediaDetailRows(
         rows =
             details.map { (label, value) ->
                 QuickActionRow(key = label) { shape ->
-                    FlowNavRow(
+                    MawjaNavRow(
                         title = value,
                         supportingText = label,
                         onClick = {

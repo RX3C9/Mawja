@@ -20,7 +20,7 @@ import app.mawja.android.widget.config.WidgetConfigActivity
 object WidgetDeepLink {
     const val EXTRA_WIDGET_ROUTE = "widget_route"
 
-    // Navigation routes that already exist in FlowNavigation.
+    // Navigation routes that already exist in MawjaNavigation.
     const val ROUTE_SEARCH = "search"
     const val ROUTE_DOWNLOADS = "downloads"
     const val ROUTE_HISTORY = "history"
@@ -30,7 +30,7 @@ object WidgetDeepLink {
     const val ROUTE_SUBSCRIPTIONS = "subscriptions"
     const val ROUTE_LIBRARY = "library"
 
-    // Not a FlowNavigation route: MainActivity resolves it to the newest part-watched video.
+    // Not a MawjaNavigation route: MainActivity resolves it to the newest part-watched video.
     const val ROUTE_CONTINUE_WATCHING = "continueWatching"
 
     // Settings > Prayer times & qibla.
@@ -41,7 +41,7 @@ object WidgetDeepLink {
     /** Expands the full music player over whatever screen the app opens on. */
     fun openMusicPlayer(context: Context): Intent = base(context, "music_player").putExtra("open_music_player", true)
 
-    /** Navigates to an existing FlowNavigation route (search, downloads, history, …). */
+    /** Navigates to an existing MawjaNavigation route (search, downloads, history, …). */
     fun openRoute(
         context: Context,
         route: String,

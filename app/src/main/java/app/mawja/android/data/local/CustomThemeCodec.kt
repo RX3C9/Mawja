@@ -3,7 +3,7 @@ package app.mawja.android.data.local
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import app.mawja.android.ui.theme.CustomTheme
-import app.mawja.android.ui.theme.FlowPalettes
+import app.mawja.android.ui.theme.MawjaPalettes
 import app.mawja.android.ui.theme.PaletteColors
 import app.mawja.android.ui.theme.ThemeVariant
 import app.mawja.android.ui.theme.mixColors
@@ -207,7 +207,7 @@ internal fun legacyCustomTheme(
     name: String,
 ): CustomTheme {
     fun palette(variant: ThemeVariant): PaletteColors {
-        val fallback = FlowPalettes.default.colorsFor(variant)
+        val fallback = MawjaPalettes.default.colorsFor(variant)
         val roles = stored[variant].orEmpty()
 
         fun role(

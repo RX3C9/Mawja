@@ -7,8 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import app.mawja.android.BuildConfig
 import app.mawja.android.data.local.PlayerPreferences
-import app.mawja.android.data.recommendation.FlowNeuroEngine
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.data.update.AppRelease
 import app.mawja.android.data.update.UpdateRepository
 import app.mawja.android.player.DeepFlowManager
@@ -59,8 +59,8 @@ class SettingsHomeViewModel
                 state.copy(showOnSearch = onSearch)
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), DeepFlowState())
 
-        private val _persona = MutableStateFlow<FlowPersona?>(null)
-        val persona: StateFlow<FlowPersona?> = _persona.asStateFlow()
+        private val _persona = MutableStateFlow<MawjaPersona?>(null)
+        val persona: StateFlow<MawjaPersona?> = _persona.asStateFlow()
 
         private val _updateCheck = MutableStateFlow<UpdateCheckState>(UpdateCheckState.Idle)
         val updateCheck: StateFlow<UpdateCheckState> = _updateCheck.asStateFlow()
@@ -72,7 +72,7 @@ class SettingsHomeViewModel
         /** Re-reads the persona; the engine exposes no stream, so the list refreshes it when shown. */
         fun refreshPersona() {
             viewModelScope.launch {
-                _persona.value = runCatching { FlowNeuroEngine.getPersona(FlowNeuroEngine.getBrainSnapshot()) }.getOrNull()
+                _persona.value = runCatching { MawjaNeuroEngine.getPersona(MawjaNeuroEngine.getBrainSnapshot()) }.getOrNull()
             }
         }
 

@@ -34,10 +34,10 @@ import app.mawja.android.data.audio.eq.BuiltInEqPresets
 import app.mawja.android.data.audio.eq.EqLimits
 import app.mawja.android.data.audio.eq.EqState
 import app.mawja.android.data.audio.eq.isEdited
-import app.mawja.android.ui.components.shared.FlowFilterChip
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaFilterChip
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import app.mawja.android.ui.screens.equalizer.EqualizerViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -59,8 +59,8 @@ internal fun EqQuickPanel(
     viewModel: EqualizerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    FlowRowGroup(modifier = modifier) {
-        FlowSwitchRow(
+    MawjaRowGroup(modifier = modifier) {
+        MawjaSwitchRow(
             title = stringResource(R.string.equalizer),
             supportingText = presetSummary(state),
             checked = state.enabled,
@@ -83,14 +83,14 @@ internal fun EqQuickPanel(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(state.userPresets, key = { it.id }) { preset ->
-                    FlowFilterChip(
+                    MawjaFilterChip(
                         label = preset.name,
                         selected = state.active.presetId == preset.id,
                         onClick = { viewModel.selectPreset(preset.id) },
                     )
                 }
                 items(BuiltInEqPresets.all, key = { it.id }) { preset ->
-                    FlowFilterChip(
+                    MawjaFilterChip(
                         label = stringResource(preset.nameRes),
                         selected = state.active.presetId == preset.id,
                         onClick = { viewModel.selectPreset(preset.id) },
@@ -101,7 +101,7 @@ internal fun EqQuickPanel(
         PanelRow(shape = flowRowGroupShape(3, ROWS)) {
             EqBassBoostSlider(value = state.bassBoost, onValueChange = viewModel::setBassBoost, modifier = Modifier.padding(RowPadding))
         }
-        FlowNavRow(
+        MawjaNavRow(
             title = stringResource(R.string.eq_edit),
             onClick = onEdit,
             leadingIcon = Icons.Rounded.Tune,
@@ -165,7 +165,7 @@ internal fun presetSummary(state: EqState): String {
     }
 }
 
-/** A free-form row inside a [FlowRowGroup], on the same container and shape as the kit's rows. */
+/** A free-form row inside a [MawjaRowGroup], on the same container and shape as the kit's rows. */
 @Composable
 internal fun PanelRow(
     shape: Shape,

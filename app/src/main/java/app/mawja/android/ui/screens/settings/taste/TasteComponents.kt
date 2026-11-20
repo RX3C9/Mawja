@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.ui.components.shared.flowArtistShape
 import kotlin.math.PI
 import kotlin.math.cos
@@ -55,7 +55,7 @@ private const val START_ANGLE = -PI / 2
 /** The persona's glyph in the artist cookie shape, on a tonal container. */
 @Composable
 internal fun PersonaEmblem(
-    persona: FlowPersona,
+    persona: MawjaPersona,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -72,7 +72,7 @@ internal fun PersonaEmblem(
 
 @Composable
 internal fun PersonaHeroCard(
-    persona: FlowPersona,
+    persona: MawjaPersona,
     maturity: Float,
 ) {
     Surface(

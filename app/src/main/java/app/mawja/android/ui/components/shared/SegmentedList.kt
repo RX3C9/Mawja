@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.Dp
  * Vertical gap between the rows of a segmented track list.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-val FlowSegmentedGap: Dp = ListItemDefaults.SegmentedGap
+val MawjaSegmentedGap: Dp = ListItemDefaults.SegmentedGap
 
 /**
  * Shape of row [index] in a segmented list of [count] rows: the outer rows carry the group's

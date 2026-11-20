@@ -24,7 +24,7 @@ import app.mawja.android.islamic.MawjaIslamic
 import app.mawja.android.islamic.PrayerAlarms
 import app.mawja.android.islamic.PrayerSchedule
 import app.mawja.android.ui.components.library.LibraryNavigationRow
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 import app.mawja.android.ui.screens.settings.islamic.countdownText
 import java.time.Instant
 import java.time.ZoneId
@@ -58,6 +58,6 @@ internal fun LibraryIslamicRow(onOpen: () -> Unit) {
         title = stringResource(R.string.islamic_title),
         subtitle = subtitle,
         onClick = onOpen,
-        modifier = Modifier.widthIn(max = FlowMaxContentWidth).padding(horizontal = 16.dp),
+        modifier = Modifier.widthIn(max = MawjaMaxContentWidth).padding(horizontal = 16.dp),
     )
 }

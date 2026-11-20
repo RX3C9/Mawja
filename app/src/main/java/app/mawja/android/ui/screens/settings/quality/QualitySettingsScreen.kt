@@ -26,10 +26,10 @@ import app.mawja.android.ui.components.settings.SettingsTabs
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.components.settings.option
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.QualityIndex
 
 private val TabsBottomPadding = 8.dp
@@ -67,9 +67,9 @@ internal fun QualitySettingsScreen(
 
     val tabs =
         listOf(
-            FlowToggleOption(SettingsTabs.QUALITY_VIDEO, stringResource(R.string.settings_quality_tab_video), Icons.Outlined.SmartDisplay),
-            FlowToggleOption(SettingsTabs.QUALITY_SHORTS, stringResource(R.string.settings_quality_tab_shorts), Icons.Outlined.Slideshow),
-            FlowToggleOption(SettingsTabs.QUALITY_MUSIC, stringResource(R.string.settings_quality_tab_music), Icons.Outlined.MusicNote),
+            MawjaToggleOption(SettingsTabs.QUALITY_VIDEO, stringResource(R.string.settings_quality_tab_video), Icons.Outlined.SmartDisplay),
+            MawjaToggleOption(SettingsTabs.QUALITY_SHORTS, stringResource(R.string.settings_quality_tab_shorts), Icons.Outlined.Slideshow),
+            MawjaToggleOption(SettingsTabs.QUALITY_MUSIC, stringResource(R.string.settings_quality_tab_music), Icons.Outlined.MusicNote),
         )
     val videoWifiLabel = stringResource(videoQualityLabel(videoWifi))
     val videoMobileLabel = stringResource(videoQualityLabel(videoMobile))
@@ -87,7 +87,7 @@ internal fun QualitySettingsScreen(
         onBack = onBack,
         highlight = highlight,
         header = {
-            FlowConnectedToggleGroup(
+            MawjaConnectedToggleGroup(
                 options = tabs,
                 selected = selectedTab,
                 onSelected = { selectedTab = it },
@@ -208,9 +208,9 @@ private fun QualityPickerDialog(
         options: List<VideoQuality>,
         selected: VideoQuality,
         onSelect: (VideoQuality) -> Unit,
-    ) = FlowChoiceDialog(
+    ) = MawjaChoiceDialog(
         title = stringResource(title),
-        options = options.map { FlowChoice(it, stringResource(videoQualityLabel(it))) },
+        options = options.map { MawjaChoice(it, stringResource(videoQualityLabel(it))) },
         selected = selected,
         onSelect = onSelect,
         onDismiss = onDismiss,
@@ -221,11 +221,11 @@ private fun QualityPickerDialog(
         title: Int,
         selected: ThumbnailQuality,
         onSelect: (ThumbnailQuality) -> Unit,
-    ) = FlowChoiceDialog(
+    ) = MawjaChoiceDialog(
         title = stringResource(title),
         options =
             ThumbnailQualities.map {
-                FlowChoice(it, stringResource(thumbnailQualityLabel(it)), stringResource(thumbnailQualityDescription(it)))
+                MawjaChoice(it, stringResource(thumbnailQualityLabel(it)), stringResource(thumbnailQualityDescription(it)))
             },
         selected = selected,
         onSelect = onSelect,
@@ -259,10 +259,10 @@ private fun QualityPickerDialog(
 
         QualityPicker.CODEC -> {
             val autoDescription = stringResource(R.string.player_settings_video_codec_auto_desc)
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_video_codec_dialog_title),
                 description = stringResource(R.string.player_settings_video_codec_dialog_body),
-                options = VideoCodec.entries.map { FlowChoice(it, codecLabel(it), autoDescription.takeIf { _ -> it == VideoCodec.AUTO }) },
+                options = VideoCodec.entries.map { MawjaChoice(it, codecLabel(it), autoDescription.takeIf { _ -> it == VideoCodec.AUTO }) },
                 selected = state.codec,
                 onSelect = viewModel::setCodec,
                 onDismiss = onDismiss,
@@ -271,12 +271,12 @@ private fun QualityPickerDialog(
 
         QualityPicker.FALLBACK_CODEC -> {
             val autoDescription = stringResource(R.string.player_settings_video_codec_fallback_auto_desc)
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_video_codec_fallback),
                 description = stringResource(R.string.player_settings_video_codec_fallback_dialog_body),
                 options =
                     fallbackCodecs(state.codec).map {
-                        FlowChoice(
+                        MawjaChoice(
                             it,
                             codecLabel(it),
                             autoDescription.takeIf { _ ->

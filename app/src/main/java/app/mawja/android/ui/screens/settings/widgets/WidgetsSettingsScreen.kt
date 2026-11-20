@@ -13,7 +13,7 @@ import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.screens.settings.index.WidgetsIndex
-import app.mawja.android.widget.core.FlowWidgets
+import app.mawja.android.widget.core.MawjaWidgets
 import kotlinx.coroutines.launch
 
 /** Every Flow widget, each one tap from the launcher's own add-widget dialog. */
@@ -36,7 +36,7 @@ internal fun WidgetsSettingsScreen(
     ) {
         if (!canPin) notice("widgets.unsupported", text = { unsupported })
         group(key = "widgets.add", header = R.string.settings_widgets_add_header, footer = R.string.settings_widgets_footer) {
-            FlowWidgets.catalog.forEach { widget ->
+            MawjaWidgets.catalog.forEach { widget ->
                 nav(
                     WidgetsIndex.entryFor(widget),
                     onClick = {

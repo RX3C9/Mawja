@@ -90,6 +90,7 @@ internal object DestinationIndex {
             SettingsDestination.NETWORK -> R.string.settings_network_summary
             SettingsDestination.WELLBEING -> R.string.settings_wellbeing_summary
             SettingsDestination.ISLAMIC -> R.string.islamic_summary
+            SettingsDestination.LAB -> R.string.lab_summary
             SettingsDestination.QIBLA -> R.string.islamic_qibla
             SettingsDestination.WIDGETS -> R.string.settings_widgets_summary
             SettingsDestination.ABOUT -> R.string.settings_about_summary

@@ -24,7 +24,7 @@ import app.mawja.android.data.audio.eq.EqFilterMath
 import app.mawja.android.data.audio.eq.EqLimits
 import app.mawja.android.ui.components.equalizer.EqResponseGraph
 import app.mawja.android.ui.components.equalizer.formatGain
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 
 private val PreviewHeight = 96.dp
 private val PasteFieldMinHeight = 160.dp
@@ -121,7 +121,7 @@ private fun NameDialog(
     var name by rememberSaveable { mutableStateOf(initial) }
     val blank = name.isBlank()
     val taken = !blank && !isAvailable(name)
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(title)) },
         text = { NameField(name = name, onNameChange = { name = it }, taken = taken) },
@@ -155,7 +155,7 @@ private fun PasteDialog(
     onDismiss: () -> Unit,
 ) {
     var text by rememberSaveable { mutableStateOf("") }
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.eq_paste_text)) },
         text = {
@@ -186,7 +186,7 @@ private fun ImportPreviewDialog(
     val bands = result.curve.bands
     val peak = remember(bands) { EqFilterMath.peakDb(bands) }
     val taken = name.isNotBlank() && !viewModel.isNameAvailable(name)
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = viewModel::dismissImport,
         title = { Text(stringResource(R.string.eq_import_title)) },
         text = {

@@ -59,6 +59,9 @@ enum class SettingsDestination(
     /** Mawja: optional prayer times, qibla, pause at adhan, Hijri date (#147). Off by default. */
     ISLAMIC("islamic", R.string.islamic_title),
     QIBLA("qibla", R.string.islamic_qibla_title, ISLAMIC),
+
+    /** Mawja Lab: on-device interface sounds, feed mood, time guardian. */
+    LAB("lab", R.string.lab_title),
     ABOUT("about", R.string.settings_item_about_flow),
     REMOTE_GUIDE("remote_guide", R.string.tv_remote_guide_title, ABOUT),
     DIAGNOSTICS("diagnostics", R.string.settings_item_diagnostics),

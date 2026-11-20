@@ -3,7 +3,7 @@ package app.mawja.android.data.shorts.queue
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.data.local.PlaylistRepository
 import app.mawja.android.data.local.SubscriptionRepository
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.shorts.ShortsFeedRepository
 import app.mawja.android.data.subscriptions.SubscriptionFeedRepository
 import app.mawja.android.data.subscriptions.SubscriptionWatchedVideos
@@ -22,7 +22,7 @@ class ShortsQueueLoaderFactory
         private val subscriptionWatchedVideos: SubscriptionWatchedVideos,
         private val playerPreferences: PlayerPreferences,
         private val handoff: ShortsQueueHandoff,
-        private val neuroEngine: FlowNeuroEngine,
+        private val neuroEngine: MawjaNeuroEngine,
     ) {
         fun create(source: ShortsQueueSource): ShortsQueueController {
             val resolved = resolve(source)

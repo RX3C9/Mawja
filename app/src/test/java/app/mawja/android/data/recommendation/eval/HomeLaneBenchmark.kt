@@ -9,7 +9,7 @@ package app.mawja.android.data.recommendation.eval
 
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.recommendation.FeedExclusions
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.GraphSeedInput
 import app.mawja.android.data.recommendation.GraphSeedSelector
 import app.mawja.android.data.recommendation.GraphSeedSource
@@ -138,7 +138,7 @@ internal object HomeLaneBenchmark {
         return (guitar + comedy).sortedByDescending { it.timestamp }
     }
 
-    private suspend fun FlowNeuroEngine.watchHistory() =
+    private suspend fun MawjaNeuroEngine.watchHistory() =
         with(NeuroLearningBenchmark) {
             for (i in 0 until 38) watch(comedy(i), 0.45f)
             watch(guitar(0), 1f)

@@ -33,9 +33,9 @@ import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
 import app.mawja.android.sound.UiSoundPack
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.appearance.theme.PremiumThemeUpsellSheet
 import app.mawja.android.ui.screens.settings.index.AppearanceIndex
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
@@ -100,8 +100,8 @@ internal fun AppearanceScreen(
     val interfaceSummary = stringResource(interfaceModeLabel(interfaceMode))
     val viewModeOptions =
         listOf(
-            FlowToggleOption(HomeViewMode.GRID, stringResource(R.string.content_settings_layout_grid), Icons.Outlined.GridView),
-            FlowToggleOption(
+            MawjaToggleOption(HomeViewMode.GRID, stringResource(R.string.content_settings_layout_grid), Icons.Outlined.GridView),
+            MawjaToggleOption(
                 HomeViewMode.LIST,
                 stringResource(R.string.content_settings_layout_list),
                 Icons.AutoMirrored.Outlined.ViewList,
@@ -109,15 +109,15 @@ internal fun AppearanceScreen(
         )
     val columnOptions =
         HomeFeedColumns.entries.map { columns ->
-            FlowToggleOption(
+            MawjaToggleOption(
                 columns,
                 columns.fixedCount?.toString() ?: stringResource(R.string.content_settings_home_columns_auto),
             )
         }
     val artworkOptions =
         listOf(
-            FlowToggleOption(GridItemSize.BIG, stringResource(R.string.content_settings_grid_big_title)),
-            FlowToggleOption(GridItemSize.SMALL, stringResource(R.string.content_settings_grid_small_title)),
+            MawjaToggleOption(GridItemSize.BIG, stringResource(R.string.content_settings_grid_big_title)),
+            MawjaToggleOption(GridItemSize.SMALL, stringResource(R.string.content_settings_grid_small_title)),
         )
 
     SettingsPage(
@@ -242,20 +242,20 @@ internal fun AppearanceScreen(
     }
 
     if (showSoundPackDialog) {
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.settings_item_ui_sound_pack),
-            options = UiSoundPack.entries.map { pack -> FlowChoice(pack, stringResource(soundPackLabel(pack)), stringResource(soundPackSummary(pack))) },
+            options = UiSoundPack.entries.map { pack -> MawjaChoice(pack, stringResource(soundPackLabel(pack)), stringResource(soundPackSummary(pack))) },
             selected = uiSoundPack,
             onSelect = viewModel::setUiSoundPack,
             onDismiss = { showSoundPackDialog = false },
         )
     }
     if (showInterfaceDialog) {
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.interface_mode_title),
             options =
                 AppUiMode.entries.map { mode ->
-                    FlowChoice(mode, stringResource(interfaceModeLabel(mode)), stringResource(interfaceModeSummary(mode)))
+                    MawjaChoice(mode, stringResource(interfaceModeLabel(mode)), stringResource(interfaceModeSummary(mode)))
                 },
             selected = interfaceMode,
             onSelect = viewModel::setInterfaceMode,

@@ -42,9 +42,9 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.innertube.pages.MoodAndGenres
 import app.mawja.android.ui.components.search.SearchSuggestionsPanel
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowSearchField
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaSearchField
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.components.shared.quickactions.sharedQuickActionsViewModel
 import app.mawja.android.ui.screens.music.MusicSearchBody
@@ -91,7 +91,7 @@ fun TvSearchScreen(
     val gridState = rememberLazyGridState()
     var kind by rememberSaveable { mutableStateOf(MediaKind.Videos) }
     val text = state.textFieldState
-    val kinds = MediaKind.entries.map { FlowToggleOption(it, stringResource(it.labelRes), it.icon) }
+    val kinds = MediaKind.entries.map { MawjaToggleOption(it, stringResource(it.labelRes), it.icon) }
 
     fun submit() {
         softwareKeyboard?.hide()
@@ -125,7 +125,7 @@ fun TvSearchScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                FlowSearchField(
+                MawjaSearchField(
                     state = text,
                     placeholder = stringResource(R.string.search_videos_channels_placeholder),
                     onSearch = { submit() },
@@ -134,7 +134,7 @@ fun TvSearchScreen(
                 IconButton(onClick = { launchVoiceSearch(context, voiceLauncher::launch) }) {
                     Icon(imageVector = Icons.Rounded.Mic, contentDescription = stringResource(R.string.voice_search_cd))
                 }
-                FlowConnectedToggleGroup(
+                MawjaConnectedToggleGroup(
                     options = kinds,
                     selected = kind,
                     onSelected = { kind = it },

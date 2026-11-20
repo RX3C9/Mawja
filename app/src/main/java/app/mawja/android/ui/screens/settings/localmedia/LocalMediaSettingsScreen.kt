@@ -21,9 +21,9 @@ import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.choice
 import app.mawja.android.ui.components.settings.info
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.screens.settings.index.LocalMediaIndex
 
 /** What Local media leaves out: voice notes and recordings, short audio, and folders the viewer hid. */
@@ -55,7 +55,7 @@ internal fun LocalMediaSettingsScreen(
             } else {
                 hidden.forEach { folder ->
                     row("local_media.folder.${folder.id}") { shape ->
-                        FlowNavRow(
+                        MawjaNavRow(
                             title = folder.name,
                             onClick = { viewModel.showFolder(folder.id) },
                             leadingIcon = Icons.Outlined.FolderOff,
@@ -73,9 +73,9 @@ internal fun LocalMediaSettingsScreen(
     }
 
     if (pickingMinimum) {
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.local_setting_min_audio),
-            options = LocalMediaSettings.MIN_AUDIO_CHOICES.map { FlowChoice(it, minimumLabel(it)) },
+            options = LocalMediaSettings.MIN_AUDIO_CHOICES.map { MawjaChoice(it, minimumLabel(it)) },
             selected = settings.minAudioSeconds,
             onSelect = viewModel::setMinAudioSeconds,
             onDismiss = { pickingMinimum = false },

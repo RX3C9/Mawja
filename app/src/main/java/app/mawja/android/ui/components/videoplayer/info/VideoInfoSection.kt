@@ -25,8 +25,8 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.data.model.VideoCollaborator
 import app.mawja.android.ui.components.shared.ChannelAvatarStack
 import app.mawja.android.ui.components.shared.CollaboratorsBottomSheet
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
-import app.mawja.android.ui.components.shared.FlowSubscribeButtonSize
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaSubscribeButtonSize
 import app.mawja.android.ui.components.shared.card.rememberCollaboratorChannelDisplayName
 import app.mawja.android.ui.components.shared.rememberDateDisplaySettings
 import app.mawja.android.ui.theme.extendedColors
@@ -236,15 +236,15 @@ internal fun VideoInfoSection(
 
             if (!isDeviceFile && collaborators.size > 1) {
                 // One button cannot name which channel it follows, so it opens the list that can (#1160).
-                FlowSubscribeButton(
-                    size = FlowSubscribeButtonSize.Compact,
+                MawjaSubscribeButton(
+                    size = MawjaSubscribeButtonSize.Compact,
                     isSubscribed = collaborators.any { it.channelId in subscribedCollaboratorIds },
                     onSubscribeClick = { showCollaborators = true },
                     onSubscribedClick = { showCollaborators = true },
                 )
             } else if (!isDeviceFile) {
-                FlowSubscribeButton(
-                    size = FlowSubscribeButtonSize.Compact,
+                MawjaSubscribeButton(
+                    size = MawjaSubscribeButtonSize.Compact,
                     isSubscribed = isSubscribed,
                     isNotificationsEnabled = isNotificationsEnabled,
                     onSubscribeClick = onSubscribeClick,

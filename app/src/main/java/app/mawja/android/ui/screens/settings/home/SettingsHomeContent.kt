@@ -7,7 +7,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.BuildConfig
 import app.mawja.android.R
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsGroupScope
 import app.mawja.android.ui.components.settings.SettingsListScope
@@ -15,8 +15,8 @@ import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.shared.DeepFlowState
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.components.shared.deepFlowStatus
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.HomeIndex
@@ -25,7 +25,7 @@ import app.mawja.android.ui.screens.settings.account.AccountEntryCard
 @Immutable
 internal data class SettingsHomeState(
     val selected: SettingsDestination?,
-    val persona: FlowPersona?,
+    val persona: MawjaPersona?,
     val deepFlow: DeepFlowState,
     /** Shown on the update row while a check the user started is running; null when idle. */
     val updateCheckingLabel: String?,
@@ -78,7 +78,7 @@ internal fun SettingsListScope.homeContent(
 
     group(key = "home.engine", header = R.string.settings_flow_engine_header) {
         row(HomeIndex.deepFlow.key) { shape ->
-            FlowSwitchRow(
+            MawjaSwitchRow(
                 title = stringResource(HomeIndex.deepFlow.title),
                 supportingText = deepFlowStatus(state.deepFlow) ?: stringResource(R.string.deep_flow_mode_subtitle),
                 checked = state.deepFlow.active,
@@ -88,7 +88,7 @@ internal fun SettingsListScope.homeContent(
             )
         }
         row(HomeIndex.deepFlowDuration.key) { shape ->
-            FlowNavRow(
+            MawjaNavRow(
                 title = stringResource(HomeIndex.deepFlowDuration.title),
                 supportingText = deepFlowDurationLabel(state.deepFlow.expireHours),
                 onClick = actions.onDurationClick,
@@ -139,6 +139,7 @@ internal fun SettingsListScope.homeContent(
         page(SettingsDestination.NETWORK)
         page(SettingsDestination.WELLBEING)
         page(SettingsDestination.ISLAMIC)
+        page(SettingsDestination.LAB)
     }
     group(key = "home.about", header = R.string.settings_header_about) {
         page(SettingsDestination.ABOUT)

@@ -29,12 +29,12 @@ import app.mawja.android.player.EnhancedMusicPlayerManager
 import app.mawja.android.ui.components.equalizer.EqQuickPanel
 import app.mawja.android.ui.components.equalizer.PanelRow
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
-import app.mawja.android.ui.components.shared.FlowModalSheetDefaults
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSheetHeader
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaModalSheetDefaults
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import app.mawja.android.ui.components.shared.rememberFlowSheetState
 import kotlinx.coroutines.launch
@@ -60,8 +60,8 @@ fun AudioSettingsSheet(onDismiss: () -> Unit) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberFlowSheetState(),
-        modifier = FlowModalSheetDefaults.modifier,
-        contentWindowInsets = FlowModalSheetDefaults.contentWindowInsets,
+        modifier = MawjaModalSheetDefaults.modifier,
+        contentWindowInsets = MawjaModalSheetDefaults.contentWindowInsets,
     ) {
         Column(
             modifier =
@@ -70,9 +70,9 @@ fun AudioSettingsSheet(onDismiss: () -> Unit) {
                     .verticalScroll(rememberScrollState())
                     .padding(bottom = 24.dp),
         ) {
-            FlowSheetHeader(title = stringResource(R.string.audio_settings_title), onClose = onDismiss, showDragHandle = false)
+            MawjaSheetHeader(title = stringResource(R.string.audio_settings_title), onClose = onDismiss, showDragHandle = false)
 
-            FlowSectionHeader(stringResource(R.string.equalizer))
+            MawjaSectionHeader(stringResource(R.string.equalizer))
             EqQuickPanel(
                 onEdit = {
                     onDismiss()
@@ -80,8 +80,8 @@ fun AudioSettingsSheet(onDismiss: () -> Unit) {
                 },
             )
 
-            FlowSectionHeader(stringResource(R.string.label_tempo_pitch))
-            FlowRowGroup {
+            MawjaSectionHeader(stringResource(R.string.label_tempo_pitch))
+            MawjaRowGroup {
                 PanelRow(shape = flowRowGroupShape(0, TEMPO_ROWS)) {
                     SliderRow(
                         label = stringResource(R.string.template_speed, (speed * 100).roundToInt()),
@@ -100,7 +100,7 @@ fun AudioSettingsSheet(onDismiss: () -> Unit) {
                         steps = PITCH_STEPS,
                     )
                 }
-                FlowNavRow(
+                MawjaNavRow(
                     title = stringResource(R.string.action_reset),
                     onClick = {
                         EnhancedMusicPlayerManager.setPlaybackSpeed(1f)
@@ -112,8 +112,8 @@ fun AudioSettingsSheet(onDismiss: () -> Unit) {
                 )
             }
 
-            FlowRowGroup(modifier = Modifier.padding(top = 16.dp)) {
-                FlowSwitchRow(
+            MawjaRowGroup(modifier = Modifier.padding(top = 16.dp)) {
+                MawjaSwitchRow(
                     title = stringResource(R.string.music_normalize_volume_title),
                     supportingText = stringResource(R.string.music_normalize_volume_desc),
                     checked = normalizationEnabled,

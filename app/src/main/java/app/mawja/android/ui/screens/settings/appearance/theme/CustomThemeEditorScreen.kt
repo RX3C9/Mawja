@@ -46,8 +46,8 @@ import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowColorPickerDialog
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaColorPickerDialog
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.appearance.themeVariantLabel
 import app.mawja.android.ui.screens.settings.index.CustomThemeIndex
 import app.mawja.android.ui.theme.CustomTheme
@@ -94,7 +94,7 @@ internal fun CustomThemeEditorScreen(
 
     val savedMessage = stringResource(R.string.settings_custom_theme_saved)
     val useLabel = stringResource(R.string.settings_custom_theme_use)
-    val variantOptions = ThemeVariant.entries.map { FlowToggleOption(it, stringResource(themeVariantLabel(it))) }
+    val variantOptions = ThemeVariant.entries.map { MawjaToggleOption(it, stringResource(themeVariantLabel(it))) }
     val colors = current?.colorsFor(editing)
     val scheme = remember(colors, editing) { colors?.toColorScheme(editing) }
 
@@ -143,7 +143,7 @@ internal fun CustomThemeEditorScreen(
 
     val theme = current ?: return
     pickingRole?.let { role ->
-        FlowColorPickerDialog(
+        MawjaColorPickerDialog(
             title = stringResource(role.labelRes),
             initialArgb = role.read(theme.colorsFor(editing)).toArgb().toLong() and 0xFFFFFFFFL,
             onDismiss = { pickingRole = null },

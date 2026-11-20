@@ -18,8 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.audio.eq.EqBand
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSwitch
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSwitch
 
 private val BadgeSize = 32.dp
 private val ShapeIconSize = 22.dp
@@ -37,7 +37,7 @@ internal fun EqBandRow(
     selected: Boolean = false,
 ) {
     val q = stringResource(R.string.eq_band_q, formatQ(band.q))
-    FlowNavRow(
+    MawjaNavRow(
         title = stringResource(R.string.eq_band_line, stringResource(band.type.labelRes), formatFrequency(band.frequency)),
         supportingText = if (band.type.hasGain) stringResource(R.string.eq_band_line, formatGain(band.gain), q) else q,
         onClick = onClick,
@@ -54,7 +54,7 @@ internal fun EqBandRow(
                 )
             }
         },
-        trailingContent = { FlowSwitch(checked = band.enabled, onCheckedChange = { onToggle() }) },
+        trailingContent = { MawjaSwitch(checked = band.enabled, onCheckedChange = { onToggle() }) },
     )
 }
 

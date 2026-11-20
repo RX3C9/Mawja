@@ -49,8 +49,8 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.data.shorts.queue.ShortsQueueSource
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
-import app.mawja.android.ui.components.layout.topbar.FlowSearchTopBar
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaSearchTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -111,7 +111,7 @@ fun SubscriptionsScreen(
     Scaffold(
         topBar = {
             if (isManagingSubs) {
-                FlowSearchTopBar(
+                MawjaSearchTopBar(
                     query = searchQuery,
                     onQueryChange = { searchQuery = it },
                     onClose = {
@@ -164,7 +164,7 @@ fun SubscriptionsScreen(
                     },
                 )
             } else {
-                FlowTopBar(
+                MawjaTopBar(
                     title = stringResource(R.string.top_bar_subscriptions_title),
                     actions = {
                         IconButton(onClick = { viewModel.toggleViewMode() }) {

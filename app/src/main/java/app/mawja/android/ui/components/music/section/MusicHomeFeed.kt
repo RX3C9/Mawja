@@ -25,7 +25,7 @@ import app.mawja.android.innertube.pages.MoodAndGenres
 import app.mawja.android.ui.components.music.item.MusicTrackItem
 import app.mawja.android.ui.components.music.sheet.MusicCollectionActionItem
 import app.mawja.android.ui.components.music.sheet.toCollectionActionItem
-import app.mawja.android.ui.components.shared.FlowFeedProgress
+import app.mawja.android.ui.components.shared.MawjaFeedProgress
 import app.mawja.android.ui.screens.music.MusicUiState
 
 /**
@@ -100,7 +100,7 @@ fun LazyListScope.musicHomeFeed(
 
     if (uiState.selectedFilter != null) {
         if (uiState.isSearching) {
-            item(key = "filter_loading") { FlowFeedProgress() }
+            item(key = "filter_loading") { MawjaFeedProgress() }
         } else {
             items(uiState.allSongs.distinctBy { it.videoId }, key = { "filtered:${it.videoId}" }) { track ->
                 MusicTrackItem(
@@ -344,7 +344,7 @@ fun LazyListScope.musicHomeFeed(
     if (uiState.homeContinuation != null) {
         item(key = "home_continuation") {
             LaunchedEffect(Unit) { onLoadMore() }
-            if (uiState.isMoreLoading) FlowFeedProgress() else Box(modifier = Modifier.height(0.dp))
+            if (uiState.isMoreLoading) MawjaFeedProgress() else Box(modifier = Modifier.height(0.dp))
         }
     }
 }

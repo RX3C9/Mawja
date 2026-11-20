@@ -3,7 +3,7 @@
  *
  * This file is part of Flow (https://github.com/Flow-Tube/Flow).
  *
- * This recommendation algorithm (FlowNeuroEngine) is the intellectual property
+ * This recommendation algorithm (MawjaNeuroEngine) is the intellectual property
  * of the Flow project. Any use of this code in other projects must
  * explicitly credit "Flow Android Client" and link back to the original repository.
  */
@@ -35,7 +35,7 @@ internal class NeuroCoWatchStore(
     private val appContext: Context,
 ) {
     companion object {
-        private const val TAG = "FlowNeuroEngine"
+        private const val TAG = "MawjaNeuroEngine"
         const val MAX_SOURCES = 200
         const val CHANNELS_PER_SOURCE = 10
         const val HALF_LIFE_MS = 45L * 24L * 60L * 60L * 1000L

@@ -49,9 +49,9 @@ import app.mawja.android.data.shorts.queue.ShortsQueueSource
 import app.mawja.android.player.DeepFlowManager
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.rememberFeedGridLayout
-import app.mawja.android.ui.components.shared.FlowPullToRefreshBox
+import app.mawja.android.ui.components.shared.MawjaPullToRefreshBox
 import app.mawja.android.ui.screens.home.chips.HomeChipRow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -119,7 +119,7 @@ fun HomeScreen(
             SnackbarHost(snackbarHostState, Modifier.floatAboveBottomChrome(LocalFlowBottomInsets.current))
         },
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = {
                     Text(
                         stringResource(R.string.app_name_uppercase),
@@ -134,7 +134,7 @@ fun HomeScreen(
                 leading =
                     if (showAppLogoIcon) {
                         {
-                            FlowHeaderLogoIcon(
+                            MawjaHeaderLogoIcon(
                                 isDeepFlowActive = deepFlowActive,
                                 modifier = Modifier.size(32.dp).deepFlowLongPress(deepFlowLabel, toggleDeepFlow),
                             )
@@ -143,6 +143,10 @@ fun HomeScreen(
                         null
                     },
                 actions = {
+                    app.mawja.android.lab.TimeBudgetButton(
+                        feed = { uiState.videos },
+                        onPlay = onPlayMix,
+                    )
                     IconButton(onClick = onSearchClick) {
                         Icon(
                             Icons.Outlined.Search,
@@ -224,7 +228,7 @@ private fun ResettableHomePullToRefreshBox(
     content: @Composable BoxScope.() -> Unit,
 ) {
     key(resetKey) {
-        FlowPullToRefreshBox(
+        MawjaPullToRefreshBox(
             isRefreshing = isRefreshing,
             onRefresh = onRefresh,
             modifier = modifier,

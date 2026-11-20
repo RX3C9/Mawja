@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.sp
 import app.mawja.android.R
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.player.RepeatMode
-import app.mawja.android.ui.components.shared.FlowSwitch
+import app.mawja.android.ui.components.shared.MawjaSwitch
 import app.mawja.android.ui.components.shared.rememberReorderableLazyListState
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -210,7 +210,7 @@ internal fun QueueList(
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
                 )
-                FlowSwitch(
+                MawjaSwitch(
                     checked = endlessRadioEnabled,
                     onCheckedChange = actions.onToggleEndlessRadio,
                 )

@@ -93,7 +93,7 @@ class NeuroMigrationGapsTest {
                     coEvery { importFromStream(any()) } returns imported
                 }
             val contentStore: NeuroContentStore = mockk(relaxed = true) { every { topicsFor(any()) } returns null }
-            val engine = FlowNeuroEngine(mockk(relaxed = true), storage, contentStore, learningPaused = { false })
+            val engine = MawjaNeuroEngine(mockk(relaxed = true), storage, contentStore, learningPaused = { false })
 
             assertThat(engine.importBrainFromStream(ByteArrayInputStream(ByteArray(0)))).isTrue()
             engine.onVideoInteraction(

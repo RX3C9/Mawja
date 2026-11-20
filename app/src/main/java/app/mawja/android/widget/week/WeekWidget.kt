@@ -42,7 +42,7 @@ import app.mawja.android.widget.core.action.WidgetDeepLink
 import app.mawja.android.widget.core.image.ShapeDecor
 import app.mawja.android.widget.core.image.WidgetImageLoader
 import app.mawja.android.widget.core.image.WidgetShape
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.WidgetDimens
 import app.mawja.android.widget.core.theme.WidgetText
 import app.mawja.android.widget.core.theme.dpToPx
@@ -72,7 +72,7 @@ class WeekWidget : GlanceAppWidget() {
         val initialColors = colorsFlow.first()
         provideContent {
             val colors by colorsFlow.collectAsState(initialColors)
-            FlowGlanceTheme(colors) { WeekContent(week, portrait) }
+            MawjaGlanceTheme(colors) { WeekContent(week, portrait) }
         }
     }
 
@@ -82,7 +82,7 @@ class WeekWidget : GlanceAppWidget() {
     ) {
         val week = withContext(Dispatchers.IO) { widgetEntryPoint(context).weekSource().load() }
         val colors = widgetColorsFlow(context).first()
-        provideContent { FlowGlanceTheme(colors) { WeekContent(week, portrait = null) } }
+        provideContent { MawjaGlanceTheme(colors) { WeekContent(week, portrait = null) } }
     }
 
     internal companion object {

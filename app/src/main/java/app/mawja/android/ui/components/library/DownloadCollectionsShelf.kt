@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import app.mawja.android.R
 import app.mawja.android.data.local.dao.DownloadCollectionSummary
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 
 /**
  * The playlists and albums downloaded as one item, above the loose downloads of the same tab. A
@@ -63,7 +63,7 @@ internal fun RemoveDownloadCollectionDialog(
     onKeepFiles: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.download_collection_remove_title, title)) },
         text = { Text(stringResource(R.string.download_collection_remove_body)) },

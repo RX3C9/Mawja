@@ -25,7 +25,7 @@ import app.mawja.android.R
 import app.mawja.android.data.model.Comment
 import app.mawja.android.ui.components.shared.CommentSortChips
 import app.mawja.android.ui.components.shared.CommentSortFilter
-import app.mawja.android.ui.components.shared.FlowCommentsList
+import app.mawja.android.ui.components.shared.MawjaCommentsList
 import app.mawja.android.ui.components.shared.rememberMediaArtworkTint
 
 /**
@@ -95,7 +95,7 @@ fun PlayerCommentsPanel(
             modifier = Modifier.padding(start = 16.dp, bottom = 6.dp),
         )
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
-        FlowCommentsList(
+        MawjaCommentsList(
             comments = comments,
             isLoading = isLoading,
             listState = listState,

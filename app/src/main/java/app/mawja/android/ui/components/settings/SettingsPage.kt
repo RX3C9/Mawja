@@ -29,13 +29,13 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowGlobalActionsMode
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.layout.topbar.MawjaGlobalActionsMode
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 import app.mawja.android.ui.components.shared.LocalDpadNavigation
 import kotlinx.coroutines.flow.first
 
-internal val SettingsMaxContentWidth = FlowMaxContentWidth
+internal val SettingsMaxContentWidth = MawjaMaxContentWidth
 internal val SettingsHorizontalPadding = 16.dp
 private val SettingsBottomSpacing = 32.dp
 private const val HIGHLIGHT_VISIBLE_OFFSET_PX = -160
@@ -80,12 +80,12 @@ fun SettingsPage(
         contentWindowInsets = WindowInsets(0.dp),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = title,
                 subtitle = subtitle,
                 onBack = onBack,
                 actions = actions,
-                globalActions = FlowGlobalActionsMode.None,
+                globalActions = MawjaGlobalActionsMode.None,
             )
         },
         snackbarHost = {

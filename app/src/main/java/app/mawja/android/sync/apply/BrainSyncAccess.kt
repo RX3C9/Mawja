@@ -2,7 +2,7 @@ package app.mawja.android.sync.apply
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.NeuroKeySpec
 import app.mawja.android.data.recommendation.music.MusicBrainEngine
 import app.mawja.android.data.recommendation.music.MusicBrainStorage
@@ -43,7 +43,7 @@ class BrainSyncAccess
         private val musicBrainCrdtStore: MusicBrainCrdtStore,
         private val musicBrainEngine: MusicBrainEngine,
     ) {
-        private val neuroEngine: FlowNeuroEngine by lazy { FlowNeuroEngine.getInstance(context) }
+        private val neuroEngine: MawjaNeuroEngine by lazy { MawjaNeuroEngine.getInstance(context) }
 
         // --- FlowNeuro ---
 

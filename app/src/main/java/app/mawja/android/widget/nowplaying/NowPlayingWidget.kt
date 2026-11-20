@@ -15,7 +15,7 @@ import androidx.glance.color.ColorProviders
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.widget.core.image.WidgetImageLoader
 import app.mawja.android.widget.core.state.nowPlayingSnapshotFlow
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.artworkColorProviders
 import app.mawja.android.widget.core.theme.bakedCornerRadiusPx
 import app.mawja.android.widget.core.theme.dpToPx
@@ -35,7 +35,7 @@ class NowPlayingWidget : GlanceAppWidget() {
     ) {
         val snapshot = context.nowPlayingSnapshotFlow { NowPlayingWidgetPublisher.hasPublished }.first()?.copy(isPlaying = false)
         val colors = widgetColorsFlow(context).first()
-        provideContent { FlowGlanceTheme(colors) { NowPlayingContent(snapshot = snapshot, artwork = null) } }
+        provideContent { MawjaGlanceTheme(colors) { NowPlayingContent(snapshot = snapshot, artwork = null) } }
     }
 
     override suspend fun provideGlance(
@@ -66,7 +66,7 @@ class NowPlayingWidget : GlanceAppWidget() {
             }
             // Read so each progress tick recomposes; the bar itself is placed from the clock right now.
             NowPlayingProgressTicker.clock.collectAsState().value
-            FlowGlanceTheme(artworkColors ?: colors) {
+            MawjaGlanceTheme(artworkColors ?: colors) {
                 NowPlayingContent(snapshot = snapshot, artwork = artwork, nowElapsedMs = SystemClock.elapsedRealtime())
             }
         }

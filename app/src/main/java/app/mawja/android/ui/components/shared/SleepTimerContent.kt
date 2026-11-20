@@ -372,7 +372,7 @@ private fun InactiveTimerContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                FlowSwitch(
+                MawjaSwitch(
                     checked = closeAppOnExpiry,
                     onCheckedChange = onCloseAppToggle,
                 )

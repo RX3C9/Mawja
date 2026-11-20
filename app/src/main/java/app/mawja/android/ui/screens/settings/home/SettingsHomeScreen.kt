@@ -32,10 +32,10 @@ import app.mawja.android.ui.components.settings.SettingEntry
 import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.SettingsTarget
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaSearchField
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.HomeIndex
 import app.mawja.android.ui.screens.settings.index.SettingsSearch
@@ -98,7 +98,7 @@ internal fun SettingsHomeScreen(
         highlight = highlight,
         snackbarHostState = snackbarHostState,
         header = {
-            FlowSearchField(
+            MawjaSearchField(
                 query = query,
                 onQueryChange = { query = it },
                 placeholder = stringResource(R.string.ui_search_settings),
@@ -139,11 +139,11 @@ internal fun SettingsHomeScreen(
     }
 
     if (showDurationDialog) {
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.deep_flow_dialog_title),
             description = stringResource(R.string.deep_flow_dialog_body),
             icon = Icons.Outlined.Timer,
-            options = DeepFlowDurations.map { FlowChoice(it, deepFlowDurationLabel(it)) },
+            options = DeepFlowDurations.map { MawjaChoice(it, deepFlowDurationLabel(it)) },
             selected = deepFlow.expireHours,
             onSelect = viewModel::setDeepFlowExpireHours,
             onDismiss = { showDurationDialog = false },

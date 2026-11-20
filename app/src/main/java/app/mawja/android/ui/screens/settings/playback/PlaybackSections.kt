@@ -19,8 +19,8 @@ import app.mawja.android.ui.components.settings.choice
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowSwitchRow
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.PlaybackIndex
 
@@ -151,8 +151,8 @@ internal fun SettingsListScope.playbackSections(
                 summary = stringResource(R.string.dual_subtitles_position_summary),
                 options =
                     listOf(
-                        FlowToggleOption(SecondSubtitlePosition.ABOVE, stringResource(R.string.dual_subtitles_position_above)),
-                        FlowToggleOption(SecondSubtitlePosition.BELOW, stringResource(R.string.dual_subtitles_position_below)),
+                        MawjaToggleOption(SecondSubtitlePosition.ABOVE, stringResource(R.string.dual_subtitles_position_above)),
+                        MawjaToggleOption(SecondSubtitlePosition.BELOW, stringResource(R.string.dual_subtitles_position_below)),
                     ),
                 selected = selected,
                 onSelected = viewModel::setSecondarySubtitlePosition,
@@ -196,8 +196,8 @@ private fun SettingsListScope.watchPageSection(
             summary = stringResource(R.string.content_settings_related_card_style_subtitle),
             options =
                 listOf(
-                    FlowToggleOption(PlayerRelatedCardStyle.COMPACT, stringResource(R.string.content_settings_related_card_compact)),
-                    FlowToggleOption(PlayerRelatedCardStyle.FULL_WIDTH, stringResource(R.string.content_settings_related_card_full_width)),
+                    MawjaToggleOption(PlayerRelatedCardStyle.COMPACT, stringResource(R.string.content_settings_related_card_compact)),
+                    MawjaToggleOption(PlayerRelatedCardStyle.FULL_WIDTH, stringResource(R.string.content_settings_related_card_full_width)),
                 ),
             selected = selected,
             onSelected = viewModel::setRelatedCardStyle,
@@ -211,10 +211,10 @@ private fun SettingsListScope.watchPageSection(
             summary = stringResource(R.string.content_settings_video_title_lines_subtitle),
             options =
                 listOf(
-                    FlowToggleOption(1, stringResource(R.string.content_settings_title_lines_1)),
-                    FlowToggleOption(2, stringResource(R.string.content_settings_title_lines_2)),
-                    FlowToggleOption(3, stringResource(R.string.content_settings_title_lines_3)),
-                    FlowToggleOption(UNLIMITED_TITLE_LINES, stringResource(R.string.content_settings_title_lines_unlimited)),
+                    MawjaToggleOption(1, stringResource(R.string.content_settings_title_lines_1)),
+                    MawjaToggleOption(2, stringResource(R.string.content_settings_title_lines_2)),
+                    MawjaToggleOption(3, stringResource(R.string.content_settings_title_lines_3)),
+                    MawjaToggleOption(UNLIMITED_TITLE_LINES, stringResource(R.string.content_settings_title_lines_unlimited)),
                 ),
             selected = selected,
             onSelected = viewModel::setTitleLines,
@@ -232,7 +232,7 @@ private fun SettingsListScope.shortsPlayerSection(
     openDialog: (PlaybackDialog) -> Unit,
 ) = group(key = "playback.shorts", header = R.string.settings_section_shorts_player) {
     row(PlaybackIndex.disableShortsPlayer.key) { shape ->
-        FlowSwitchRow(
+        MawjaSwitchRow(
             title = stringResource(PlaybackIndex.disableShortsPlayer.title),
             supportingText = stringResource(R.string.content_settings_disable_shorts_player_subtitle),
             checked = state.disableShortsPlayer || !state.shortsContent,

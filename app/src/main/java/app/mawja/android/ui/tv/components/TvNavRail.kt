@@ -49,7 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.layout.navigation.icon
 import app.mawja.android.ui.tv.navigation.TV_SETTINGS_ROUTE
 
@@ -64,7 +64,7 @@ import app.mawja.android.ui.tv.navigation.TV_SETTINGS_ROUTE
  */
 @Composable
 fun TvNavRail(
-    tabs: List<FlowTab>,
+    tabs: List<MawjaTab>,
     selectedRoute: String?,
     onSelect: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,

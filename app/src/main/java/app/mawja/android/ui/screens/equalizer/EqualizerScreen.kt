@@ -54,11 +54,11 @@ import app.mawja.android.data.audio.eq.EqState
 import app.mawja.android.ui.components.equalizer.EqBandEditor
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
-import app.mawja.android.ui.components.layout.topbar.FlowGlobalActionsMode
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
-import app.mawja.android.ui.components.layout.topbar.FlowTopBarMenuItem
-import app.mawja.android.ui.components.layout.topbar.FlowTopBarOverflow
-import app.mawja.android.ui.components.shared.FlowModalSheetDefaults
+import app.mawja.android.ui.components.layout.topbar.MawjaGlobalActionsMode
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBarMenuItem
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBarOverflow
+import app.mawja.android.ui.components.shared.MawjaModalSheetDefaults
 import app.mawja.android.ui.components.shared.rememberFlowPaneState
 import app.mawja.android.ui.components.shared.rememberFlowSheetState
 import app.mawja.android.utils.shareLink
@@ -117,41 +117,41 @@ fun EqualizerScreen(
         snackbarHost = { SnackbarHost(snackbar, Modifier.floatAboveBottomChrome(LocalFlowBottomInsets.current)) },
         topBar = {
             if (showPresets) {
-                FlowTopBar(
+                MawjaTopBar(
                     title = stringResource(R.string.eq_presets),
                     onBack = { showPresets = false },
-                    globalActions = FlowGlobalActionsMode.None,
+                    globalActions = MawjaGlobalActionsMode.None,
                 )
             } else {
-                FlowTopBar(
+                MawjaTopBar(
                     title = stringResource(R.string.equalizer),
                     onBack = onBack,
-                    globalActions = FlowGlobalActionsMode.None,
+                    globalActions = MawjaGlobalActionsMode.None,
                     actions = {
                         IconButton(onClick = viewModel::undo, enabled = canUndo) {
                             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = undoLabel)
                         }
                         CompareButton(onBypass = viewModel::setBypass)
-                        FlowTopBarOverflow(
+                        MawjaTopBarOverflow(
                             items =
                                 listOf(
-                                    FlowTopBarMenuItem(
+                                    MawjaTopBarMenuItem(
                                         stringResource(R.string.eq_presets),
                                         { showPresets = true },
                                         icon = Icons.Outlined.LibraryMusic,
                                     ),
-                                    FlowTopBarMenuItem(
+                                    MawjaTopBarMenuItem(
                                         stringResource(R.string.eq_import_file),
                                         { openFile.launch(IMPORT_TYPES) },
                                         icon = Icons.Outlined.UploadFile,
                                     ),
-                                    FlowTopBarMenuItem(
+                                    MawjaTopBarMenuItem(
                                         stringResource(R.string.eq_paste_text),
                                         { dialog = EqDialog.Paste },
                                         icon = Icons.Outlined.ContentPaste,
                                     ),
-                                    FlowTopBarMenuItem(exportTitle, { share(null) }, icon = Icons.Outlined.IosShare),
-                                    FlowTopBarMenuItem(
+                                    MawjaTopBarMenuItem(exportTitle, { share(null) }, icon = Icons.Outlined.IosShare),
+                                    MawjaTopBarMenuItem(
                                         stringResource(R.string.reset),
                                         viewModel::resetCurve,
                                         icon = Icons.Outlined.RestartAlt,
@@ -219,8 +219,8 @@ private fun BandSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberFlowSheetState(),
-        modifier = FlowModalSheetDefaults.modifier,
-        contentWindowInsets = FlowModalSheetDefaults.contentWindowInsets,
+        modifier = MawjaModalSheetDefaults.modifier,
+        contentWindowInsets = MawjaModalSheetDefaults.contentWindowInsets,
     ) {
         EqBandEditor(
             index = index,

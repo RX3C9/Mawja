@@ -24,10 +24,10 @@ import app.mawja.android.player.stream.VideoCodecUtils
 import app.mawja.android.player.subtitle.DualSubtitles
 import app.mawja.android.utils.LanguageCatalog
 import kotlinx.coroutines.launch
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSelectionRow
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSelectionRow
 import app.mawja.android.ui.components.shared.MediaAudioTrackRow
 import app.mawja.android.ui.components.shared.MediaPlaybackSpeedPicker
 import app.mawja.android.ui.components.shared.MediaQualitySelectorContent
@@ -111,7 +111,7 @@ internal fun PlayerSettingsAudioPage(
     currentAudioTrack: Int,
     onTrackSelected: (Int) -> Unit,
 ) {
-    FlowRowGroup {
+    MawjaRowGroup {
         availableAudioTracks.forEachIndexed { index, track ->
             MediaAudioTrackRow(
                 label = audioTrackDisplayLabel(track, index),
@@ -137,15 +137,15 @@ internal fun PlayerSettingsSubtitlesPage(
     onSubtitleOffsetChange: ((Long) -> Unit)? = null,
 ) {
     val rowCount = availableSubtitles.size + 1
-    FlowRowGroup {
-        FlowSelectionRow(
+    MawjaRowGroup {
+        MawjaSelectionRow(
             title = stringResource(R.string.off),
             selected = !subtitlesEnabled,
             shape = flowRowGroupShape(0, rowCount),
             onClick = onDisableSubtitles,
         )
         availableSubtitles.forEachIndexed { index, subtitle ->
-            FlowSelectionRow(
+            MawjaSelectionRow(
                 title = subtitleRowTitle(subtitle, index),
                 supportingText =
                     when (subtitle.origin) {
@@ -182,16 +182,16 @@ internal fun PlayerSettingsSubtitlesPage(
     app.mawja.android.dubbing.DubbingRows()
     Spacer(modifier = Modifier.height(SubtitleStyleRowSpacing))
     val navRows = if (onAddSubtitleFile != null) 2 else 1
-    FlowRowGroup {
+    MawjaRowGroup {
         if (onAddSubtitleFile != null) {
-            FlowNavRow(
+            MawjaNavRow(
                 title = stringResource(R.string.subtitle_add_file),
                 leadingIcon = Icons.Filled.FileOpen,
                 shape = flowRowGroupShape(0, navRows),
                 onClick = onAddSubtitleFile,
             )
         }
-        FlowNavRow(
+        MawjaNavRow(
             title = stringResource(R.string.subtitle_style),
             leadingIcon = Icons.Filled.Tune,
             shape = flowRowGroupShape(navRows - 1, navRows),
@@ -217,8 +217,8 @@ private fun SecondSubtitleRows(primaryLanguage: String?) {
             add("en")
             if (saved != DualSubtitles.OFF && none { DualSubtitles.sameLanguage(it, saved) }) add(saved)
         }.filter { it == DualSubtitles.OFF || !DualSubtitles.sameLanguage(it, primaryLanguage) || it == saved }
-    FlowSectionHeader(text = stringResource(R.string.dual_subtitles_player_header))
-    FlowRowGroup {
+    MawjaSectionHeader(text = stringResource(R.string.dual_subtitles_player_header))
+    MawjaRowGroup {
         choices.forEachIndexed { index, code ->
             val title =
                 if (code == DualSubtitles.OFF) {
@@ -226,7 +226,7 @@ private fun SecondSubtitleRows(primaryLanguage: String?) {
                 } else {
                     LanguageCatalog.displayName(code)
                 }
-            FlowSelectionRow(
+            MawjaSelectionRow(
                 title = title,
                 supportingText =
                     if (code != DualSubtitles.OFF && DualSubtitles.sameLanguage(code, primaryLanguage)) {

@@ -8,7 +8,7 @@ import app.mawja.android.data.local.AppFontPreferences
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.ui.theme.CustomTheme
 import app.mawja.android.ui.theme.MawjaFontFamily
-import app.mawja.android.ui.theme.FlowTheme
+import app.mawja.android.ui.theme.MawjaTheme
 import app.mawja.android.ui.theme.PremiumThemes
 import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
@@ -42,10 +42,10 @@ fun ThemeSettings.gatedBy(entitlements: Entitlements): ThemeSettings =
     )
 
 @Composable
-fun FlowTheme(
+fun MawjaTheme(
     settings: ThemeSettings,
     content: @Composable () -> Unit,
-) = FlowTheme(
+) = MawjaTheme(
     themeMode = settings.themeMode,
     themeVariant = settings.themeVariant,
     customTheme = settings.customTheme,

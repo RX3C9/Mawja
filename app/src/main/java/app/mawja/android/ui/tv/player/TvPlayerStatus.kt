@@ -6,8 +6,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 
 private val ErrorMaxWidth = 560.dp
 
@@ -19,14 +19,14 @@ internal fun TvPlayerStatus(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (loading) FlowLoadingIndicator(modifier = modifier)
+    if (loading) MawjaLoadingIndicator(modifier = modifier)
     if (error != null) {
         Surface(
             modifier = modifier.widthIn(max = ErrorMaxWidth),
             shape = MaterialTheme.shapes.extraLarge,
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
         ) {
-            FlowErrorState(error = error, onRetry = onRetry)
+            MawjaErrorState(error = error, onRetry = onRetry)
         }
     }
 }

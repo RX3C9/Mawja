@@ -27,7 +27,7 @@ class NeuroDeepFlowBookkeepingTest {
             }
         }
     private val engine =
-        FlowNeuroEngine(mockk(relaxed = true), storage, mockk<NeuroContentStore>(relaxed = true), learningPaused = { deepFlow })
+        MawjaNeuroEngine(mockk(relaxed = true), storage, mockk<NeuroContentStore>(relaxed = true), learningPaused = { deepFlow })
 
     @Test
     fun `Deep Flow impressions stay in memory and never reach a save`() =

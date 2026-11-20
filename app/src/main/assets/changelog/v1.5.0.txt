@@ -19,7 +19,7 @@ FIXES AND STABILITY
 PERFORMANCE AND REFACTORING
 - Neuro Engine Migration: Complete DataStore integration with enhanced features for better performance and reliability.
 - Music Screen Modularization: Refactored music screen for easier maintenance.
-- Music Utilities Refactor: Improved MusicPlayerUtils with caching, added QueuePersistence, DownloadedSongDao/Entity, FlowCrashHandler, and NetworkConnectivityObserver.
+- Music Utilities Refactor: Improved MusicPlayerUtils with caching, added QueuePersistence, DownloadedSongDao/Entity, MawjaCrashHandler, and NetworkConnectivityObserver.
 - API Switch: Migrated music extraction from NewPipe to InnerTube API library.
 
 UI AND STYLE ENHANCEMENTS

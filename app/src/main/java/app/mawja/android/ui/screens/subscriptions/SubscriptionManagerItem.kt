@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.data.model.Channel
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
 import app.mawja.android.ui.components.shared.ChannelGroupBadge
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
 
 private val RowPadding = 12.dp
 private val AvatarSize = 48.dp
@@ -85,7 +85,7 @@ internal fun SubscriptionManagerItem(
 
         Spacer(modifier = Modifier.width(TitleActionSpacing))
 
-        FlowSubscribeButton(
+        MawjaSubscribeButton(
             isSubscribed = true,
             onSubscribeClick = {},
             isNotificationsEnabled = isNotificationsEnabled,

@@ -34,7 +34,7 @@ import app.mawja.android.widget.core.component.coverSizeFor
 import app.mawja.android.widget.core.image.WidgetImageSpec
 import app.mawja.android.widget.core.image.preloadWidgetImages
 import app.mawja.android.widget.core.image.rememberWidgetImages
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.WidgetDimens
 import app.mawja.android.widget.core.theme.bakedCornerRadiusPx
 import app.mawja.android.widget.core.theme.dpToPx
@@ -58,7 +58,7 @@ class OnRepeatWidget : GlanceAppWidget() {
     ) {
         val tracks = withContext(Dispatchers.IO) { widgetEntryPoint(context).onRepeatSource().tracks() }
         val colors = widgetColorsFlow(context).first()
-        provideContent { FlowGlanceTheme(colors) { OnRepeatContent(tracks.map { it.toItem(context, emptyMap()) }) } }
+        provideContent { MawjaGlanceTheme(colors) { OnRepeatContent(tracks.map { it.toItem(context, emptyMap()) }) } }
     }
 
     override suspend fun provideGlance(
@@ -80,7 +80,7 @@ class OnRepeatWidget : GlanceAppWidget() {
         provideContent {
             val colors by colorsFlow.collectAsState(initialColors)
             val images by rememberWidgetImages(context, specs, preloaded)
-            FlowGlanceTheme(colors) {
+            MawjaGlanceTheme(colors) {
                 OnRepeatContent(tracks.map { it.toItem(context, images) })
             }
         }

@@ -31,8 +31,8 @@ import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.appearance.themeVariantLabel
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.ThemeIndex
@@ -72,7 +72,7 @@ internal fun ThemeScreen(
     val isLocked: (ThemeMode) -> Boolean = { PremiumThemes.isLocked(it, entitlements) }
 
     val styleOptions =
-        ThemeVariant.entries.map { FlowToggleOption(it, stringResource(themeVariantLabel(it))) }
+        ThemeVariant.entries.map { MawjaToggleOption(it, stringResource(themeVariantLabel(it))) }
     val darkStyleOptions = styleOptions.filter { it.value != ThemeVariant.LIGHT }
     val activeCustomName = settings.customThemes.firstOrNull { it.id == settings.activeCustomId }?.name
     val lightSlotName = themeName(settings.systemLightMode, activeCustomName)
@@ -235,7 +235,7 @@ private fun ThemePaletteDialog(
     items: List<ThemeCardItem>,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {

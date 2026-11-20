@@ -34,7 +34,7 @@ import app.mawja.android.R
 import app.mawja.android.widget.core.action.WidgetDeepLink
 import app.mawja.android.widget.core.image.ShapeDecor
 import app.mawja.android.widget.core.image.WidgetShape
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.WidgetDimens
 import app.mawja.android.widget.core.theme.WidgetText
 import app.mawja.android.widget.core.theme.widgetColorsFlow
@@ -50,7 +50,7 @@ class RecognizeWidget : GlanceAppWidget() {
         widgetCategory: Int,
     ) {
         val colors = widgetColorsFlow(context).first()
-        provideContent { FlowGlanceTheme(colors) { RecognizeContent() } }
+        provideContent { MawjaGlanceTheme(colors) { RecognizeContent() } }
     }
 
     override suspend fun provideGlance(
@@ -61,7 +61,7 @@ class RecognizeWidget : GlanceAppWidget() {
         val initialColors = colorsFlow.first()
         provideContent {
             val colors by colorsFlow.collectAsState(initialColors)
-            FlowGlanceTheme(colors) {
+            MawjaGlanceTheme(colors) {
                 RecognizeContent()
             }
         }

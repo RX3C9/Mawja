@@ -41,8 +41,8 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.ui.components.PlayingWaveform
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
-import app.mawja.android.ui.components.shared.FlowSubscribeButtonSize
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaSubscribeButtonSize
 import app.mawja.android.ui.components.shared.videoMetadataLine
 import app.mawja.android.ui.theme.PlayerScrimContent
 import app.mawja.android.ui.theme.PlayerScrimPanel
@@ -110,11 +110,11 @@ internal fun ShortsMetadataOverlay(
                 }
 
                 ShortsSubscribeControl.Button -> {
-                    FlowSubscribeButton(
+                    MawjaSubscribeButton(
                         isSubscribed = isSubscribed,
                         onSubscribeClick = onSubscribeToggle,
                         onUnsubscribeClick = onSubscribeToggle,
-                        size = FlowSubscribeButtonSize.Compact,
+                        size = MawjaSubscribeButtonSize.Compact,
                     )
                 }
             }

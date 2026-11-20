@@ -38,7 +38,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.pressScale
 import app.mawja.android.ui.theme.PlayerScrimAffordance
 import app.mawja.android.ui.theme.PlayerScrimContent
@@ -160,7 +160,7 @@ internal fun PlayerTransportControls(
                     label = "transportIcon",
                 ) { icon ->
                     if (icon == TransportIcon.Buffering) {
-                        FlowLoadingIndicator(modifier = Modifier.size(BufferingIndicatorSlot))
+                        MawjaLoadingIndicator(modifier = Modifier.size(BufferingIndicatorSlot))
                     } else {
                         Icon(
                             imageVector =

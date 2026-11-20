@@ -14,8 +14,8 @@ import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingEntry
 import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsListScope
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.components.shared.LocalDpadNavigation
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.SearchableSetting
@@ -67,7 +67,7 @@ internal fun SettingsListScope.searchResults(
 ) {
     if (results.isEmpty()) {
         item("search#empty") {
-            FlowEmptyState(
+            MawjaEmptyState(
                 title = stringResource(R.string.settings_search_no_results, query),
                 icon = Icons.Outlined.SearchOff,
             )
@@ -77,7 +77,7 @@ internal fun SettingsListScope.searchResults(
     group(key = "search#results") {
         results.forEach { result ->
             row(result.entry.key) { shape ->
-                FlowNavRow(
+                MawjaNavRow(
                     title = result.title,
                     supportingText = result.breadcrumb,
                     onClick = { onResultClick(result.entry) },

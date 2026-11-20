@@ -23,8 +23,8 @@ import app.mawja.android.player.EnhancedPlayerState
 import app.mawja.android.player.QualityOption
 import app.mawja.android.ui.components.equalizer.EqQuickPanel
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
-import app.mawja.android.ui.components.shared.FlowBottomSheet
-import app.mawja.android.ui.components.shared.FlowSheetHeader
+import app.mawja.android.ui.components.shared.MawjaBottomSheet
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
 import app.mawja.android.ui.components.shared.defaultSheetExpandedHeight
 import app.mawja.android.ui.components.shared.rememberFlowBottomSheetState
 import app.mawja.android.ui.components.videoplayer.subtitle.SubtitleCustomizer
@@ -100,7 +100,7 @@ fun SettingsMenuDialog(
         currentPage = initialPage
     }
 
-    FlowBottomSheet(
+    MawjaBottomSheet(
         onDismiss = onDismiss,
         modifier = modifier,
         state = sheetState,
@@ -113,7 +113,7 @@ fun SettingsMenuDialog(
         onBack = backPage?.let { page -> { currentPage = page } },
         onProgressChange = onSheetProgressChange,
         header = { dragModifier ->
-            FlowSheetHeader(
+            MawjaSheetHeader(
                 inSidePane = !enableVerticalDismiss,
                 title = currentTitle,
                 onClose = { sheetState.dismiss() },

@@ -50,7 +50,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.utils.readPlainText
 import kotlinx.coroutines.launch
 
@@ -119,7 +119,7 @@ internal fun SyncSelectContent(
 
     SyncRowGroup(count = COLLECTION_KEYS.size) { index, shape ->
         val key = COLLECTION_KEYS[index]
-        FlowSwitchRow(
+        MawjaSwitchRow(
             title = collectionLabel(key),
             supportingText = collectionDescription(key),
             checked = key in selected,

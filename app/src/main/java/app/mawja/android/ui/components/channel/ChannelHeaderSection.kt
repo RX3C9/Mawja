@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.innertube.pages.channel.ChannelHeader
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
-import app.mawja.android.ui.components.shared.FlowNoteCard
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaNoteCard
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
 import app.mawja.android.ui.components.shared.FullSizeImageDialog
 import app.mawja.android.ui.theme.extendedColors
 import app.mawja.android.utils.ThumbnailUrlResolver
@@ -99,7 +99,7 @@ internal fun ChannelHeaderSection(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            FlowSubscribeButton(
+            MawjaSubscribeButton(
                 isSubscribed = isSubscribed,
                 isNotificationsEnabled = isNotificationsEnabled,
                 onSubscribeClick = onSubscribeClick,
@@ -137,7 +137,7 @@ internal fun ChannelHeaderSection(
             }
 
             if (!note.isNullOrBlank() && onEditNote != null) {
-                FlowNoteCard(
+                MawjaNoteCard(
                     text = note,
                     onEdit = onEditNote,
                     modifier = Modifier.padding(top = 8.dp),

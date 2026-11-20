@@ -55,10 +55,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.mawja.android.BuildConfig
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
-import app.mawja.android.ui.components.shared.FlowSheetHeader
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
 import app.mawja.android.ui.components.shared.flowSegmentShape
 import app.mawja.android.ui.components.shared.rememberFlowSheetState
 import kotlinx.coroutines.Dispatchers
@@ -105,7 +105,7 @@ internal fun ChangelogSheet(onDismiss: () -> Unit) {
         sheetState = rememberFlowSheetState(),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        FlowSheetHeader(
+        MawjaSheetHeader(
             title = stringResource(R.string.about_changelog),
             subtitle = stringResource(R.string.whats_new_in_flow),
             onClose = onDismiss,
@@ -114,12 +114,12 @@ internal fun ChangelogSheet(onDismiss: () -> Unit) {
         val loaded = releases
         when {
             loaded == null -> {
-                Box(Modifier.fillMaxWidth().height(StateHeight), contentAlignment = Alignment.Center) { FlowLoadingIndicator() }
+                Box(Modifier.fillMaxWidth().height(StateHeight), contentAlignment = Alignment.Center) { MawjaLoadingIndicator() }
             }
 
             loaded.isEmpty() -> {
                 Box(Modifier.fillMaxWidth().height(StateHeight)) {
-                    FlowEmptyState(title = stringResource(R.string.no_changelog_found_message))
+                    MawjaEmptyState(title = stringResource(R.string.no_changelog_found_message))
                 }
             }
 
@@ -191,7 +191,7 @@ private fun LazyListScope.releaseItems(
             expanded = expanded,
             shape = if (expanded) shape.withoutBottomCorners() else shape,
             onToggle = onToggle,
-            modifier = Modifier.animateItem().padding(top = if (first) 0.dp else FlowSegmentedGap),
+            modifier = Modifier.animateItem().padding(top = if (first) 0.dp else MawjaSegmentedGap),
         )
     }
     if (!expanded) return

@@ -35,8 +35,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowSheetHeader
-import app.mawja.android.ui.components.shared.FlowSwitch
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
+import app.mawja.android.ui.components.shared.MawjaSwitch
 import app.mawja.android.ui.components.shared.ReorderHandle
 import app.mawja.android.ui.components.shared.rememberFlowSheetState
 import sh.calvin.reorderable.ReorderableColumn
@@ -74,7 +74,7 @@ internal fun LyricsProvidersSheet(
         sheetState = rememberFlowSheetState(),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        FlowSheetHeader(
+        MawjaSheetHeader(
             title = stringResource(R.string.lyrics_provider_title),
             subtitle = stringResource(R.string.settings_lyrics_provider_order_description),
             onClose = onDismiss,
@@ -136,7 +136,7 @@ internal fun LyricsProvidersSheet(
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.weight(1f),
                             )
-                            FlowSwitch(
+                            MawjaSwitch(
                                 checked = provider.enabled,
                                 onCheckedChange = { viewModel.setLyricsProviderEnabled(provider.name, it) },
                             )

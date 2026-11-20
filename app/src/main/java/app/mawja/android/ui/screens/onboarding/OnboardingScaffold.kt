@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
-import app.mawja.android.ui.components.shared.FlowActionButton
+import app.mawja.android.ui.components.shared.MawjaActionButton
 import app.mawja.android.ui.components.shared.drawSegmentedProgress
 
 /** Draws the current step's hero at the given size; the screen builds it so it can be shared between steps. */
@@ -134,7 +134,7 @@ internal fun OnboardingBottomBar(
             TextButton(onClick = onRestore, modifier = Modifier.heightIn(min = ButtonDefaults.MediumContainerHeight)) {
                 Text(stringResource(R.string.onboarding_restore_backup))
             }
-            FlowActionButton(
+            MawjaActionButton(
                 stringResource(R.string.onboarding_get_started),
                 onNext,
                 Modifier.weight(1f),
@@ -151,7 +151,7 @@ internal fun OnboardingBottomBar(
         }
         when {
             state.step == OnboardingStep.READY -> {
-                FlowActionButton(
+                MawjaActionButton(
                     stringResource(R.string.onboarding_start_watching),
                     onNext,
                     Modifier.weight(1f),
@@ -160,7 +160,7 @@ internal fun OnboardingBottomBar(
             }
 
             !state.canAdvance -> {
-                FlowActionButton(
+                MawjaActionButton(
                     text = pluralStringResource(R.plurals.onboarding_pick_more, state.topicsLeft, state.topicsLeft),
                     onClick = onNext,
                     modifier = Modifier.weight(1f),
@@ -169,7 +169,7 @@ internal fun OnboardingBottomBar(
             }
 
             else -> {
-                FlowActionButton(
+                MawjaActionButton(
                     stringResource(R.string.onboarding_btn_continue),
                     onNext,
                     Modifier.weight(1f),

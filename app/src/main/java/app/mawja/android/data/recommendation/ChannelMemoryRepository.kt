@@ -40,14 +40,14 @@ class ChannelMemoryRepository
     ) {
         suspend fun remembered(now: Long = System.currentTimeMillis()): List<RememberedChannel> =
             withContext(PerformanceDispatcher.diskIO) {
-                val brain = FlowNeuroEngine.getBrainSnapshot()
+                val brain = MawjaNeuroEngine.getBrainSnapshot()
                 rememberedFrom(brain, now)
             }
 
         /** The cached uploads of remembered channels; local only, safe for the first paint. */
         suspend fun storedUploads(now: Long = System.currentTimeMillis()): List<Video> =
             withContext(PerformanceDispatcher.diskIO) {
-                val brain = FlowNeuroEngine.getBrainSnapshot()
+                val brain = MawjaNeuroEngine.getBrainSnapshot()
                 ChannelMemory.uploads(rememberedFrom(brain, now), brain.channelMemory, now)
             }
 
@@ -56,7 +56,7 @@ class ChannelMemoryRepository
          * ten, and returns the uploads that arrived. Channels a deadline cut off are tried next load.
          */
         suspend fun refresh(now: Long = System.currentTimeMillis()): List<Video> {
-            val brain = FlowNeuroEngine.getBrainSnapshot()
+            val brain = MawjaNeuroEngine.getBrainSnapshot()
             val remembered = withContext(PerformanceDispatcher.diskIO) { rememberedFrom(brain, now) }
             val queue = ChannelMemory.refreshQueue(remembered, brain.channelMemory, now)
             if (queue.isEmpty()) return emptyList()
@@ -83,20 +83,20 @@ class ChannelMemoryRepository
             if (fetched.isEmpty()) return emptyList()
 
             // Saved like learning, not bookkeeping: these uploads cost a network round to fetch again.
-            FlowNeuroEngine.updateChannelMemory(bookkeeping = false) { state ->
+            MawjaNeuroEngine.updateChannelMemory(bookkeeping = false) { state ->
                 fetched.entries.fold(state) { acc, (channel, videos) ->
                     ChannelMemory.recordUploads(acc, channel.channelId, channel.name, videos, now)
                 }
             }
-            val updated = FlowNeuroEngine.getBrainSnapshot().channelMemory
+            val updated = MawjaNeuroEngine.getBrainSnapshot().channelMemory
             return ChannelMemory.uploads(fetched.keys.toList(), updated, now)
         }
 
         suspend fun forget(channelId: String) =
-            FlowNeuroEngine.updateChannelMemory(bookkeeping = false) { ChannelMemory.forget(it, channelId, System.currentTimeMillis()) }
+            MawjaNeuroEngine.updateChannelMemory(bookkeeping = false) { ChannelMemory.forget(it, channelId, System.currentTimeMillis()) }
 
         suspend fun clear() =
-            FlowNeuroEngine.updateChannelMemory(bookkeeping = false) { ChannelMemory.clear(it, System.currentTimeMillis()) }
+            MawjaNeuroEngine.updateChannelMemory(bookkeeping = false) { ChannelMemory.clear(it, System.currentTimeMillis()) }
 
         private suspend fun rememberedFrom(
             brain: UserBrain,

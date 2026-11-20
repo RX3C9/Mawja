@@ -19,7 +19,7 @@ import app.mawja.android.data.model.ShortVideo
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.model.toVideo
 import app.mawja.android.data.recommendation.BlockedChannelNames
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.InteractionType
 import app.mawja.android.data.repository.YouTubeRepository
 import app.mawja.android.data.shorts.ShortAudioTrack
@@ -417,7 +417,7 @@ class ShortsViewModel
                 } else {
                     playlistRepository.addToSavedShorts(video)
                     runCatching {
-                        FlowNeuroEngine.onVideoInteraction(video.copy(isShort = true), InteractionType.SAVED)
+                        MawjaNeuroEngine.onVideoInteraction(video.copy(isShort = true), InteractionType.SAVED)
                     }
                 }
             }
@@ -459,8 +459,8 @@ class ShortsViewModel
                 )
                 signal ?: return@launch
                 runCatching {
-                    FlowNeuroEngine.onVideoInteraction(video.copy(isShort = true), signal.interaction, percentWatched = signal.percent)
-                    FlowNeuroEngine.recordSeenShorts(listOf(video.id))
+                    MawjaNeuroEngine.onVideoInteraction(video.copy(isShort = true), signal.interaction, percentWatched = signal.percent)
+                    MawjaNeuroEngine.recordSeenShorts(listOf(video.id))
                 }.onFailure { e -> Log.w(TAG, "Failed to record abandoned short in FlowNeuro", e) }
             }
         }
@@ -477,8 +477,8 @@ class ShortsViewModel
                 watchHistory.save(short, signal.position, signal.safeDuration)
 
                 runCatching {
-                    FlowNeuroEngine.onVideoInteraction(video.copy(isShort = true), signal.interaction, percentWatched = signal.percent)
-                    FlowNeuroEngine.recordSeenShorts(listOf(video.id))
+                    MawjaNeuroEngine.onVideoInteraction(video.copy(isShort = true), signal.interaction, percentWatched = signal.percent)
+                    MawjaNeuroEngine.recordSeenShorts(listOf(video.id))
                 }.onFailure { e -> Log.w(TAG, "Failed to record watched short in FlowNeuro", e) }
             }
         }
@@ -518,7 +518,7 @@ class ShortsViewModel
         fun wantMoreLikeThis(short: ShortVideo) {
             viewModelScope.launch(PerformanceDispatcher.networkIO) {
                 try {
-                    FlowNeuroEngine.onVideoInteraction(short.toVideo(), InteractionType.LIKED)
+                    MawjaNeuroEngine.onVideoInteraction(short.toVideo(), InteractionType.LIKED)
                     val page = feed.chainFrom(short)
                     if (queue?.mergeDiscovery(page) != ShortsQueueChange.None) publishQueue()
                     _snackbarMessage.value = context.getString(R.string.shorts_showing_more_like_this)
@@ -548,7 +548,7 @@ class ShortsViewModel
                     val channelId = metadata?.channelId.orEmpty().ifBlank { short.channelId }
                     check(channelId.isNotBlank()) { context.getString(R.string.channel_metadata_unavailable) }
                     val channelName = metadata?.channelName.orEmpty().ifBlank { short.channelName }
-                    FlowNeuroEngine.blockChannel(context, channelId)
+                    MawjaNeuroEngine.blockChannel(context, channelId)
                     blockedNames.remember(channelId, channelName)
                     videoStats.onAction(LedgerAction.BLOCK_CHANNEL)
                     dropChannel(channelId)
@@ -570,7 +570,7 @@ class ShortsViewModel
             viewModelScope.launch(PerformanceDispatcher.networkIO) {
                 try {
                     val video = short.toVideo()
-                    FlowNeuroEngine.markNotInterested(video)
+                    MawjaNeuroEngine.markNotInterested(video)
                     videoStats.onAction(LedgerAction.NOT_INTERESTED)
                     FeedInvalidationBus.emit(FeedInvalidationBus.Event.NotInterested(video.id, video.channelId))
 

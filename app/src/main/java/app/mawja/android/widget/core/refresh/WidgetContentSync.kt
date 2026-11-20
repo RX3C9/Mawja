@@ -42,7 +42,7 @@ private val Context.widgetContentStore by preferencesDataStore(name = "widget_co
  * Re-renders a content widget when what it draws has changed, and only while one is placed.
  *
  * The last signature each kind was rendered with is persisted, for the same reason the theme's is
- * ([app.mawja.android.widget.core.FlowWidgets]): a process start must not re-render every placed
+ * ([app.mawja.android.widget.core.MawjaWidgets]): a process start must not re-render every placed
  * widget for nothing, since each render holds a Glance session that taxes the app's frames.
  */
 @Singleton

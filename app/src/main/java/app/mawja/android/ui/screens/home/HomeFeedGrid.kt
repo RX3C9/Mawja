@@ -22,7 +22,7 @@ import app.mawja.android.ui.components.home.ContinueWatchingShelfDefaults
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.motion.rememberFirstLoadStagger
 import app.mawja.android.ui.components.motion.staggeredAppear
-import app.mawja.android.ui.components.shared.FlowFeedProgress
+import app.mawja.android.ui.components.shared.MawjaFeedProgress
 import app.mawja.android.ui.components.shared.MediaShortsShelf
 import app.mawja.android.ui.components.shared.card.MediaVideoCard
 import app.mawja.android.ui.components.shared.card.VideoCardLayout
@@ -144,7 +144,7 @@ internal fun HomeFeedGrid(
                 key = "loading_indicator",
                 span = { GridItemSpan(maxLineSpan) },
             ) {
-                FlowFeedProgress()
+                MawjaFeedProgress()
             }
         }
 
@@ -162,7 +162,7 @@ internal fun HomeFeedGrid(
                 key = "feed_footer",
                 span = { GridItemSpan(maxLineSpan) },
             ) {
-                FlowFeedFooter(
+                MawjaFeedFooter(
                     videoCount = videos.size,
                     onRefresh = onRefresh,
                 )

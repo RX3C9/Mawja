@@ -934,10 +934,8 @@
     <string name="location_custom_manual_desc">Введіть абсолютний шлях, наприклад /storage/emulated/0/MyFolder</string>
     <string name="location_badge_active">Активно</string>
     <string name="select_threads_count_desc">Виберіть кількість потоків (1–8):</string>
-    <string name="support_flow_patreon">Підтримайте Mawja на Patreon</string>
     <string name="thank_you_support_message">Дякую вам за вашу підтримку! ❤️</string>
     <string name="address_copied_toast">Адреса скопійована до буферу обміну</string>
-    <string name="donation_address_clip_label">Адреса для пожертв</string>
     <string name="about_creator">Автор</string>
     <string name="about_website">Сайт</string>
     <string name="github_subtitle">Вихідний код та помилки</string>
@@ -1607,12 +1605,6 @@
     <string name="player_settings_video_codec_dialog_title">Типовий відеокодек</string>
     <string name="player_settings_video_codec_dialog_body">Mawja вибирає кодек автоматично. Ви все одно можете вибрати будь-який кодек у меню якості. H.264 найплавніше відтворюється на більшості пристроїв. AV1 і VP9 споживають менше трафіку, але потребують більшої обчислювальної потужності.</string>
     <string name="player_settings_video_codec_auto_desc">Дозволити застосунку вибрати (перевага надається H.264)</string>
-    <string name="donation_prompt_title">Насолоджуєтеся Mawja?</string>
-    <string name="donation_prompt_message">Mawja — безплатний застосунок із відкритим вихідним кодом і без реклами. Якщо він заслужив місце на вашому телефоні, невелика підтримка допоможе йому й надалі працювати.</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Підтримати розробку</string>
-    <string name="donation_prompt_later">Можливо пізніше</string>
-    <string name="donation_prompt_never">Більше не показувати</string>
     <string name="library_local_media_label">Локальні медіафайли</string>
     <string name="library_local_media_subtitle">Відтворюйте відео та музику на цьому пристрої</string>
     <string name="local_media_title">Локальні медіа</string>
@@ -2273,7 +2265,6 @@
     <string name="settings_search_no_results">Налаштувань для %1$s не знайдено</string>
     <string name="settings_lyrics_provider_order_description">Спробуйте зверху вниз. Перетягніть, щоб змінити порядок.</string>
     <string name="import_running_background">Можете закрити цей екран. Імпорт продовжує виконуватися.</string>
-    <string name="donations_cryptocurrency">КРИПТОВАЛЮТА</string>
     <string name="import_no_history_entries">У файлі не знайдено записів історії переглядів</string>
     <string name="import_no_videos">У файлі списку відтворення не знайдено жодного відео</string>
     <string name="import_no_content">У цій резервній копії не знайдено вмісту для імпорту</string>

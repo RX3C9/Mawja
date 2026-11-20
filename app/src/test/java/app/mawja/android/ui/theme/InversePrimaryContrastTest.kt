@@ -15,7 +15,7 @@ class InversePrimaryContrastTest {
     fun `snackbar actions read on the snackbar in every palette and style`() {
         ThemeCatalog.palettes.filterNot { it.mode == ThemeMode.MATERIAL_YOU }.forEach { entry ->
             ThemeVariant.entries.forEach { variant ->
-                val scheme = FlowPalettes.forMode(entry.mode).colorsFor(variant).toColorScheme(variant)
+                val scheme = MawjaPalettes.forMode(entry.mode).colorsFor(variant).toColorScheme(variant)
                 assertWithMessage("${entry.mode} $variant")
                     .that(contrastRatio(scheme.inversePrimary, scheme.inverseSurface))
                     .isAtLeast(4.5f)

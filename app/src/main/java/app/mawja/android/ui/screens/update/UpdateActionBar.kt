@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
-import app.mawja.android.ui.components.shared.FlowActionButton
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaActionButton
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 
 private val BarPadding = 20.dp
 private val BarSpacing = 12.dp
@@ -46,7 +46,7 @@ internal fun UpdateActionBar(
         contentAlignment = Alignment.Center,
     ) {
         Row(
-            modifier = Modifier.widthIn(max = FlowMaxContentWidth).fillMaxWidth().padding(BarPadding),
+            modifier = Modifier.widthIn(max = MawjaMaxContentWidth).fillMaxWidth().padding(BarPadding),
             horizontalArrangement = Arrangement.spacedBy(BarSpacing, Alignment.End),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -54,7 +54,7 @@ internal fun UpdateActionBar(
                 Text(stringResource(if (stage is UpdateStage.Downloading) R.string.cancel else R.string.update_not_now))
             }
             val action = stage.action()
-            FlowActionButton(
+            MawjaActionButton(
                 text = action.label(),
                 onClick = onPrimary,
                 enabled = action.enabled,

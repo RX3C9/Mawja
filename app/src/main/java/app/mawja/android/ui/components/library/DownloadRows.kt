@@ -46,7 +46,7 @@ import app.mawja.android.data.video.DownloadedVideo
 import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
 import app.mawja.android.ui.components.shared.ArtworkThumbnail
 import app.mawja.android.ui.components.shared.ExplicitBadge
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.components.shared.MediaRow
 import app.mawja.android.ui.components.shared.MediaRowAction
@@ -312,7 +312,7 @@ internal fun DownloadsEmptyState(
 ) {
     val label = stringResource(kind.labelRes)
     Box(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        FlowEmptyState(
+        MawjaEmptyState(
             title = stringResource(R.string.empty_offline_title, label),
             subtitle = stringResource(R.string.empty_offline_body, label),
             icon = kind.icon,

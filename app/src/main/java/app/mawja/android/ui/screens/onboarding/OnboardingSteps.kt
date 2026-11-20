@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.data.backup.BackupOperation
 import app.mawja.android.data.backup.ImportKind
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 import app.mawja.android.ui.utils.LocalWindowSizeClass
 import app.mawja.android.ui.utils.isExpandedWidth
 
@@ -194,7 +194,7 @@ private fun StepBody(
 @Composable
 private fun Readable(content: @Composable () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-        Box(Modifier.widthIn(max = FlowMaxContentWidth).fillMaxSize()) { content() }
+        Box(Modifier.widthIn(max = MawjaMaxContentWidth).fillMaxSize()) { content() }
     }
 }
 

@@ -11,7 +11,7 @@ import app.mawja.android.data.localmedia.toVideo
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.data.music.model.toMusicTrack
 import app.mawja.android.data.music.model.toVideo
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.layout.navigation.MediaNavigator
 import app.mawja.android.ui.screens.music.EnhancedMusicScreen
 import app.mawja.android.ui.screens.music.MusicViewModel
@@ -59,8 +59,8 @@ internal fun NavGraphBuilder.musicRoutes(
                 navController.navigate("playlists?kind=${app.mawja.android.ui.components.shared.MediaKind.Music.name}")
             },
             onAllSubscriptionsClick = {
-                currentRoute.value = FlowTab.Subscriptions.route
-                navController.navigateToTab(FlowTab.Subscriptions, defaultStartRoute)
+                currentRoute.value = MawjaTab.Subscriptions.route
+                navController.navigateToTab(MawjaTab.Subscriptions, defaultStartRoute)
                 navController.currentBackStackEntry?.savedStateHandle?.set(OPEN_MUSIC_SUBSCRIPTIONS, true)
             },
             onMoodsClick = { item ->

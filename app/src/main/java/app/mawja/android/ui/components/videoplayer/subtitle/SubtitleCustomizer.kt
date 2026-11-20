@@ -31,11 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.text.Cue
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowColorPickerDialog
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowFilterChip
-import app.mawja.android.ui.components.shared.FlowSwitch
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaColorPickerDialog
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaFilterChip
+import app.mawja.android.ui.components.shared.MawjaSwitch
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.theme.SubtitleBackgroundSwatches
 import app.mawja.android.ui.theme.SubtitleEdgeSwatches
 import app.mawja.android.ui.theme.SubtitleTextSwatches
@@ -97,11 +97,11 @@ fun SubtitleCustomizer(
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val fullscreenPosition =
                 if (editingVertical) currentStyle.verticalFullscreenBottomPadding else currentStyle.fullscreenBottomPadding
-            FlowConnectedToggleGroup(
+            MawjaConnectedToggleGroup(
                 options =
                     listOf(
-                        FlowToggleOption(value = false, label = stringResource(R.string.subtitle_fullscreen_landscape)),
-                        FlowToggleOption(value = true, label = stringResource(R.string.subtitle_fullscreen_vertical)),
+                        MawjaToggleOption(value = false, label = stringResource(R.string.subtitle_fullscreen_landscape)),
+                        MawjaToggleOption(value = true, label = stringResource(R.string.subtitle_fullscreen_vertical)),
                     ),
                 selected = editingVertical,
                 onSelected = { editingVertical = it },
@@ -161,7 +161,7 @@ fun SubtitleCustomizer(
             Text(stringResource(R.string.subtitle_font), style = MaterialTheme.typography.labelLarge)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SubtitleFont.entries.forEach { font ->
-                    FlowFilterChip(
+                    MawjaFilterChip(
                         label = stringResource(font.labelRes),
                         selected = currentStyle.font == font,
                         onClick = { onStyleChange(currentStyle.copy(font = font)) },
@@ -174,7 +174,7 @@ fun SubtitleCustomizer(
             Text(stringResource(R.string.subtitle_edge_style), style = MaterialTheme.typography.labelLarge)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SubtitleEdgeType.entries.forEach { type ->
-                    FlowFilterChip(
+                    MawjaFilterChip(
                         label = stringResource(type.labelRes),
                         selected = currentStyle.edgeType == type,
                         onClick = { onStyleChange(currentStyle.copy(edgeType = type)) },
@@ -198,7 +198,7 @@ fun SubtitleCustomizer(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(stringResource(R.string.subtitle_bold_text), style = MaterialTheme.typography.labelLarge)
-            FlowSwitch(
+            MawjaSwitch(
                 checked = currentStyle.isBold,
                 onCheckedChange = { onStyleChange(currentStyle.copy(isBold = it)) },
             )
@@ -238,7 +238,7 @@ private fun CustomColorDialog(
             ColorTarget.WINDOW -> R.string.subtitle_window_color to style.windowColor
             ColorTarget.EDGE -> R.string.subtitle_edge_color to style.edgeColor
         }
-    FlowColorPickerDialog(
+    MawjaColorPickerDialog(
         title = stringResource(titleRes),
         initialArgb = current.copy(alpha = 1f).toArgb().toLong() and ARGB_MASK,
         allowAlpha = false,

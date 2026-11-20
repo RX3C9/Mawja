@@ -9,7 +9,7 @@ package app.mawja.android.data.recommendation.eval
 
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.recommendation.ContentVector
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.GraphSeedInput
 import app.mawja.android.data.recommendation.GraphSeedSelector
 import app.mawja.android.data.recommendation.GraphSeedSource
@@ -85,7 +85,7 @@ internal object Issue907Scenarios {
 
     private fun family(family: Family) = NeuroLearningBenchmark.pool().filter { NeuroLearningBenchmark.familyOf(it.id) == family }
 
-    private suspend fun FlowNeuroEngine.watchAll(videos: List<Video>) = with(NeuroLearningBenchmark) { videos.forEach { watch(it) } }
+    private suspend fun MawjaNeuroEngine.watchAll(videos: List<Video>) = with(NeuroLearningBenchmark) { videos.forEach { watch(it) } }
 
     private fun rankOnce(
         brain: UserBrain,
@@ -647,7 +647,7 @@ internal object Issue907Scenarios {
                     coEvery { save(any()) } answers { saves++ }
                 }
             val contentStore: NeuroContentStore = mockk(relaxed = true)
-            val engine = FlowNeuroEngine(mockk(relaxed = true), storage, contentStore, learningPaused = { false })
+            val engine = MawjaNeuroEngine(mockk(relaxed = true), storage, contentStore, learningPaused = { false })
             engine.initialize()
             val held = engine.getBrainSnapshot()
             engine.shutdown()

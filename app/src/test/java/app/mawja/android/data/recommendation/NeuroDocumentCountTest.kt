@@ -16,7 +16,7 @@ import org.junit.Test
 class NeuroDocumentCountTest {
     private val video = Video("q1", "Quantum gravity explained simply", "Physics Lab", "ch-physics", "", 900, 1L, uploadDate = "")
 
-    private suspend fun FlowNeuroEngine.openWatchAndLike() {
+    private suspend fun MawjaNeuroEngine.openWatchAndLike() {
         onVideoInteraction(video, InteractionType.CLICK)
         onVideoInteraction(video, InteractionType.WATCHED, 0.9f)
         onVideoInteraction(video, InteractionType.LIKED)

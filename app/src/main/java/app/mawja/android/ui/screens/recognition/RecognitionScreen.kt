@@ -73,9 +73,9 @@ import app.mawja.android.R
 import app.mawja.android.data.recognition.RecognitionResult
 import app.mawja.android.data.recognition.RecognitionStatus
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.common.rememberMusicArtworkColors
-import app.mawja.android.ui.components.shared.FlowStateIcon
+import app.mawja.android.ui.components.shared.MawjaStateIcon
 import app.mawja.android.ui.components.shared.flowActionShape
 import app.mawja.android.ui.components.shared.flowHeroArtworkSize
 
@@ -121,7 +121,7 @@ fun RecognitionScreen(
 
     Scaffold(
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = stringResource(R.string.recognize_music),
                 onBack = onBackClick,
                 actions = {
@@ -476,7 +476,7 @@ private fun RecognitionMessage(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        FlowStateIcon(icon = icon, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        MawjaStateIcon(icon = icon, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(
             text = title,
             style = MaterialTheme.typography.titleLargeEmphasized,

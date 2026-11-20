@@ -947,10 +947,8 @@
     <string name="location_badge_recommended">Direkomendasikan</string>
     <string name="location_badge_active">Aktif</string>
     <string name="select_threads_count_desc">Pilih jumlah thread (1-8):</string>
-    <string name="support_flow_patreon">Dukung Mawja di Patreon</string>
     <string name="thank_you_support_message">Terima kasih atas dukungan Anda! ❤️</string>
     <string name="address_copied_toast">Alamat disalin ke papan klip</string>
-    <string name="donation_address_clip_label">Alamat Donasi</string>
     <string name="about_creator">Pembuat</string>
     <string name="about_website">Situs Web</string>
     <string name="github_subtitle">Kode sumber &amp; Masalah</string>
@@ -1602,12 +1600,6 @@
     <string name="player_settings_video_codec_dialog_title">Codec Video Default</string>
     <string name="player_settings_video_codec_dialog_body">Codec yang dipilih Mawja terlebih dahulu. Anda tetap dapat memilih codec apa pun dari menu kualitas. H.264 paling lancar di sebagian besar perangkat. AV1 dan VP9 menggunakan data lebih sedikit, tetapi memerlukan daya lebih besar.</string>
     <string name="player_settings_video_codec_auto_desc">Biarkan aplikasi memilih (mengutamakan H.264)</string>
-    <string name="donation_prompt_title">Menikmati Mawja?</string>
-    <string name="donation_prompt_message">Mawja gratis, open source, dan tanpa iklan. Jika Mawja layak mendapat tempat di ponsel Anda, sedikit dukungan akan membantunya tetap berjalan.</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Dukung pengembangan</string>
-    <string name="donation_prompt_later">Mungkin nanti</string>
-    <string name="donation_prompt_never">Jangan tampilkan lagi</string>
     <string name="library_local_media_label">Media bawaan</string>
     <string name="library_local_media_subtitle">Putar video dan musik di perangkat ini</string>
     <string name="local_media_title">Media bawaan</string>
@@ -2313,7 +2305,6 @@
     <string name="settings_search_no_results">Tidak ada pengaturan yang ditemukan untuk %1$s</string>
     <string name="settings_lyrics_provider_order_description">Dicoba dari atas ke bawah. Seret untuk mengurutkan ulang.</string>
     <string name="import_running_background">Anda dapat meninggalkan layar ini. Proses impor tetap berjalan.</string>
-    <string name="donations_cryptocurrency">MATA UANG KRIPTO</string>
     <string name="import_no_history_entries">Tidak ada entri riwayat tontonan yang ditemukan di file</string>
     <string name="import_no_videos">Tidak ada video yang ditemukan di file daftar putar</string>
     <string name="import_no_content">Tidak ada konten yang dapat diimpor yang ditemukan di cadangan ini</string>

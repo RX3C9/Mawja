@@ -57,7 +57,7 @@ import app.mawja.android.ui.selection.MultiSelection
 import app.mawja.android.ui.selection.deleteSelectionAction
 import app.mawja.android.ui.selection.rememberSelectionActions
 import app.mawja.android.data.video.storage.StorageAccess
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.library.ActiveDownloadActions
 import app.mawja.android.ui.components.library.DownloadCollectionsShelf
 import app.mawja.android.ui.components.library.DownloadsRecoveryCard
@@ -68,10 +68,10 @@ import app.mawja.android.ui.components.library.MusicDownloadsList
 import app.mawja.android.ui.components.library.RemoveDownloadCollectionDialog
 import app.mawja.android.ui.components.library.VideosDownloadsList
 import app.mawja.android.ui.components.library.libraryHeaderIsOneRow
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowSelectionAction
-import app.mawja.android.ui.components.shared.FlowSelectionToolbar
-import app.mawja.android.ui.components.shared.FlowSortChip
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaSelectionAction
+import app.mawja.android.ui.components.shared.MawjaSelectionToolbar
+import app.mawja.android.ui.components.shared.MawjaSortChip
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.components.shared.dismissKeyboardOnPress
 import app.mawja.android.ui.components.shared.flowGridColumns
@@ -187,7 +187,7 @@ fun DownloadsScreen(
             onCancelAll = { removeIncompleteOf = selectedKind },
         )
     val sortChip: @Composable () -> Unit = {
-        FlowSortChip(
+        MawjaSortChip(
             options = DownloadSort.entries,
             selected = uiState.sort,
             default = DownloadSort.NEWEST,
@@ -213,7 +213,7 @@ fun DownloadsScreen(
         modifier = modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title =
                     if (selectionMode) {
                         pluralStringResource(R.plurals.selected_count_template, selectedIds.size, selectedIds.size)
@@ -315,7 +315,7 @@ fun DownloadsScreen(
                     }
                 }
             }
-            FlowSelectionToolbar(
+            MawjaSelectionToolbar(
                 visible = selectionMode && selectedIds.isNotEmpty(),
                 summary = pluralStringResource(R.plurals.selected_count_template, selectedIds.size, selectedIds.size),
                 actions = selectionActions.actions,
@@ -363,7 +363,7 @@ fun DownloadsScreen(
 
     removeIncompleteOf?.let { kind ->
         val count = if (kind == MediaKind.Videos) uiState.incompleteVideoDownloads.size else uiState.incompleteMusicDownloads.size
-        FlowAlertDialog(
+        MawjaAlertDialog(
             onDismissRequest = { removeIncompleteOf = null },
             title = { Text(stringResource(R.string.remove_incomplete_downloads)) },
             text = { Text(pluralStringResource(R.plurals.remove_incomplete_downloads_message, count, count)) },
@@ -386,7 +386,7 @@ private fun DeleteDownloadsDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.delete_download_dialog_title)) },
         text = {

@@ -1,15 +1,15 @@
 package app.mawja.android.ui.screens.crash
 
 import com.google.common.truth.Truth.assertThat
-import app.mawja.android.utils.FlowCrashReportFormatter
-import app.mawja.android.utils.FlowCrashReportSnapshot
+import app.mawja.android.utils.MawjaCrashReportFormatter
+import app.mawja.android.utils.MawjaCrashReportSnapshot
 import org.junit.Test
 import java.time.LocalDateTime
 
 class CrashSummaryTest {
     private val report =
-        FlowCrashReportFormatter.build(
-            FlowCrashReportSnapshot(
+        MawjaCrashReportFormatter.build(
+            MawjaCrashReportSnapshot(
                 timestampMs = 0,
                 threadName = "main",
                 threadId = 2,

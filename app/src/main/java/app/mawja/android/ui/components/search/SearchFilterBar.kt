@@ -17,7 +17,7 @@ import app.mawja.android.data.local.SearchFilter
 import app.mawja.android.data.local.UploadDate
 import app.mawja.android.data.local.WatchState
 import app.mawja.android.data.paging.supportsVideoFilters
-import app.mawja.android.ui.components.shared.FlowFilterChip
+import app.mawja.android.ui.components.shared.MawjaFilterChip
 
 /**
  * The type chips above the results, in the order YouTube shows them — Shorts second, so the one
@@ -47,7 +47,7 @@ fun SearchFilterBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         items(types, key = { it.name }) { type ->
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = stringResource(type.labelRes()),
                 selected = filter.contentType == type,
                 onClick = { onFilterChange(filter.copy(contentType = type)) },
@@ -56,7 +56,7 @@ fun SearchFilterBar(
         if (videoFilters) {
             item(key = RECENT_KEY) {
                 val recent = filter.uploadDate == UploadDate.THIS_WEEK
-                FlowFilterChip(
+                MawjaFilterChip(
                     label = stringResource(R.string.search_filter_recently_uploaded),
                     selected = recent,
                     onClick = {
@@ -66,7 +66,7 @@ fun SearchFilterBar(
             }
             items(WATCH_CHIPS, key = { it.name }) { state ->
                 val selected = filter.watchState == state
-                FlowFilterChip(
+                MawjaFilterChip(
                     label = stringResource(state.labelRes()),
                     selected = selected,
                     onClick = { onFilterChange(filter.copy(watchState = if (selected) WatchState.ANY else state)) },

@@ -30,8 +30,8 @@ import app.mawja.android.data.local.SearchType
 import app.mawja.android.innertube.pages.search.SearchSuggestion
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.shared.DeepFlowState
-import app.mawja.android.ui.components.shared.FlowSuggestionRow
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaSuggestionRow
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.components.shared.deepFlowStatus
 
 /**
@@ -59,7 +59,7 @@ fun SearchSuggestionsPanel(
     ) {
         if (deepFlow.showOnSearch && query.isBlank()) {
             item(key = "deepflow") {
-                FlowSwitchRow(
+                MawjaSwitchRow(
                     title = stringResource(R.string.deep_flow_mode_title),
                     supportingText = deepFlowStatus(deepFlow) ?: stringResource(R.string.deep_flow_mode_subtitle),
                     checked = deepFlow.active,
@@ -80,7 +80,7 @@ fun SearchSuggestionsPanel(
         )
 
         items(suggestions, key = { "suggestion:${it.text}" }) { suggestion ->
-            FlowSuggestionRow(
+            MawjaSuggestionRow(
                 text = suggestion.text,
                 leadingIcon = Icons.Rounded.Search,
                 onClick = { onSubmit(suggestion.text) },
@@ -121,7 +121,7 @@ fun LazyListScope.searchHistoryItems(
         }
     }
     items(history, key = { "history:${it.id}" }) { item ->
-        FlowSuggestionRow(
+        MawjaSuggestionRow(
             text = item.query,
             leadingIcon = if (item.type == SearchType.VOICE) Icons.Rounded.Mic else Icons.Rounded.History,
             onClick = { onSelect(item) },

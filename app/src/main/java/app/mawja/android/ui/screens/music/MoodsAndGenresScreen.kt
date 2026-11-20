@@ -22,10 +22,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.mawja.android.R
 import app.mawja.android.innertube.pages.MoodAndGenres
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.section.MoodCategorySection
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowErrorState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaErrorState
 import app.mawja.android.ui.components.shared.ShimmerHost
 import app.mawja.android.ui.components.shared.ShimmerMoodButton
 import app.mawja.android.ui.components.shared.flowGridColumns
@@ -45,7 +45,7 @@ fun MoodsAndGenresScreen(
 
     Scaffold(
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = stringResource(R.string.section_moods_and_genres),
                 onBack = onBackClick,
             )
@@ -93,14 +93,14 @@ fun MoodsAndGenresScreen(
                 }
 
                 error != null && moodAndGenresList == null -> {
-                    FlowErrorState(
+                    MawjaErrorState(
                         error = error ?: stringResource(R.string.unknown_error),
                         onRetry = { viewModel.retry() },
                     )
                 }
 
                 moodAndGenresList.isNullOrEmpty() -> {
-                    FlowEmptyState(title = stringResource(R.string.empty_moods_genres))
+                    MawjaEmptyState(title = stringResource(R.string.empty_moods_genres))
                 }
 
                 else -> {

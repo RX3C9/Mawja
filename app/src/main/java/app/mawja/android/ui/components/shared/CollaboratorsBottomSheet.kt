@@ -60,7 +60,7 @@ internal fun collaboratorRows(
         val name = collaborator.name.ifBlank { fallbackName }
         val canOpen = collaborator.channelId.isNotBlank()
         QuickActionRow(key = collaborator.channelId.ifBlank { "collaborator:$index" }) { shape ->
-            FlowNavRow(
+            MawjaNavRow(
                 title = name,
                 supportingText = collaborator.subscriberCountText.takeIf { it.isNotBlank() },
                 onClick = {
@@ -83,11 +83,11 @@ internal fun collaboratorRows(
                             val toggle = {
                                 viewModel.toggleSubscription(collaborator.channelId, collaborator.name, collaborator.thumbnailUrl)
                             }
-                            FlowSubscribeButton(
+                            MawjaSubscribeButton(
                                 isSubscribed = collaborator.channelId in subscribedChannelIds,
                                 onSubscribeClick = toggle,
                                 onUnsubscribeClick = toggle,
-                                size = FlowSubscribeButtonSize.Compact,
+                                size = MawjaSubscribeButtonSize.Compact,
                             )
                         }
                     } else {

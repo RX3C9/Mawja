@@ -23,9 +23,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.model.Video
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.rememberFeedGridLayout
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 import app.mawja.android.ui.components.shared.MediaShortCard
 import app.mawja.android.ui.components.shared.ShortCardDefaults
 
@@ -44,7 +44,7 @@ fun SavedShortsGridScreen(
         modifier = modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = stringResource(R.string.library_saved_shorts_label),
                 onBack = onBackClick,
             )
@@ -52,7 +52,7 @@ fun SavedShortsGridScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         if (savedShorts.isEmpty()) {
-            FlowEmptyState(
+            MawjaEmptyState(
                 modifier = Modifier.padding(padding),
                 title = stringResource(R.string.empty_saved_shorts),
                 icon = Icons.Default.PlayArrow,

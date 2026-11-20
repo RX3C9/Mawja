@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.RoundedPolygon
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowLogo
-import app.mawja.android.ui.components.shared.FlowPopIn
+import app.mawja.android.ui.components.shared.MawjaLogo
+import app.mawja.android.ui.components.shared.MawjaPopIn
 
 internal val HeroStageSize = 300.dp
 private val SatelliteIconSize = 24.dp
@@ -72,7 +72,7 @@ internal fun WelcomeStep(
         stage = {
             hero(HeroLarge)
             Satellites.forEachIndexed { index, satellite ->
-                FlowPopIn(index + 1, Modifier.offset(satellite.offset.x, satellite.offset.y)) {
+                MawjaPopIn(index + 1, Modifier.offset(satellite.offset.x, satellite.offset.y)) {
                     Surface(
                         shape = satellite.shape.toShape(),
                         color = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -87,7 +87,7 @@ internal fun WelcomeStep(
         },
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(BrandSpacing), verticalAlignment = Alignment.CenterVertically) {
-            FlowLogo(Modifier.width(BrandLogoWidth))
+            MawjaLogo(Modifier.width(BrandLogoWidth))
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleMedium,

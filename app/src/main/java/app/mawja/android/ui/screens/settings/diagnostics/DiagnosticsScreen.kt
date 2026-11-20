@@ -47,11 +47,11 @@ import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.info
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.DiagnosticsIndex
 import app.mawja.android.utils.copyPlainText
 import kotlinx.coroutines.launch
@@ -100,8 +100,8 @@ internal fun DiagnosticsScreen(
         }
     val tabs =
         listOf(
-            FlowToggleOption(DiagnosticsTab.SESSION, stringResource(R.string.diagnostics_tab_session), Icons.Outlined.BugReport),
-            FlowToggleOption(DiagnosticsTab.CRASHES, stringResource(R.string.diagnostics_tab_crashes), Icons.Outlined.Warning),
+            MawjaToggleOption(DiagnosticsTab.SESSION, stringResource(R.string.diagnostics_tab_session), Icons.Outlined.BugReport),
+            MawjaToggleOption(DiagnosticsTab.CRASHES, stringResource(R.string.diagnostics_tab_crashes), Icons.Outlined.Warning),
         )
 
     SettingsPage(
@@ -157,7 +157,7 @@ internal fun DiagnosticsScreen(
             )
         }
         item("diagnostics.tabs") {
-            FlowConnectedToggleGroup(options = tabs, selected = tab, onSelected = { tab = it })
+            MawjaConnectedToggleGroup(options = tabs, selected = tab, onSelected = { tab = it })
         }
         when (tab) {
             DiagnosticsTab.SESSION -> {
@@ -223,14 +223,14 @@ private fun SettingsListScope.logSection(
     when (state) {
         LogState.Loading -> {
             item("$key.loading") {
-                Box(Modifier.fillMaxWidth().height(StateHeight), contentAlignment = Alignment.Center) { FlowLoadingIndicator() }
+                Box(Modifier.fillMaxWidth().height(StateHeight), contentAlignment = Alignment.Center) { MawjaLoadingIndicator() }
             }
         }
 
         LogState.Empty -> {
             item("$key.empty") {
                 Box(Modifier.fillMaxWidth().height(StateHeight)) {
-                    FlowEmptyState(title = stringResource(emptyMessage), icon = Icons.Outlined.CheckCircle)
+                    MawjaEmptyState(title = stringResource(emptyMessage), icon = Icons.Outlined.CheckCircle)
                 }
             }
         }
@@ -254,7 +254,7 @@ private fun DiagnosticsConfirmDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = { Text(body) },

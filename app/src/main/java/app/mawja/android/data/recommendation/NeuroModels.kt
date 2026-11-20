@@ -7,7 +7,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3 of the License.
  *
- * This recommendation algorithm (FlowNeuroEngine) is the intellectual property
+ * This recommendation algorithm (MawjaNeuroEngine) is the intellectual property
  * of the Flow project. Any use of this code in other projects must
  * explicitly credit "Flow Android Client" and link back to the original repository.
  */
@@ -104,7 +104,7 @@ data class UserBrain(
     /**
      * Hard suppression: video IDs that must NOT appear in ranked results.
      * Maps videoId → timestamp when suppression was applied. Entries never expire;
-     * only the oldest are dropped past FlowNeuroEngine.MAX_SUPPRESSED_VIDEOS.
+     * only the oldest are dropped past MawjaNeuroEngine.MAX_SUPPRESSED_VIDEOS.
      */
     val suppressedVideoIds: Map<String, Long> = emptyMap(),
     /**
@@ -174,7 +174,7 @@ enum class InteractionType {
 
 // ── Persona ──
 
-enum class FlowPersona(
+enum class MawjaPersona(
     @StringRes val titleRes: Int,
     @StringRes val descriptionRes: Int,
     val icon: String,

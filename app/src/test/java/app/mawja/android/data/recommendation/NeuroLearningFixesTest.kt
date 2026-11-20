@@ -211,7 +211,7 @@ class NeuroLearningFixesTest {
         val discovery = NeuroDiscovery(NeuroTopicCatalog.TOPIC_CATEGORIES, tokenizer)
 
         val queries =
-            discovery.generateQueries(brain, NeuroEval.FIXED_NOW, depth = 0) { FlowPersona.EXPLORER }
+            discovery.generateQueries(brain, NeuroEval.FIXED_NOW, depth = 0) { MawjaPersona.EXPLORER }
         val servedClusters = queries.mapNotNull { it.clusterKey }.toSet()
 
         // All six groups (gaming, cooking, guitar, physics, chess, woodworking)
@@ -227,7 +227,7 @@ class NeuroLearningFixesTest {
 
         fun deepDives(depth: Int) =
             discovery
-                .generateQueries(brain, NeuroEval.FIXED_NOW, depth) { FlowPersona.EXPLORER }
+                .generateQueries(brain, NeuroEval.FIXED_NOW, depth) { MawjaPersona.EXPLORER }
                 .filter { it.strategy == QueryStrategy.DEEP_DIVE }
                 .map { it.query }
                 .toSet()
@@ -249,7 +249,7 @@ class NeuroLearningFixesTest {
         val brain = NeuroBenchmark.brainFor(universe)
         val surface =
             NeuroDiscovery(NeuroTopicCatalog.TOPIC_CATEGORIES, tokenizer)
-                .generateQueries(brain, NeuroEval.FIXED_NOW, depth = 0) { FlowPersona.EXPLORER }
+                .generateQueries(brain, NeuroEval.FIXED_NOW, depth = 0) { MawjaPersona.EXPLORER }
                 .filter { it.strategy == QueryStrategy.DEEP_DIVE }
                 .map { it.query }
 

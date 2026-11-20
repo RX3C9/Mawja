@@ -38,13 +38,13 @@ import app.mawja.android.ui.TabScrollEventBus
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.section.HomeSectionType
 import app.mawja.android.ui.components.music.section.MusicHomeLibrary
 import app.mawja.android.ui.components.music.section.musicHomeFeed
 import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowPullToRefreshBox
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaPullToRefreshBox
 import app.mawja.android.ui.components.shared.MusicScreenShimmerLoading
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
@@ -151,7 +151,7 @@ fun EnhancedMusicScreen(
 
     Scaffold(
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = stringResource(R.string.screen_title_music),
                 actions = {
                     IconButton(onClick = onSearchClick) {
@@ -187,7 +187,7 @@ fun EnhancedMusicScreen(
                 }
 
                 uiState.error != null && uiState.trendingSongs.isEmpty() -> {
-                    FlowErrorState(
+                    MawjaErrorState(
                         error = uiState.error ?: stringResource(R.string.error_occurred),
                         onRetry = { viewModel.retry() },
                     )
@@ -216,7 +216,7 @@ fun EnhancedMusicScreen(
                         }
                     val pullState = rememberPullToRefreshState()
 
-                    FlowPullToRefreshBox(
+                    MawjaPullToRefreshBox(
                         isRefreshing = uiState.isLoading,
                         onRefresh = { viewModel.refresh() },
                         state = pullState,

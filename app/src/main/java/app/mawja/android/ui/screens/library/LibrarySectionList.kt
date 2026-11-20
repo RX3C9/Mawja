@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.ui.components.library.LibraryNavigationRow
 import app.mawja.android.ui.components.library.LibrarySection
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 
 @Composable
 internal fun LibrarySectionList(
@@ -20,7 +20,7 @@ internal fun LibrarySectionList(
     counts: LibraryCounts?,
     onOpenSection: (LibrarySection) -> Unit,
 ) {
-    Column(modifier = Modifier.widthIn(max = FlowMaxContentWidth).padding(horizontal = 16.dp)) {
+    Column(modifier = Modifier.widthIn(max = MawjaMaxContentWidth).padding(horizontal = 16.dp)) {
         LibrarySectionHeader(stringResource(R.string.library_section_header))
         sections.forEach { section ->
             LibrarySectionRow(section, counts) { onOpenSection(section) }

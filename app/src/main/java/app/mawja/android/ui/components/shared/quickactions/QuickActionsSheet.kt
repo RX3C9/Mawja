@@ -45,11 +45,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.mawja.android.ui.components.shared.FlowModalSheetDefaults
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSheetHeader
-import app.mawja.android.ui.components.shared.FlowSheetPresenter
+import app.mawja.android.ui.components.shared.MawjaModalSheetDefaults
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
+import app.mawja.android.ui.components.shared.MawjaSheetPresenter
 import app.mawja.android.ui.components.shared.LocalFlowSheetPresenter
 import app.mawja.android.ui.components.shared.connectedButtonShapes
 import app.mawja.android.ui.components.shared.flowRowGroupShape
@@ -131,8 +131,8 @@ fun QuickActionsSheet(
         onDismissRequest = dismissRequest,
         sheetState = sheetState,
         properties = properties,
-        modifier = FlowModalSheetDefaults.modifier,
-        contentWindowInsets = FlowModalSheetDefaults.contentWindowInsets,
+        modifier = MawjaModalSheetDefaults.modifier,
+        contentWindowInsets = MawjaModalSheetDefaults.contentWindowInsets,
     ) {
         BackHandler(enabled = onBack != null) { onBack?.invoke() }
         Column(
@@ -150,7 +150,7 @@ fun QuickActionsSheet(
 /** A presenter has no hide animation of its own to wait for, so every way out closes at once. */
 @Composable
 private fun PresentedQuickActionsSheet(
-    presenter: FlowSheetPresenter,
+    presenter: MawjaSheetPresenter,
     onDismiss: () -> Unit,
     page: Any?,
     onBack: (() -> Unit)?,
@@ -221,7 +221,7 @@ fun QuickActionsPageHeader(
     onBack: () -> Unit,
     onClose: () -> Unit,
 ) {
-    FlowSheetHeader(
+    MawjaSheetHeader(
         title = title,
         onClose = onClose,
         onBack = onBack,
@@ -325,8 +325,8 @@ fun QuickActionsGroup(
     rows: List<QuickActionRow>,
 ) {
     if (rows.isEmpty()) return
-    if (title != null) FlowSectionHeader(text = title)
-    FlowRowGroup {
+    if (title != null) MawjaSectionHeader(text = title)
+    MawjaRowGroup {
         rows.forEachIndexed { index, row ->
             key(row.key) { row.content(flowRowGroupShape(index = index, count = rows.size)) }
         }

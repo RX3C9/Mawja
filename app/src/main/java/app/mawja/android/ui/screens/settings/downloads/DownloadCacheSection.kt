@@ -45,9 +45,9 @@ import app.mawja.android.ui.components.settings.SettingsListScope
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.data.repository.StorageGuard
 import android.content.Context
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.screens.settings.index.DownloadsIndex
 
 private val UsageSpacing = 8.dp
@@ -112,10 +112,10 @@ internal fun DownloadCacheLimitDialog(
     val selected by state.collectAsStateWithLifecycle()
     val artwork = type == MediaCacheType.ARTWORK
     val options = if (artwork) MediaCacheSizes.ARTWORK_OPTIONS_MB else MediaCacheSizes.MEDIA_OPTIONS_MB
-    FlowChoiceDialog(
+    MawjaChoiceDialog(
         title = stringResource(type.sizeTitle()),
         description = stringResource(R.string.cache_size_applies_on_restart),
-        options = options.map { FlowChoice(it, stringResource(cacheSizeLabel(it, artwork))) },
+        options = options.map { MawjaChoice(it, stringResource(cacheSizeLabel(it, artwork))) },
         selected = selected,
         onSelect = { viewModel.setLimit(type, it) },
         onDismiss = onDismiss,
@@ -240,7 +240,7 @@ private fun CacheRow(
         TextButton(onClick = { viewModel.clear(type) }) { Text(stringResource(R.string.clear)) }
     }
     if (onClick != null) {
-        FlowNavRow(
+        MawjaNavRow(
             title = stringResource(type.title()),
             supportingText = summary,
             onClick = onClick,

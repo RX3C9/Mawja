@@ -1187,16 +1187,8 @@
     <string name="location_badge_recommended">권장</string>
     <string name="location_badge_active">사용 중</string>
     <string name="select_threads_count_desc">스레드 수 선택(1~8):</string>
-    <string name="support_flow_patreon">Patreon에서 Mawja 후원</string>
     <string name="thank_you_support_message">후원해 주셔서 감사합니다! ❤️</string>
     <string name="address_copied_toast">주소를 클립보드에 복사했습니다</string>
-    <string name="donation_address_clip_label">기부 주소</string>
-    <string name="donation_prompt_title">Mawja를 잘 사용하고 계신가요?</string>
-    <string name="donation_prompt_message">Mawja는 무료 오픈 소스이며 광고와 추적기 없이 만들어졌습니다. 기기에서 유용하게 사용하고 있다면 개발 후원을 고려해 주세요. 프로젝트를 계속 유지하는 데 정말 큰 도움이 됩니다.</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">개발 후원</string>
-    <string name="donation_prompt_later">나중에</string>
-    <string name="donation_prompt_never">다시 표시하지 않음</string>
     <string name="about_creator">개발자</string>
     <string name="about_website">웹사이트</string>
     <string name="github_subtitle">소스 코드 및 문제 보고</string>

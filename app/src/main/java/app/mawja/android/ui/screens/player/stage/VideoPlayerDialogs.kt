@@ -9,7 +9,7 @@ import androidx.media3.common.util.UnstableApi
 import app.mawja.android.R
 import app.mawja.android.data.model.Comment
 import app.mawja.android.data.model.Video
-import app.mawja.android.ui.components.shared.FlowNoteEditorDialog
+import app.mawja.android.ui.components.shared.MawjaNoteEditorDialog
 import app.mawja.android.ui.screens.player.dialogs.PlayerBottomSheetsContainer
 import app.mawja.android.ui.screens.player.dialogs.PlayerDialogsContainer
 import app.mawja.android.ui.screens.player.dialogs.SbSubmitSegmentDialog
@@ -70,7 +70,7 @@ internal fun VideoPlayerDialogs(
     if (screenState.activeSheet == PlayerSheet.Note) {
         val note by playerViewModel.videoNote.collectAsStateWithLifecycle()
         val insertPositionMs = remember { screenState.currentPosition.takeUnless { video.isLive } }
-        FlowNoteEditorDialog(
+        MawjaNoteEditorDialog(
             initialText = note.orEmpty(),
             title = stringResource(R.string.note_video_title),
             onSave = { text -> playerViewModel.saveVideoNote(video.id, text) },

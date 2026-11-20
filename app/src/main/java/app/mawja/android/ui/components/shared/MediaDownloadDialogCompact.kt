@@ -210,10 +210,10 @@ fun MediaDownloadDialogCompact(
             Column(
                 modifier =
                     Modifier.padding(
-                        start = FlowDialogDefaults.ContentPadding,
-                        top = FlowDialogDefaults.ContentPadding,
-                        end = FlowDialogDefaults.ContentPadding,
-                        bottom = FlowDialogDefaults.BottomPadding,
+                        start = MawjaDialogDefaults.ContentPadding,
+                        top = MawjaDialogDefaults.ContentPadding,
+                        end = MawjaDialogDefaults.ContentPadding,
+                        bottom = MawjaDialogDefaults.BottomPadding,
                     ),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -242,15 +242,15 @@ fun MediaDownloadDialogCompact(
                 Spacer(Modifier.height(16.dp))
 
                 if (hasVideo && hasAudio) {
-                    FlowConnectedToggleGroup(
+                    MawjaConnectedToggleGroup(
                         options =
                             listOf(
-                                FlowToggleOption(
+                                MawjaToggleOption(
                                     value = false,
                                     label = stringResource(R.string.video),
                                     icon = Icons.Outlined.VideoLibrary,
                                 ),
-                                FlowToggleOption(
+                                MawjaToggleOption(
                                     value = true,
                                     label = stringResource(R.string.download_audio),
                                     icon = Icons.Outlined.MusicNote,
@@ -345,7 +345,7 @@ fun MediaDownloadDialogCompact(
                     }
                 }
 
-                Spacer(Modifier.height(FlowDialogDefaults.ActionsSpacing))
+                Spacer(Modifier.height(MawjaDialogDefaults.ActionsSpacing))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

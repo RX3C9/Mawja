@@ -9,11 +9,11 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 
-internal val SettingsRowGap = FlowSegmentedGap
+internal val SettingsRowGap = MawjaSegmentedGap
 private val GroupHeaderTopPadding = 8.dp
 
 /** Lines the header text up with the row titles below it, whose own padding is 16 dp. */
@@ -53,7 +53,7 @@ class SettingsListScope internal constructor(
         lazy.item(key = keys.add(key)) {
             SettingsColumnFrame(Modifier.padding(horizontal = GroupHeaderInset)) {
                 SettingsHighlightFrame(key = key, shape = RectangleShape) {
-                    FlowSectionHeader(
+                    MawjaSectionHeader(
                         text = stringResource(text),
                         modifier = Modifier.padding(top = GroupHeaderTopPadding),
                     )

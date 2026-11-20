@@ -63,7 +63,7 @@ class AppFontTest {
     @Test
     fun `built-in choices never touch the custom file`() {
         val file = temp.newFile("custom.ttf")
-        assertThat(appFontFamily(AppFont.SYSTEM, file) { error("not loaded") }).isEqualTo(FlowFontFamily)
+        assertThat(appFontFamily(AppFont.SYSTEM, file) { error("not loaded") }).isEqualTo(MawjaSansFontFamily)
         assertThat(appFontFamily(AppFont.SERIF, file) { error("not loaded") }).isEqualTo(FontFamily.Serif)
         assertThat(appFontFamily(AppFont.MAWJA, file) { error("not loaded") }).isEqualTo(MawjaFontFamily)
     }

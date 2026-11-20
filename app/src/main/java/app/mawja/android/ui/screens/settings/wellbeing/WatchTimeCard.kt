@@ -24,7 +24,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.stats.spentTimeLabel
 import java.time.format.TextStyle
 import java.util.Locale
@@ -58,7 +58,7 @@ internal fun WatchTimeCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (summary == null) {
-                Box(Modifier.fillMaxWidth().height(ChartHeight), contentAlignment = Alignment.Center) { FlowLoadingIndicator() }
+                Box(Modifier.fillMaxWidth().height(ChartHeight), contentAlignment = Alignment.Center) { MawjaLoadingIndicator() }
                 return@Column
             }
             Text(

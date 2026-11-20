@@ -47,12 +47,12 @@ import app.mawja.android.data.local.entity.NotificationEntity
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowSegmentShape
 import kotlinx.coroutines.launch
 import java.time.ZoneId
@@ -96,7 +96,7 @@ fun NotificationScreen(
             SnackbarHost(snackbarHostState, Modifier.floatAboveBottomChrome(LocalFlowBottomInsets.current))
         },
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = stringResource(R.string.notifications),
                 onBack = onBackClick,
                 actions = {
@@ -118,7 +118,7 @@ fun NotificationScreen(
         }
         Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.TopCenter) {
             LazyColumn(
-                modifier = Modifier.widthIn(max = FlowMaxContentWidth).fillMaxWidth(),
+                modifier = Modifier.widthIn(max = MawjaMaxContentWidth).fillMaxWidth(),
                 contentPadding =
                     PaddingValues(
                         start = GroupPadding,
@@ -128,7 +128,7 @@ fun NotificationScreen(
             ) {
                 sections.forEach { section ->
                     item(key = section.bucket, contentType = "header") {
-                        FlowSectionHeader(stringResource(section.bucket.titleRes))
+                        MawjaSectionHeader(stringResource(section.bucket.titleRes))
                     }
                     itemsIndexed(section.items, key = { _, item -> item.id }, contentType = { _, _ -> "row" }) { index, item ->
                         NotificationRow(
@@ -138,7 +138,7 @@ fun NotificationScreen(
                             shape = flowSegmentShape(index, section.items.size),
                             onClick = { onNotificationClick(item.videoId) },
                             onDismiss = { remove(item) },
-                            modifier = Modifier.animateItem().padding(bottom = FlowSegmentedGap),
+                            modifier = Modifier.animateItem().padding(bottom = MawjaSegmentedGap),
                         )
                     }
                 }
@@ -164,7 +164,7 @@ private fun EmptyInbox(
     onOpenSettings: () -> Unit,
     modifier: Modifier,
 ) {
-    FlowEmptyState(
+    MawjaEmptyState(
         title = stringResource(R.string.peace_and_quiet),
         subtitle = stringResource(R.string.notifications_empty_body),
         icon = Icons.Outlined.NotificationsNone,
@@ -184,7 +184,7 @@ private fun ClearAllDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         icon = { Icon(Icons.Outlined.DeleteSweep, contentDescription = null) },
         title = { Text(stringResource(R.string.notifications_clear_title)) },

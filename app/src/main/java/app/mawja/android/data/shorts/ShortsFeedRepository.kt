@@ -16,7 +16,7 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.data.model.toShortVideo
 import app.mawja.android.data.model.toVideo
 import app.mawja.android.data.recommendation.FeedExclusions
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.ShortsSeedInput
 import app.mawja.android.data.recommendation.ShortsSeedSource
 import app.mawja.android.data.shorts.feed.InnerTubeShortsFeedSources
@@ -67,7 +67,7 @@ class ShortsFeedRepository
         /** The first page. A fresh pager is reused on a seedless open, so a return visit costs nothing. */
         suspend fun openFeed(seedVideoId: String?): List<ShortVideo> =
             withContext(PerformanceDispatcher.networkIO) {
-                FlowNeuroEngine.initialize(context)
+                MawjaNeuroEngine.initialize(context)
                 lock.withLock {
                     val existing = pager
                     if (seedVideoId == null && existing != null && System.currentTimeMillis() - openedAtMillis < FEED_TTL_MS) {
@@ -101,8 +101,8 @@ class ShortsFeedRepository
         suspend fun recordShown(videoId: String) {
             if (videoId.isBlank()) return
             runCatching {
-                FlowNeuroEngine.initialize(context)
-                FlowNeuroEngine.recordSeenShorts(listOf(videoId))
+                MawjaNeuroEngine.initialize(context)
+                MawjaNeuroEngine.recordSeenShorts(listOf(videoId))
             }.onFailure { Log.w(TAG, "Failed to record shown Short $videoId", it) }
         }
 
@@ -152,13 +152,13 @@ class ShortsFeedRepository
             }.getOrElse { emptyList() }
 
         private suspend fun excludedChannelIds(): Set<String> =
-            runCatching { FlowNeuroEngine.getExcludedChannelIds() }.getOrDefault(emptySet())
+            runCatching { MawjaNeuroEngine.getExcludedChannelIds() }.getOrDefault(emptySet())
 
         private suspend fun feedExclusions(): FeedExclusions =
-            runCatching { FlowNeuroEngine.feedExclusions() }.getOrDefault(FeedExclusions.NONE)
+            runCatching { MawjaNeuroEngine.feedExclusions() }.getOrDefault(FeedExclusions.NONE)
 
         private suspend fun blockedTextMatcher(): (String, String) -> Boolean =
-            runCatching { FlowNeuroEngine.blockedContentMatcher() }.getOrElse { { _, _ -> false } }
+            runCatching { MawjaNeuroEngine.blockedContentMatcher() }.getOrElse { { _, _ -> false } }
 
         private suspend fun watchedReelIds(): Set<String> {
             if (!playerPreferences.hideWatchedShorts.first()) return emptySet()
@@ -170,31 +170,31 @@ class ShortsFeedRepository
                 override suspend fun rank(
                     videos: List<Video>,
                     subscribedChannelIds: Set<String>,
-                ): List<Video> = runCatching { FlowNeuroEngine.rank(videos, subscribedChannelIds) }.getOrDefault(videos)
+                ): List<Video> = runCatching { MawjaNeuroEngine.rank(videos, subscribedChannelIds) }.getOrDefault(videos)
 
                 override suspend fun discoveryQueries(resetDepth: Boolean): List<String> =
-                    runCatching { FlowNeuroEngine.generateDiscoveryQueries(resetDepth) }.getOrDefault(emptyList())
+                    runCatching { MawjaNeuroEngine.generateDiscoveryQueries(resetDepth) }.getOrDefault(emptyList())
 
                 override suspend fun selectSeeds(
                     candidates: List<ShortsSeedInput>,
                     maxSeeds: Int,
-                ): List<String> = runCatching { FlowNeuroEngine.selectShortsSeeds(candidates, maxSeeds) }.getOrDefault(emptyList())
+                ): List<String> = runCatching { MawjaNeuroEngine.selectShortsSeeds(candidates, maxSeeds) }.getOrDefault(emptyList())
 
                 override suspend fun reportQueryNovelty(
                     query: String,
                     novelRatio: Double,
                 ) {
-                    runCatching { FlowNeuroEngine.reportQueryResultNovelty(query, novelRatio) }
+                    runCatching { MawjaNeuroEngine.reportQueryResultNovelty(query, novelRatio) }
                 }
 
                 override suspend fun recentlyShownIds(): Set<String> =
-                    runCatching { FlowNeuroEngine.getRecentlyShownVideoIds() }.getOrDefault(emptySet())
+                    runCatching { MawjaNeuroEngine.getRecentlyShownVideoIds() }.getOrDefault(emptySet())
             }
 
         private val feedContext =
             object : ShortsFeedContext {
                 override suspend fun profile(): ShortsFeedProfile {
-                    val interactions = runCatching { FlowNeuroEngine.getBrainSnapshot().totalInteractions }.getOrDefault(0)
+                    val interactions = runCatching { MawjaNeuroEngine.getBrainSnapshot().totalInteractions }.getOrDefault(0)
                     return ShortsFeedProfile(
                         subscribedChannelIds = subscriptionRepository.getAllSubscriptionIds(),
                         isColdStart = interactions < COLD_START_INTERACTIONS,
@@ -202,10 +202,10 @@ class ShortsFeedRepository
                 }
 
                 override suspend fun filters(): ShortsFeedFilters {
-                    val brain = runCatching { FlowNeuroEngine.getBrainSnapshot() }.getOrNull()
+                    val brain = runCatching { MawjaNeuroEngine.getBrainSnapshot() }.getOrNull()
                     return ShortsFeedFilters(
                         watchedIds = watchedReelIds(),
-                        seenIds = runCatching { FlowNeuroEngine.getRecentlySeenShorts() }.getOrDefault(emptySet()),
+                        seenIds = runCatching { MawjaNeuroEngine.getRecentlySeenShorts() }.getOrDefault(emptySet()),
                         suppressedIds = brain?.suppressedVideoIds?.keys.orEmpty(),
                         excludedChannelIds = excludedChannelIds(),
                         isBlockedText = blockedTextMatcher(),

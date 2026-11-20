@@ -24,7 +24,7 @@ import app.mawja.android.ui.components.settings.SettingsGroupScope
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.screens.settings.index.ScrobblingIndex
 
 /** Last.fm, Libre.fm and ListenBrainz accounts, the viewer's own Last.fm key, and what gets sent. */
@@ -163,7 +163,7 @@ private fun SettingsGroupScope.account(
                 !ready -> labels.needsKey
                 else -> labels.notSignedIn
             }
-        FlowNavRow(
+        MawjaNavRow(
             title = stringResource(ScrobblingIndex.account(service).title),
             supportingText = value,
             enabled = account != null || ready,

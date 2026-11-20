@@ -670,7 +670,6 @@
     <string name="mawja_support_issue">بلّغ عن مشكلة</string>
     <string name="thank_you_support_message">شكراً لدعمكم! ❤️</string>
     <string name="address_copied_toast">تم نسخ العنوان إلى الحافظة</string>
-    <string name="donation_address_clip_label">عنوان التبرع</string>
     <string name="about_creator">المنشئ</string>
     <string name="about_website">الموقع الإلكتروني</string>
     <string name="github_subtitle">شفرة المصدر و المشاكل</string>
@@ -1314,7 +1313,6 @@
     <string name="settings_item_app_language_subtitle">استخدم لغة جهازك أو اختر لغة يدويًا</string>
     <string name="settings_language_dialog_title">إختر لغة التطبيق</string>
     <string name="settings_language_system_default">‌الإفتراضي للنظام</string>
-    <string name="support_flow_patreon">إدعم موجة على Patreon</string>
     <string name="select_text">حدد النص</string>
     <string name="resume">إستأنف</string>
     <string name="import_playlists_section_title">قوائم التشغيل</string>
@@ -1616,12 +1614,6 @@
     <string name="live_chat_show">إظهار الدردشة</string>
     <string name="live_chat_hide">إخفاء الدردشة</string>
     <string name="live_chat_jump_to_latest">إنتقل إلى أحدث رسالة دردشة</string>
-    <string name="donation_prompt_title">هل تستمتع بموجة؟</string>
-    <string name="donation_prompt_message">موجة مجاني ومفتوح المصدر وخالٍ من الإعلانات. إذا كان موجة يستحق مكانًا على هاتفك، فإن القليل من الدعم يساعد على استمراره.</string>
-    <string name="donation_prompt_methods">Open Collective · Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">إدعم التطوير</string>
-    <string name="donation_prompt_later">رُبما لاحقاً</string>
-    <string name="donation_prompt_never">لا تظهر مجدداً</string>
     <string name="library_local_media_label">الوسائط المحلية</string>
     <string name="library_local_media_subtitle">شَغٍل مقاطع الفيديو و الموسيقى على هذا الجهاز</string>
     <string name="local_media_title">الوسائط المحلية</string>
@@ -2275,7 +2267,6 @@
     <string name="settings_search_no_results">لم يتم العثور على إعدادات لـ %1$s</string>
     <string name="settings_lyrics_provider_order_description">تم الترتيب من الأعلى إلى الأسفل. اسحب لإعادة الترتيب.</string>
     <string name="import_running_background">يمكنك مغادرة هذه الشاشة. سيستمر الاستيراد في الخلفية.</string>
-    <string name="donations_cryptocurrency">العملات المشفرة</string>
     <string name="import_no_history_entries">لم يتم العثور على أي مدخلات لسجل المشاهدة في الملف</string>
     <string name="import_no_videos">لم يتم العثور على أي فيديوهات في ملف قائمة التشغيل</string>
     <string name="import_no_content">لم يتم العثور على أي محتوى قابل للاستيراد في هذه النسخة الاحتياطية</string>
@@ -4661,7 +4652,6 @@
     </plurals>
     <string name="deep_flow_on_search_title">إظهار في البحث</string>
     <string name="deep_flow_on_search_subtitle">مفتاح تبديل Deep موجة فوق عمليات البحث الأخيرة</string>
-    <string name="support_flow_open_collective">ادعم موجة على Open Collective</string>
     <string name="auto_tab_for_you">مقترح لك</string>
     <string name="auto_tab_queue">قائمة التشغيل</string>
     <string name="taste_unknown_channel">قناة غير معروفة</string>
@@ -5410,4 +5400,35 @@
     <string name="qr_camera_unavailable">الكاميرا مش متاحة على الجهاز ده. استخدم كود المزامنة بدلها.</string>
     <string name="settings_backup_mirrors_title">خوادم احتياطية</string>
     <string name="settings_backup_mirrors_summary">لو يوتيوب رفض التشغيل (بيحظر أحيانًا الـVPN والشبكات المشتركة)، يشغّل عبر خوادم Invidious العامة. بيتبعت لها رقم الفيديو بس، ويوتيوب مش بيشوف عنوانك.</string>
+    <string name="lab_title">مختبر موجة</string>
+    <string name="lab_summary">رئيسية بتمشي مع مزاجك وحارس وقت هادي</string>
+    <string name="lab_keywords">مختبر، مزاج، تركيز، هدوء، ضحك، تعلم، حارس، استراحة، تشغيل تلقائي</string>
+    <string name="lab_section_feed">الرئيسية بتاعتك</string>
+    <string name="lab_mood">المزاج</string>
+    <string name="lab_mood_summary">بيميّل الرئيسية ناحية مزاجك من غير ما يخفي حاجة</string>
+    <string name="lab_mood_off">مقفول</string>
+    <string name="lab_mood_focus">تركيز</string>
+    <string name="lab_mood_laugh">ضحك</string>
+    <string name="lab_mood_learn">تعلّم</string>
+    <string name="lab_mood_calm">هدوء</string>
+    <string name="lab_guardian">حارس الوقت</string>
+    <string name="lab_guardian_summary">يقترح استراحة لما الفيديوهات تشتغل ورا بعض من غير ما تختار</string>
+    <string name="lab_guardian_title">نِفَس صغير؟</string>
+    <string name="lab_guardian_message">كام فيديو اشتغلوا لوحدهم ورا بعض. تكمّل ولا تاخد استراحة قصيرة؟</string>
+    <string name="lab_guardian_continue">كمّل</string>
+    <string name="lab_guardian_break">استراحة</string>
+    <string name="lab_budget_title">عندي دقايق</string>
+    <string name="lab_budget_message">اختار وقتك وموجة ترتّبلك أحسن فيديوهات من صفحتك تخلص فيه.</string>
+    <string name="lab_budget_minutes">%1$d دقيقة</string>
+    <string name="lab_budget_mix_title">دقايقك الـ%1$d</string>
+    <string name="lab_budget_empty">مفيش حاجة في صفحتك تناسب الوقت ده دلوقتي</string>
+    <string name="lab_surprise_title">فاجئني</string>
+    <string name="lab_section_stats">أسبوعك على موجة</string>
+    <string name="lab_stats_minutes">اتفرجت الأسبوع ده</string>
+    <string name="lab_stats_minutes_value">حوالي %1$d دقيقة في %2$d فيديو</string>
+    <string name="lab_stats_average">المتوسط اليومي</string>
+    <string name="lab_stats_average_value">%1$d دقيقة في اليوم</string>
+    <string name="lab_stats_top_channel">أكتر قناة اتفرجت عليها</string>
+    <string name="lab_stats_mix">موسيقى وشورتس</string>
+    <string name="lab_stats_mix_value">%1$d%% موسيقى، %2$d%% شورتس</string>
 </resources>

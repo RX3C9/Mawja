@@ -19,7 +19,7 @@ import app.mawja.android.data.localmedia.LocalMediaIds
 import app.mawja.android.data.model.Comment
 import app.mawja.android.data.model.Video
 import app.mawja.android.player.EnhancedPlayerManager
-import app.mawja.android.ui.components.shared.FlowNoteEditorDialog
+import app.mawja.android.ui.components.shared.MawjaNoteEditorDialog
 import app.mawja.android.ui.components.shared.SaveVideoSheet
 import app.mawja.android.ui.components.shared.rememberVideoShareAction
 import app.mawja.android.ui.components.shared.shareMediaFiles
@@ -223,7 +223,7 @@ internal fun VideoInfoContent(
 
     if (showNoteEditor && videoNotesEnabled) {
         val insertPositionMs = remember { EnhancedPlayerManager.getInstance().getCurrentPosition().takeUnless { video.isLive } }
-        FlowNoteEditorDialog(
+        MawjaNoteEditorDialog(
             initialText = videoNote.orEmpty(),
             title = stringResource(R.string.note_video_title),
             onSave = { text -> viewModel.saveVideoNote(video.id, text) },

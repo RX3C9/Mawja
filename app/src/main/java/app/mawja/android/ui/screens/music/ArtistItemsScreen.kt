@@ -33,14 +33,14 @@ import app.mawja.android.innertube.models.PlaylistItem
 import app.mawja.android.innertube.models.SongItem
 import app.mawja.android.innertube.models.YTItem
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.item.MusicCardOverflowButton
 import app.mawja.android.ui.components.music.item.MusicCollectionCard
 import app.mawja.android.ui.components.music.item.MusicTrackItem
 import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
 import app.mawja.android.ui.components.music.sheet.toCollectionActionItem
-import app.mawja.android.ui.components.shared.FlowFeedProgress
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaFeedProgress
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.flowArtistShape
 
 private val GridCellMinWidth = 150.dp
@@ -98,7 +98,7 @@ fun ArtistItemsScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = artistItemsPage?.title ?: "",
                 onBack = onBackClick,
             )
@@ -111,7 +111,7 @@ fun ArtistItemsScreen(
                     .fillMaxSize(),
         ) {
             if (isLoading) {
-                FlowLoadingIndicator()
+                MawjaLoadingIndicator()
             } else if (artistItemsPage != null) {
                 if (artistItemsPage.items.firstOrNull() is SongItem) {
                     LazyColumn(
@@ -131,7 +131,7 @@ fun ArtistItemsScreen(
                             }
                         }
                         if (isMoreLoading) {
-                            item(key = "more_loading") { FlowFeedProgress() }
+                            item(key = "more_loading") { MawjaFeedProgress() }
                         }
                     }
                 } else {
@@ -169,7 +169,7 @@ fun ArtistItemsScreen(
                             )
                         }
                         if (isMoreLoading) {
-                            item(key = "more_loading") { FlowFeedProgress() }
+                            item(key = "more_loading") { MawjaFeedProgress() }
                         }
                     }
                 }

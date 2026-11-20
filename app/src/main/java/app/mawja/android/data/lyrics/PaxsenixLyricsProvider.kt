@@ -19,7 +19,7 @@ class PaxsenixLyricsProvider : LyricsProvider {
         album: String?
     ): Result<List<LyricsEntry>> = withContext(Dispatchers.IO) {
         runCatching {
-            val context = app.mawja.android.FlowApplication.appContext
+            val context = app.mawja.android.MawjaApplication.appContext
             Paxsenix.init(context)
             val lrc = Paxsenix.getLyrics(title, artist, duration, album).getOrThrow()
             LyricsUtils.parseLyrics(lrc)

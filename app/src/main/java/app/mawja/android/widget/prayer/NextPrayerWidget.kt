@@ -57,7 +57,7 @@ import app.mawja.android.islamic.PrayerSchedule
 import app.mawja.android.widget.core.action.WidgetDeepLink
 import app.mawja.android.widget.core.component.WidgetEmptyState
 import app.mawja.android.widget.core.component.setColorProvider
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.WidgetDimens
 import app.mawja.android.widget.core.theme.WidgetText
 import app.mawja.android.widget.core.theme.widgetColorsFlow
@@ -81,7 +81,7 @@ class NextPrayerWidget : GlanceAppWidget() {
         val colors = widgetColorsFlow(context).first()
         val now = System.currentTimeMillis()
         val state = previewState(now)
-        provideContent { FlowGlanceTheme(colors) { NextPrayerContent(state, now) } }
+        provideContent { MawjaGlanceTheme(colors) { NextPrayerContent(state, now) } }
     }
 
     override suspend fun provideGlance(
@@ -98,7 +98,7 @@ class NextPrayerWidget : GlanceAppWidget() {
             currentState(TICK)
             val now = System.currentTimeMillis()
             val state = currentPrayerState(app, now)
-            FlowGlanceTheme(colors) {
+            MawjaGlanceTheme(colors) {
                 NextPrayerContent(state, now)
             }
         }

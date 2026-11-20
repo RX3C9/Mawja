@@ -31,16 +31,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.data.music.model.PlaylistDetails
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.common.rememberMusicCollectionColorScheme
 import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
 import app.mawja.android.ui.components.music.sheet.musicCollectionShareUrl
 import app.mawja.android.ui.components.music.sheet.toCollectionActionItem
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowSelectionToolbar
-import app.mawja.android.ui.components.shared.FlowSidePanes
-import app.mawja.android.ui.components.shared.FlowSortChip
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaSelectionToolbar
+import app.mawja.android.ui.components.shared.MawjaSidePanes
+import app.mawja.android.ui.components.shared.MawjaSortChip
 import app.mawja.android.ui.components.shared.quickactions.sharedQuickActionsViewModel
 import app.mawja.android.ui.components.shared.rememberFlowPaneState
 import app.mawja.android.ui.components.shared.rememberReorderableLazyListState
@@ -89,16 +89,16 @@ fun MusicCollectionScreen(
         }
 
         state.isLoading -> {
-            FlowLoadingIndicator()
+            MawjaLoadingIndicator()
         }
 
         else -> {
             Scaffold(
-                topBar = { FlowTopBar(title = "", onBack = callbacks.onBackClick) },
+                topBar = { MawjaTopBar(title = "", onBack = callbacks.onBackClick) },
                 contentWindowInsets = WindowInsets(0.dp),
                 containerColor = MaterialTheme.colorScheme.background,
             ) { padding ->
-                FlowErrorState(
+                MawjaErrorState(
                     error = stringResource(R.string.error_failed_to_load_playlist),
                     onRetry = viewModel::retry,
                     modifier = Modifier.padding(padding),
@@ -234,7 +234,7 @@ private fun CollectionContent(
                 ),
         )
     val sortChip: @Composable () -> Unit = {
-        FlowSortChip(
+        MawjaSortChip(
             options = MusicSortOrder.availableFor(state.kind, state.addedAt.isNotEmpty(), details.tracks.any { it.album.isNotBlank() }),
             selected = sortOrder,
             default = MusicSortOrder.COLLECTION,
@@ -316,7 +316,7 @@ private fun CollectionContent(
                         onReachedEnd = { if (state.showsSuggestions && !isSearching) viewModel.requestSuggestions() },
                     )
                 }
-                FlowSidePanes(
+                MawjaSidePanes(
                     panes = panes,
                     sidePaneWidth = HeaderPaneWidth,
                     sidePane = { MusicCollectionHeaderPane(headerState, headerActions) },
@@ -339,7 +339,7 @@ private fun CollectionContent(
                         }
                     },
                 )
-                FlowSelectionToolbar(
+                MawjaSelectionToolbar(
                     visible = selected != null && selected.isNotEmpty(),
                     summary = pluralStringResource(R.plurals.selected_count_template, selected?.size ?: 0, selected?.size ?: 0),
                     actions =

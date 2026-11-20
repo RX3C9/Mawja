@@ -109,7 +109,7 @@ class NeuroTasteHorizonsTest {
             )
         val discovery = NeuroDiscovery(NeuroTopicCatalog.TOPIC_CATEGORIES, NeuroTokenizer())
 
-        val queries = (0..2).flatMap { depth -> discovery.generateQueries(brain, depth = depth) { FlowPersona.INITIATE } }
+        val queries = (0..2).flatMap { depth -> discovery.generateQueries(brain, depth = depth) { MawjaPersona.INITIATE } }
 
         assertThat(queries.map { it.query.lowercase() }).containsNoneOf("ops", "modern")
         assertThat(brain.interests.topics.keys).containsExactly("call of duty", "lofi")

@@ -32,8 +32,8 @@ import app.mawja.android.ui.components.PlaylistCard
 import app.mawja.android.ui.components.PlaylistCardLayout
 import app.mawja.android.ui.components.rememberFeedGridLayout
 import app.mawja.android.ui.components.shared.FeedPagingFooter
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.MediaShortCard
 import app.mawja.android.ui.components.shared.ShortCardDefaults
 import app.mawja.android.ui.components.shared.card.MediaVideoCard
@@ -64,7 +64,7 @@ internal fun ChannelTabItems(
     onChannelClick: (String) -> Unit,
 ) {
     if (pagingItems == null || pagingItems.loadState.refresh is LoadState.Loading) {
-        FlowLoadingIndicator(modifier = Modifier.padding(top = topInset))
+        MawjaLoadingIndicator(modifier = Modifier.padding(top = topInset))
         return
     }
 
@@ -75,7 +75,7 @@ internal fun ChannelTabItems(
                     .fillMaxSize()
                     .padding(top = topInset),
             contentAlignment = Alignment.Center,
-        ) { FlowEmptyState(title = stringResource(kind.emptyLabel())) }
+        ) { MawjaEmptyState(title = stringResource(kind.emptyLabel())) }
         return
     }
 

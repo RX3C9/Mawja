@@ -15,7 +15,7 @@ import app.mawja.android.R
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.data.model.SponsorBlockCategories
 import app.mawja.android.data.repository.SponsorBlockRepository
-import app.mawja.android.ui.components.shared.FlowDialogDefaults
+import app.mawja.android.ui.components.shared.MawjaDialogDefaults
 import app.mawja.android.utils.formatDurationMillis
 import app.mawja.android.utils.parseTimestampMs
 import app.mawja.android.utils.sponsorCategoryLabelRes
@@ -58,12 +58,12 @@ internal fun SbSubmitSegmentDialog(
                     Modifier
                         .fillMaxWidth()
                         .padding(
-                            start = FlowDialogDefaults.ContentPadding,
-                            top = FlowDialogDefaults.ContentPadding,
-                            end = FlowDialogDefaults.ContentPadding,
-                            bottom = FlowDialogDefaults.BottomPadding,
+                            start = MawjaDialogDefaults.ContentPadding,
+                            top = MawjaDialogDefaults.ContentPadding,
+                            end = MawjaDialogDefaults.ContentPadding,
+                            bottom = MawjaDialogDefaults.BottomPadding,
                         ),
-                verticalArrangement = Arrangement.spacedBy(FlowDialogDefaults.ActionsSpacing),
+                verticalArrangement = Arrangement.spacedBy(MawjaDialogDefaults.ActionsSpacing),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     // Title

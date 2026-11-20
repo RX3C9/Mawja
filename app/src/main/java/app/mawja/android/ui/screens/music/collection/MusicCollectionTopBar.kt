@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
-import app.mawja.android.ui.components.layout.topbar.FlowSearchTopBar
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaSearchTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 
 /** What the top bar is doing: showing the page, searching it, or counting a selection. */
 internal class CollectionTopBarState(
@@ -44,7 +44,7 @@ internal fun MusicCollectionTopBar(
 ) {
     val selected = state.selectedCount
     if (state.searchQuery != null && selected == null) {
-        FlowSearchTopBar(
+        MawjaSearchTopBar(
             query = state.searchQuery,
             onQueryChange = actions.onQueryChange,
             onClose = actions.onCloseSearch,
@@ -53,7 +53,7 @@ internal fun MusicCollectionTopBar(
         )
         return
     }
-    FlowTopBar(
+    MawjaTopBar(
         title = if (selected != null) pluralStringResource(R.plurals.selected_count_template, selected, selected) else state.title,
         onBack = if (selected != null) actions.onClearSelection else actions.onBack,
         actions = {
@@ -64,7 +64,7 @@ internal fun MusicCollectionTopBar(
                         contentDescription = stringResource(if (state.allSelected) R.string.deselect_all else R.string.select_all),
                     )
                 }
-                return@FlowTopBar
+                return@MawjaTopBar
             }
             if (state.hasSongs) {
                 IconButton(onClick = actions.onOpenSearch) {

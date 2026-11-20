@@ -31,8 +31,8 @@ import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.choice
 import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
 import app.mawja.android.ui.components.stats.spentTimeLabel
 import app.mawja.android.ui.screens.settings.index.WellbeingIndex
 import kotlinx.coroutines.launch
@@ -176,10 +176,10 @@ internal fun WellbeingScreen(
         }
 
         WellbeingDialog.BREAK_FREQUENCY -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.frequency_dialog_title),
                 description = stringResource(R.string.frequency_description),
-                options = BreakFrequencies.map { FlowChoice(it, pluralStringResource(R.plurals.every_minutes_template, it, it)) },
+                options = BreakFrequencies.map { MawjaChoice(it, pluralStringResource(R.plurals.every_minutes_template, it, it)) },
                 selected = breakMinutes,
                 onSelect = viewModel::setBreakMinutes,
                 onDismiss = { dialog = null },

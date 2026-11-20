@@ -19,8 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -42,13 +42,13 @@ internal fun NoticesDialog(onDismiss: () -> Unit) {
             }
     }
 
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.about_notices)) },
         text = {
             val loaded = notices
             if (loaded == null) {
-                Box(Modifier.fillMaxWidth().height(LoadingHeight), contentAlignment = Alignment.Center) { FlowLoadingIndicator() }
+                Box(Modifier.fillMaxWidth().height(LoadingHeight), contentAlignment = Alignment.Center) { MawjaLoadingIndicator() }
             } else {
                 SelectionContainer(Modifier.heightIn(max = ContentMaxHeight).verticalScroll(rememberScrollState())) {
                     Text(text = loaded, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

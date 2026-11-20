@@ -1084,9 +1084,6 @@
     <string name="location_dialog_subtitle">Выбор места для сохранения скачанных файлов.</string>
     <string name="location_preset_header">Предустановленные папки</string>
     <string name="location_custom_header">Другая папка</string>
-    <string name="donation_prompt_support">Поддержать разработку</string>
-    <string name="donation_prompt_later">Возможно, позже</string>
-    <string name="donation_prompt_never">Больше не показывать</string>
     <string name="about_website">Веб-сайт</string>
     <string name="github_subtitle">Исходный код и проблемы</string>
     <string name="gnu_license_full_title">GNU General Public License</string>
@@ -1278,7 +1275,6 @@
     <string name="tap_to_recognize">Нажмите, чтобы распознать</string>
     <string name="no_match_found">Совпадений не найдено</string>
     <string name="try_again">Попробуйте снова</string>
-    <string name="donation_prompt_message">Mawja – бесплатный проект с открытым исходным кодом, без рекламы и трекеров. Если вы пользуетесь им, пожалуйста, поддержите его разработку – это действительно помогает проекту существовать.</string>
     <string name="sync_consent_note">Перед объединением будет создана резервная копия. Слияние пройдет без конфликтов: данные не будут перезаписаны или дублированы.</string>
     <string name="import_yt_history_empty_error">В этом файле не найдена история просмотра. Убедитесь, что это файл watch-history.html из YouTube Архиватора.</string>
     <string name="import_yt_playlist_empty_error">Файл CSV не содержит данных о видео. Убедитесь, что это CSV-файл плейлиста из YouTube Архиватора.</string>
@@ -1317,7 +1313,6 @@
     <string name="player_settings_overlay_comments_subtitle">Добавить кнопку для отображения комментариев в полноэкранном режиме</string>
     <string name="play_next_video_desc">Добавить в начало очереди</string>
     <string name="add_video_to_queue_desc">Добавить в конец очереди</string>
-    <string name="support_flow_patreon">Поддержать Mawja на Patreon</string>
     <string name="thank_you_support_message">Спасибо за вашу поддержку! ❤️</string>
     <string name="deep_flow_save_history_subtitle">Сохранять историю просмотров, не используя её для формирования рекомендаций</string>
     <string name="deep_flow_save_history_title">Записывать историю просмотра</string>
@@ -1435,7 +1430,6 @@
     <string name="location_badge_active">Активный</string>
     <string name="select_threads_count_desc">Выберите количество потоков (1-8):</string>
     <string name="address_copied_toast">Адрес скопирован в буфер обмена</string>
-    <string name="donation_address_clip_label">Адрес для пожертвований</string>
     <string name="similar_to">Похоже на</string>
     <string name="section_top_albums">Лучшие альбомы</string>
     <string name="section_similar_to">Похоже на %1$s</string>
@@ -1630,8 +1624,6 @@
     <string name="sleep_window">Период сна:</string>
     <string name="frequency_description">Как часто напоминать</string>
     <string name="tools_subtitle">Установите напоминания, чтобы сбалансировать свои зрительские привычки</string>
-    <string name="donation_prompt_title">Нравится Mawja?</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
     <string name="about_creator">Автор</string>
     <string name="newpipe_extractor_title">NewPipe Extractor</string>
     <string name="newpipe_extractor_subtitle">Основная библиотека парсинга</string>
@@ -2270,7 +2262,6 @@
     <string name="settings_search_no_results">Ничего не найдено по запросу: %1$s</string>
     <string name="settings_lyrics_provider_order_description">Источники проверяются по очереди. Текст берется из первого успешного ответа.</string>
     <string name="import_running_background">Вы можете закрыть этот экран – импорт продолжится в фоновом режиме.</string>
-    <string name="donations_cryptocurrency">КРИПТОВАЛЮТА</string>
     <string name="import_no_history_entries">В файле не найдена история просмотра</string>
     <string name="import_no_videos">В файле плейлиста не найдены видео</string>
     <string name="import_no_content">В резервной копии не найдены данные для импорта</string>
@@ -2965,7 +2956,6 @@
     <string name="concurrent_downloads_title">Загрузок за один раз</string>
     <string name="concurrent_downloads_summary">Сколько файлов загрузить одновременно</string>
     <string name="download_location_not_writable">Сохранить там невозможно. Использовать %1$s</string>
-    <string name="support_flow_open_collective">Поддержка Mawja на Open Collective</string>
     <string name="about_notices">Уведомления об открытом исходном коде</string>
     <string name="about_notices_summary">Списки слов и код из других проектов.</string>
     <string name="playlist_downloading_template">Загрузка: %1$s</string>

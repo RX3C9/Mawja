@@ -37,11 +37,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.local.entity.RecognitionHistoryEntity
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.common.MusicThumbnail
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaSearchField
 
 private val HistoryArtworkSize = 56.dp
 
@@ -57,7 +57,7 @@ fun RecognitionHistoryScreen(
     var showClearDialog by remember { mutableStateOf(false) }
 
     if (showClearDialog) {
-        FlowAlertDialog(
+        MawjaAlertDialog(
             onDismissRequest = { showClearDialog = false },
             title = { Text(stringResource(R.string.recognition_clear_history)) },
             text = { Text(stringResource(R.string.recognition_clear_history_body)) },
@@ -77,7 +77,7 @@ fun RecognitionHistoryScreen(
 
     Scaffold(
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = stringResource(R.string.recognition_history),
                 onBack = onBackClick,
                 actions = {
@@ -98,7 +98,7 @@ fun RecognitionHistoryScreen(
                     .fillMaxSize()
                     .padding(padding),
         ) {
-            FlowSearchField(
+            MawjaSearchField(
                 query = query,
                 onQueryChange = viewModel::onQueryChange,
                 placeholder = stringResource(R.string.recognition_search_history),
@@ -115,7 +115,7 @@ fun RecognitionHistoryScreen(
             )
 
             if (history.isEmpty()) {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(R.string.recognition_history_empty),
                     icon = Icons.Rounded.History,
                 )

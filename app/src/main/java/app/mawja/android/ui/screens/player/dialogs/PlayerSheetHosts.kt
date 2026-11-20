@@ -36,17 +36,17 @@ import app.mawja.android.data.model.toVideo
 import app.mawja.android.data.model.uploadDateMillis
 import app.mawja.android.player.EnhancedPlayerManager
 import app.mawja.android.player.state.SubtitleOption
-import app.mawja.android.ui.components.shared.FlowDescriptionBottomSheet
-import app.mawja.android.ui.components.shared.FlowNoteEditorDialog
+import app.mawja.android.ui.components.shared.MawjaDescriptionBottomSheet
+import app.mawja.android.ui.components.shared.MawjaNoteEditorDialog
 import app.mawja.android.ui.components.shared.MediaSleepTimerSheet
 import app.mawja.android.ui.components.shared.commentTimestampToMs
 import app.mawja.android.ui.components.shared.defaultSheetExpandedHeight
 import app.mawja.android.ui.components.shared.quickactions.QuickActionUndo
 import app.mawja.android.ui.components.shared.quickactions.sharedQuickActionsViewModel
 import app.mawja.android.ui.components.shared.rememberDateDisplaySettings
-import app.mawja.android.ui.components.videoplayer.sheet.FlowChaptersBottomSheet
-import app.mawja.android.ui.components.videoplayer.sheet.FlowPlaylistQueueBottomSheet
-import app.mawja.android.ui.components.videoplayer.sheet.FlowTranscriptBottomSheet
+import app.mawja.android.ui.components.videoplayer.sheet.MawjaChaptersBottomSheet
+import app.mawja.android.ui.components.videoplayer.sheet.MawjaPlaylistQueueBottomSheet
+import app.mawja.android.ui.components.videoplayer.sheet.MawjaTranscriptBottomSheet
 import app.mawja.android.ui.components.videoplayer.sheet.LiveChatList
 import app.mawja.android.ui.components.videoplayer.sheet.PlayerCommentsPanel
 import app.mawja.android.ui.components.videoplayer.sheet.TranscriptChapter
@@ -78,7 +78,7 @@ internal fun PlayerChaptersSheetHost(
     val chaptersPositionMs by remember {
         derivedStateOf { (screenState.currentPosition / 1_000L) * 1_000L }
     }
-    FlowChaptersBottomSheet(
+    MawjaChaptersBottomSheet(
         chapters = chapters,
         currentPosition = chaptersPositionMs,
         durationMs = screenState.duration,
@@ -112,7 +112,7 @@ internal fun PlayerQueueSheetHost(
     val quickActions = sharedQuickActionsViewModel()
     val removedFromQueue = stringResource(R.string.removed_from_queue)
 
-    FlowPlaylistQueueBottomSheet(
+    MawjaPlaylistQueueBottomSheet(
         queueVideos = queueVideos,
         currentQueueIndex = currentQueueIndex,
         playlistTitle = playerState.queueTitle,
@@ -159,7 +159,7 @@ internal fun PlayerDescriptionSheetHost(
     LaunchedEffect(video.id) {
         viewModel.loadDescription(video.id)
     }
-    FlowDescriptionBottomSheet(
+    MawjaDescriptionBottomSheet(
         video = video,
         descriptionPage = descriptionPage,
         tags = (listOfNotNull(video.category) + video.tags).distinct(),
@@ -181,7 +181,7 @@ internal fun PlayerDescriptionSheetHost(
 
     if (showNoteEditor && videoNotesEnabled) {
         val insertPositionMs = remember { EnhancedPlayerManager.getInstance().getCurrentPosition().takeUnless { video.isLive } }
-        FlowNoteEditorDialog(
+        MawjaNoteEditorDialog(
             initialText = videoNote.orEmpty(),
             title = stringResource(R.string.note_video_title),
             onSave = { text -> viewModel.saveVideoNote(video.id, text) },
@@ -215,7 +215,7 @@ internal fun PlayerTranscriptSheetHost(
                 TranscriptChapter(startMs = chapter.startTimeSeconds.toLong() * 1000L, title = chapter.title)
             }
         }
-    FlowTranscriptBottomSheet(
+    MawjaTranscriptBottomSheet(
         cues = transcript.cues,
         isLoading = transcript.isLoading,
         currentPositionMs = { screenState.currentPosition },

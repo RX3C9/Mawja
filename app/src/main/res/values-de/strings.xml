@@ -1092,10 +1092,6 @@
     <string name="location_badge_recommended">Vorgeschlagen</string>
     <string name="location_badge_active">Aktiv</string>
     <string name="address_copied_toast">Adresse in die Zwischenablage kopiert</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Unterstütze die Entwicklung</string>
-    <string name="donation_prompt_later">Vielleicht später</string>
-    <string name="donation_prompt_never">Nicht nochmal zeigen</string>
     <string name="about_website">Webseite</string>
     <string name="about_license">Lizenz</string>
     <string name="about_device_info">Geräteinfo</string>
@@ -1437,9 +1433,6 @@
     <string name="import_yt_history_failed_template">Der Import des Wiedergabesverlaufs ist fehlgeschlagen: %1$s</string>
     <string name="channel_error_log_clip_label">Mawja Kanal-Fehlerprotokoll</string>
     <string name="thank_you_support_message">Vielen Dank für eure Unterstützung! ❤️</string>
-    <string name="donation_address_clip_label">Adresse für Spenden</string>
-    <string name="donation_prompt_title">Gefällt dir „Mawja“?</string>
-    <string name="donation_prompt_message">Mawja ist kostenlos, Open Source und ohne Werbung oder Tracker entwickelt. Wenn die App sich einen Platz auf Ihrem Gerät verdient hat, denken Sie bitte darüber nach, die Entwicklung zu unterstützen – das trägt wirklich dazu bei, das Projekt am Leben zu erhalten.</string>
     <string name="about_creator">Entwickler</string>
     <string name="about_creator_name">Omar Mahmoud</string>
     <string name="about_website_address">rx3c9.github.io/Mawja</string>
@@ -1521,7 +1514,6 @@
     <string name="persona_scholar_title">Der Gelehrte</string>
     <string name="persona_scholar_description">Inhalte mit hohem Komplexitätsgrad. Wir sind hier, um uns weiterzuentwickeln – nicht nur, um uns unterhalten zu lassen.</string>
     <string name="persona_deep_diver_title">Der Tieftaucher</string>
-    <string name="support_flow_patreon">Unterstütze Mawja auf Patreon</string>
     <string name="persona_specialist_description">Ganz gezielt auf einige wenige Nischen ausgerichtet. Du weißt, was dir gefällt.</string>
     <string name="persona_explorer_description">Chaotisch und wunderschön. Von allem etwas.</string>
     <string name="channel_memory_empty">Es sind keine Kanäle im Speicher vorhanden.</string>

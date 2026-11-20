@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
 import app.mawja.android.ui.components.shared.ArtworkThumbnail
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.components.shared.quickactions.QuickActionRow
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsDefaults
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsGroup
@@ -94,7 +94,7 @@ fun MusicCollectionQuickActionsSheet(
             rows =
                 listOf(
                     QuickActionRow("library") { shape ->
-                        FlowNavRow(
+                        MawjaNavRow(
                             title = if (isSaved) savedLabel else stringResource(R.string.add_to_library),
                             leadingIcon = if (isSaved) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
                             onClick = { viewModel.toggleSaved(item, announce) },
@@ -108,7 +108,7 @@ fun MusicCollectionQuickActionsSheet(
                         sheet.close()
                     },
                     QuickActionRow("open") { shape ->
-                        FlowNavRow(
+                        MawjaNavRow(
                             title = stringResource(R.string.open),
                             leadingIcon = Icons.AutoMirrored.Outlined.OpenInNew,
                             onClick = {

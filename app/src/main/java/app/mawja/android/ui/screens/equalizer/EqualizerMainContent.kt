@@ -51,16 +51,16 @@ import app.mawja.android.ui.components.equalizer.PanelRow
 import app.mawja.android.ui.components.equalizer.activePresetName
 import app.mawja.android.ui.components.equalizer.formatGain
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowPaneState
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
-import app.mawja.android.ui.components.shared.FlowSidePanes
-import app.mawja.android.ui.components.shared.FlowSwitchRow
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaPaneState
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSidePanes
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 
 private val ItemInset = 12.dp
@@ -81,7 +81,7 @@ internal fun EqualizerMainContent(
     viewModel: EqualizerViewModel,
     selectedBand: Int?,
     onSelectBand: (Int?) -> Unit,
-    panes: FlowPaneState,
+    panes: MawjaPaneState,
     twoPane: Boolean,
     onOpenPresets: () -> Unit,
     onSaveAs: () -> Unit,
@@ -92,7 +92,7 @@ internal fun EqualizerMainContent(
     val list: @Composable (LazyListScope.() -> Unit) -> Unit = { content ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap),
+            verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap),
             contentPadding = PaddingValues(bottom = bottom),
             content = content,
         )
@@ -114,7 +114,7 @@ internal fun EqualizerMainContent(
         }
         return
     }
-    FlowSidePanes(
+    MawjaSidePanes(
         panes = panes,
         sidePaneWidth = SidePaneWidth,
         modifier = modifier,
@@ -160,8 +160,8 @@ private class EqSections(
     fun LazyListScope.header() {
         item("header") {
             EqFramed(Modifier.padding(top = 8.dp)) {
-                FlowRowGroup {
-                    FlowSwitchRow(
+                MawjaRowGroup {
+                    MawjaSwitchRow(
                         title = stringResource(R.string.equalizer),
                         checked = state.enabled,
                         onCheckedChange = viewModel::setEnabled,
@@ -169,7 +169,7 @@ private class EqSections(
                         shape = flowRowGroupShape(0, 2),
                     )
                     val edited = state.isEdited
-                    FlowNavRow(
+                    MawjaNavRow(
                         title = activePresetName(state),
                         supportingText = stringResource(if (edited) R.string.eq_edited else R.string.eq_presets),
                         onClick = onOpenPresets,
@@ -230,11 +230,11 @@ private class EqSections(
     fun LazyListScope.mode() {
         item("mode") {
             EqFramed(Modifier.padding(horizontal = ItemInset)) {
-                FlowConnectedToggleGroup(
+                MawjaConnectedToggleGroup(
                     options =
                         listOf(
-                            FlowToggleOption(EqMode.PARAMETRIC, stringResource(R.string.eq_mode_parametric), Icons.Rounded.Tune),
-                            FlowToggleOption(EqMode.GRAPHIC, stringResource(R.string.eq_mode_graphic), Icons.Rounded.Equalizer),
+                            MawjaToggleOption(EqMode.PARAMETRIC, stringResource(R.string.eq_mode_parametric), Icons.Rounded.Tune),
+                            MawjaToggleOption(EqMode.GRAPHIC, stringResource(R.string.eq_mode_graphic), Icons.Rounded.Equalizer),
                         ),
                     selected = state.mode,
                     onSelected = viewModel::setMode,
@@ -247,7 +247,7 @@ private class EqSections(
         item("bands-header") {
             EqFramed {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    FlowSectionHeader(stringResource(R.string.eq_bands), Modifier.weight(1f))
+                    MawjaSectionHeader(stringResource(R.string.eq_bands), Modifier.weight(1f))
                     Text(
                         text = stringResource(R.string.eq_band_count, bandList.size, EqLimits.MAX_BANDS),
                         style = MaterialTheme.typography.labelMedium,
@@ -271,7 +271,7 @@ private class EqSections(
         }
         item("add-band") {
             EqFramed(Modifier.padding(horizontal = ItemInset)) {
-                FlowNavRow(
+                MawjaNavRow(
                     title = stringResource(R.string.eq_add_band),
                     onClick = { viewModel.addBand()?.let(onSelectBand) },
                     leadingIcon = Icons.Rounded.Add,
@@ -324,10 +324,10 @@ private class EqSections(
         item("sound") {
             EqFramed {
                 Column {
-                    FlowSectionHeader(stringResource(R.string.eq_settings_section))
+                    MawjaSectionHeader(stringResource(R.string.eq_settings_section))
                     val rows = if (state.autoPreamp) 2 else 3
-                    FlowRowGroup {
-                        FlowSwitchRow(
+                    MawjaRowGroup {
+                        MawjaSwitchRow(
                             title = stringResource(R.string.eq_auto_preamp),
                             supportingText = autoPreampSummary(state),
                             checked = state.autoPreamp,
@@ -356,8 +356,8 @@ private class EqSections(
         val open = onSystemEqualizer ?: return
         item("system") {
             EqFramed(Modifier.padding(top = 16.dp)) {
-                FlowRowGroup {
-                    FlowNavRow(
+                MawjaRowGroup {
+                    MawjaNavRow(
                         title = stringResource(R.string.eq_system),
                         supportingText = stringResource(R.string.eq_system_desc),
                         onClick = open,
@@ -416,7 +416,7 @@ internal fun EqFramed(
     content: @Composable () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-        Box(modifier = Modifier.widthIn(max = FlowMaxContentWidth).fillMaxWidth().then(modifier)) { content() }
+        Box(modifier = Modifier.widthIn(max = MawjaMaxContentWidth).fillMaxWidth().then(modifier)) { content() }
     }
 }
 

@@ -42,7 +42,7 @@ import app.mawja.android.widget.core.component.WidgetRowThumb
 import app.mawja.android.widget.core.image.WidgetImageSpec
 import app.mawja.android.widget.core.image.preloadWidgetImages
 import app.mawja.android.widget.core.image.rememberWidgetImages
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.WidgetDimens
 import app.mawja.android.widget.core.theme.bakedCornerRadiusPx
 import app.mawja.android.widget.core.theme.dpToPx
@@ -66,7 +66,7 @@ class RecentlyPlayedWidget : GlanceAppWidget() {
     ) {
         val entries = withContext(Dispatchers.IO) { widgetEntryPoint(context).recentlyPlayedSource().entries() }
         val colors = widgetColorsFlow(context).first()
-        provideContent { FlowGlanceTheme(colors) { ContinueWatchingContent(entries.map { it.toItem(context, emptyMap()) }) } }
+        provideContent { MawjaGlanceTheme(colors) { ContinueWatchingContent(entries.map { it.toItem(context, emptyMap()) }) } }
     }
 
     override suspend fun provideGlance(
@@ -83,7 +83,7 @@ class RecentlyPlayedWidget : GlanceAppWidget() {
         provideContent {
             val colors by colorsFlow.collectAsState(initialColors)
             val images by rememberWidgetImages(context, specs, preloaded)
-            FlowGlanceTheme(colors) {
+            MawjaGlanceTheme(colors) {
                 ContinueWatchingContent(entries.map { it.toItem(context, images) })
             }
         }

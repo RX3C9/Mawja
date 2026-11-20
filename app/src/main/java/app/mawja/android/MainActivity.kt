@@ -34,7 +34,7 @@ import app.mawja.android.data.local.AppUiModePreferences
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.data.playlist.PlaylistImport
 import app.mawja.android.data.playlist.PlaylistTransfer
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.repository.DeArrowRepository
 import app.mawja.android.data.repository.OriginalTitleRepository
 import app.mawja.android.discord.DiscordPresenceRuntime
@@ -50,7 +50,7 @@ import app.mawja.android.player.LifecyclePlaybackPreferences
 import app.mawja.android.player.MemoryPressurePolicy
 import app.mawja.android.player.PictureInPictureHelper
 import app.mawja.android.player.PipQueueNavigation
-import app.mawja.android.ui.FlowApp
+import app.mawja.android.ui.MawjaApp
 import app.mawja.android.ui.IncomingLinks
 import app.mawja.android.ui.components.library.message
 import app.mawja.android.ui.components.shared.ProvideChannelGroupLabels
@@ -60,18 +60,18 @@ import app.mawja.android.ui.linkTextOf
 import app.mawja.android.ui.musicCollectionRoute
 import app.mawja.android.ui.screens.crash.CrashReportScreen
 import app.mawja.android.ui.screens.update.UPDATE_ROUTE
-import app.mawja.android.ui.startup.FlowTheme
+import app.mawja.android.ui.startup.MawjaTheme
 import app.mawja.android.ui.startup.SplashController
 import app.mawja.android.ui.startup.ThemeSettings
 import app.mawja.android.ui.startup.gatedBy
 import app.mawja.android.ui.startup.splashTone
 import app.mawja.android.ui.startup.themeSettings
-import app.mawja.android.ui.theme.FlowFontFamily
-import app.mawja.android.ui.theme.FlowTheme
-import app.mawja.android.ui.tv.FlowTvApp
+import app.mawja.android.ui.theme.MawjaSansFontFamily
+import app.mawja.android.ui.theme.MawjaTheme
+import app.mawja.android.ui.tv.MawjaTvApp
 import app.mawja.android.ui.utils.ProvideWindowSizeClass
 import app.mawja.android.utils.AppLanguageManager
-import app.mawja.android.utils.FlowCrashHandler
+import app.mawja.android.utils.MawjaCrashHandler
 import app.mawja.android.utils.PLAYLIST_FILE_MIME_TYPE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -209,13 +209,13 @@ class MainActivity : ComponentActivity() {
 
         // Initialize Neuro Engine (Recommendation System)
         lifecycleScope.launch(Dispatchers.IO) {
-            FlowNeuroEngine.initialize(applicationContext)
+            MawjaNeuroEngine.initialize(applicationContext)
         }
 
         val dataManager = LocalDataManager(applicationContext)
 
         lifecycleScope.launch {
-            app.mawja.android.widget.core.FlowWidgets
+            app.mawja.android.widget.core.MawjaWidgets
                 .observeThemeChanges(applicationContext)
         }
         lifecycleScope.launch(Dispatchers.Default) {
@@ -286,16 +286,16 @@ class MainActivity : ComponentActivity() {
             // Check for a crash that happened last session.
             // If found, show the CrashReportScreen instead of the normal UI.
             var pendingCrashLog by remember {
-                mutableStateOf(FlowCrashHandler.getLastCrash(applicationContext))
+                mutableStateOf(MawjaCrashHandler.getLastCrash(applicationContext))
             }
 
             if (pendingCrashLog != null) {
                 SideEffect { splashController.contentReady = true }
-                FlowTheme(theme.copy(fontFamily = FlowFontFamily)) {
+                MawjaTheme(theme.copy(fontFamily = MawjaSansFontFamily)) {
                     CrashReportScreen(
                         report = pendingCrashLog!!,
                         onContinue = {
-                            FlowCrashHandler.clearLastCrash(applicationContext)
+                            MawjaCrashHandler.clearLastCrash(applicationContext)
                             pendingCrashLog = null
                         },
                     )
@@ -305,11 +305,11 @@ class MainActivity : ComponentActivity() {
 
             // Initialize Flow Neuro Engine
             LaunchedEffect(Unit) {
-                app.mawja.android.data.recommendation.FlowNeuroEngine
+                app.mawja.android.data.recommendation.MawjaNeuroEngine
                     .initialize(applicationContext)
             }
 
-            FlowTheme(theme) {
+            MawjaTheme(theme) {
                 val splashTone = splashTone(MaterialTheme.colorScheme.background)
                 LaunchedEffect(splashTone) { splashController.rememberTheme(splashTone, appIconController.activeSuffix()) }
 
@@ -339,13 +339,13 @@ class MainActivity : ComponentActivity() {
                                 ProvideChannelGroupLabels {
                                     if (appUiRoot == AppUiRoot.TV) {
                                         SideEffect { splashController.contentReady = true }
-                                        FlowTvApp(
+                                        MawjaTvApp(
                                             deeplinkVideoId = deeplinkVideoId,
                                             isShort = isDeeplinkShort,
                                             onDeeplinkConsumed = links::consumeVideo,
                                         )
                                     } else {
-                                        FlowApp(
+                                        MawjaApp(
                                             currentTheme = theme.themeMode,
                                             themeVariant = theme.themeVariant,
                                             systemLightThemeMode = theme.systemLightThemeMode,
@@ -362,6 +362,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                                 app.mawja.android.ui.components.shared.DownloaderInstallPrompt()
+                                app.mawja.android.lab.BreakPromptHost()
                                 app.mawja.android.remote.RemoteControlOverlay(remoteConfig, entitlementsRepository, appUpdater)
                                 app.mawja.android.account.ModerationOverlay(accountBackend)
                             }
@@ -599,7 +600,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        FlowCrashHandler.recordPhase("activity", "onResume pip=$isInPictureInPictureMode")
+        MawjaCrashHandler.recordPhase("activity", "onResume pip=$isInPictureInPictureMode")
         videoLifecycleLog("onResume")
         // GlobalPlayerState outlives this Activity, so an instance destroyed straight out of PiP
         // without an onPictureInPictureModeChanged(false) would leave the flag latched true for
@@ -661,7 +662,7 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         DiscordPresenceRuntime.setAppForeground(false)
         super.onStop()
-        FlowCrashHandler.recordPhase(
+        MawjaCrashHandler.recordPhase(
             "activity",
             "onStop pip=$isInPictureInPictureMode " +
                 "backgroundPlay=${lifecyclePlaybackPreferences.settings.backgroundPlayEnabled} " +
@@ -699,7 +700,7 @@ class MainActivity : ComponentActivity() {
         if (cachedAppUiRoot == AppUiRoot.TV) return
         val explicitBackgroundPlaybackActive =
             GlobalPlayerState.isExplicitBackgroundPlaybackActive.value
-        FlowCrashHandler.recordPhase(
+        MawjaCrashHandler.recordPhase(
             "activity",
             "onUserLeaveHint autoPip=${lifecyclePlaybackPreferences.settings.autoPipEnabled} " +
                 "explicitBackground=$explicitBackgroundPlaybackActive",
@@ -747,7 +748,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        FlowCrashHandler.recordPhase("memory", "MainActivity.onTrimMemory level=$level")
+        MawjaCrashHandler.recordPhase("memory", "MainActivity.onTrimMemory level=$level")
         videoPlayerManager.get().handleMemoryPressure(
             trimLevel = level,
             videoVisible = lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) || isInPictureInPictureMode,
@@ -791,7 +792,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handOffVideoPlaybackToBackground() {
-        FlowCrashHandler.recordPhase("background-handoff", "handOffVideoPlaybackToBackground")
+        MawjaCrashHandler.recordPhase("background-handoff", "handOffVideoPlaybackToBackground")
         videoLifecycleLog("handOffVideoPlaybackToBackground")
         val playerManager =
             app.mawja.android.player.EnhancedPlayerManager
@@ -813,7 +814,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleBackgroundPlaybackOnStop() {
-        FlowCrashHandler.recordPhase("background-handoff", "handleBackgroundPlaybackOnStop")
+        MawjaCrashHandler.recordPhase("background-handoff", "handleBackgroundPlaybackOnStop")
         videoLifecycleLog("handleBackgroundPlaybackOnStop")
         val playerManager =
             app.mawja.android.player.EnhancedPlayerManager

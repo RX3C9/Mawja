@@ -39,11 +39,11 @@ import app.mawja.android.data.notes.NoteKind
 import app.mawja.android.data.notes.NoteMoments
 import app.mawja.android.ui.components.layout.flowContentPadding
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowSearchField
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaSearchField
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.components.shared.MediaThumbnail
 import app.mawja.android.utils.formatDurationMillis
 
@@ -73,7 +73,7 @@ internal fun NotesListPane(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        FlowSearchField(
+        MawjaSearchField(
             query = state.query,
             onQueryChange = onQueryChange,
             placeholder = stringResource(R.string.notes_search_placeholder),
@@ -84,12 +84,12 @@ internal fun NotesListPane(
             leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
             releaseFocusWithKeyboard = true,
         )
-        FlowConnectedToggleGroup(
+        MawjaConnectedToggleGroup(
             options =
                 listOf(
-                    FlowToggleOption(NotesFilter.All, stringResource(R.string.notes_filter_all)),
-                    FlowToggleOption(NotesFilter.Videos, stringResource(R.string.notes_filter_videos)),
-                    FlowToggleOption(NotesFilter.Channels, stringResource(R.string.notes_filter_channels)),
+                    MawjaToggleOption(NotesFilter.All, stringResource(R.string.notes_filter_all)),
+                    MawjaToggleOption(NotesFilter.Videos, stringResource(R.string.notes_filter_videos)),
+                    MawjaToggleOption(NotesFilter.Channels, stringResource(R.string.notes_filter_channels)),
                 ),
             selected = state.filter,
             onSelected = onFilterChange,
@@ -98,11 +98,11 @@ internal fun NotesListPane(
 
         when {
             state.all == null -> {
-                FlowLoadingIndicator()
+                MawjaLoadingIndicator()
             }
 
             state.all.isEmpty() -> {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(R.string.notes_empty_title),
                     subtitle = stringResource(R.string.notes_empty_body),
                     icon = Icons.Outlined.StickyNote2,
@@ -110,7 +110,7 @@ internal fun NotesListPane(
             }
 
             state.visible.isEmpty() -> {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(R.string.notes_no_match_title),
                     subtitle = stringResource(R.string.notes_no_match_body),
                     icon = Icons.Default.Search,

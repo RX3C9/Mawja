@@ -20,8 +20,8 @@ import app.mawja.android.data.local.CONTENT_LANGUAGE_FOLLOW_APP
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
 import app.mawja.android.ui.screens.settings.index.LanguageRegionIndex
 import app.mawja.android.utils.AppLanguageManager
 import app.mawja.android.utils.RegionCatalog
@@ -94,18 +94,18 @@ internal fun LanguageRegionScreen(
 
     when (dialog) {
         LanguageRegionDialog.APP_LANGUAGE -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.settings_language_dialog_title),
                 options =
                     listOf(
-                        FlowChoice(
+                        MawjaChoice(
                             AppLanguageManager.SYSTEM_DEFAULT,
                             systemDefault,
                             stringResource(R.string.settings_item_app_language_subtitle),
                         ),
                     ) +
                         appLanguages.map { option ->
-                            FlowChoice(option.tag, option.nativeName, option.localizedName.takeIf { it != option.nativeName })
+                            MawjaChoice(option.tag, option.nativeName, option.localizedName.takeIf { it != option.nativeName })
                         },
                 selected = normalizedAppLanguage,
                 onSelect = { tag ->
@@ -118,11 +118,11 @@ internal fun LanguageRegionScreen(
         }
 
         LanguageRegionDialog.CONTENT_LANGUAGE -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.music_content_language_dialog_title),
                 options =
-                    listOf(FlowChoice(CONTENT_LANGUAGE_FOLLOW_APP, followApp)) +
-                        viewModel.contentLanguages.map { FlowChoice(it.tag, it.nativeName, it.localizedName) },
+                    listOf(MawjaChoice(CONTENT_LANGUAGE_FOLLOW_APP, followApp)) +
+                        viewModel.contentLanguages.map { MawjaChoice(it.tag, it.nativeName, it.localizedName) },
                 selected = contentLanguage,
                 onSelect = viewModel::setContentLanguage,
                 onDismiss = { dialog = null },
@@ -130,9 +130,9 @@ internal fun LanguageRegionScreen(
         }
 
         LanguageRegionDialog.CONTENT_COUNTRY -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.settings_region_dialog_title),
-                options = remember { RegionCatalog.sorted().map { (code, name) -> FlowChoice(code, name) } },
+                options = remember { RegionCatalog.sorted().map { (code, name) -> MawjaChoice(code, name) } },
                 selected = contentCountry,
                 onSelect = viewModel::setContentCountry,
                 onDismiss = { dialog = null },

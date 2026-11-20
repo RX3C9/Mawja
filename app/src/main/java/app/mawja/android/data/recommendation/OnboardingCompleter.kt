@@ -10,5 +10,5 @@ class OnboardingCompleter
     constructor(
         @ApplicationContext private val context: Context,
     ) {
-        suspend fun complete(topics: Set<String>) = FlowNeuroEngine.completeOnboarding(context, topics)
+        suspend fun complete(topics: Set<String>) = MawjaNeuroEngine.completeOnboarding(context, topics)
     }

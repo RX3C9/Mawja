@@ -50,7 +50,7 @@ import app.mawja.android.ui.components.music.item.MusicCollectionCard
 import app.mawja.android.ui.components.music.item.MusicItemDensity
 import app.mawja.android.ui.components.music.item.MusicTrackItem
 import app.mawja.android.ui.components.shared.ChartRankBadge
-import app.mawja.android.ui.components.shared.FlowFilterChip
+import app.mawja.android.ui.components.shared.MawjaFilterChip
 import app.mawja.android.ui.components.shared.flowArtistShape
 import app.mawja.android.ui.components.shared.flowGridCellWidth
 import app.mawja.android.ui.components.shared.flowGridColumns
@@ -417,7 +417,7 @@ fun MusicHomeChipRow(
     ) {
         items(items = chips.distinctBy { it.title }, key = { it.title }) { chip ->
             val isSelected = selectedChipTitle == chip.title
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = chip.title,
                 selected = isSelected,
                 onClick = { onChipToggle(if (isSelected) null else chip) },

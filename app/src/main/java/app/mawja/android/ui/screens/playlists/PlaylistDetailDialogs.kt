@@ -22,7 +22,7 @@ import app.mawja.android.data.model.PlaylistInfo
 import app.mawja.android.ui.components.shared.CollectionEditDialog
 import app.mawja.android.ui.components.shared.CollectionTarget
 import app.mawja.android.ui.components.shared.DeleteCollectionDialog
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 import app.mawja.android.ui.components.shared.MergeIntoCollectionSheet
 
 /** The dialog or sheet the playlist page has open, if any. */
@@ -114,7 +114,7 @@ internal fun PlaylistDetailDialogs(
 
         PlaylistDialog.DownloadAll -> {
             val count = uiState.videos.size
-            FlowAlertDialog(
+            MawjaAlertDialog(
                 onDismissRequest = onDismiss,
                 icon = { Icon(Icons.Default.Download, contentDescription = null) },
                 title = { Text(stringResource(R.string.download_all)) },
@@ -133,7 +133,7 @@ internal fun PlaylistDetailDialogs(
 
         is PlaylistDialog.RemoveSelected -> {
             val count = dialog.ids.size
-            FlowAlertDialog(
+            MawjaAlertDialog(
                 onDismissRequest = onDismiss,
                 icon = { Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error) },
                 title = { Text(pluralStringResource(R.plurals.remove_selected_videos_title, count, count)) },

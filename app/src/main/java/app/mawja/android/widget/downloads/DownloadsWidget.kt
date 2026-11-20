@@ -40,7 +40,7 @@ import app.mawja.android.widget.core.component.WidgetRowThumb
 import app.mawja.android.widget.core.image.WidgetImageSpec
 import app.mawja.android.widget.core.image.preloadWidgetImages
 import app.mawja.android.widget.core.image.rememberWidgetImages
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.WidgetDimens
 import app.mawja.android.widget.core.theme.WidgetText
 import app.mawja.android.widget.core.theme.bakedCornerRadiusPx
@@ -66,7 +66,7 @@ class DownloadsWidget : GlanceAppWidget() {
         val downloads = withContext(Dispatchers.IO) { widgetEntryPoint(context).downloadsSource().load() }
         val colors = widgetColorsFlow(context).first()
         provideContent {
-            FlowGlanceTheme(colors) { DownloadsContent(downloads.items.map { it.toItem(context, emptyMap()) }, downloads.inProgress) }
+            MawjaGlanceTheme(colors) { DownloadsContent(downloads.items.map { it.toItem(context, emptyMap()) }, downloads.inProgress) }
         }
     }
 
@@ -96,7 +96,7 @@ class DownloadsWidget : GlanceAppWidget() {
         provideContent {
             val colors by colorsFlow.collectAsState(initialColors)
             val images by rememberWidgetImages(context, specs, preloaded)
-            FlowGlanceTheme(colors) {
+            MawjaGlanceTheme(colors) {
                 DownloadsContent(downloads.items.map { it.toItem(context, images) }, downloads.inProgress)
             }
         }

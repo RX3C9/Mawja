@@ -44,8 +44,8 @@ import app.mawja.android.R
 import app.mawja.android.data.model.Channel
 import app.mawja.android.data.model.SubscriptionGroup
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaSearchField
 import app.mawja.android.ui.components.shared.ReorderHandle
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -67,7 +67,7 @@ internal fun SubscriptionGroupsManagerDialog(
     onDelete: (SubscriptionGroup) -> Unit,
     onReorder: (Int, Int) -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.manage_groups)) },
         text = {
@@ -184,7 +184,7 @@ internal fun SubscriptionCreateEditGroupDialog(
             }
         }
 
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -200,7 +200,7 @@ internal fun SubscriptionCreateEditGroupDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
-                FlowSearchField(
+                MawjaSearchField(
                     query = searchQuery,
                     onQueryChange = { searchQuery = it },
                     placeholder = stringResource(R.string.search_channels_hint),

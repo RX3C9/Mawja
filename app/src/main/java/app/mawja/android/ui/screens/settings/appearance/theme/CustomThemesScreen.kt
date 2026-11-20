@@ -45,7 +45,7 @@ import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.notice
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 import app.mawja.android.ui.screens.settings.index.CustomThemeIndex
 import app.mawja.android.ui.theme.CustomTheme
 import app.mawja.android.ui.theme.ThemeCatalog
@@ -145,7 +145,7 @@ internal fun CustomThemesScreen(
         if (themes != null && list.isEmpty()) {
             item("custom_themes.empty") {
                 Box(Modifier.fillMaxWidth().height(EmptyStateHeight)) {
-                    FlowEmptyState(
+                    MawjaEmptyState(
                         title = stringResource(R.string.settings_custom_theme_empty),
                         subtitle = stringResource(R.string.settings_custom_theme_empty_body),
                         icon = Icons.Outlined.Palette,

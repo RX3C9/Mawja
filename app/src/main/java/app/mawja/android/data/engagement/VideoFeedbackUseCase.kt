@@ -7,7 +7,7 @@ import app.mawja.android.data.local.ViewHistory
 import app.mawja.android.data.local.WatchLaterCleanup
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.recommendation.BlockedChannelNames
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.InteractionType
 import app.mawja.android.data.repository.YouTubeRepository
 import app.mawja.android.data.stats.LedgerAction
@@ -45,7 +45,7 @@ class VideoFeedbackUseCase
             }
             playlistRepository.addToWatchLater(video)
             videoStats.onAction(LedgerAction.SAVE)
-            runCatching { FlowNeuroEngine.onVideoInteraction(context, video, InteractionType.SAVED) }
+            runCatching { MawjaNeuroEngine.onVideoInteraction(context, video, InteractionType.SAVED) }
             return true
         }
 
@@ -65,7 +65,7 @@ class VideoFeedbackUseCase
             val channelId = metadata?.channelId.orEmpty().ifBlank { video.channelId }
             check(channelId.isNotBlank()) { "No channel id for ${video.id}" }
             val channelName = metadata?.channelName.orEmpty().ifBlank { video.channelName }
-            FlowNeuroEngine.blockChannel(context, channelId)
+            MawjaNeuroEngine.blockChannel(context, channelId)
             blockedNames.remember(channelId, channelName)
             videoStats.onAction(LedgerAction.BLOCK_CHANNEL)
             FeedInvalidationBus.emit(FeedInvalidationBus.Event.ChannelBlocked(channelId, video.id))
@@ -73,23 +73,23 @@ class VideoFeedbackUseCase
         }
 
         suspend fun unblockChannel(channelId: String) {
-            FlowNeuroEngine.unblockChannel(context, channelId)
+            MawjaNeuroEngine.unblockChannel(context, channelId)
             blockedNames.forget(channelId)
         }
 
         suspend fun markNotInterested(video: Video) {
-            FlowNeuroEngine.markNotInterested(context, video)
+            MawjaNeuroEngine.markNotInterested(context, video)
             videoStats.onAction(LedgerAction.NOT_INTERESTED)
             FeedInvalidationBus.emit(FeedInvalidationBus.Event.NotInterested(video.id, video.channelId))
         }
 
         suspend fun markInterested(video: Video) {
-            FlowNeuroEngine.onVideoInteraction(context, video, InteractionType.LIKED, percentWatched = 0f)
+            MawjaNeuroEngine.onVideoInteraction(context, video, InteractionType.LIKED, percentWatched = 0f)
         }
 
         /** Records [video] as watched to the end, so every card shows it full and the engine learns from it. */
         suspend fun markWatched(video: Video) {
-            FlowNeuroEngine.onVideoInteraction(context, video, InteractionType.WATCHED, percentWatched = 1.0f)
+            MawjaNeuroEngine.onVideoInteraction(context, video, InteractionType.WATCHED, percentWatched = 1.0f)
             val durationMs = if (video.duration > 0) video.duration * 1000L else 1000L
             viewHistory.savePlaybackPosition(
                 videoId = video.id,

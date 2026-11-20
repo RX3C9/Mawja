@@ -8,7 +8,7 @@
 package app.mawja.android.data.recommendation.eval
 
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.IdfSnapshot
 import app.mawja.android.data.recommendation.InteractionType
 import app.mawja.android.data.recommendation.NeuroCategoryStore
@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.math.ln
 
 /**
- * Offline model of how the engine LEARNS, driving the real [FlowNeuroEngine] (learning, rejection,
+ * Offline model of how the engine LEARNS, driving the real [MawjaNeuroEngine] (learning, rejection,
  * ranking and discovery) with storage mocked out. It answers the #907 reports in numbers:
  *  - retention: months of comedy, tech and cooking, then a Shorts binge and two guitar playalongs.
  *    Does comedy survive, and does guitar take over?
@@ -326,7 +326,7 @@ internal object NeuroLearningBenchmark {
         random: java.util.Random = java.util.Random(JITTER_SEED),
         categoryStore: NeuroCategoryStore = NeuroCategoryStore(mockk(relaxed = true)),
         coWatchStore: NeuroCoWatchStore = NeuroCoWatchStore(mockk(relaxed = true)),
-    ): FlowNeuroEngine {
+    ): MawjaNeuroEngine {
         val storage: NeuroStorage =
             mockk(relaxed = true) {
                 coEvery { load() } returns brain
@@ -335,7 +335,7 @@ internal object NeuroLearningBenchmark {
             mockk(relaxed = true) {
                 every { topicsFor(any()) } returns null
             }
-        return FlowNeuroEngine(mockk(relaxed = true), storage, contentStore, categoryStore, coWatchStore, learningPaused = {
+        return MawjaNeuroEngine(mockk(relaxed = true), storage, contentStore, categoryStore, coWatchStore, learningPaused = {
             false
         }, rankRandom = random)
     }
@@ -345,7 +345,7 @@ internal object NeuroLearningBenchmark {
             override fun nextDouble() = 0.0
         }
 
-    suspend fun FlowNeuroEngine.watch(
+    suspend fun MawjaNeuroEngine.watch(
         video: Video,
         percent: Float = 0.9f,
     ) {
@@ -354,7 +354,7 @@ internal object NeuroLearningBenchmark {
     }
 
     /** Months of mixed watching: comedy, tech and cooking interleaved, 40 of each. */
-    suspend fun FlowNeuroEngine.longHistory() {
+    suspend fun MawjaNeuroEngine.longHistory() {
         for (i in 0 until 40) {
             watch(comedy(i))
             watch(tech(i))
@@ -364,12 +364,12 @@ internal object NeuroLearningBenchmark {
 
     private val profile = setOf(Family.COMEDY, Family.TECH, Family.COOKING)
 
-    suspend fun FlowNeuroEngine.shareInTop(
+    suspend fun MawjaNeuroEngine.shareInTop(
         family: Family,
         n: Int = TOP_N,
     ): Double = shareInTop(setOf(family), n)
 
-    suspend fun FlowNeuroEngine.shareInTop(
+    suspend fun MawjaNeuroEngine.shareInTop(
         families: Set<Family>,
         n: Int = TOP_N,
     ): Double {
@@ -454,7 +454,7 @@ internal object NeuroLearningBenchmark {
 
     private fun noveltyWeight(brain: UserBrain): Double = 0.2 + (brain.consecutiveSkips / 20.0).coerceIn(0.0, 0.5)
 
-    private suspend fun phonkWatcher(): FlowNeuroEngine {
+    private suspend fun phonkWatcher(): MawjaNeuroEngine {
         val engine = engine()
         engine.longHistory()
         for (i in 0 until 3) engine.watch(phonk(i), percent = 0.6f)

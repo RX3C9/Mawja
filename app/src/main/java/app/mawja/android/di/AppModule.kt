@@ -15,7 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import app.mawja.android.BuildConfig
 import app.mawja.android.data.localmedia.MediaStoreThumbnailFetcher
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.innertube.YouTube
 import app.mawja.android.player.cache.PlayerCacheManager
 import okhttp3.OkHttpClient
@@ -39,7 +39,7 @@ object AppModule {
     @Singleton
     fun provideFlowNeuroEngine(
         @ApplicationContext context: Context,
-    ): FlowNeuroEngine = FlowNeuroEngine.getInstance(context)
+    ): MawjaNeuroEngine = MawjaNeuroEngine.getInstance(context)
 
     @Provides
     @Singleton

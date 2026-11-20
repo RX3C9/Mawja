@@ -1,7 +1,7 @@
 package app.mawja.android.ui.tv.navigation
 
 import androidx.compose.runtime.Immutable
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.layout.navigation.NavigationVisibility
 import app.mawja.android.ui.components.layout.navigation.resolveDefaultFlowTab
 import app.mawja.android.ui.components.layout.navigation.visibleFlowTabs
@@ -12,10 +12,10 @@ const val TV_SETTINGS_ROUTE = "settings"
 /** The rail's tabs in the user's order, and the tab the app opens on. */
 @Immutable
 data class TvNavigation(
-    val tabs: List<FlowTab>,
-    val startTab: FlowTab,
+    val tabs: List<MawjaTab>,
+    val startTab: MawjaTab,
 ) {
-    val rootRoutes: Set<String> get() = tabs.mapTo(mutableSetOf(), FlowTab::route) + TV_SETTINGS_ROUTE
+    val rootRoutes: Set<String> get() = tabs.mapTo(mutableSetOf(), MawjaTab::route) + TV_SETTINGS_ROUTE
 }
 
 /**

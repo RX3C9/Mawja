@@ -48,14 +48,14 @@ import app.mawja.android.R
 import app.mawja.android.data.localmedia.LocalMediaItem
 import app.mawja.android.data.localmedia.toMusicTrack
 import app.mawja.android.data.localmedia.toVideo
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.library.LibraryKindHeader
 import app.mawja.android.ui.components.library.LibrarySelection
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowSelectionAction
-import app.mawja.android.ui.components.shared.FlowSelectionToolbar
-import app.mawja.android.ui.components.shared.FlowSidePanes
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaSelectionAction
+import app.mawja.android.ui.components.shared.MawjaSelectionToolbar
+import app.mawja.android.ui.components.shared.MawjaSidePanes
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.components.shared.dismissKeyboardOnPress
 import app.mawja.android.ui.components.shared.flowGridColumns
@@ -283,11 +283,11 @@ fun LocalMediaScreen(
                         }
 
                         state.isLoading -> {
-                            FlowLoadingIndicator()
+                            MawjaLoadingIndicator()
                         }
 
                         state.failed -> {
-                            FlowErrorState(error = stringResource(R.string.local_load_failed), onRetry = viewModel::refresh)
+                            MawjaErrorState(error = stringResource(R.string.local_load_failed), onRetry = viewModel::refresh)
                         }
 
                         else -> {
@@ -312,7 +312,7 @@ fun LocalMediaScreen(
                                 )
                             }
                             if (twoPaneFolders) {
-                                FlowSidePanes(
+                                MawjaSidePanes(
                                     panes = panes,
                                     sidePaneWidth = FolderPaneWidth,
                                     sidePane = { LocalFolderList(state, isVideos, onOpenFolder = viewModel::openFolder) },
@@ -325,19 +325,19 @@ fun LocalMediaScreen(
                     }
                 }
             }
-            FlowSelectionToolbar(
+            MawjaSelectionToolbar(
                 visible = selectionMode && selectedIds.isNotEmpty(),
                 summary = pluralStringResource(R.plurals.selected_count_template, selectedIds.size, selectedIds.size),
                 actions =
                     listOf(
-                        FlowSelectionAction(Icons.Outlined.QueuePlayNext, stringResource(R.string.add_to_queue)) {
+                        MawjaSelectionAction(Icons.Outlined.QueuePlayNext, stringResource(R.string.add_to_queue)) {
                             state.items.filter { it.mediaId in selectedIds }.forEach(fileActions.onAddToQueue)
                             exitSelection()
                         },
-                        FlowSelectionAction(Icons.Outlined.Share, stringResource(R.string.share)) {
+                        MawjaSelectionAction(Icons.Outlined.Share, stringResource(R.string.share)) {
                             shareFiles(state.items.filter { it.mediaId in selectedIds })
                         },
-                        FlowSelectionAction(Icons.Outlined.Delete, stringResource(R.string.action_delete)) {
+                        MawjaSelectionAction(Icons.Outlined.Delete, stringResource(R.string.action_delete)) {
                             deleteFiles(state.items.filter { it.mediaId in selectedIds })
                         },
                     ),
@@ -362,7 +362,7 @@ private fun LocalMediaTopBar(
     onToggleGrid: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
-    FlowTopBar(
+    MawjaTopBar(
         title = title,
         onBack = onBack,
         actions = {
@@ -370,7 +370,7 @@ private fun LocalMediaTopBar(
                 IconButton(
                     onClick = onSelectAll,
                 ) { Icon(Icons.Default.SelectAll, contentDescription = stringResource(R.string.select_all)) }
-                return@FlowTopBar
+                return@MawjaTopBar
             }
             if (showGridToggle) {
                 IconButton(onClick = onToggleGrid) {

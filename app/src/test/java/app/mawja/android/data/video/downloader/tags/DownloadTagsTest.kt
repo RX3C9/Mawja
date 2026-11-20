@@ -57,33 +57,33 @@ class DownloadTagsTest {
 
     @Test
     fun `field codec round trips everything except lyrics`() {
-        val fields = FlowTagFields.encode(full)
+        val fields = MawjaTagFields.encode(full)
         assertThat(fields).doesNotContainKey("lyrics")
-        assertThat(FlowTagFields.decode(fields)).isEqualTo(full.copy(lyrics = null))
+        assertThat(MawjaTagFields.decode(fields)).isEqualTo(full.copy(lyrics = null))
     }
 
     @Test
     fun `field codec omits absent values and needs id kind and title`() {
         val minimal = DownloadTags(kind = DownloadKind.MUSIC, videoId = "id", title = "t")
-        val fields = FlowTagFields.encode(minimal)
+        val fields = MawjaTagFields.encode(minimal)
         assertThat(fields.keys).containsExactly("schema", "kind", "videoId", "title")
-        assertThat(FlowTagFields.decode(fields - "videoId")).isNull()
-        assertThat(FlowTagFields.decode(fields - "title")).isNull()
-        assertThat(FlowTagFields.decode(fields + ("kind" to "PODCAST"))).isNull()
+        assertThat(MawjaTagFields.decode(fields - "videoId")).isNull()
+        assertThat(MawjaTagFields.decode(fields - "title")).isNull()
+        assertThat(MawjaTagFields.decode(fields + ("kind" to "PODCAST"))).isNull()
     }
 
     @Test
     fun `mdta keys are namespaced`() {
-        assertThat(FlowTagFields.mdtaKey("videoId")).isEqualTo("app.mawja.android.videoId")
-        assertThat(FlowTagFields.fieldFromMdtaKey("app.mawja.android.videoId")).isEqualTo("videoId")
-        assertThat(FlowTagFields.fieldFromMdtaKey("com.android.capture.fps")).isNull()
+        assertThat(MawjaTagFields.mdtaKey("videoId")).isEqualTo("app.mawja.android.videoId")
+        assertThat(MawjaTagFields.fieldFromMdtaKey("app.mawja.android.videoId")).isEqualTo("videoId")
+        assertThat(MawjaTagFields.fieldFromMdtaKey("com.android.capture.fps")).isNull()
     }
 
     @Test
     fun `truncate never splits a surrogate pair`() {
         val text = "ab🎵cd"
-        assertThat(FlowTagFields.truncate(text, 3)).isEqualTo("ab")
-        assertThat(FlowTagFields.truncate(text, 4)).isEqualTo("ab🎵")
-        assertThat(FlowTagFields.truncate(text, 100)).isEqualTo(text)
+        assertThat(MawjaTagFields.truncate(text, 3)).isEqualTo("ab")
+        assertThat(MawjaTagFields.truncate(text, 4)).isEqualTo("ab🎵")
+        assertThat(MawjaTagFields.truncate(text, 100)).isEqualTo(text)
     }
 }

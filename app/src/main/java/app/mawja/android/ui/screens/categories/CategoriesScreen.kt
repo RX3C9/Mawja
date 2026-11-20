@@ -39,13 +39,13 @@ import app.mawja.android.ui.components.categories.CategoryPagedGrid
 import app.mawja.android.ui.components.categories.CategoryShelfPage
 import app.mawja.android.ui.components.categories.CategorySubTabMenu
 import app.mawja.android.ui.components.categories.CategoryTabBar
-import app.mawja.android.ui.components.layout.navigation.FlowTab
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.rememberFeedGridLayout
 import app.mawja.android.ui.components.shared.FeedGridSkeleton
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowErrorState
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaErrorState
 import app.mawja.android.utils.RegionCatalog
 
 /**
@@ -70,7 +70,7 @@ fun CategoriesScreen(
 
     val shelfState = rememberLazyGridState()
     val gridState = rememberLazyGridState()
-    OnTabReselected(FlowTab.Explore.route) {
+    OnTabReselected(MawjaTab.Explore.route) {
         val isGridSection =
             uiState.sectionKind == ExploreSectionKind.CHART || uiState.sectionKind == ExploreSectionKind.GRID
         if (uiState.openShelfTitle == null && isGridSection) gridState.animateScrollToItem(0) else shelfState.animateScrollToItem(0)
@@ -80,7 +80,7 @@ fun CategoriesScreen(
 
     Scaffold(
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = uiState.openShelfTitle ?: stringResource(R.string.categories_title),
                 onBack = uiState.openShelfTitle?.let { { viewModel.closeShelf() } },
                 actions = {
@@ -131,7 +131,7 @@ fun CategoriesScreen(
                     }
 
                     uiState.error != null -> {
-                        FlowErrorState(error = uiState.error!!, onRetry = viewModel::refresh)
+                        MawjaErrorState(error = uiState.error!!, onRetry = viewModel::refresh)
                     }
 
                     uiState.sectionKind == ExploreSectionKind.CHART -> {
@@ -174,8 +174,8 @@ fun CategoriesScreen(
     }
 
     if (showRegionDialog) {
-        val regionOptions = remember { RegionCatalog.sorted().map { (code, name) -> FlowChoice(code, name) } }
-        FlowChoiceDialog(
+        val regionOptions = remember { RegionCatalog.sorted().map { (code, name) -> MawjaChoice(code, name) } }
+        MawjaChoiceDialog(
             title = stringResource(R.string.settings_region_dialog_title),
             options = regionOptions,
             selected = trendingRegion,

@@ -866,7 +866,6 @@
     <string name="select_threads_count_desc">Seleziona numero dei thread (1-8):</string>
     <string name="thank_you_support_message">Grazie per il tuo supporto! ❤️</string>
     <string name="address_copied_toast">Indirizzo copiato negli appunti</string>
-    <string name="donation_address_clip_label">Indirizzo di donazione</string>
     <string name="about_creator">Creatore</string>
     <string name="about_website">Sito web</string>
     <string name="github_subtitle">Codice sorgente e segnalazioni</string>
@@ -1304,7 +1303,6 @@
     <string name="settings_item_app_language_subtitle">Utilizza la lingua del dispositivo o scegline una manualmente</string>
     <string name="settings_language_dialog_title">Seleziona lingua dell\'app</string>
     <string name="settings_language_system_default">Predefinita di sistema</string>
-    <string name="support_flow_patreon">Supporta Mawja su Patreon</string>
     <string name="settings_item_app_language">Lingua dell\'app</string>
     <string name="select_text">Seleziona testo</string>
     <string name="resume">Riprendi</string>
@@ -1606,12 +1604,6 @@
     <string name="content_settings_subs_show_checked_count_title">Conteggio dei video verificati</string>
     <string name="content_settings_subs_show_checked_count_subtitle">Mostra il numero di video verificati all\'aggiornamento</string>
     <string name="subscriptions_last_refreshed_time_only_template">Ultimo aggiornamento %1$s</string>
-    <string name="donation_prompt_title">Ti piace Mawja?</string>
-    <string name="donation_prompt_message">Mawja è gratuito, open-source e creato senza pubblicità o tracciamenti. Se ha trovato spazio sul tuo dispositivo, considera di sostenerne lo svilupp e aiuta concretamente a mantenere in vita il progetto.</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Supporta lo sviluppo</string>
-    <string name="donation_prompt_later">Forse più tardi</string>
-    <string name="donation_prompt_never">Non mostrare più</string>
     <string name="library_local_media_label">Media locali</string>
     <string name="library_local_media_subtitle">Riproduci video e musica su questo dispositivo</string>
     <string name="local_media_title">Media locali</string>

@@ -6,7 +6,7 @@ import app.mawja.android.data.local.LikedVideosRepository
 import app.mawja.android.data.local.PlaylistRepository
 import app.mawja.android.data.local.ViewHistory
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.GraphSeedInput
 import app.mawja.android.data.recommendation.GraphSeedSelector
 import app.mawja.android.data.recommendation.GraphSeedSource
@@ -52,7 +52,7 @@ class HomeFeedSources
         private val viewHistory: ViewHistory,
         private val likedVideosRepository: LikedVideosRepository,
         private val playlistRepository: PlaylistRepository,
-        private val neuroEngine: FlowNeuroEngine,
+        private val neuroEngine: MawjaNeuroEngine,
     ) {
         private data class CachedRelated(
             val videos: List<Video>,

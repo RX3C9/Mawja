@@ -36,10 +36,10 @@ import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.smartnotify.SmartNotifyStore
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.screens.settings.index.NotificationsIndex
 
 private val IntervalOptions =
@@ -106,7 +106,7 @@ internal fun NotificationSettingsScreen(
             )
             if (enabled && !backgroundAllowed) {
                 row("notifications.restricted") { shape ->
-                    FlowNavRow(
+                    MawjaNavRow(
                         title = restrictedTitle,
                         supportingText = restrictedBody,
                         leadingIcon = Icons.Outlined.BatteryAlert,
@@ -210,12 +210,12 @@ internal fun NotificationSettingsScreen(
     }
 
     if (showSmartLimitDialog) {
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.smart_notify_daily_limit),
             description = stringResource(R.string.smart_notify_daily_limit_body),
             options =
                 (1..SmartNotifyStore.MAX_DAILY_LIMIT).map { count ->
-                    FlowChoice(count, pluralStringResource(R.plurals.smart_notify_daily_limit_value, count, count))
+                    MawjaChoice(count, pluralStringResource(R.plurals.smart_notify_daily_limit_value, count, count))
                 },
             selected = smartLimit,
             onSelect = viewModel::setSmartDailyLimit,
@@ -224,7 +224,7 @@ internal fun NotificationSettingsScreen(
     }
 
     if (showSmartResetDialog) {
-        FlowAlertDialog(
+        MawjaAlertDialog(
             onDismissRequest = { showSmartResetDialog = false },
             title = { Text(stringResource(R.string.smart_notify_reset)) },
             text = { Text(stringResource(R.string.smart_notify_reset_confirm)) },
@@ -243,10 +243,10 @@ internal fun NotificationSettingsScreen(
     }
 
     if (showIntervalDialog) {
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.notif_check_interval_dialog_title),
             description = stringResource(R.string.notif_check_interval_dialog_body),
-            options = IntervalOptions.map { (minutes, label) -> FlowChoice(minutes, stringResource(label)) },
+            options = IntervalOptions.map { (minutes, label) -> MawjaChoice(minutes, stringResource(label)) },
             selected = interval,
             onSelect = viewModel::setInterval,
             onDismiss = { showIntervalDialog = false },

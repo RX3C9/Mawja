@@ -14,8 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 
 /** A folder on the settings row kit: its name, how many files and how much space, selected when open. */
@@ -36,7 +36,7 @@ internal fun LocalFolderRow(
             folder.items.size,
             folder.items.size,
         )
-    FlowNavRow(
+    MawjaNavRow(
         title = folder.name,
         supportingText = "$files $separator ${Formatter.formatShortFileSize(context, folder.sizeBytes)}",
         leadingIcon = Icons.Outlined.Folder,
@@ -55,7 +55,7 @@ internal fun LocalFolderList(
 ) {
     LazyColumn(
         contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 8.dp, bottom = flowBottomContentPadding()),
-        verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap),
+        verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap),
     ) {
         itemsIndexed(state.folders, key = { _, folder -> folder.id }) { index, folder ->
             LocalFolderRow(

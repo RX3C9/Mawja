@@ -1835,6 +1835,10 @@ class EnhancedPlayerManager private constructor() {
                 return false
             }
 
+        if (!app.mawja.android.lab.MawjaLab.allowAutoplay()) {
+            autoNextLog("playNextAutoplayCandidate held by the time guardian")
+            return false
+        }
         autoNextLog("playNextAutoplayCandidate starting ${nextVideo.id}")
         autoplayCandidates = autoplayCandidates.drop(1)
         playVideoFromServiceLayer(nextVideo, reason = "related-autoplay")

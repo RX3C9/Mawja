@@ -199,6 +199,11 @@ internal fun SettingsDetail(
                 .IslamicScreen(onBack = onBack, highlight = target.highlight, onNavigate = onNavigate)
         }
 
+        SettingsDestination.LAB -> {
+            app.mawja.android.ui.screens.settings.lab
+                .LabScreen(onBack = onBack, highlight = target.highlight)
+        }
+
         SettingsDestination.QIBLA -> {
             app.mawja.android.ui.screens.settings.islamic
                 .QiblaScreen(onBack = onBack)

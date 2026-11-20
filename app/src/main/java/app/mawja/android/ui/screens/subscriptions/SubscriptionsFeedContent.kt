@@ -40,8 +40,8 @@ import app.mawja.android.ui.components.FEED_MAX_AUTO_COLUMNS
 import app.mawja.android.ui.components.FeedCardMinWidth
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.rememberFeedGridLayout
-import app.mawja.android.ui.components.shared.FlowFilterChip
-import app.mawja.android.ui.components.shared.FlowPullToRefreshBox
+import app.mawja.android.ui.components.shared.MawjaFilterChip
+import app.mawja.android.ui.components.shared.MawjaPullToRefreshBox
 import app.mawja.android.ui.components.shared.MediaShortsShelf
 import app.mawja.android.ui.components.shared.card.MediaVideoCard
 import app.mawja.android.ui.components.shared.card.VideoCardLayout
@@ -90,7 +90,7 @@ internal fun SubscriptionsFeedContent(
         }
     }
 
-    FlowPullToRefreshBox(
+    MawjaPullToRefreshBox(
         isRefreshing = state.isLoading,
         onRefresh = onRefresh,
         state = pullRefreshState,
@@ -143,13 +143,13 @@ internal fun SubscriptionsFeedContent(
                             horizontalArrangement = Arrangement.spacedBy(GroupChipSpacing),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            FlowFilterChip(
+                            MawjaFilterChip(
                                 label = stringResource(R.string.group_all),
                                 selected = state.selectedGroupName == null,
                                 onClick = { onGroupSelected(null) },
                             )
                             state.groups.forEach { group ->
-                                FlowFilterChip(
+                                MawjaFilterChip(
                                     label = group.name,
                                     selected = state.selectedGroupName == group.name,
                                     onClick = { onGroupSelected(group.name) },

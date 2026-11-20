@@ -24,12 +24,12 @@ import app.mawja.android.ui.components.settings.info
 import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.AccessibilityIndex
 
 /**
  * Mawja accessibility settings: text size on top of the system's, high contrast, a colour-blind
- * mode and reduce motion (#161-#163). Every option applies at once, app-wide, through FlowTheme.
+ * mode and reduce motion (#161-#163). Every option applies at once, app-wide, through MawjaTheme.
  */
 @Composable
 internal fun AccessibilityScreen(
@@ -43,15 +43,15 @@ internal fun AccessibilityScreen(
 
     val textOptions =
         listOf(
-            FlowToggleOption(TextSizeMode.SYSTEM, stringResource(R.string.a11y_text_size_system)),
-            FlowToggleOption(TextSizeMode.LARGE, stringResource(R.string.a11y_text_size_large)),
-            FlowToggleOption(TextSizeMode.LARGEST, stringResource(R.string.a11y_text_size_largest)),
+            MawjaToggleOption(TextSizeMode.SYSTEM, stringResource(R.string.a11y_text_size_system)),
+            MawjaToggleOption(TextSizeMode.LARGE, stringResource(R.string.a11y_text_size_large)),
+            MawjaToggleOption(TextSizeMode.LARGEST, stringResource(R.string.a11y_text_size_largest)),
         )
     val colorOptions =
         listOf(
-            FlowToggleOption(ColorVisionMode.DEFAULT, stringResource(R.string.a11y_color_vision_default)),
-            FlowToggleOption(ColorVisionMode.RED_GREEN, stringResource(R.string.a11y_color_vision_red_green)),
-            FlowToggleOption(ColorVisionMode.BLUE_YELLOW, stringResource(R.string.a11y_color_vision_blue_yellow)),
+            MawjaToggleOption(ColorVisionMode.DEFAULT, stringResource(R.string.a11y_color_vision_default)),
+            MawjaToggleOption(ColorVisionMode.RED_GREEN, stringResource(R.string.a11y_color_vision_red_green)),
+            MawjaToggleOption(ColorVisionMode.BLUE_YELLOW, stringResource(R.string.a11y_color_vision_blue_yellow)),
         )
 
     // LocalDensity here already carries the boost, so the percentage is what the app renders at.

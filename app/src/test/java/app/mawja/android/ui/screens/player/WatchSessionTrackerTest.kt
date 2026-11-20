@@ -5,7 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import app.mawja.android.data.local.HomeFeedCacheRepository
 import app.mawja.android.data.local.ViewHistory
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.InteractionType
 import app.mawja.android.data.repository.YouTubeRepository
 import app.mawja.android.data.stats.ViewFormat
@@ -54,8 +54,8 @@ class WatchSessionTrackerTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        mockkObject(FlowNeuroEngine.Companion)
-        every { FlowNeuroEngine.onVideoInteractionAsync(any(), any(), any(), any()) } just Runs
+        mockkObject(MawjaNeuroEngine.Companion)
+        every { MawjaNeuroEngine.onVideoInteractionAsync(any(), any(), any(), any()) } just Runs
         coEvery { repository.getRelatedCandidates(any()) } returns emptyList()
     }
 
@@ -211,7 +211,7 @@ class WatchSessionTrackerTest {
                     any(),
                 )
             }
-            verify(exactly = 0) { FlowNeuroEngine.onVideoInteractionAsync(any(), any(), any(), any()) }
+            verify(exactly = 0) { MawjaNeuroEngine.onVideoInteractionAsync(any(), any(), any(), any()) }
         }
 
     @Test
@@ -225,7 +225,7 @@ class WatchSessionTrackerTest {
             advanceUntilIdle()
 
             verify(exactly = 1) {
-                FlowNeuroEngine.onVideoInteractionAsync(any(), match { it.id == "v1" }, InteractionType.WATCHED, any())
+                MawjaNeuroEngine.onVideoInteractionAsync(any(), match { it.id == "v1" }, InteractionType.WATCHED, any())
             }
         }
 
@@ -240,7 +240,7 @@ class WatchSessionTrackerTest {
             advanceUntilIdle()
 
             verify(exactly = 1) {
-                FlowNeuroEngine.onVideoInteractionAsync(any(), match { it.id == "v1" }, any(), any())
+                MawjaNeuroEngine.onVideoInteractionAsync(any(), match { it.id == "v1" }, any(), any())
             }
         }
 
@@ -255,7 +255,7 @@ class WatchSessionTrackerTest {
             advanceUntilIdle()
 
             verify(exactly = 1) {
-                FlowNeuroEngine.onVideoInteractionAsync(any(), match { it.description == "rich" }, any(), any())
+                MawjaNeuroEngine.onVideoInteractionAsync(any(), match { it.description == "rich" }, any(), any())
             }
         }
 
@@ -272,7 +272,7 @@ class WatchSessionTrackerTest {
             advanceUntilIdle()
 
             verify(exactly = 1) {
-                FlowNeuroEngine.onVideoInteractionAsync(
+                MawjaNeuroEngine.onVideoInteractionAsync(
                     any(),
                     match { it.id == "v1" && it.description == "rich" && it.tags == listOf("guitar playalong") },
                     InteractionType.WATCHED,

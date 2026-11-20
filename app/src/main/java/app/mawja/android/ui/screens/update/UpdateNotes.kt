@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.data.update.NoteSpan
 import app.mawja.android.data.update.NoteText
 import app.mawja.android.data.update.ReleaseNotes
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowSegmentShape
 
 private val LinePadding = 16.dp
@@ -42,15 +42,15 @@ private val BadgeIconSize = 16.dp
 /** The release notes as list items: the intro paragraphs, then one segmented group per section. */
 internal fun LazyListScope.releaseNotes(notes: ReleaseNotes) {
     itemsIndexed(notes.intro, key = { index, _ -> "intro-$index" }) { _, text ->
-        NoteParagraph(text, Modifier.padding(vertical = FlowSegmentedGap * 2))
+        NoteParagraph(text, Modifier.padding(vertical = MawjaSegmentedGap * 2))
     }
     notes.sections.forEachIndexed { sectionIndex, section ->
-        item(key = "section-$sectionIndex") { FlowSectionHeader(section.title) }
+        item(key = "section-$sectionIndex") { MawjaSectionHeader(section.title) }
         itemsIndexed(section.items, key = { index, _ -> "section-$sectionIndex-$index" }) { index, text ->
             Surface(
                 shape = flowSegmentShape(index, section.items.size),
                 color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                modifier = Modifier.fillMaxWidth().padding(bottom = FlowSegmentedGap),
+                modifier = Modifier.fillMaxWidth().padding(bottom = MawjaSegmentedGap),
             ) {
                 NoteParagraph(text, Modifier.padding(horizontal = LinePadding, vertical = LineVerticalPadding))
             }

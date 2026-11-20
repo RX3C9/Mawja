@@ -23,7 +23,7 @@ import app.mawja.android.widget.core.image.WidgetImageLoader
 import app.mawja.android.widget.core.image.WidgetImageSpec
 import app.mawja.android.widget.core.image.preloadWidgetImages
 import app.mawja.android.widget.core.image.rememberWidgetImages
-import app.mawja.android.widget.core.theme.FlowGlanceTheme
+import app.mawja.android.widget.core.theme.MawjaGlanceTheme
 import app.mawja.android.widget.core.theme.bakedCornerRadiusPx
 import app.mawja.android.widget.core.theme.dpToPx
 import app.mawja.android.widget.core.theme.widgetColorsFlow
@@ -73,7 +73,7 @@ class PlaylistWidget : GlanceAppWidget() {
             val specs = remember(content) { rowImageSpecs(context, content?.items.orEmpty(), drawsList, cornerPx) }
             val images by rememberWidgetImages(context, specs, initialImages)
             val colors by colorsFlow.collectAsState(initialColors)
-            FlowGlanceTheme(colors) {
+            MawjaGlanceTheme(colors) {
                 PlaylistContent(content, cover, images, choose, refreshing)
             }
         }
@@ -95,7 +95,7 @@ class PlaylistWidget : GlanceAppWidget() {
                 source.content(id).first()
             }
         val colors = widgetColorsFlow(context).first()
-        provideContent { FlowGlanceTheme(colors) { PlaylistContent(sample, cover = null, images = emptyMap(), choose = null) } }
+        provideContent { MawjaGlanceTheme(colors) { PlaylistContent(sample, cover = null, images = emptyMap(), choose = null) } }
     }
 
     private fun rowImageSpecs(

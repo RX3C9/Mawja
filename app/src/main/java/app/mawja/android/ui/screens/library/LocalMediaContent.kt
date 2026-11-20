@@ -42,9 +42,9 @@ import app.mawja.android.data.localmedia.LocalMediaItem
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.library.LibrarySelection
 import app.mawja.android.ui.components.library.libraryGridLayoutFor
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowPullToRefreshBox
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaPullToRefreshBox
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.components.shared.MediaThumbnailDefaults
 import app.mawja.android.ui.components.shared.animateMediaGridItem
@@ -81,7 +81,7 @@ internal fun LocalMediaContent(
 ) {
     val isVideos = state.selection.kind == MediaKind.Videos
     val filters = state.selection.filters
-    FlowPullToRefreshBox(
+    MawjaPullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         state = rememberPullToRefreshState(),
@@ -114,7 +114,7 @@ internal fun LocalMediaContent(
                                     if (index <
                                         state.folders.lastIndex
                                     ) {
-                                        FlowSegmentedGap
+                                        MawjaSegmentedGap
                                     } else {
                                         0.dp
                                     },
@@ -134,7 +134,7 @@ internal fun LocalMediaContent(
                         fullWidth("summary") { PlayAllRow(state.items, isVideos, rowInset(columns, showFolders), actions) }
                     } else if (state.totalCount == 0) {
                         fullWidth("empty") {
-                            FlowEmptyState(
+                            MawjaEmptyState(
                                 title =
                                     stringResource(
                                         R.string.local_media_empty_title,
@@ -147,7 +147,7 @@ internal fun LocalMediaContent(
                         }
                     } else {
                         fullWidth("no_results") {
-                            FlowEmptyState(
+                            MawjaEmptyState(
                                 title =
                                     stringResource(
                                         R.string.local_media_empty_title,

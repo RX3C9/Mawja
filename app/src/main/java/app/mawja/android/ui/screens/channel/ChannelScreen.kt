@@ -94,17 +94,17 @@ import app.mawja.android.innertube.pages.channel.ChannelHeader
 import app.mawja.android.innertube.pages.channel.ChannelTabKind
 import app.mawja.android.innertube.pages.renderer.CommunityPost
 import app.mawja.android.ui.components.channel.ChannelBanner
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
 import app.mawja.android.ui.components.shared.CollectionEditDialog
 import app.mawja.android.ui.components.shared.CollectionSheetEntry
 import app.mawja.android.ui.components.shared.CommentSortFilter
-import app.mawja.android.ui.components.shared.FlowCommentsBottomSheet
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowNoteEditorDialog
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaCommentsBottomSheet
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaNoteEditorDialog
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
 import app.mawja.android.ui.components.shared.FullSizeImageDialog
 import app.mawja.android.ui.components.shared.SaveToCollectionSheet
 import app.mawja.android.ui.components.shared.sortCommentsByFilter
@@ -173,7 +173,7 @@ fun ChannelScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
         ) {
-            FlowTopBar(
+            MawjaTopBar(
                 title = {
                     androidx.compose.animation.AnimatedVisibility(
                         visible = showCollapsedChannelTitle && collapsedChannelTitle.isNotBlank(),
@@ -224,11 +224,11 @@ fun ChannelScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 when {
                     uiState.isLoading -> {
-                        FlowLoadingIndicator()
+                        MawjaLoadingIndicator()
                     }
 
                     uiState.error != null -> {
-                        FlowErrorState(
+                        MawjaErrorState(
                             error = uiState.error ?: stringResource(R.string.failed_to_load_channel),
                             onRetry = { viewModel.loadChannel(channelUrl) },
                             modifier = Modifier.align(Alignment.Center),
@@ -286,7 +286,7 @@ fun ChannelScreen(
         }
 
         if (communityUiState.activePost != null) {
-            FlowCommentsBottomSheet(
+            MawjaCommentsBottomSheet(
                 comments = sortedCommunityComments,
                 isLoading = communityUiState.isLoadingComments,
                 onDismiss = viewModel::closeCommunityPostComments,
@@ -319,7 +319,7 @@ fun ChannelScreen(
     }
 
     if (showNoteEditor && notesEnabled) {
-        FlowNoteEditorDialog(
+        MawjaNoteEditorDialog(
             initialText = channelNote.orEmpty(),
             title = stringResource(R.string.note_channel_title),
             onSave = viewModel::saveChannelNote,

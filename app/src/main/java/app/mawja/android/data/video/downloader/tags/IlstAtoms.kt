@@ -26,11 +26,11 @@ internal object IlstAtoms {
         tags.trackNumber?.takeIf { it > 0 }?.let { atoms.write(trackNumberAtom(it, tags.trackTotal ?: 0)) }
         atoms.writeText(copyrightType("day"), tags.releaseDate)
         atoms.writeText(copyrightType("cmt"), tags.sourceUrl)
-        atoms.writeText(type("desc"), tags.description?.let { FlowTagFields.truncate(it, FlowTagFields.DESCRIPTION_MAX_CHARS) })
+        atoms.writeText(type("desc"), tags.description?.let { MawjaTagFields.truncate(it, MawjaTagFields.DESCRIPTION_MAX_CHARS) })
         atoms.writeText(copyrightType("lyr"), tags.lyrics)
         atoms.writeText(copyrightType("too"), ENCODER_NAME)
         cover?.let(::coverAtom)?.let(atoms::write)
-        FlowTagFields.encode(tags).forEach { (name, value) -> atoms.write(freeformAtom(name, value)) }
+        MawjaTagFields.encode(tags).forEach { (name, value) -> atoms.write(freeformAtom(name, value)) }
         return box(type("ilst"), atoms.toByteArray())
     }
 
@@ -106,7 +106,7 @@ internal object IlstAtoms {
     ): ByteArray =
         box(
             type("----"),
-            fullBox(type("mean"), FlowTagFields.NAMESPACE.toByteArray(Charsets.UTF_8)) +
+            fullBox(type("mean"), MawjaTagFields.NAMESPACE.toByteArray(Charsets.UTF_8)) +
                 fullBox(type("name"), name.toByteArray(Charsets.UTF_8)) +
                 dataAtom(DATA_TYPE_UTF8, value.toByteArray(Charsets.UTF_8)),
         )

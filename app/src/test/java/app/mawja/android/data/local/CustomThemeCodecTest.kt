@@ -4,13 +4,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.google.common.truth.Truth.assertThat
 import app.mawja.android.ui.theme.CustomTheme
-import app.mawja.android.ui.theme.FlowPalettes
+import app.mawja.android.ui.theme.MawjaPalettes
 import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
 import org.junit.Test
 
 class CustomThemeCodecTest {
-    private val theme = CustomTheme.from("custom-test", "Ocean", FlowPalettes.forMode(ThemeMode.TIDE))
+    private val theme = CustomTheme.from("custom-test", "Ocean", MawjaPalettes.forMode(ThemeMode.TIDE))
 
     /** A theme as Flow Desktop's `createCustomTheme` stores it: Flow Default cloned, derived steps as `color-mix`. */
     private val desktopTheme =
@@ -160,7 +160,7 @@ class CustomThemeCodecTest {
         assertThat(migrated.light.primary).isEqualTo(Color(0xFF00FF00))
         assertThat(migrated.dark.primary).isEqualTo(Color(0xFF0000FF))
         assertThat(migrated.dark.outline).isEqualTo(Color(0xFF444444))
-        assertThat(migrated.amoled).isEqualTo(FlowPalettes.default.colorsFor(ThemeVariant.AMOLED))
+        assertThat(migrated.amoled).isEqualTo(MawjaPalettes.default.colorsFor(ThemeVariant.AMOLED))
         assertThat(CustomThemeCodec.decode(CustomThemeCodec.encodeOne(migrated))).hasSize(1)
     }
 

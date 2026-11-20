@@ -7,7 +7,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3 of the License.
  *
- * This recommendation algorithm (FlowNeuroEngine) is the intellectual property
+ * This recommendation algorithm (MawjaNeuroEngine) is the intellectual property
  * of the Flow project. Any use of this code in other projects must
  * explicitly credit "Flow Android Client" and link back to the original repository.
  */
@@ -538,7 +538,7 @@ internal class NeuroDiscovery(
         now: Long = System.currentTimeMillis(),
         depth: Int = 0,
         channelEdges: Map<String, Double> = emptyMap(),
-        personaProvider: (UserBrain) -> FlowPersona,
+        personaProvider: (UserBrain) -> MawjaPersona,
     ): List<DiscoveryQuery> {
         val persona = personaProvider(brain)
         val blocked = brain.blockedTopics
@@ -562,7 +562,7 @@ internal class NeuroDiscovery(
         // and depth walks each cluster's members like a tree on load-more.
         val maxClusters =
             when (persona) {
-                FlowPersona.SPECIALIST -> 3
+                MawjaPersona.SPECIALIST -> 3
                 else -> NeuroScoring.MAX_CLUSTERS_PER_REFRESH
             }
         val selection = selectDiverseTopics(matureTopics, brain, now, depth, maxClusters, channelEdges)
@@ -934,7 +934,7 @@ internal class NeuroDiscovery(
         queries: MutableList<DiscoveryQuery>,
         selection: TopicSelection,
         brain: UserBrain,
-        persona: FlowPersona,
+        persona: MawjaPersona,
         isMatureBrain: Boolean,
     ) {
         val primary = selection.primary.firstOrNull { isDiscoveryEligible(it, isMatureBrain) } ?: return
@@ -953,13 +953,13 @@ internal class NeuroDiscovery(
                 }
 
                 v.duration > 0.75 ||
-                    persona == FlowPersona.DEEP_DIVER ||
-                    persona == FlowPersona.SCHOLAR -> {
+                    persona == MawjaPersona.DEEP_DIVER ||
+                    persona == MawjaPersona.SCHOLAR -> {
                     longFormWords.random()
                 }
 
                 v.duration < 0.30 ||
-                    persona == FlowPersona.SKIMMER -> {
+                    persona == MawjaPersona.SKIMMER -> {
                     shortFormWords.random()
                 }
 

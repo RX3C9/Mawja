@@ -39,7 +39,7 @@ import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.slider
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.components.shared.labelRes
 import app.mawja.android.ui.screens.settings.index.PlayerAppearanceIndex
 import kotlin.math.roundToInt
@@ -106,23 +106,23 @@ internal fun PlayerAppearanceScreen(
             DEFAULT_FULLSCREEN_SEEKBAR_PADDING_DP,
             MAX_FULLSCREEN_SEEKBAR_PADDING_DP,
         )
-    val portraitOptions = PortraitSeekbarModes.map { FlowToggleOption(it, stringResource(seekbarModeLabel(it))) }
-    val fullscreenOptions = FullscreenSeekbarModes.map { FlowToggleOption(it, stringResource(seekbarModeLabel(it))) }
+    val portraitOptions = PortraitSeekbarModes.map { MawjaToggleOption(it, stringResource(seekbarModeLabel(it))) }
+    val fullscreenOptions = FullscreenSeekbarModes.map { MawjaToggleOption(it, stringResource(seekbarModeLabel(it))) }
     val scrubOptions =
         listOf(
-            FlowToggleOption(ScrubPreviewStyle.STRIP, stringResource(R.string.player_appearance_scrub_preview_strip)),
-            FlowToggleOption(ScrubPreviewStyle.FRAME, stringResource(R.string.player_appearance_scrub_preview_frame)),
+            MawjaToggleOption(ScrubPreviewStyle.STRIP, stringResource(R.string.player_appearance_scrub_preview_strip)),
+            MawjaToggleOption(ScrubPreviewStyle.FRAME, stringResource(R.string.player_appearance_scrub_preview_frame)),
         )
-    val shortsOptions = ShortsPlayerUiMode.entries.map { FlowToggleOption(it, stringResource(shortsUiModeLabel(it))) }
+    val shortsOptions = ShortsPlayerUiMode.entries.map { MawjaToggleOption(it, stringResource(shortsUiModeLabel(it))) }
     val plainControlOptions =
         listOf(
-            FlowToggleOption(
+            MawjaToggleOption(
                 MusicPlainControlColors.MONOCHROME,
                 stringResource(R.string.player_appearance_plain_control_colors_monochrome),
             ),
-            FlowToggleOption(MusicPlainControlColors.APP_THEME, stringResource(R.string.player_appearance_plain_control_colors_app)),
+            MawjaToggleOption(MusicPlainControlColors.APP_THEME, stringResource(R.string.player_appearance_plain_control_colors_app)),
         )
-    val miniPlayerOptions = MiniPlayerSize.entries.map { FlowToggleOption(it, stringResource(miniPlayerSizeLabel(it))) }
+    val miniPlayerOptions = MiniPlayerSize.entries.map { MawjaToggleOption(it, stringResource(miniPlayerSizeLabel(it))) }
     val portraitSummary = stringResource(R.string.player_fullscreen_seekbar_width_subtitle, portraitPadding)
     val fullscreenSummary = stringResource(R.string.player_fullscreen_seekbar_width_subtitle, fullscreenPadding)
     val sliderLabel = stringResource(sliderStyleLabel(sliderStyle))

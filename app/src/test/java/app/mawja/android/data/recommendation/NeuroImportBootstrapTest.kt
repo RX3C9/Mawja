@@ -13,12 +13,12 @@ import org.junit.Test
  * every later interaction.
  */
 class NeuroImportBootstrapTest {
-    private fun engineWith(brain: UserBrain): FlowNeuroEngine {
+    private fun engineWith(brain: UserBrain): MawjaNeuroEngine {
         val storage: NeuroStorage =
             mockk(relaxed = true) {
                 coEvery { load() } returns brain
             }
-        return FlowNeuroEngine(mockk(relaxed = true), storage, mockk<NeuroContentStore>(relaxed = true))
+        return MawjaNeuroEngine(mockk(relaxed = true), storage, mockk<NeuroContentStore>(relaxed = true))
     }
 
     private fun video(index: Int) =
@@ -78,7 +78,7 @@ class NeuroImportBootstrapTest {
 
             val brain = engine.getBrainSnapshot()
             assertThat(brain.totalInteractions)
-                .isEqualTo(3 + FlowNeuroEngine.HISTORY_BOOTSTRAP_MAX_INTERACTIONS)
+                .isEqualTo(3 + MawjaNeuroEngine.HISTORY_BOOTSTRAP_MAX_INTERACTIONS)
             assertThat(brain.globalVector.topics).isNotEmpty()
         }
 

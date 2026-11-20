@@ -17,6 +17,7 @@ internal object SettingsIndex {
             PlayerAppearanceIndex.all +
             AccessibilityIndex.all +
             IslamicIndex.all +
+            LabIndex.all +
             LanguageRegionIndex.all +
             PlaybackIndex.all +
             BufferIndex.all +

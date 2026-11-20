@@ -33,7 +33,7 @@ class HighContrastSchemeTest {
     private fun schemes() =
         ThemeCatalog.palettes.filterNot { it.mode == ThemeMode.MATERIAL_YOU }.flatMap { entry ->
             ThemeVariant.entries.map { variant ->
-                "${entry.mode} $variant" to FlowPalettes.forMode(entry.mode).colorsFor(variant).toColorScheme(variant)
+                "${entry.mode} $variant" to MawjaPalettes.forMode(entry.mode).colorsFor(variant).toColorScheme(variant)
             }
         }
 

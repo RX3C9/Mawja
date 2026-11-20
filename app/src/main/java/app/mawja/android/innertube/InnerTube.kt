@@ -1,7 +1,7 @@
 package app.mawja.android.innertube
 
 import android.util.Log
-import app.mawja.android.FlowApplication
+import app.mawja.android.MawjaApplication
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.innertube.models.Context
 import app.mawja.android.innertube.models.MediaInfo
@@ -1125,7 +1125,7 @@ class InnerTube {
                         it?.videoPrimaryInfoRenderer != null
                     }?.videoPrimaryInfoRenderer
 
-            val rytdEnabled = PlayerPreferences(FlowApplication.appContext).rytdEnabled.first()
+            val rytdEnabled = PlayerPreferences(MawjaApplication.appContext).rytdEnabled.first()
             val returnYouTubeDislikeResponse =
                 if (rytdEnabled) {
                     returnYouTubeDislike(videoId).body<ReturnYouTubeDislikeResponse>()

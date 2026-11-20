@@ -44,7 +44,7 @@ import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.data.recommendation.music.MusicArtistInsights
 import app.mawja.android.ui.LocalStatusBarHero
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.common.rememberMusicCollectionColorScheme
 import app.mawja.android.ui.components.music.detail.ArtistBio
 import app.mawja.android.ui.components.music.detail.ArtistHero
@@ -60,8 +60,8 @@ import app.mawja.android.ui.components.music.section.MusicCollectionShelf
 import app.mawja.android.ui.components.music.section.MusicShelf
 import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
 import app.mawja.android.ui.components.music.sheet.toCollectionActionItem
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.dpadDownTo
 import app.mawja.android.ui.components.shared.flowSegmentShape
 import app.mawja.android.ui.theme.Dimensions
@@ -83,9 +83,9 @@ fun ArtistPageError(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = { FlowTopBar(title = "", onBack = onBackClick) },
+        topBar = { MawjaTopBar(title = "", onBack = onBackClick) },
     ) { padding ->
-        FlowErrorState(
+        MawjaErrorState(
             error = stringResource(R.string.error_failed_to_load_artist),
             onRetry = onRetry,
             modifier = Modifier.padding(padding),
@@ -398,7 +398,7 @@ private fun LazyListScope.segmentedTracks(
             modifier =
                 Modifier
                     .padding(horizontal = Dimensions.ContentPaddingHorizontal)
-                    .padding(bottom = FlowSegmentedGap),
+                    .padding(bottom = MawjaSegmentedGap),
         )
     }
 }

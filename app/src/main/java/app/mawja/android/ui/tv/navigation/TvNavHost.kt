@@ -16,7 +16,7 @@ import app.mawja.android.data.music.DownloadedTrack
 import app.mawja.android.data.music.model.toMusicTrack
 import app.mawja.android.data.music.model.toVideo
 import app.mawja.android.data.video.DownloadedVideo
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.screens.channel.ChannelScreen
 import app.mawja.android.ui.screens.history.HistoryScreen
@@ -68,16 +68,16 @@ fun TvNavHost(
         startDestination = startRoute,
         modifier = modifier,
     ) {
-        composable(FlowTab.Home.route) {
+        composable(MawjaTab.Home.route) {
             TvHomeScreen(
                 viewModel = homeViewModel,
                 onVideoClick = onPlayVideo,
                 onPlayPlaylist = { videos, title -> onPlayPlaylist(videos, 0, title, false) },
-                onOpenLibrary = { onSelectRoot(FlowTab.Library.route) },
+                onOpenLibrary = { onSelectRoot(MawjaTab.Library.route) },
                 modifier = Modifier.fillMaxSize(),
             )
         }
-        composable(FlowTab.Subscriptions.route) {
+        composable(MawjaTab.Subscriptions.route) {
             TvSubscriptionsScreen(
                 viewModel = subscriptionsViewModel,
                 onVideoClick = onPlayVideo,
@@ -85,7 +85,7 @@ fun TvNavHost(
                 modifier = Modifier.fillMaxSize(),
             )
         }
-        composable(FlowTab.Search.route) {
+        composable(MawjaTab.Search.route) {
             TvSearchScreen(
                 viewModel = searchViewModel,
                 onVideoClick = onPlayVideo,
@@ -100,7 +100,7 @@ fun TvNavHost(
                 modifier = Modifier.fillMaxSize(),
             )
         }
-        composable(FlowTab.Library.route) {
+        composable(MawjaTab.Library.route) {
             TvLibraryScreen(
                 onVideoClick = onPlayVideo,
                 onMusicClick = musicPlayerViewModel::loadAndPlayTrack,

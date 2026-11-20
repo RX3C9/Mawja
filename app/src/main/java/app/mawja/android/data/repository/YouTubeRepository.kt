@@ -531,7 +531,7 @@ class YouTubeRepository
             val info = getChannelInfo(channelId) ?: return
             val tags = info.tags.orEmpty()
             if (tags.isEmpty() && info.description.isNullOrBlank()) return
-            app.mawja.android.data.recommendation.FlowNeuroEngine
+            app.mawja.android.data.recommendation.MawjaNeuroEngine
                 .onChannelTagsLearned(context, channelId, tags, info.description)
         }
 

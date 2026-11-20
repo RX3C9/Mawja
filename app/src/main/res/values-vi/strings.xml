@@ -1189,16 +1189,8 @@
     <string name="location_badge_recommended">Đề xuất</string>
     <string name="location_badge_active">Đang dùng</string>
     <string name="select_threads_count_desc">Chọn số luồng (1-8):</string>
-    <string name="support_flow_patreon">Hỗ trợ Mawja trên Patreon</string>
     <string name="thank_you_support_message">Cảm ơn bạn đã ủng hộ! ❤️</string>
     <string name="address_copied_toast">Đã sao chép địa chỉ</string>
-    <string name="donation_address_clip_label">Địa chỉ quyên góp</string>
-    <string name="donation_prompt_title">Thích Mawja?</string>
-    <string name="donation_prompt_message">Mawja miễn phí, mã nguồn mở, không quảng cáo hay theo dõi. Nếu nó đáng để ở lại thiết bị của bạn, hãy cân nhắc hỗ trợ phát triển — điều đó thực sự giúp dự án bền vững.</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Hỗ trợ phát triển</string>
-    <string name="donation_prompt_later">Để sau</string>
-    <string name="donation_prompt_never">Không hiện lại</string>
     <string name="about_creator">Tác giả</string>
     <string name="about_creator_name">Omar Mahmoud</string>
     <string name="about_website">Trang web</string>
@@ -2259,7 +2251,6 @@
     <string name="settings_search_no_results">Không tìm thấy cài đặt cho %1$s</string>
     <string name="settings_lyrics_provider_order_description">Các nhà cung cấp sẽ được thử theo thứ tự. Nhà cung cấp đầu tiên trả về lời bài hát sẽ được chọn.</string>
     <string name="import_running_background">Bạn có thể rời khỏi trang — quá trình nhập vẫn tiếp tục trong nền.</string>
-    <string name="donations_cryptocurrency">TIỀN MÃ HÓA</string>
     <string name="import_no_history_entries">Không tìm thấy lịch sử xem nào trong tệp</string>
     <string name="import_no_videos">Không tìm thấy video nào trong tệp danh sách phát</string>
     <string name="import_no_content">Không tìm thấy nội dung nào có thể nhập trong bản sao lưu này</string>

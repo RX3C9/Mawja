@@ -43,7 +43,7 @@ internal fun isOpenMediaPage(
  * opened from inside a player sheet is not hidden behind it. [shortsExitRoute] is where a video
  * opened from a Shorts player at the root of the back stack plays, since it cannot play over Shorts.
  */
-internal class FlowMediaNavigator(
+internal class MawjaMediaNavigator(
     private val navController: NavHostController,
     private val beforeNavigate: () -> Unit,
     private val shortsExitRoute: () -> String,

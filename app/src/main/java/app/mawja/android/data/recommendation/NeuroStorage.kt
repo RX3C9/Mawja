@@ -7,7 +7,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3 of the License.
  *
- * This recommendation algorithm (FlowNeuroEngine) is the intellectual property
+ * This recommendation algorithm (MawjaNeuroEngine) is the intellectual property
  * of the Flow project. Any use of this code in other projects must
  * explicitly credit "Flow Android Client" and link back to the original repository.
  */
@@ -43,7 +43,7 @@ internal class NeuroStorage(
     private val appContext: Context,
 ) {
     companion object {
-        private const val TAG = "FlowNeuroEngine"
+        private const val TAG = "MawjaNeuroEngine"
         private const val BRAIN_FILENAME = "user_neuro_brain.json"
         private const val BRAIN_DATASTORE_FILE = "flow_neuro_brain_v10.json"
         private val PREVIOUS_DATASTORE_FILES = listOf("v9", "v8", "v7").map { "flow_neuro_brain_$it.json" }

@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.glance.GlanceId
 import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingsPage
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.widget.quickactions.QuickActionsConfig
 import app.mawja.android.widget.quickactions.QuickShortcut
 import kotlinx.coroutines.launch
@@ -48,7 +48,7 @@ internal fun QuickActionsConfigScreen(
             QuickShortcut.entries.forEach { shortcut ->
                 row("quick_actions.${shortcut.key}") { shape ->
                     val checked = shortcut in current
-                    FlowSwitchRow(
+                    MawjaSwitchRow(
                         title = stringResource(shortcut.label),
                         checked = checked,
                         onCheckedChange = { toggle(shortcut, it) },

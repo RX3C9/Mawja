@@ -20,7 +20,7 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.data.model.toVideo
 import app.mawja.android.data.recommendation.ChannelMemoryRepository
 import app.mawja.android.data.recommendation.FeedExclusions
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.GraphSeedInput
 import app.mawja.android.data.recommendation.NeighbourChannel
 import app.mawja.android.data.recommendation.NeighbourChannelsRepository
@@ -272,7 +272,7 @@ class HomeViewModel
             }
 
             viewModelScope.launch {
-                FlowNeuroEngine.initialize(context)
+                MawjaNeuroEngine.initialize(context)
             }
 
             viewModelScope.launch {
@@ -500,7 +500,7 @@ class HomeViewModel
             )
 
         private suspend fun feedExclusions(): FeedExclusions =
-            runCatching { FlowNeuroEngine.feedExclusions() }
+            runCatching { MawjaNeuroEngine.feedExclusions() }
                 .getOrDefault(FeedExclusions.NONE)
                 .hidingChannels(subscriptionScope().hidden)
 
@@ -562,7 +562,7 @@ class HomeViewModel
                         searchPages.reset()
                         // A refresh restarts the discovery tree at its roots (broad pass);
                         // load-more regenerations then dig deeper per cluster.
-                        discoveryQueries.addAll(FlowNeuroEngine.generateDiscoveryQueries(resetDepth = true))
+                        discoveryQueries.addAll(MawjaNeuroEngine.generateDiscoveryQueries(resetDepth = true))
                         currentQueryIndex = 0
 
                         val userSubs = subscriptionScope().boosted
@@ -595,7 +595,7 @@ class HomeViewModel
                                         async {
                                             val seedInputs = feedSources.historySeedInputs()
                                             val longTermInputs = feedSources.longTermSeedInputs()
-                                            val seedIds = FlowNeuroEngine.selectRelatedSeeds(seedInputs, MAX_RELATED_SEEDS, longTermInputs)
+                                            val seedIds = MawjaNeuroEngine.selectRelatedSeeds(seedInputs, MAX_RELATED_SEEDS, longTermInputs)
                                             feedSources.fetchRelatedGraph(seedInputs + longTermInputs, seedIds, ::cacheFilters)
                                         }
 
@@ -630,8 +630,8 @@ class HomeViewModel
 
                         // Extract shorts from all sources for the shelf, ranked by FlowNeuro
                         val now = System.currentTimeMillis()
-                        val brain = FlowNeuroEngine.getBrainSnapshot()
-                        val taste = feedTasteProfile(brain, FlowNeuroEngine.getPersona(brain))
+                        val brain = MawjaNeuroEngine.getBrainSnapshot()
+                        val taste = feedTasteProfile(brain, MawjaNeuroEngine.getPersona(brain))
 
                         val exclusions = feedExclusions()
                         // Subscriptions come from the store, which is local: the network top-up runs
@@ -651,7 +651,7 @@ class HomeViewModel
                         if (feedShorts.isNotEmpty() && playerPreferences.effectiveHomeShortsShelfEnabled.first()) {
                             // A refresh replaces the shelf; appending kept the same reels at its front.
                             val rankedShorts =
-                                FlowNeuroEngine
+                                MawjaNeuroEngine
                                     .rank(feedShorts, userSubs)
                                     .recentlyShownLast { NeuroScoring.isRecentlySeen(brain.feedHistory[it], now) }
                             _uiState.update { state -> state.copy(shorts = rankedShorts) }
@@ -687,11 +687,11 @@ class HomeViewModel
                                 now = now,
                                 freshSlotTarget = dynamicFreshSubSlots(userSubs.size),
                                 subAvatarMap = subAvatarMap,
-                                rank = { pool -> FlowNeuroEngine.rank(pool, userSubs, trace = trace) },
+                                rank = { pool -> MawjaNeuroEngine.rank(pool, userSubs, trace = trace) },
                                 rankRelevant = { pool ->
-                                    FlowNeuroEngine.rank(pool, userSubs, NeuroScoring.LANE_RELEVANCE_FLOOR, trace)
+                                    MawjaNeuroEngine.rank(pool, userSubs, NeuroScoring.LANE_RELEVANCE_FLOOR, trace)
                                 },
-                                share = FlowNeuroEngine::shareByInterest,
+                                share = MawjaNeuroEngine::shareByInterest,
                                 rawNeighbours = rawNeighbours,
                                 searchOf = queriesById(discoveryPairs)::get,
                             )
@@ -915,10 +915,10 @@ class HomeViewModel
                             if (wave2Valid.isEmpty()) return@wave2
 
                             val wave2Ranked =
-                                FlowNeuroEngine
+                                MawjaNeuroEngine
                                     .shareByInterest(
                                         demoteByFit(
-                                            FlowNeuroEngine.rank(wave2Valid, userSubs, NeuroScoring.LANE_RELEVANCE_FLOOR, snapshotTrace),
+                                            MawjaNeuroEngine.rank(wave2Valid, userSubs, NeuroScoring.LANE_RELEVANCE_FLOOR, snapshotTrace),
                                             taste,
                                         ),
                                     ).take(15)
@@ -966,12 +966,12 @@ class HomeViewModel
         private suspend fun reportQueryNovelty(pairs: List<Pair<String, List<Video>>>) {
             if (pairs.isEmpty()) return
             runCatching {
-                val recentlyShown = FlowNeuroEngine.getRecentlyShownVideoIds(48L)
+                val recentlyShown = MawjaNeuroEngine.getRecentlyShownVideoIds(48L)
                 if (recentlyShown.isEmpty()) return
                 pairs.forEach { (query, queryResults) ->
                     if (queryResults.size >= 5) {
                         val novel = queryResults.count { it.id !in recentlyShown }
-                        FlowNeuroEngine.reportQueryResultNovelty(
+                        MawjaNeuroEngine.reportQueryResultNovelty(
                             query,
                             novel.toDouble() / queryResults.size,
                         )
@@ -1011,8 +1011,8 @@ class HomeViewModel
                     .filter { it.source == HomeFeedCacheRepository.SOURCE_RELATED }
                     .mapTo(HashSet()) { it.video.id }
             val reserveVideos =
-                FlowNeuroEngine.shareByInterest(
-                    FlowNeuroEngine.rank(
+                MawjaNeuroEngine.shareByInterest(
+                    MawjaNeuroEngine.rank(
                         reserveRows
                             .map { it.video }
                             .filterValid()
@@ -1057,7 +1057,7 @@ class HomeViewModel
         ): Int {
             val seedInputs = loadMoreSeedInputs()
             val longTermInputs = feedSources.longTermSeedInputs()
-            val seedIds = FlowNeuroEngine.selectRelatedSeeds(seedInputs, LOAD_MORE_GRAPH_SEEDS, longTermInputs)
+            val seedIds = MawjaNeuroEngine.selectRelatedSeeds(seedInputs, LOAD_MORE_GRAPH_SEEDS, longTermInputs)
             if (seedIds.isEmpty()) return 0
 
             val graphFetch = feedSources.fetchRelatedGraph(seedInputs + longTermInputs, seedIds, ::cacheFilters)
@@ -1068,10 +1068,10 @@ class HomeViewModel
                     .filterRecentHomeSuggestionGraph(now)
             val graphMetadata = graphCandidates.associateBy { it.video.id }
             val graphRanked =
-                FlowNeuroEngine.shareByInterest(
+                MawjaNeuroEngine.shareByInterest(
                     demoteByFit(
                         applyGraphBoost(
-                            FlowNeuroEngine.rank(
+                            MawjaNeuroEngine.rank(
                                 graphCandidates.map { it.video },
                                 userSubs,
                                 NeuroScoring.LANE_RELEVANCE_FLOOR,
@@ -1128,8 +1128,8 @@ class HomeViewModel
             try {
                 val now = System.currentTimeMillis()
                 val userSubs = subscriptionScope().boosted
-                val brain = FlowNeuroEngine.getBrainSnapshot()
-                val taste = feedTasteProfile(brain, FlowNeuroEngine.getPersona(brain))
+                val brain = MawjaNeuroEngine.getBrainSnapshot()
+                val taste = feedTasteProfile(brain, MawjaNeuroEngine.getPersona(brain))
                 val currentIds =
                     _uiState.value.videos
                         .map { it.id }
@@ -1196,7 +1196,7 @@ class HomeViewModel
                 }
 
                 if (currentQueryIndex >= discoveryQueries.size) {
-                    discoveryQueries.addAll(unaskedQueries(FlowNeuroEngine.generateDiscoveryQueries(), discoveryQueries))
+                    discoveryQueries.addAll(unaskedQueries(MawjaNeuroEngine.generateDiscoveryQueries(), discoveryQueries))
                 }
 
                 // The next page of a search already filling Home takes one of the two searches.
@@ -1241,7 +1241,7 @@ class HomeViewModel
                         .filterNot(feedExclusions()::hidesFromRecommendations)
                 if (moreShorts.isNotEmpty() && playerPreferences.effectiveHomeShortsShelfEnabled.first()) {
                     val rankedMore =
-                        FlowNeuroEngine
+                        MawjaNeuroEngine
                             .rank(moreShorts, userSubs)
                             .recentlyShownLast { NeuroScoring.isRecentlySeen(brain.feedHistory[it], now) }
                     _uiState.update { state ->
@@ -1257,10 +1257,10 @@ class HomeViewModel
                             .filterRecentHomeSuggestion(now)
                     if (newVideos.isEmpty()) return
                     val rankedDiscovery =
-                        FlowNeuroEngine
+                        MawjaNeuroEngine
                             .shareByInterest(
                                 demoteByFit(
-                                    FlowNeuroEngine.rank(newVideos, userSubs, NeuroScoring.LANE_RELEVANCE_FLOOR, snapshotTrace),
+                                    MawjaNeuroEngine.rank(newVideos, userSubs, NeuroScoring.LANE_RELEVANCE_FLOOR, snapshotTrace),
                                     taste,
                                 ),
                             ).let { spreadAcrossSearches(it, queries::get, it.size) }
@@ -1306,7 +1306,7 @@ class HomeViewModel
                     val fallbackInputs = loadMoreSeedInputs()
                     val fallbackLongTerm = feedSources.longTermSeedInputs()
                     val fallbackSeeds =
-                        FlowNeuroEngine.selectRelatedSeeds(fallbackInputs, LOAD_MORE_FALLBACK_SEEDS, fallbackLongTerm)
+                        MawjaNeuroEngine.selectRelatedSeeds(fallbackInputs, LOAD_MORE_FALLBACK_SEEDS, fallbackLongTerm)
                     if (fallbackSeeds.isNotEmpty() && homePrefetchQueue.isCurrent(generation)) {
                         val fallbackFetch =
                             feedSources.fetchRelatedGraph(fallbackInputs + fallbackLongTerm, fallbackSeeds, ::cacheFilters)
@@ -1317,10 +1317,10 @@ class HomeViewModel
                                 .filterRecentHomeSuggestionGraph(now)
                         val fallbackMetadata = fallbackCandidates.associateBy { it.video.id }
                         val fallbackRanked =
-                            FlowNeuroEngine.shareByInterest(
+                            MawjaNeuroEngine.shareByInterest(
                                 demoteByFit(
                                     applyGraphBoost(
-                                        FlowNeuroEngine.rank(
+                                        MawjaNeuroEngine.rank(
                                             fallbackCandidates.map { it.video },
                                             userSubs,
                                             NeuroScoring.LANE_RELEVANCE_FLOOR,
@@ -1548,7 +1548,7 @@ class HomeViewModel
                         }
                     if (uploads.isEmpty()) return@launch
                     // Passive channel profiling: upload titles teach the engine what each channel is about.
-                    runCatching { FlowNeuroEngine.onChannelUploadsObserved(uploads) }
+                    runCatching { MawjaNeuroEngine.onChannelUploadsObserved(uploads) }
                     subscriptionFeedRepository.mergeChannelTabUploads(uploads)
                     mergeLateSubscriptions(uploads, userSubs)
                 }
@@ -1570,7 +1570,7 @@ class HomeViewModel
                     .values
                     .flatMap { uploads -> uploads.sortedByDescending { it.timestamp }.take(LATE_SUBS_PER_CHANNEL) }
             val late =
-                FlowNeuroEngine
+                MawjaNeuroEngine
                     .rank(candidates, userSubs)
                     .distinctBy { it.channelId }
                     .take(LATE_SUBS_MAX)
@@ -1617,10 +1617,10 @@ class HomeViewModel
                         }
                     if (fresh.isEmpty()) return@launch
                     val now = System.currentTimeMillis()
-                    val brain = FlowNeuroEngine.getBrainSnapshot()
+                    val brain = MawjaNeuroEngine.getBrainSnapshot()
                     val exclusions = feedExclusions()
                     val ranked =
-                        FlowNeuroEngine.rank(
+                        MawjaNeuroEngine.rank(
                             fresh
                                 .filterValid()
                                 .filterWatched(watchedVideoIds.value)
@@ -1660,7 +1660,7 @@ class HomeViewModel
             userSubs: Set<String>,
             now: Long,
         ) {
-            val brain = FlowNeuroEngine.getBrainSnapshot()
+            val brain = MawjaNeuroEngine.getBrainSnapshot()
             val exclusions = feedExclusions()
             val candidates =
                 runCatching { channelMemory.storedUploads(now) }
@@ -1671,7 +1671,7 @@ class HomeViewModel
             if (candidates.isEmpty()) return
             val pick =
                 channelMemoryPicks(
-                    ranked = FlowNeuroEngine.rank(candidates, userSubs),
+                    ranked = MawjaNeuroEngine.rank(candidates, userSubs),
                     onScreenIds = pageIds,
                     onScreenMemoryChannels = page.mapTo(HashSet()) { it.channelId },
                     room = 1,
@@ -1758,7 +1758,7 @@ class HomeViewModel
                         val cooldown = feedSources.activeSavedSeedCooldown(now)
                         val seedInputs = savedInterestSeedInputs(feedSources.gatherSavedSeedSources(), cooldown)
                         val longTermInputs = feedSources.longTermSeedInputs().filterNot { it.id in cooldown }
-                        val seeds = FlowNeuroEngine.selectRelatedSeeds(seedInputs, MAX_SAVED_SEEDS, longTermInputs)
+                        val seeds = MawjaNeuroEngine.selectRelatedSeeds(seedInputs, MAX_SAVED_SEEDS, longTermInputs)
                         if (seeds.isEmpty()) return@launch
                         feedSources.markSeedsUsed(seeds, now)
 
@@ -1775,11 +1775,11 @@ class HomeViewModel
                         val existing = _uiState.value.videos.mapTo(HashSet()) { it.id }
                         val relatedMetadata = relatedCandidates.associateBy { it.video.id }
                         val enriched =
-                            FlowNeuroEngine
+                            MawjaNeuroEngine
                                 .shareByInterest(
                                     demoteByFit(
                                         applyGraphBoost(
-                                            FlowNeuroEngine.rank(
+                                            MawjaNeuroEngine.rank(
                                                 relatedCandidates
                                                     .map { it.video }
                                                     .filterNot { existing.contains(it.id) },
@@ -1823,7 +1823,7 @@ class HomeViewModel
             val knownIds = _uiState.value.shorts.mapTo(HashSet()) { it.id }
             val ids = feedImpressionIds(visibleIds, knownIds)
             if (ids.isEmpty()) return
-            viewModelScope.launch { FlowNeuroEngine.recordFeedImpressions(ids) }
+            viewModelScope.launch { MawjaNeuroEngine.recordFeedImpressions(ids) }
         }
 
         // Viewport impressions: count only items actually scrolled into view.
@@ -1832,7 +1832,7 @@ class HomeViewModel
             val knownIds = _uiState.value.videos.mapTo(HashSet()) { it.id }
             val ids = feedImpressionIds(visibleKeys, knownIds)
             if (ids.isEmpty()) return
-            viewModelScope.launch { FlowNeuroEngine.recordFeedImpressions(ids) }
+            viewModelScope.launch { MawjaNeuroEngine.recordFeedImpressions(ids) }
             val state = _uiState.value
             val neighbourChannelIds =
                 ids

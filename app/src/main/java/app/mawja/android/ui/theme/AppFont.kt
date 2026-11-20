@@ -36,7 +36,7 @@ fun appFontFamily(
 ): FontFamily =
     when (font) {
         AppFont.MAWJA -> MawjaFontFamily
-        AppFont.SYSTEM -> FlowFontFamily
+        AppFont.SYSTEM -> MawjaSansFontFamily
         AppFont.CONDENSED -> FontFamily(CondensedWeights.map { Font(DeviceFontFamilyName("sans-serif-condensed"), it) })
         AppFont.SERIF -> FontFamily.Serif
         AppFont.CUSTOM -> customFile?.takeIf { it.isFile }?.let(loadCustom) ?: MawjaFontFamily

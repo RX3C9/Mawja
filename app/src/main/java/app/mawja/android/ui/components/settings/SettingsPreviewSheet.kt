@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import app.mawja.android.ui.components.shared.FlowSheetHeader
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
 import app.mawja.android.ui.components.shared.rememberFlowSheetState
 
 private val OptionHorizontalPadding = 24.dp
@@ -53,7 +53,7 @@ fun <T> SettingsPreviewSheet(
         sheetState = rememberFlowSheetState(),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        FlowSheetHeader(title = title, subtitle = subtitle, onClose = onDismiss, showDragHandle = false)
+        MawjaSheetHeader(title = title, subtitle = subtitle, onClose = onDismiss, showDragHandle = false)
         LazyColumn(
             contentPadding =
                 PaddingValues(

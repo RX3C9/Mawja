@@ -25,7 +25,7 @@ import app.mawja.android.ui.components.settings.info
 import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.BatterySaverIndex
 
 /** Mawja deep battery saver (PLAN_V2 #62): Off / Auto / Always, the Auto threshold, extras and live status. */
@@ -42,12 +42,12 @@ internal fun BatterySaverScreen(
 
     val modeOptions =
         listOf(
-            FlowToggleOption(BatterySaverMode.OFF, stringResource(R.string.battery_saver_mode_off)),
-            FlowToggleOption(BatterySaverMode.AUTO, stringResource(R.string.battery_saver_mode_auto)),
-            FlowToggleOption(BatterySaverMode.ALWAYS, stringResource(R.string.battery_saver_mode_always)),
+            MawjaToggleOption(BatterySaverMode.OFF, stringResource(R.string.battery_saver_mode_off)),
+            MawjaToggleOption(BatterySaverMode.AUTO, stringResource(R.string.battery_saver_mode_auto)),
+            MawjaToggleOption(BatterySaverMode.ALWAYS, stringResource(R.string.battery_saver_mode_always)),
         )
     val thresholdOptions =
-        BatterySaverPolicy.THRESHOLD_CHOICES.map { FlowToggleOption(it, stringResource(R.string.battery_saver_percent, it)) }
+        BatterySaverPolicy.THRESHOLD_CHOICES.map { MawjaToggleOption(it, stringResource(R.string.battery_saver_percent, it)) }
     val selectedThreshold =
         BatterySaverPolicy.THRESHOLD_CHOICES.minByOrNull { kotlin.math.abs(it - settings.thresholdPercent) } ?: BatterySaverPolicy.DEFAULT_THRESHOLD
 

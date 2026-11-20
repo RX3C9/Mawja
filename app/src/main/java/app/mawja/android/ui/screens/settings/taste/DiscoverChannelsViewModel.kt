@@ -9,7 +9,7 @@ import app.mawja.android.data.local.SubscriptionRepository
 import app.mawja.android.data.model.Channel
 import app.mawja.android.data.paging.ChannelSearch
 import app.mawja.android.data.recommendation.ChannelMemoryRepository
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.NeighbourChannel
 import app.mawja.android.data.recommendation.NeighbourChannelsRepository
 import app.mawja.android.data.recommendation.RememberedChannel
@@ -79,14 +79,14 @@ internal class DiscoverChannelsViewModel
 
         private val local =
             flow {
-                val brain = FlowNeuroEngine.getBrainSnapshot()
+                val brain = MawjaNeuroEngine.getBrainSnapshot()
                 val topics =
                     (
                         brain.preferredTopics +
                             brain.globalVector.topics.entries
                                 .sortedByDescending { it.value }
                                 .map { it.key }
-                    ).filterNot { it in brain.blockedTopics || FlowNeuroEngine.specificity(it) < QUICK_SEARCH_MIN_SPECIFICITY }
+                    ).filterNot { it in brain.blockedTopics || MawjaNeuroEngine.specificity(it) < QUICK_SEARCH_MIN_SPECIFICITY }
                         .distinct()
                         .take(MAX_QUICK_SEARCHES)
                 val followed = subscriptions.getAllSubscriptions().first().associate { it.channelId to it.channelName }

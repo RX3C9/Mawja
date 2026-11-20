@@ -57,12 +57,12 @@ class EmbeddedTags(
                 when (entry) {
                     is MdtaMetadataEntry -> {
                         if (entry.typeIndicator == MdtaMetadataEntry.TYPE_INDICATOR_STRING) {
-                            FlowTagFields.fieldFromMdtaKey(entry.key)?.let { fields.putIfAbsent(it, String(entry.value, Charsets.UTF_8)) }
+                            MawjaTagFields.fieldFromMdtaKey(entry.key)?.let { fields.putIfAbsent(it, String(entry.value, Charsets.UTF_8)) }
                         }
                     }
 
                     is InternalFrame -> {
-                        if (entry.domain == FlowTagFields.NAMESPACE) fields.putIfAbsent(entry.description, entry.text)
+                        if (entry.domain == MawjaTagFields.NAMESPACE) fields.putIfAbsent(entry.description, entry.text)
                     }
 
                     is TextInformationFrame -> {
@@ -82,9 +82,9 @@ class EmbeddedTags(
                     }
                 }
             }
-            val title = frames[FRAME_TITLE] ?: fields[FlowTagFields.TITLE]
-            if (title != null) fields.putIfAbsent(FlowTagFields.TITLE, title)
-            val flow = FlowTagFields.decode(fields)?.fillFromFrames(frames, comment)
+            val title = frames[FRAME_TITLE] ?: fields[MawjaTagFields.TITLE]
+            if (title != null) fields.putIfAbsent(MawjaTagFields.TITLE, title)
+            val flow = MawjaTagFields.decode(fields)?.fillFromFrames(frames, comment)
             return EmbeddedTags(
                 flow = flow,
                 title = title,

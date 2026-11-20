@@ -238,3 +238,8 @@ app.mawja.android.smartnotify.AdminPushTest
 app.mawja.android.ai.VideoInsightsTest
 app.mawja.android.ai.StudyNotesTest
 app.mawja.android.ai.CloudAiTest
+app.mawja.android.lab.TimeBudgetPlannerTest
+app.mawja.android.lab.FeedMoodTest
+app.mawja.android.lab.WatchGuardianTest
+app.mawja.android.lab.TimeBudgetFeedTest
+app.mawja.android.lab.WatchStatsTest

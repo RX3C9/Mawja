@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.music.model.toVideo
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.screens.music.ArtistItemsScreen
 import app.mawja.android.ui.screens.music.ArtistRoute
@@ -29,18 +29,18 @@ internal fun NavGraphBuilder.tvMusicRoutes(
     onPlayVideo: (Video) -> Unit,
     onSelectRoot: (String) -> Unit,
 ) {
-    composable(FlowTab.Music.route) {
+    composable(MawjaTab.Music.route) {
         TvScreenFrame {
             EnhancedMusicScreen(
                 onSongClick = musicPlayerViewModel::loadAndPlayTrack,
                 onVideoClick = { track -> onPlayVideo(track.toVideo()) },
                 onArtistClick = { navController.navigate(TvRoutes.musicArtist(it)) },
-                onSearchClick = { onSelectRoot(FlowTab.Search.route) },
+                onSearchClick = { onSelectRoot(MawjaTab.Search.route) },
                 onAlbumClick = { navController.navigate(TvRoutes.musicCollection(it)) },
                 onMoodsClick = { item -> navController.navigate(item?.let(TvRoutes::musicBrowse) ?: TvRoutes.MOODS) },
                 onPlaylistClick = { navController.navigate(TvRoutes.musicCollection(it)) },
                 onAllPlaylistsClick = { navController.navigate(TvRoutes.playlists(MediaKind.Music)) },
-                onAllSubscriptionsClick = { onSelectRoot(FlowTab.Subscriptions.route) },
+                onAllSubscriptionsClick = { onSelectRoot(MawjaTab.Subscriptions.route) },
                 showRecognize = false,
                 viewModel = musicViewModel,
             )

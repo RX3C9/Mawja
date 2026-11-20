@@ -31,7 +31,7 @@ import app.mawja.android.data.local.UploadDate
 import app.mawja.android.data.local.WatchState
 import app.mawja.android.data.model.Channel
 import app.mawja.android.ui.components.shared.FeedPagingFooter
-import app.mawja.android.ui.components.shared.FlowSuggestionRow
+import app.mawja.android.ui.components.shared.MawjaSuggestionRow
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -253,7 +253,7 @@ class SearchComponentsTest {
         var submitted = false
         var filled = false
         show {
-            FlowSuggestionRow(
+            MawjaSuggestionRow(
                 text = "sam sulek bulking",
                 leadingIcon = Icons.Rounded.History,
                 onClick = { submitted = true },

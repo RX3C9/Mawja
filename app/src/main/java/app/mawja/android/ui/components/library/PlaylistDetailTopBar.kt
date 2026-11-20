@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
-import app.mawja.android.ui.components.layout.topbar.FlowSearchTopBar
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaSearchTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 
 /** The playlist's search: the query while the field is open, or null while it is closed. */
 internal class PlaylistSearchBar(
@@ -42,7 +42,7 @@ internal fun PlaylistDetailTopBar(
     onSelectAll: () -> Unit,
 ) {
     if (search.query != null && !inSelectionMode) {
-        FlowSearchTopBar(
+        MawjaSearchTopBar(
             query = search.query,
             onQueryChange = search.onQueryChange,
             onClose = search.onClose,
@@ -51,7 +51,7 @@ internal fun PlaylistDetailTopBar(
         )
         return
     }
-    FlowTopBar(
+    MawjaTopBar(
         title =
             when {
                 inSelectionMode -> pluralStringResource(R.plurals.selected_count_template, selectedCount, selectedCount)
@@ -67,7 +67,7 @@ internal fun PlaylistDetailTopBar(
                         contentDescription = stringResource(if (allSelected) R.string.deselect_all else R.string.select_all),
                     )
                 }
-                return@FlowTopBar
+                return@MawjaTopBar
             }
             IconButton(onClick = search.onOpen) {
                 Icon(imageVector = Icons.Outlined.Search, contentDescription = stringResource(R.string.search_in_playlist))

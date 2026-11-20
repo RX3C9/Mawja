@@ -9,7 +9,7 @@ import app.mawja.android.data.local.CustomThemeCodec
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.ui.screens.settings.SettingsViewModel
 import app.mawja.android.ui.theme.CustomTheme
-import app.mawja.android.ui.theme.FlowPalettes
+import app.mawja.android.ui.theme.MawjaPalettes
 import app.mawja.android.ui.theme.ThemeMode
 import app.mawja.android.ui.theme.ThemeVariant
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +76,7 @@ class CustomThemesViewModel
                 _message.value = CustomThemeMessage.LimitReached
                 return null
             }
-            val theme = CustomTheme.from(newId(), name, FlowPalettes.forMode(base))
+            val theme = CustomTheme.from(newId(), name, MawjaPalettes.forMode(base))
             write { dataManager.saveCustomTheme(theme) }
             return theme.id
         }

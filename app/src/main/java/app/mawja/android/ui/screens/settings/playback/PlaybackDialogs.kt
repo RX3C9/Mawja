@@ -19,8 +19,8 @@ import app.mawja.android.R
 import app.mawja.android.data.local.SPEED_SWIPE_STEPS
 import app.mawja.android.data.local.SpeedSwipeSide
 import app.mawja.android.player.stream.CaptionTrackResolver
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
 import app.mawja.android.utils.LanguageCatalog
 import app.mawja.android.utils.formatMultiplierLabel
 import kotlin.math.roundToInt
@@ -37,10 +37,10 @@ internal fun PlaybackDialogs(
     when (dialog) {
         PlaybackDialog.AUTOPLAY_COUNTDOWN -> {
             val seconds by viewModel.autoplayCountdown.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_autoplay_countdown_title),
                 description = stringResource(R.string.player_settings_autoplay_countdown_dialog_body),
-                options = AutoplayCountdownOptions.map { FlowChoice(it, countdownLabel(it)) },
+                options = AutoplayCountdownOptions.map { MawjaChoice(it, countdownLabel(it)) },
                 selected = seconds,
                 onSelect = viewModel::setAutoplayCountdown,
                 onDismiss = onDismiss,
@@ -49,9 +49,9 @@ internal fun PlaybackDialogs(
 
         PlaybackDialog.LONG_PRESS_SPEED -> {
             val speed by viewModel.longPressSpeed.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_appearance_long_press_speed_title),
-                options = LongPressSpeedOptions.map { FlowChoice(it, longPressSpeedLabel(it)) },
+                options = LongPressSpeedOptions.map { MawjaChoice(it, longPressSpeedLabel(it)) },
                 selected = if (speed <= 0f) 0f else speed,
                 onSelect = viewModel::setLongPressSpeed,
                 onDismiss = onDismiss,
@@ -60,10 +60,10 @@ internal fun PlaybackDialogs(
 
         PlaybackDialog.DOUBLE_TAP_SEEK -> {
             val seconds by viewModel.doubleTapSeek.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_double_tap_seek_dialog_title),
                 description = stringResource(R.string.player_settings_double_tap_seek_dialog_body),
-                options = DoubleTapSeekOptions.map { FlowChoice(it, doubleTapSeekLabel(it)) },
+                options = DoubleTapSeekOptions.map { MawjaChoice(it, doubleTapSeekLabel(it)) },
                 selected = seconds,
                 onSelect = viewModel::setDoubleTapSeek,
                 onDismiss = onDismiss,
@@ -72,10 +72,10 @@ internal fun PlaybackDialogs(
 
         PlaybackDialog.SPEED_SWIPE_SIDE -> {
             val side by viewModel.speedSwipeSide.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_speed_swipe),
                 description = stringResource(R.string.player_settings_speed_swipe_dialog_body),
-                options = SpeedSwipeSide.entries.map { FlowChoice(it, speedSwipeSideLabel(it)) },
+                options = SpeedSwipeSide.entries.map { MawjaChoice(it, speedSwipeSideLabel(it)) },
                 selected = side,
                 onSelect = viewModel::setSpeedSwipeSide,
                 onDismiss = onDismiss,
@@ -84,10 +84,10 @@ internal fun PlaybackDialogs(
 
         PlaybackDialog.SPEED_SWIPE_STEP -> {
             val step by viewModel.speedSwipeStep.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_speed_swipe_step),
                 description = stringResource(R.string.player_settings_speed_swipe_step_dialog_body),
-                options = SPEED_SWIPE_STEPS.map { FlowChoice(it, formatMultiplierLabel(it)) },
+                options = SPEED_SWIPE_STEPS.map { MawjaChoice(it, formatMultiplierLabel(it)) },
                 selected = step,
                 onSelect = viewModel::setSpeedSwipeStep,
                 onDismiss = onDismiss,
@@ -107,12 +107,12 @@ internal fun PlaybackDialogs(
 
         PlaybackDialog.AUDIO_LANGUAGE -> {
             val code by viewModel.audioLanguage.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_audio_language_dialog_title),
                 description = stringResource(R.string.player_settings_audio_language_dialog_body),
                 options =
                     listOf(
-                        FlowChoice(
+                        MawjaChoice(
                             PlaybackSettingsViewModel.ORIGINAL_AUDIO,
                             stringResource(R.string.player_settings_audio_original),
                             stringResource(R.string.player_settings_audio_original_desc),
@@ -126,12 +126,12 @@ internal fun PlaybackDialogs(
 
         PlaybackDialog.SUBTITLE_LANGUAGE -> {
             val code by viewModel.subtitleLanguage.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.player_settings_subtitle_language_dialog_title),
                 description = stringResource(R.string.player_settings_subtitle_language_dialog_body),
                 options =
                     listOf(
-                        FlowChoice(
+                        MawjaChoice(
                             CaptionTrackResolver.NO_PREFERRED_LANGUAGE,
                             stringResource(R.string.player_settings_subtitle_language_none),
                             stringResource(R.string.player_settings_subtitle_language_none_desc),
@@ -145,12 +145,12 @@ internal fun PlaybackDialogs(
 
         PlaybackDialog.SECONDARY_SUBTITLE_LANGUAGE -> {
             val code by viewModel.secondarySubtitleLanguage.collectAsStateWithLifecycle()
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.dual_subtitles_language),
                 description = stringResource(R.string.dual_subtitles_dialog_body),
                 options =
                     listOf(
-                        FlowChoice(
+                        MawjaChoice(
                             app.mawja.android.player.subtitle.DualSubtitles.OFF,
                             stringResource(R.string.off),
                             stringResource(R.string.dual_subtitles_off_desc),
@@ -173,13 +173,13 @@ internal fun PlaybackDialogs(
 }
 
 @Composable
-private fun languageChoices(): List<FlowChoice<String>> =
+private fun languageChoices(): List<MawjaChoice<String>> =
     remember {
         LanguageCatalog.codes
             .map { code ->
                 val localized = LanguageCatalog.displayName(code)
                 val native = LanguageCatalog.nativeName(code)
-                FlowChoice(code, localized, native.takeIf { it != localized })
+                MawjaChoice(code, localized, native.takeIf { it != localized })
             }.sortedBy { it.label }
     }
 
@@ -195,14 +195,14 @@ private fun ShortsModeDialog(
     val mode by viewModel.shortsPlaybackMode.collectAsStateWithLifecycle()
     val seconds by viewModel.shortsAutoScrollSeconds.collectAsStateWithLifecycle()
     var draft by remember(seconds) { mutableFloatStateOf(seconds.toFloat()) }
-    FlowChoiceDialog(
+    MawjaChoiceDialog(
         title = stringResource(R.string.player_settings_shorts_playback_mode_dialog_title),
         description = stringResource(R.string.player_settings_shorts_playback_mode_dialog_body),
         options =
             listOf(
-                FlowChoice(ShortsPlaybackModes.LOOP, stringResource(R.string.player_settings_shorts_playback_mode_loop)),
-                FlowChoice(ShortsPlaybackModes.AUTO_NEXT, stringResource(R.string.player_settings_shorts_playback_mode_auto_next)),
-                FlowChoice(ShortsPlaybackModes.AUTO_INTERVAL, stringResource(R.string.player_settings_shorts_playback_mode_auto_interval)),
+                MawjaChoice(ShortsPlaybackModes.LOOP, stringResource(R.string.player_settings_shorts_playback_mode_loop)),
+                MawjaChoice(ShortsPlaybackModes.AUTO_NEXT, stringResource(R.string.player_settings_shorts_playback_mode_auto_next)),
+                MawjaChoice(ShortsPlaybackModes.AUTO_INTERVAL, stringResource(R.string.player_settings_shorts_playback_mode_auto_interval)),
             ),
         selected = mode,
         onSelect = viewModel::setShortsPlaybackMode,

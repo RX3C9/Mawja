@@ -7,7 +7,7 @@ import app.mawja.android.data.local.CachedHomeVideo
 import app.mawja.android.data.local.HomeFeedCacheRepository
 import app.mawja.android.data.local.ViewHistory
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.InteractionType
 import app.mawja.android.data.repository.YouTubeRepository
 import app.mawja.android.data.stats.VideoStatsRecorder
@@ -323,7 +323,7 @@ internal class WatchSessionTracker(
         lastReportedVideoId = video.id
 
         // Engine-scope dispatch: survives ViewModel teardown.
-        FlowNeuroEngine.onVideoInteractionAsync(
+        MawjaNeuroEngine.onVideoInteractionAsync(
             context,
             video,
             signal.type,

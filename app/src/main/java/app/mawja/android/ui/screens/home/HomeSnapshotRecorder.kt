@@ -3,7 +3,7 @@ package app.mawja.android.ui.screens.home
 import app.mawja.android.BuildConfig
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.NeuroKeySpec
 import app.mawja.android.data.recommendation.RankTrace
 import app.mawja.android.data.recommendation.snapshot.HomeSnapshot
@@ -40,7 +40,7 @@ class HomeSnapshotRecorder
             sourceOf: (String) -> FeedSource?,
             trace: RankTrace,
         ) {
-            val state = runCatching { FlowNeuroEngine.diagnosticState() }.getOrNull() ?: return
+            val state = runCatching { MawjaNeuroEngine.diagnosticState() }.getOrNull() ?: return
             val snapshot =
                 HomeSnapshot(
                     appVersion = BuildConfig.VERSION_NAME,

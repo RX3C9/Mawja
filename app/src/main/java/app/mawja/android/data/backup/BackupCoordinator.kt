@@ -8,7 +8,7 @@ import app.mawja.android.R
 import app.mawja.android.data.local.BackupRepository
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.data.local.NO_LIKES
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.music.FavouriteArtistsStore
 import app.mawja.android.data.recommendation.music.MusicBrainEngine
 import app.mawja.android.data.stats.RecapBackup
@@ -101,7 +101,7 @@ class BackupCoordinator
 
         fun exportEngine(uri: Uri) =
             exportTo(uri, R.string.export_engine_success, R.string.export_engine_failed) {
-                writeStream(uri) { out -> FlowNeuroEngine.exportBrainToStream(out) }
+                writeStream(uri) { out -> MawjaNeuroEngine.exportBrainToStream(out) }
             }
 
         fun exportMusicBrain(uri: Uri) =
@@ -179,7 +179,7 @@ class BackupCoordinator
 
         fun importEngine(uri: Uri) =
             run(context.getString(R.string.import_engine_data)) {
-                val ok = readStream(uri) { input -> FlowNeuroEngine.importBrainFromStream(context, input) } == true
+                val ok = readStream(uri) { input -> MawjaNeuroEngine.importBrainFromStream(context, input) } == true
                 if (ok) {
                     BackupOperation.Succeeded(context.getString(R.string.import_engine_success))
                 } else {

@@ -581,7 +581,6 @@
     <!-- Écran des Dons -->
     <string name="thank_you_support_message">Merci pour votre soutien ! ❤️</string>
     <string name="address_copied_toast">Adresse copiée dans le presse-papiers</string>
-    <string name="donation_address_clip_label">Adresse de Don</string>
     <!-- Écran À Propos -->
     <string name="about_creator">Créateur</string>
     <string name="about_website">Site Web</string>
@@ -1150,7 +1149,6 @@
     <string name="audio_access_title">Accès à la musique &amp; à l\'audio</string>
     <string name="audio_access_granted_subtitle">Autorisé</string>
     <string name="audio_access_denied_subtitle">Non autorisé — appuyez pour activer</string>
-    <string name="support_flow_patreon">Soutenez Mawja sur Patreon</string>
     <string name="section_app">Application</string>
     <string name="section_contact">Contact</string>
     <string name="section_legal">Légal</string>
@@ -1646,12 +1644,6 @@
     <string name="live_chat_jump_to_latest">Aller au dernier message du chat</string>
     <string name="content_settings_subs_show_checked_count_title">Nombre de vidéos vérifiées</string>
     <string name="content_settings_subs_show_checked_count_subtitle">Indiquer le nombre de vidéos visionnées à côté de la date de la dernière mise à jour</string>
-    <string name="donation_prompt_title">Vous appréciez Mawja ?</string>
-    <string name="donation_prompt_message">Mawja est une application gratuite et open source, conçue sans publicité ni traqueurs. Si elle a trouvé sa place sur votre appareil, pensez à soutenir son développement : cela contribue réellement à assurer la pérennité du projet.</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Soutenir le développement</string>
-    <string name="donation_prompt_later">Peut-être plus tard</string>
-    <string name="donation_prompt_never">Ne plus afficher</string>
     <string name="library_local_media_label">Médias locaux</string>
     <string name="library_local_media_subtitle">Lire des vidéos et de la musique sur cet appareil</string>
     <string name="local_media_title">Médias locaux</string>
@@ -2313,7 +2305,6 @@
     <string name="settings_search_no_results">Aucun paramètre trouvé pour %1$s</string>
     <string name="settings_lyrics_provider_order_description">Les fournisseurs sont testés les uns après les autres. Le premier qui renvoie les paroles remporte la mise.</string>
     <string name="import_running_background">Vous pouvez quitter cette page : l\'importation se poursuit en arrière-plan.</string>
-    <string name="donations_cryptocurrency">CRYPTOMONNAIE</string>
     <string name="import_no_history_entries">Aucune entrée d\'historique de surveillance n\'a été trouvée dans le fichier</string>
     <string name="import_no_videos">Aucune vidéo n\'a été trouvée dans le fichier de la playlist</string>
     <string name="import_no_content">Aucun contenu importable n\'a été détecté dans cette sauvegarde</string>

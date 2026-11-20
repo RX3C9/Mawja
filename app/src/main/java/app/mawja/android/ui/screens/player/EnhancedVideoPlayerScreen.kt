@@ -58,7 +58,7 @@ private val ListEndPadding = 80.dp
  * EnhancedVideoPlayerScreen - Simplified version for DraggablePlayerLayout
  *
  * This composable only renders the VIDEO DETAILS (description, comments, related videos).
- * The video player surface and all effects are handled by FlowApp.kt
+ * The video player surface and all effects are handled by MawjaApp.kt
  */
 @UnstableApi
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
@@ -68,7 +68,7 @@ internal fun EnhancedVideoPlayerScreen(
     video: Video,
     alpha: () -> Float,
     videoPlayerHeightPx: () -> Float = { 0f },
-    screenState: PlayerScreenState, // Shared screenState from FlowApp
+    screenState: PlayerScreenState, // Shared screenState from MawjaApp
     isFullscreenShown: Boolean,
     prefs: VideoPlayerPreferencesState,
     onVideoClick: (Video) -> Unit,

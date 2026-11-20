@@ -32,7 +32,7 @@ fun FeedPagingFooter(
 ) {
     when {
         appendState is LoadState.Loading -> {
-            FlowFeedProgress(modifier)
+            MawjaFeedProgress(modifier)
         }
 
         appendState is LoadState.Error -> {

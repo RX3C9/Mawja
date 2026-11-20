@@ -25,9 +25,9 @@ import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.choice
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
 import app.mawja.android.ui.screens.settings.index.HistoryIndex
 
 private enum class HistoryDialog { MAX_SIZE, RETENTION, CLEAR }
@@ -116,10 +116,10 @@ internal fun HistorySettingsScreen(
 
     when (dialog) {
         HistoryDialog.MAX_SIZE -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.max_history_size_title),
                 description = stringResource(R.string.choose_history_size),
-                options = HistorySizes.map { FlowChoice(it, pluralStringResource(R.plurals.searches_count_template, it, it)) },
+                options = HistorySizes.map { MawjaChoice(it, pluralStringResource(R.plurals.searches_count_template, it, it)) },
                 selected = maxSize,
                 onSelect = viewModel::setMaxSize,
                 onDismiss = { dialog = null },
@@ -127,10 +127,10 @@ internal fun HistorySettingsScreen(
         }
 
         HistoryDialog.RETENTION -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.retention_period_title),
                 description = stringResource(R.string.delete_searches_older_than),
-                options = RetentionPeriods.map { (days, label) -> FlowChoice(days, stringResource(label)) },
+                options = RetentionPeriods.map { (days, label) -> MawjaChoice(days, stringResource(label)) },
                 selected = retentionDays,
                 onSelect = viewModel::setRetentionDays,
                 onDismiss = { dialog = null },
@@ -138,7 +138,7 @@ internal fun HistorySettingsScreen(
         }
 
         HistoryDialog.CLEAR -> {
-            FlowAlertDialog(
+            MawjaAlertDialog(
                 onDismissRequest = { dialog = null },
                 title = { Text(stringResource(R.string.clear_history_dialog_title)) },
                 text = { Text(stringResource(R.string.clear_history_dialog_text)) },

@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 import app.mawja.android.util.LauncherIcon
 
 private const val ICON_COLUMNS = 3
@@ -65,7 +65,7 @@ internal fun AppIconDialog(
 ) {
     var staged by rememberSaveable(selected) { mutableStateOf(selected) }
 
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.settings_item_app_icon)) },
         text = {

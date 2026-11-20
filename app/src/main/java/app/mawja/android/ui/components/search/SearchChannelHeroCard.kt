@@ -36,8 +36,8 @@ import app.mawja.android.R
 import app.mawja.android.data.model.Channel
 import app.mawja.android.data.model.Video
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
-import app.mawja.android.ui.components.shared.FlowSubscribeButtonSize
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaSubscribeButtonSize
 import app.mawja.android.ui.components.shared.MediaArtworkTint
 import app.mawja.android.ui.components.shared.card.MediaVideoCard
 import app.mawja.android.ui.components.shared.feedStripCardWidth
@@ -180,11 +180,11 @@ private fun ChannelActions(
         horizontalArrangement = Arrangement.spacedBy(ActionSpacing),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        FlowSubscribeButton(
+        MawjaSubscribeButton(
             isSubscribed = isSubscribed,
             onSubscribeClick = onSubscribeToggle,
             onUnsubscribeClick = onSubscribeToggle,
-            size = FlowSubscribeButtonSize.Wide,
+            size = MawjaSubscribeButtonSize.Wide,
             tint = tint,
             modifier = if (isSubscribed) Modifier else Modifier.weight(1f),
         )

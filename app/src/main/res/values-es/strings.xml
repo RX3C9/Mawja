@@ -924,7 +924,6 @@
     <string name="select_threads_count_desc">Seleccionar número de hilos (1-8):</string>
     <string name="address_copied_toast">Dirección copiada al portapapeles</string>
     <string name="thank_you_support_message">¡Gracias por su apoyo! ❤️</string>
-    <string name="donation_address_clip_label">Dirección de donación</string>
     <string name="about_creator">Creador</string>
     <string name="github_subtitle">Código fuente y problemas</string>
     <string name="newpipe_extractor_title">Extractor de NewPipe</string>
@@ -1353,7 +1352,6 @@
     <string name="proxy_settings_invalid_port">Ingrese un puerto proxy válido entre 1 y 65535.</string>
     <string name="settings_item_app_language">Idioma de la aplicación</string>
     <string name="proxy_settings_saved">Configuración de proxy guardada</string>
-    <string name="support_flow_patreon">Apoya a Mawja en Patreon</string>
     <string name="settings_item_app_language_subtitle">Utilice el idioma de su dispositivo o elija uno manualmente</string>
     <string name="settings_language_dialog_title">Seleccionar idioma de la aplicación</string>
     <string name="select_text">Seleccionar texto</string>
@@ -1599,12 +1597,6 @@
     <string name="player_settings_video_codec_dialog_title">Códec de vídeo por defecto</string>
     <string name="player_settings_video_codec_dialog_body">El códec que Mawja elige prioritariamente. Aún puedes elegir cualquier códec desde el menú de calidad. H.264 es el que se reproduce con más fluidez en la mayoría de los dispositivos. AV1 y VP9 consumen menos datos, pero requieren más potencia.</string>
     <string name="player_settings_video_codec_auto_desc">Deja que la app decida (prioriza H.264)</string>
-    <string name="donation_prompt_title">Disfrutando Mawja?</string>
-    <string name="donation_prompt_message">Mawja es gratis, libre y sin anuncios. Si se ha ganado su lugar en tu teléfono, un pequeño aporte ayuda a seguir manteniéndolo vivo.</string>
-    <string name="donation_prompt_methods">Open Collective · Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Apoyar el desarrollo</string>
-    <string name="donation_prompt_later">Quizás más tarde</string>
-    <string name="donation_prompt_never">No mostrar de nuevo</string>
     <string name="subscriptions_last_refreshed_time_only_template">Última actualización %1$s</string>
     <string name="player_appearance_long_press_speed_title">Velocidad de reproducción con pulsación larga</string>
     <string name="player_appearance_long_press_speed_subtitle">Elige la velocidad temporal que se utiliza mientras mantienes pulsado</string>
@@ -2263,7 +2255,6 @@
     <string name="settings_search_no_results">No se encontraron ajustes para %1$s</string>
     <string name="settings_lyrics_provider_order_description">Probados de arriba a abajo. Arrastra para reordenar.</string>
     <string name="import_running_background">Puedes salir de esta pantalla. La importación continuará en segundo plano.</string>
-    <string name="donations_cryptocurrency">Criptomonedas</string>
     <string name="import_no_history_entries">No se encontraron entradas de historial de reproducción en el archivo</string>
     <string name="import_no_videos">El archivo de la lista de reproducción no contiene videos</string>
     <string name="import_no_content">No se encontró contenido importable en este respaldo</string>
@@ -3128,7 +3119,6 @@
     <string name="concurrent_downloads_title">Descargas a la vez</string>
     <string name="concurrent_downloads_summary">Cuántos archivos se descargan a la vez</string>
     <string name="download_location_not_writable">No se puede guardar ahí. Se usará %1$s</string>
-    <string name="support_flow_open_collective">Apoya a Mawja en Open Collective</string>
     <string name="about_notices">Avisos sobre código abierto</string>
     <string name="about_notices_summary">Listas de palabras y código de otros proyectos</string>
     <string name="onboarding_channels_results_header">Canales</string>

@@ -25,8 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.utils.DeviceDetails
 import app.mawja.android.utils.DeviceFactGroup
 import app.mawja.android.utils.copyPlainText
@@ -51,13 +51,13 @@ internal fun DeviceInfoDialog(onDismiss: () -> Unit) {
         value = withContext(Dispatchers.IO) { DeviceDetails.collect(context) }
     }
 
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
             val loaded = groups
             if (loaded == null) {
-                Box(Modifier.fillMaxWidth().height(LoadingHeight), contentAlignment = Alignment.Center) { FlowLoadingIndicator() }
+                Box(Modifier.fillMaxWidth().height(LoadingHeight), contentAlignment = Alignment.Center) { MawjaLoadingIndicator() }
             } else {
                 SelectionContainer(Modifier.heightIn(max = ContentMaxHeight).verticalScroll(rememberScrollState())) {
                     Column(verticalArrangement = Arrangement.spacedBy(GroupSpacing)) {

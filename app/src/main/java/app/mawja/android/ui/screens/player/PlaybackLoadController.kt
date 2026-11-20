@@ -8,7 +8,7 @@ import app.mawja.android.data.localmedia.LocalMediaDetails
 import app.mawja.android.data.localmedia.LocalMediaIds
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.recommendation.FeedExclusions
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.video.AutoDownloadResolution
 import app.mawja.android.data.video.AutoDownloadTrigger
 import app.mawja.android.player.EnhancedPlayerManager
@@ -286,7 +286,7 @@ internal class PlaybackLoadController(
 
     private fun refreshFeedExclusions() {
         scope.launch(ioDispatcher) {
-            runCatching { FlowNeuroEngine.getInstance(context).feedExclusions() }.onSuccess { exclusions = it }
+            runCatching { MawjaNeuroEngine.getInstance(context).feedExclusions() }.onSuccess { exclusions = it }
         }
     }
 }

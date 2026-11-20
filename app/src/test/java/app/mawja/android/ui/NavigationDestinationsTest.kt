@@ -1,6 +1,6 @@
 package app.mawja.android.ui
 
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -10,24 +10,24 @@ import org.junit.Test
 class NavigationDestinationsTest {
     @Test
     fun tabRootsMapToTheirTab() {
-        FlowTab.entries.filter { it != FlowTab.Shorts }.forEach { tab ->
+        MawjaTab.entries.filter { it != MawjaTab.Shorts }.forEach { tab ->
             assertEquals(tab, flowTabForDestination(tab.route, shortsSourceArg = null))
         }
     }
 
     @Test
     fun onlyTheShortsFeedIsTheShortsTab() {
-        assertEquals(FlowTab.Shorts, flowTabForDestination(SHORTS_ROUTE_PATTERN, shortsSourceArg = null))
-        assertEquals(FlowTab.Shorts, flowTabForDestination(SHORTS_ROUTE_PATTERN, shortsSourceArg = "feed"))
+        assertEquals(MawjaTab.Shorts, flowTabForDestination(SHORTS_ROUTE_PATTERN, shortsSourceArg = null))
+        assertEquals(MawjaTab.Shorts, flowTabForDestination(SHORTS_ROUTE_PATTERN, shortsSourceArg = "feed"))
         assertNull(flowTabForDestination(SHORTS_ROUTE_PATTERN, shortsSourceArg = "feed:dQw4w9WgXcQ"))
         assertNull(flowTabForDestination(SHORTS_ROUTE_PATTERN, shortsSourceArg = "saved:"))
     }
 
     @Test
     fun aVideoOpenedFromShortsPlaysOverTheFirstOtherTab() {
-        assertEquals("music", shortsExitRoute(listOf(FlowTab.Shorts, FlowTab.Music, FlowTab.Library)))
-        assertEquals("home", shortsExitRoute(listOf(FlowTab.Home, FlowTab.Shorts)))
-        assertEquals("home", shortsExitRoute(listOf(FlowTab.Shorts)))
+        assertEquals("music", shortsExitRoute(listOf(MawjaTab.Shorts, MawjaTab.Music, MawjaTab.Library)))
+        assertEquals("home", shortsExitRoute(listOf(MawjaTab.Home, MawjaTab.Shorts)))
+        assertEquals("home", shortsExitRoute(listOf(MawjaTab.Shorts)))
         assertEquals("home", shortsExitRoute(emptyList()))
     }
 
@@ -40,8 +40,8 @@ class NavigationDestinationsTest {
 
     @Test
     fun routesFromOutsideTheGraphResolveToTheirTab() {
-        assertEquals(FlowTab.Search, flowTabForRoute("search"))
-        assertEquals(FlowTab.Music, flowTabForRoute("music"))
+        assertEquals(MawjaTab.Search, flowTabForRoute("search"))
+        assertEquals(MawjaTab.Music, flowTabForRoute("music"))
         listOf("downloads", "history", "musicRecognize", "musicPlayer/abc", "settings").forEach { route ->
             assertNull(flowTabForRoute(route))
         }
@@ -49,9 +49,9 @@ class NavigationDestinationsTest {
 
     @Test
     fun searchIsTheOnlyTabWithoutTheBar() {
-        FlowTab.entries.forEach { tab -> assertEquals(tab != FlowTab.Search, tab.showsNavigationBar()) }
-        assertFalse((null as FlowTab?).showsNavigationBar())
-        assertTrue(FlowTab.Home.showsNavigationBar())
+        MawjaTab.entries.forEach { tab -> assertEquals(tab != MawjaTab.Search, tab.showsNavigationBar()) }
+        assertFalse((null as MawjaTab?).showsNavigationBar())
+        assertTrue(MawjaTab.Home.showsNavigationBar())
     }
 
     @Test

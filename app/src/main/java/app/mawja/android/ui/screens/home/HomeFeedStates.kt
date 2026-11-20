@@ -6,11 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 
 @Composable
 internal fun HomeFeedDisabledState(modifier: Modifier = Modifier) {
-    FlowEmptyState(
+    MawjaEmptyState(
         title = stringResource(R.string.content_settings_home_feed_disabled_title),
         subtitle = stringResource(R.string.content_settings_home_feed_disabled_body),
         icon = Icons.Outlined.SmartDisplay,

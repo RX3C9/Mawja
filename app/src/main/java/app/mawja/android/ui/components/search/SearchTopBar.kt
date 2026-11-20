@@ -23,7 +23,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaSearchField
 
 /**
  * The Search tab's bar, laid out the way YouTube lays its own out: the back affordance and the mic
@@ -58,7 +58,7 @@ fun SearchTopBar(
             )
         }
 
-        FlowSearchField(
+        MawjaSearchField(
             state = textFieldState,
             placeholder = stringResource(R.string.search_videos_channels_placeholder),
             modifier = Modifier.weight(1f),

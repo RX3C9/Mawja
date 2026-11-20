@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowSheetHeader
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
 import app.mawja.android.ui.components.shared.rememberFlowSheetState
 
 /**
@@ -40,7 +40,7 @@ internal fun LiveBackgroundUpsellSheet(
         sheetState = rememberFlowSheetState(),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        FlowSheetHeader(
+        MawjaSheetHeader(
             title = stringResource(R.string.premium_available_in_plus),
             subtitle = styleName,
             onClose = onDismiss,

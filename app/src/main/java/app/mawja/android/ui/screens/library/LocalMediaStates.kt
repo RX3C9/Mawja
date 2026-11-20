@@ -24,7 +24,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 
 private const val ACTION_WIDTH_FRACTION = 0.6f
 
@@ -36,7 +36,7 @@ internal fun LocalMediaPermissionState(
     onGrant: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
-    FlowEmptyState(
+    MawjaEmptyState(
         title = stringResource(R.string.local_media_permission_title),
         subtitle = stringResource(if (canAsk) R.string.local_media_permission_body else R.string.local_permission_denied_body),
         icon = Icons.Outlined.VideoLibrary,

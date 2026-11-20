@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.local.ThumbnailQuality
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.LocalThumbnailQuality
 import app.mawja.android.ui.components.shared.VideoThumbnailImage
 import app.mawja.android.ui.theme.PlayerScrim
@@ -187,7 +187,7 @@ internal fun ShortsBufferingIndicator(
         exit = fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec()),
         modifier = modifier,
     ) {
-        FlowLoadingIndicator(modifier = Modifier.size(ShortsOverlayDefaults.BufferingIndicatorSize))
+        MawjaLoadingIndicator(modifier = Modifier.size(ShortsOverlayDefaults.BufferingIndicatorSize))
     }
 }
 

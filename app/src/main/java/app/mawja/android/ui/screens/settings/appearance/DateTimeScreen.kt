@@ -21,7 +21,7 @@ import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.option
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.DateTimeIndex
 import app.mawja.android.utils.DateContext
 import app.mawja.android.utils.DateContextMode
@@ -82,10 +82,10 @@ internal fun DateTimeScreen(
         }
     val overrideOptions =
         listOf(
-            FlowToggleOption(DateContextMode.DEFAULT, stringResource(R.string.datetime_override_default)),
-            FlowToggleOption(DateContextMode.RELATIVE, stringResource(R.string.datetime_override_relative)),
-            FlowToggleOption(DateContextMode.EXACT, stringResource(R.string.datetime_override_exact)),
-            FlowToggleOption(DateContextMode.BOTH, stringResource(R.string.datetime_override_both)),
+            MawjaToggleOption(DateContextMode.DEFAULT, stringResource(R.string.datetime_override_default)),
+            MawjaToggleOption(DateContextMode.RELATIVE, stringResource(R.string.datetime_override_relative)),
+            MawjaToggleOption(DateContextMode.EXACT, stringResource(R.string.datetime_override_exact)),
+            MawjaToggleOption(DateContextMode.BOTH, stringResource(R.string.datetime_override_both)),
         )
 
     SettingsPage(

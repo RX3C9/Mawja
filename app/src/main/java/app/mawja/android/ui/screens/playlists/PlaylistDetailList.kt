@@ -22,8 +22,8 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.library.PlaylistVideoRow
 import app.mawja.android.ui.components.library.libraryListThumbnailWidth
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.ReorderableLazyListState
 import app.mawja.android.ui.components.shared.animateMediaListItem
 
@@ -63,7 +63,7 @@ internal fun PlaylistDetailList(
             if (header != null) item(key = "playlist-header", contentType = "header") { header() }
             if (videos.isEmpty() && mode.searchQuery.isNotBlank()) {
                 item(key = "playlist-no-results", contentType = "empty") {
-                    FlowEmptyState(
+                    MawjaEmptyState(
                         title = stringResource(R.string.playlist_search_no_results, mode.searchQuery.trim()),
                         icon = Icons.Outlined.SearchOff,
                     )
@@ -72,7 +72,7 @@ internal fun PlaylistDetailList(
                 item(key = "playlist-empty", contentType = "empty") {
                     when {
                         mode.isLikes -> {
-                            FlowEmptyState(
+                            MawjaEmptyState(
                                 title = stringResource(R.string.liked_videos_empty_title),
                                 subtitle = stringResource(R.string.liked_videos_empty_body),
                                 icon = Icons.Outlined.ThumbUp,
@@ -80,7 +80,7 @@ internal fun PlaylistDetailList(
                         }
 
                         mode.isWatchLater -> {
-                            FlowEmptyState(
+                            MawjaEmptyState(
                                 title = stringResource(R.string.no_videos_saved),
                                 subtitle = stringResource(R.string.no_videos_saved_body),
                                 icon = Icons.Default.WatchLater,
@@ -88,7 +88,7 @@ internal fun PlaylistDetailList(
                         }
 
                         else -> {
-                            FlowEmptyState(
+                            MawjaEmptyState(
                                 title = stringResource(R.string.playlist_empty_title),
                                 subtitle = stringResource(R.string.playlist_empty_desc),
                                 icon = Icons.AutoMirrored.Filled.PlaylistPlay,
@@ -118,7 +118,7 @@ internal fun PlaylistDetailList(
             }
             if (isLoadingMore) {
                 item(key = "playlist-loading-more", contentType = "loading") {
-                    FlowLoadingIndicator(modifier = Modifier.padding(vertical = 24.dp))
+                    MawjaLoadingIndicator(modifier = Modifier.padding(vertical = 24.dp))
                 }
             }
         }

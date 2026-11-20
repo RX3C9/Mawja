@@ -24,9 +24,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.data.recommendation.music.FavouriteArtist
 import app.mawja.android.data.recommendation.music.FavouriteArtistPicker
-import app.mawja.android.ui.components.shared.FlowSearchField
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSearchField
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.MediaArtistToggleRow
 import app.mawja.android.ui.components.shared.dismissKeyboardOnPress
 import app.mawja.android.ui.components.shared.flowSegmentShape
@@ -51,7 +51,7 @@ internal fun ArtistsStep(
     ) {
         header()
         item(key = "search") {
-            FlowSearchField(
+            MawjaSearchField(
                 query = query,
                 onQueryChange = picker::onQueryChange,
                 placeholder = stringResource(R.string.onboarding_artists_search_placeholder),
@@ -88,7 +88,7 @@ private fun LazyListScope.artistSection(
 ) {
     if (artists.isEmpty()) return
     item(key = "$key-header") {
-        FlowSectionHeader(stringResource(header), modifier = Modifier.padding(top = SectionTopPadding))
+        MawjaSectionHeader(stringResource(header), modifier = Modifier.padding(top = SectionTopPadding))
     }
     itemsIndexed(artists, key = { _, artist -> "$key:${artist.id}" }) { index, artist ->
         MediaArtistToggleRow(
@@ -97,7 +97,7 @@ private fun LazyListScope.artistSection(
             picked = artist.id in pickedIds,
             shape = flowSegmentShape(index, artists.size),
             onToggle = { onToggle(artist, it) },
-            modifier = Modifier.animateItem().padding(bottom = FlowSegmentedGap),
+            modifier = Modifier.animateItem().padding(bottom = MawjaSegmentedGap),
         )
     }
 }

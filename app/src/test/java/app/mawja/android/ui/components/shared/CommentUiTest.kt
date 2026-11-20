@@ -72,7 +72,7 @@ class CommentUiTest {
     ) {
         rule.setContent {
             MaterialTheme {
-                FlowCommentItem(
+                MawjaCommentItem(
                     comment = comment,
                     onSeekMs = onSeekMs,
                     onLoadReplies = {},

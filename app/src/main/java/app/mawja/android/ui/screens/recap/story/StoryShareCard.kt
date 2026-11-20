@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mawja.android.R
 import app.mawja.android.data.stats.RecapSummary
-import app.mawja.android.ui.components.shared.FlowMorphingPortrait
+import app.mawja.android.ui.components.shared.MawjaMorphingPortrait
 import app.mawja.android.ui.components.stats.spentTimeLabel
 import app.mawja.android.ui.screens.recap.labels
 import app.mawja.android.ui.screens.recap.readable
@@ -82,9 +82,9 @@ internal fun StoryShareCard(
             )
             Text(periodLabel, style = MaterialTheme.typography.headlineMedium, color = ink, fontWeight = FontWeight.Black)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                channel?.let { FlowMorphingPortrait(it.imageUrl, it.name, PortraitSize, tint.raised, tint.onContainer) }
+                channel?.let { MawjaMorphingPortrait(it.imageUrl, it.name, PortraitSize, tint.raised, tint.onContainer) }
                 artist?.let {
-                    FlowMorphingPortrait(
+                    MawjaMorphingPortrait(
                         imageUrl = it.imageUrl,
                         fallback = it.name,
                         diameter = PortraitSize,

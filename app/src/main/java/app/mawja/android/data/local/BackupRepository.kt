@@ -25,7 +25,7 @@ import app.mawja.android.data.local.entity.PlaylistVideoCrossRef
 import app.mawja.android.data.local.entity.SubscriptionGroupEntity
 import app.mawja.android.data.local.entity.VideoEntity
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.innertube.YouTube
 import app.mawja.android.platform.AppIconEntryPoint
 import app.mawja.android.player.audio.AudioEffectsEntryPoint
@@ -190,7 +190,7 @@ class BackupRepository(
     }
 
     private suspend fun getContentPreferencesBackup(): ContentPreferencesBackup {
-        val engine = FlowNeuroEngine.getInstance(context)
+        val engine = MawjaNeuroEngine.getInstance(context)
         engine.initialize()
         val brain = engine.getBrainSnapshot()
         return ContentPreferencesBackup(
@@ -228,7 +228,7 @@ class BackupRepository(
     }
 
     private suspend fun exportBrainBytes(): ByteArray {
-        val engine = FlowNeuroEngine.getInstance(context)
+        val engine = MawjaNeuroEngine.getInstance(context)
         engine.initialize()
         return ByteArrayOutputStream()
             .also { bos ->
@@ -269,7 +269,7 @@ class BackupRepository(
                 .toList()
 
         if (videos.isNotEmpty()) {
-            FlowNeuroEngine.bootstrapFromWatchHistory(context, videos)
+            MawjaNeuroEngine.bootstrapFromWatchHistory(context, videos)
         }
     }
 
@@ -478,7 +478,7 @@ class BackupRepository(
                 val channelNames = subscriptions.map { it.channelName }.filter { it.isNotEmpty() }
                 if (channelNames.isNotEmpty()) {
                     try {
-                        FlowNeuroEngine.bootstrapFromSubscriptions(context, channelNames)
+                        MawjaNeuroEngine.bootstrapFromSubscriptions(context, channelNames)
                     } catch (e: Exception) {
                     }
                 }
@@ -582,7 +582,7 @@ class BackupRepository(
                 val ytChannelNames = subscriptionsWithAvatars.map { it.channelName }.filter { it.isNotEmpty() }
                 if (ytChannelNames.isNotEmpty()) {
                     try {
-                        FlowNeuroEngine.bootstrapFromSubscriptions(context, ytChannelNames)
+                        MawjaNeuroEngine.bootstrapFromSubscriptions(context, ytChannelNames)
                     } catch (e: Exception) {
                     }
                 }
@@ -696,7 +696,7 @@ class BackupRepository(
                 }.toList()
         if (learnable.isNotEmpty()) {
             try {
-                FlowNeuroEngine.bootstrapFromWatchHistory(context, learnable)
+                MawjaNeuroEngine.bootstrapFromWatchHistory(context, learnable)
             } catch (_: Exception) {
             }
         }
@@ -1190,7 +1190,7 @@ class BackupRepository(
                 val ltChannelNames = finalSubs.map { it.channelName }.filter { it.isNotEmpty() }
                 if (ltChannelNames.isNotEmpty()) {
                     try {
-                        FlowNeuroEngine.bootstrapFromSubscriptions(context, ltChannelNames)
+                        MawjaNeuroEngine.bootstrapFromSubscriptions(context, ltChannelNames)
                     } catch (e: Exception) {
                     }
                 }
@@ -1822,7 +1822,7 @@ class BackupRepository(
                 }
 
                 brainBytes?.let { bytes ->
-                    FlowNeuroEngine.importBrainFromStream(context, bytes.inputStream())
+                    MawjaNeuroEngine.importBrainFromStream(context, bytes.inputStream())
                 }
 
                 musicBrainBytes?.let { bytes -> onMusicBrain?.invoke(bytes) }
@@ -1830,7 +1830,7 @@ class BackupRepository(
                 favouriteArtistBytes?.let { bytes -> onFavouriteArtists?.invoke(bytes) }
 
                 contentPreferences?.let { preferences ->
-                    FlowNeuroEngine.restoreContentPreferences(
+                    MawjaNeuroEngine.restoreContentPreferences(
                         context = context,
                         preferredTopics = preferences.preferredTopics,
                         blockedTopics = preferences.blockedTopics,
@@ -1859,7 +1859,7 @@ class BackupRepository(
             val channelNames = subs.map { it.channelName }.filter { it.isNotEmpty() }
             if (channelNames.isNotEmpty()) {
                 try {
-                    FlowNeuroEngine.bootstrapFromSubscriptions(context, channelNames)
+                    MawjaNeuroEngine.bootstrapFromSubscriptions(context, channelNames)
                 } catch (_: Exception) {
                 }
             }
@@ -1893,7 +1893,7 @@ class BackupRepository(
         }
         if (restoreContentPreferences) {
             backupData.contentPreferences?.let { preferences ->
-                FlowNeuroEngine.restoreContentPreferences(
+                MawjaNeuroEngine.restoreContentPreferences(
                     context = context,
                     preferredTopics = preferences.preferredTopics,
                     blockedTopics = preferences.blockedTopics,

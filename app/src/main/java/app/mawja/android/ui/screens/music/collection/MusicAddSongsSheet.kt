@@ -29,8 +29,8 @@ import app.mawja.android.R
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.ui.components.music.item.MusicItemDensity
 import app.mawja.android.ui.components.music.item.MusicTrackItem
-import app.mawja.android.ui.components.shared.FlowSearchField
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSearchField
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowSegmentShape
 import app.mawja.android.ui.theme.Dimensions
 
@@ -56,7 +56,7 @@ internal fun MusicAddSongsSheet(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
         )
-        FlowSearchField(
+        MawjaSearchField(
             query = search.query,
             onQueryChange = onQueryChange,
             placeholder = stringResource(R.string.ui_search_songs_to_add),
@@ -81,7 +81,7 @@ internal fun MusicAddSongsSheet(
                 }
 
                 else -> {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap)) {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap)) {
                         itemsIndexed(search.results, key = { index, track -> "${track.videoId}#$index" }) { index, track ->
                             val added = track.videoId in inPlaylist
                             val tint = if (added) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant

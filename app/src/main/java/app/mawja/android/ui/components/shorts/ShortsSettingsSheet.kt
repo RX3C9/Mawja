@@ -38,12 +38,12 @@ import app.mawja.android.data.model.ShortVideo
 import app.mawja.android.data.shorts.ShortVideoQuality
 import app.mawja.android.player.shorts.ShortsPlayerPool
 import app.mawja.android.player.stream.VideoCodecUtils
-import app.mawja.android.ui.components.shared.FlowBottomSheet
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSheetHeader
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaBottomSheet
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.components.shared.MediaAudioTrackRow
 import app.mawja.android.ui.components.shared.MediaPlaybackSpeedPicker
 import app.mawja.android.ui.components.shared.audioTrackBitrateLabel
@@ -134,7 +134,7 @@ internal fun ShortsSettingsSheet(
         withStreams { state.availableAudioTracks = viewModel.availableAudioTracks(short.id) }
     }
 
-    FlowBottomSheet(
+    MawjaBottomSheet(
         onDismiss = onDismiss,
         state = sheetState,
         expandedHeight = expandedHeight ?: defaultSheetExpandedHeight(),
@@ -144,7 +144,7 @@ internal fun ShortsSettingsSheet(
         onBack = backPage?.let { page -> { state.page = page } },
         onProgressChange = onSheetProgressChange,
         header = { dragModifier ->
-            FlowSheetHeader(
+            MawjaSheetHeader(
                 title = title,
                 onClose = { sheetState.dismiss() },
                 modifier = dragModifier,
@@ -243,28 +243,28 @@ private fun ShortsSettingsMainPage(
     onAudio: () -> Unit,
     onAmbientModeToggle: (Boolean) -> Unit,
 ) {
-    FlowSectionHeader(stringResource(R.string.shorts_settings_this_short))
-    FlowRowGroup {
-        FlowNavRow(
+    MawjaSectionHeader(stringResource(R.string.shorts_settings_this_short))
+    MawjaRowGroup {
+        MawjaNavRow(
             leadingIcon = Icons.Rounded.ThumbUp,
             title = stringResource(R.string.action_want_more),
             shape = flowRowGroupShape(0, THIS_SHORT_ROWS),
             onClick = onWantMore,
         )
-        FlowNavRow(
+        MawjaNavRow(
             leadingIcon = Icons.Rounded.NotInterested,
             title = stringResource(R.string.action_not_interested),
             shape = flowRowGroupShape(1, THIS_SHORT_ROWS),
             onClick = onNotInterested,
         )
-        FlowNavRow(
+        MawjaNavRow(
             leadingIcon = Icons.Rounded.Block,
             title = stringResource(R.string.dont_show_channel),
             supportingText = stringResource(R.string.dont_show_channel_desc),
             shape = flowRowGroupShape(2, THIS_SHORT_ROWS),
             onClick = onBlockChannel,
         )
-        FlowNavRow(
+        MawjaNavRow(
             leadingIcon = Icons.Filled.Download,
             title = stringResource(R.string.download_video),
             shape = flowRowGroupShape(3, THIS_SHORT_ROWS),
@@ -272,9 +272,9 @@ private fun ShortsSettingsMainPage(
         )
     }
 
-    FlowSectionHeader(stringResource(R.string.video))
-    FlowRowGroup {
-        FlowNavRow(
+    MawjaSectionHeader(stringResource(R.string.video))
+    MawjaRowGroup {
+        MawjaNavRow(
             leadingIcon = Icons.Filled.HighQuality,
             title = stringResource(R.string.shorts_quality),
             shape = flowRowGroupShape(0, 1),
@@ -282,9 +282,9 @@ private fun ShortsSettingsMainPage(
         )
     }
 
-    FlowSectionHeader(stringResource(R.string.playback_header))
-    FlowRowGroup {
-        FlowNavRow(
+    MawjaSectionHeader(stringResource(R.string.playback_header))
+    MawjaRowGroup {
+        MawjaNavRow(
             leadingIcon = Icons.Filled.Speed,
             title = stringResource(R.string.shorts_playback_speed),
             trailingText = playbackSpeedLabel(settings.playbackSpeed),
@@ -293,9 +293,9 @@ private fun ShortsSettingsMainPage(
         )
     }
 
-    FlowSectionHeader(stringResource(R.string.audio_settings_title))
-    FlowRowGroup {
-        FlowNavRow(
+    MawjaSectionHeader(stringResource(R.string.audio_settings_title))
+    MawjaRowGroup {
+        MawjaNavRow(
             leadingIcon = Icons.Filled.AudioFile,
             title = stringResource(R.string.shorts_audio_track),
             shape = flowRowGroupShape(0, 1),
@@ -303,9 +303,9 @@ private fun ShortsSettingsMainPage(
         )
     }
 
-    FlowSectionHeader(stringResource(R.string.player_settings_display))
-    FlowRowGroup {
-        FlowSwitchRow(
+    MawjaSectionHeader(stringResource(R.string.player_settings_display))
+    MawjaRowGroup {
+        MawjaSwitchRow(
             leadingIcon = ImageVector.vectorResource(R.drawable.ic_ambient_mode),
             title = stringResource(R.string.player_settings_ambient_mode),
             checked = settings.ambientModeEnabled,
@@ -356,7 +356,7 @@ private fun ShortsAudioPage(
         )
         return
     }
-    FlowRowGroup {
+    MawjaRowGroup {
         tracks.forEachIndexed { index, track ->
             MediaAudioTrackRow(
                 label = track.label.ifBlank { audioTrackFallbackLabel(index) },

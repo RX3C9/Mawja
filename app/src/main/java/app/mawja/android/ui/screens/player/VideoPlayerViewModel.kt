@@ -326,6 +326,7 @@ class VideoPlayerViewModel
             takeOverPlayback()
             armStartPaused(video.id, userOpened)
             autoDownload.onOpened(video, userOpened)
+            if (userOpened) app.mawja.android.lab.MawjaLab.onUserChose()
 
             _uiState.value = _uiState.value.startPlaybackOf(video)
             GlobalPlayerState.setCurrentVideo(video)

@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.player.SleepTimerManager
-import app.mawja.android.ui.components.shared.FlowBottomSheet
-import app.mawja.android.ui.components.shared.FlowSheetHeader
+import app.mawja.android.ui.components.shared.MawjaBottomSheet
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
 import app.mawja.android.ui.components.shared.rememberFlowBottomSheetState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -183,7 +183,7 @@ fun MediaSleepTimerSheet(
     }
 
     if (asBottomSheet) {
-        FlowSleepTimerBottomSheet(
+        MawjaSleepTimerBottomSheet(
             onDismiss = onDismiss,
             expandedHeight = expandedHeight,
             collapsedHeight = collapsedHeight,
@@ -236,7 +236,7 @@ private fun ColumnScope.SleepTimerColumn(
 }
 
 @Composable
-private fun FlowSleepTimerBottomSheet(
+private fun MawjaSleepTimerBottomSheet(
     onDismiss: () -> Unit,
     expandedHeight: Dp?,
     collapsedHeight: Dp,
@@ -247,7 +247,7 @@ private fun FlowSleepTimerBottomSheet(
     actions: @Composable (Modifier) -> Unit,
 ) {
     val sheetState = rememberFlowBottomSheetState()
-    FlowBottomSheet(
+    MawjaBottomSheet(
         onDismiss = onDismiss,
         modifier = modifier,
         state = sheetState,
@@ -260,7 +260,7 @@ private fun FlowSleepTimerBottomSheet(
         containerColor = MaterialTheme.colorScheme.surface,
         onProgressChange = onSheetProgressChange,
         header = { dragModifier ->
-            FlowSheetHeader(
+            MawjaSheetHeader(
                 inSidePane = !enableVerticalDismiss,
                 title = stringResource(R.string.sleep_timer),
                 onClose = { sheetState.dismiss() },

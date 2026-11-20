@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.model.PlaylistInfo
 import app.mawja.android.data.playlist.PlaylistListOrder
-import app.mawja.android.ui.components.shared.FlowFilterChip
-import app.mawja.android.ui.components.shared.FlowSortChip
+import app.mawja.android.ui.components.shared.MawjaFilterChip
+import app.mawja.android.ui.components.shared.MawjaSortChip
 import app.mawja.android.ui.components.shared.MediaKind
 
 private val FilterRowPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -69,7 +69,7 @@ internal fun PlaylistLibraryFilterRow(
             items = if (showKinds) MediaKind.entries else emptyList(),
             key = { it.name },
         ) { kind ->
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = stringResource(kind.labelRes),
                 selected = selectedKind == kind,
                 onClick = { onKindSelected(kind) },
@@ -78,7 +78,7 @@ internal fun PlaylistLibraryFilterRow(
 
         item(key = "ownership-filter") {
             Box {
-                FlowFilterChip(
+                MawjaFilterChip(
                     label = selectedOwnership.label(),
                     selected = selectedOwnership != PlaylistOwnershipFilter.All,
                     onClick = { ownershipExpanded = true },
@@ -113,7 +113,7 @@ internal fun PlaylistLibraryFilterRow(
         }
 
         item(key = "order") {
-            FlowSortChip(
+            MawjaSortChip(
                 options = PlaylistListOrder.entries,
                 selected = selectedOrder,
                 default = PlaylistListOrder.NEWEST,

@@ -70,13 +70,13 @@ fun MediaChannelSubscribeRow(
         },
         supportingContent = supportingText?.let { text -> { Text(text) } },
         trailingContent = {
-            FlowSubscribeButton(
+            MawjaSubscribeButton(
                 isSubscribed = subscribed,
                 onSubscribeClick = onToggle,
                 onUnsubscribeClick = onToggle,
                 isNotificationsEnabled = notifying,
                 onNotificationChange = onNotificationsChange,
-                size = FlowSubscribeButtonSize.Compact,
+                size = MawjaSubscribeButtonSize.Compact,
             )
         },
     ) {

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.ui.components.music.card.MusicHeroCaptionHeight
 import app.mawja.android.ui.components.music.header.MusicSectionAction
 import app.mawja.android.ui.components.music.header.MusicSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowLaneItemWidth
 import app.mawja.android.ui.components.shared.flowSegmentShape
 import app.mawja.android.ui.theme.Dimensions
@@ -166,10 +166,10 @@ fun <T> MusicTrackShelf(
             state = state,
             contentPadding = PaddingValues(horizontal = Dimensions.ContentPaddingHorizontal),
             horizontalArrangement = Arrangement.spacedBy(TrackShelfColumnSpacing),
-            verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap),
+            verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap),
             modifier =
                 Modifier
-                    .height(rowHeight * rows + FlowSegmentedGap * (rows - 1))
+                    .height(rowHeight * rows + MawjaSegmentedGap * (rows - 1))
                     .fillMaxWidth(),
         ) {
             itemsIndexed(items = uniqueItems, key = { _, item -> key(item) }) { index, item ->

@@ -21,10 +21,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSelectionRow
-import app.mawja.android.ui.components.shared.FlowSwitchRow
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSelectionRow
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.components.shared.LocalDpadNavigation
 import kotlinx.coroutines.flow.StateFlow
 
@@ -41,7 +41,7 @@ fun SettingsGroupScope.switch(
     icon: ImageVector? = null,
     @DrawableRes iconRes: Int? = null,
 ) = entryRow(entry) { shape ->
-    FlowSwitchRow(
+    MawjaSwitchRow(
         title = stringResource(entry.title),
         supportingText = summary ?: entry.summaryText(),
         checked = checked,
@@ -66,7 +66,7 @@ fun SettingsGroupScope.switch(
     @DrawableRes iconRes: Int? = null,
 ) = entryRow(entry) { shape ->
     val checked by state.collectAsStateWithLifecycle()
-    FlowSwitchRow(
+    MawjaSwitchRow(
         title = stringResource(entry.title),
         supportingText = entry.summaryText(),
         checked = checked,
@@ -89,7 +89,7 @@ fun SettingsGroupScope.choice(
     icon: ImageVector? = null,
     valueText: @Composable () -> String?,
 ) = entryRow(entry) { shape ->
-    FlowNavRow(
+    MawjaNavRow(
         title = stringResource(entry.title),
         supportingText = valueText() ?: entry.summaryText(),
         onClick = onClick,
@@ -115,7 +115,7 @@ fun SettingsGroupScope.nav(
     @DrawableRes iconRes: Int? = null,
     modifier: Modifier = Modifier,
 ) = entryRow(entry) { shape ->
-    FlowNavRow(
+    MawjaNavRow(
         title = stringResource(entry.title),
         modifier = modifier,
         supportingText = value ?: entry.summaryText(),
@@ -183,7 +183,7 @@ fun SettingsGroupScope.option(
     supportingText: String? = null,
     enabled: Boolean = true,
 ) = row(key) { shape ->
-    FlowSelectionRow(
+    MawjaSelectionRow(
         title = label,
         supportingText = supportingText,
         selected = selected,
@@ -196,7 +196,7 @@ fun SettingsGroupScope.option(
 /** A choice between two to four values, answered in place with a connected toggle group. */
 fun <T> SettingsGroupScope.toggleGroup(
     entry: SettingEntry,
-    options: List<FlowToggleOption<T>>,
+    options: List<MawjaToggleOption<T>>,
     selected: T,
     onSelected: (T) -> Unit,
     enabled: Boolean = true,
@@ -218,7 +218,7 @@ fun <T> SettingsGroupScope.toggleGroup(
 /** A toggle group that collects its own [state]; see the state-backed [switch]. */
 fun <T> SettingsGroupScope.toggleGroup(
     entry: SettingEntry,
-    options: List<FlowToggleOption<T>>,
+    options: List<MawjaToggleOption<T>>,
     state: StateFlow<T>,
     onSelected: (T) -> Unit,
     enabled: Boolean = true,

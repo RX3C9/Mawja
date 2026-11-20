@@ -44,7 +44,7 @@ import app.mawja.android.data.model.toVideo
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.shared.FastScrollbar
-import app.mawja.android.ui.components.shared.FlowFilterChip
+import app.mawja.android.ui.components.shared.MawjaFilterChip
 import app.mawja.android.ui.components.shared.MediaRowAction
 import app.mawja.android.ui.components.shared.MediaShortCard
 import app.mawja.android.ui.components.shared.MediaThumbnailDefaults
@@ -98,7 +98,7 @@ internal fun HistoryFilterRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(items = visibleFilters, key = { it.name }) { filter ->
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = filter.label(),
                 selected = selectedFilter == filter,
                 onClick = { onFilterSelected(filter) },
@@ -107,7 +107,7 @@ internal fun HistoryFilterRow(
 
         item(key = "smart") {
             Box {
-                FlowFilterChip(
+                MawjaFilterChip(
                     label = selectedSmartList?.label() ?: stringResource(R.string.history_smart_lists),
                     selected = selectedSmartList != null,
                     onClick = { smartExpanded = true },
@@ -137,7 +137,7 @@ internal fun HistoryFilterRow(
         }
 
         item(key = "grouping") {
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = stringResource(R.string.history_group_by_week),
                 selected = grouping == HistoryGrouping.Week,
                 onClick = {
@@ -148,7 +148,7 @@ internal fun HistoryFilterRow(
 
         item(key = "sort") {
             Box {
-                FlowFilterChip(
+                MawjaFilterChip(
                     label = selectedSort.label(),
                     selected = selectedSort != HistorySort.Newest,
                     onClick = { sortExpanded = true },
@@ -172,7 +172,7 @@ internal fun HistoryFilterRow(
 
         item(key = "year") {
             Box {
-                FlowFilterChip(
+                MawjaFilterChip(
                     label = selectedYear?.toString() ?: stringResource(R.string.history_filter_all_years),
                     selected = selectedYear != null,
                     onClick = { yearExpanded = true },

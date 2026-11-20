@@ -15,9 +15,9 @@ import app.mawja.android.R
 import app.mawja.android.data.recommendation.music.FavouriteArtist
 import app.mawja.android.ui.components.settings.SettingsListScope
 import app.mawja.android.ui.components.settings.SettingsPage
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaSearchField
 import app.mawja.android.ui.components.shared.MediaArtistToggleRow
 
 private val LoadingHeight = 160.dp
@@ -36,7 +36,7 @@ internal fun FavouriteArtistsScreen(
 
     SettingsPage(title = stringResource(R.string.favourite_artists_title), onBack = onBack, highlight = highlight) {
         item("artists.search") {
-            FlowSearchField(
+            MawjaSearchField(
                 query = query,
                 onQueryChange = picker::onQueryChange,
                 placeholder = stringResource(R.string.favourite_artists_search),
@@ -50,12 +50,12 @@ internal fun FavouriteArtistsScreen(
         val candidates = state.candidates
         when {
             candidates == null -> {
-                item("artists.loading") { FlowLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight)) }
+                item("artists.loading") { MawjaLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight)) }
             }
 
             candidates.isEmpty() && state.searching -> {
                 item("artists.none") {
-                    FlowEmptyState(title = stringResource(R.string.favourite_artists_none), icon = Icons.Outlined.PersonSearch)
+                    MawjaEmptyState(title = stringResource(R.string.favourite_artists_none), icon = Icons.Outlined.PersonSearch)
                 }
             }
 

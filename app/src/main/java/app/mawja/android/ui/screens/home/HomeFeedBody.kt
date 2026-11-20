@@ -22,7 +22,7 @@ import app.mawja.android.data.shorts.queue.ShortsQueueSource
 import app.mawja.android.ui.TabScrollEventBus
 import app.mawja.android.ui.components.FeedGridLayout
 import app.mawja.android.ui.components.shared.FeedGridSkeleton
-import app.mawja.android.ui.components.shared.FlowErrorState
+import app.mawja.android.ui.components.shared.MawjaErrorState
 import app.mawja.android.ui.screens.home.chips.HomeChipContent
 import app.mawja.android.ui.screens.home.chips.HomeChipsState
 import kotlinx.coroutines.FlowPreview
@@ -174,7 +174,7 @@ internal fun HomeFeedBody(
         }
 
         uiState.error != null && uiState.videos.isEmpty() -> {
-            FlowErrorState(
+            MawjaErrorState(
                 error = uiState.error ?: stringResource(R.string.error_occurred),
                 onRetry = { viewModel.retry() },
             )

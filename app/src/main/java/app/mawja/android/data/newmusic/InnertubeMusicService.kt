@@ -33,7 +33,7 @@ import kotlinx.coroutines.withContext
  * Inspired by Metrolist's implementation.
  */
 object InnertubeMusicService {
-    // Deliberately NO locale init here: FlowApplication owns YouTube.locale from
+    // Deliberately NO locale init here: MawjaApplication owns YouTube.locale from
     // the app-language + trending-region settings. An init block that reset it to
     // Locale.getDefault() used to clobber the user's chosen region on first music
     // fetch, flooding shelves with device-country content.

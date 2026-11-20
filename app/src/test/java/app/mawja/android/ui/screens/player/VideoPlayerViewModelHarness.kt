@@ -17,7 +17,7 @@ import app.mawja.android.data.localmedia.LocalSubtitles
 import app.mawja.android.data.model.Comment
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.music.model.MusicTrack
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.repository.LiveChatRepository
 import app.mawja.android.data.repository.SponsorBlockRepository
 import app.mawja.android.data.repository.YouTubeRepository
@@ -143,9 +143,9 @@ internal class VideoPlayerViewModelHarness(
         mockkObject(PlayerDiagnostics)
         every { PlayerDiagnostics.logWarning(any(), any()) } just Runs
 
-        mockkObject(FlowNeuroEngine.Companion)
-        coEvery { FlowNeuroEngine.onVideoInteraction(any<Context>(), any(), any(), any()) } just Runs
-        every { FlowNeuroEngine.onVideoInteractionAsync(any(), any(), any(), any()) } just Runs
+        mockkObject(MawjaNeuroEngine.Companion)
+        coEvery { MawjaNeuroEngine.onVideoInteraction(any<Context>(), any(), any(), any()) } just Runs
+        every { MawjaNeuroEngine.onVideoInteractionAsync(any(), any(), any(), any()) } just Runs
 
         every { context.applicationContext } returns context
         every { context.getString(any()) } answers { "res:${firstArg<Int>()}" }

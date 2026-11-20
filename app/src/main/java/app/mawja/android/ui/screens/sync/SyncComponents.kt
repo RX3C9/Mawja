@@ -26,8 +26,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.flowSegmentShape
 
 // The sync flow's building blocks. Every step is a header, a body of the same segmented rows the
@@ -80,7 +80,7 @@ internal fun SyncRowGroup(
     modifier: Modifier = Modifier,
     row: @Composable (index: Int, shape: Shape) -> Unit,
 ) {
-    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap)) {
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap)) {
         repeat(count) { index -> row(index, flowSegmentShape(index = index, count = count)) }
     }
 }
@@ -98,7 +98,7 @@ internal class SyncOption(
 internal fun SyncOptions(options: List<SyncOption>) {
     SyncRowGroup(count = options.size) { index, shape ->
         val option = options[index]
-        FlowNavRow(
+        MawjaNavRow(
             title = option.title,
             supportingText = option.body,
             leadingIcon = option.icon,

@@ -9,7 +9,7 @@ import app.mawja.android.data.localmedia.LocalMediaIds
 import app.mawja.android.data.localmedia.LocalSubtitles
 import app.mawja.android.data.model.SponsorBlockSegment
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.recommendation.InteractionType
 import app.mawja.android.data.repository.SponsorBlockRepository
 import app.mawja.android.data.repository.YouTubeRepository
@@ -203,7 +203,7 @@ internal class PlaybackSessionApplier(
     private fun recordWatchClick(video: Video) {
         scope.launch(ioDispatcher) {
             try {
-                FlowNeuroEngine.onVideoInteraction(context, video, InteractionType.CLICK)
+                MawjaNeuroEngine.onVideoInteraction(context, video, InteractionType.CLICK)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to record interaction", e)
             }
@@ -534,7 +534,7 @@ internal class PlaybackSessionApplier(
     ) {
         scope.launch(ioDispatcher) {
             try {
-                FlowNeuroEngine.noteRelated(context, videoId, videos)
+                MawjaNeuroEngine.noteRelated(context, videoId, videos)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to note related videos", e)
             }

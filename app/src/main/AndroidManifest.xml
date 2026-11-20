@@ -77,9 +77,9 @@
     </queries>
 
     <application
-        android:name=".FlowApplication"
+        android:name=".MawjaApplication"
         android:allowBackup="true"
-        android:backupAgent=".data.backup.FlowBackupAgent"
+        android:backupAgent=".data.backup.MawjaBackupAgent"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:fullBackupOnly="true"

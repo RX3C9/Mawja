@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import app.mawja.android.data.model.Channel
 import app.mawja.android.data.model.Video
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
-import app.mawja.android.ui.components.shared.FlowSubscribeButtonSize
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaSubscribeButtonSize
 import app.mawja.android.ui.components.shared.ShortWatchedIndicator
 import app.mawja.android.ui.theme.extendedColors
 import app.mawja.android.utils.formatSubscriberCount
@@ -78,11 +78,11 @@ internal fun ChannelRow(
             }
         }
         if (isSubscribed != null) {
-            FlowSubscribeButton(
+            MawjaSubscribeButton(
                 isSubscribed = isSubscribed,
                 onSubscribeClick = onSubscribeClick,
                 onUnsubscribeClick = onUnsubscribeClick,
-                size = FlowSubscribeButtonSize.Compact,
+                size = MawjaSubscribeButtonSize.Compact,
             )
         }
     }

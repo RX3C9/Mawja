@@ -37,8 +37,8 @@ import app.mawja.android.R
 import app.mawja.android.innertube.YouTube.SearchFilter
 import app.mawja.android.innertube.pages.SearchSummary
 import app.mawja.android.innertube.pages.SearchSummaryKind
-import app.mawja.android.ui.components.shared.FlowFilterChip
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaFilterChip
+import app.mawja.android.ui.components.shared.MawjaSearchField
 import app.mawja.android.ui.theme.Dimensions
 
 /**
@@ -71,7 +71,7 @@ fun MusicSearchBar(
                 )
             }
 
-            FlowSearchField(
+            MawjaSearchField(
                 query = query,
                 onQueryChange = onQueryChange,
                 placeholder = stringResource(R.string.search_music_placeholder),
@@ -114,7 +114,7 @@ fun SearchFilterChips(
     ) {
         items(filters, key = { it.first }) { (label, filter) ->
             val selected = activeFilter == filter
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = label,
                 selected = selected,
                 onClick = { onFilterClick(if (selected) null else filter) },

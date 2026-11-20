@@ -37,8 +37,8 @@ import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.music.item.MusicItemDensity
 import app.mawja.android.ui.components.music.item.MusicTrackItem
 import app.mawja.android.ui.components.music.section.MusicCollectionShelf
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.ReorderHandle
 import app.mawja.android.ui.components.shared.ReorderableLazyListState
 import app.mawja.android.ui.components.shared.flowSegmentShape
@@ -94,12 +94,12 @@ internal fun MusicCollectionList(
         state = listState,
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = flowBottomContentPadding(ListEndPadding)),
-        verticalArrangement = Arrangement.spacedBy(FlowSegmentedGap),
+        verticalArrangement = Arrangement.spacedBy(MawjaSegmentedGap),
     ) {
         if (header != null) item(key = "collection-header", contentType = "header") { header() }
         if (tracks.isEmpty() && mode.searchQuery.isNotBlank()) {
             item(key = "collection-no-results", contentType = "empty") {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(R.string.music_collection_no_matches, mode.searchQuery.trim()),
                     icon = Icons.Outlined.SearchOff,
                 )
@@ -210,7 +210,7 @@ private fun removeButton(
 private fun CollectionEmptyState(kind: MusicCollectionKind?) {
     when (kind) {
         MusicCollectionKind.LIKED -> {
-            FlowEmptyState(
+            MawjaEmptyState(
                 title = stringResource(R.string.liked_music_empty_title),
                 subtitle = stringResource(R.string.liked_music_empty_body),
                 icon = Icons.Outlined.FavoriteBorder,
@@ -218,7 +218,7 @@ private fun CollectionEmptyState(kind: MusicCollectionKind?) {
         }
 
         else -> {
-            FlowEmptyState(
+            MawjaEmptyState(
                 title = stringResource(R.string.music_playlist_empty_title),
                 subtitle = stringResource(R.string.music_playlist_empty_body),
                 icon = Icons.AutoMirrored.Outlined.QueueMusic,

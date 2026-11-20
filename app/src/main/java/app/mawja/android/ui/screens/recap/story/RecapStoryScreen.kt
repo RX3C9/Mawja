@@ -61,7 +61,7 @@ import app.mawja.android.R
 import app.mawja.android.data.stats.RecapPeriod
 import app.mawja.android.data.stats.RecapSummary
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.drawSegmentedProgress
 import app.mawja.android.ui.components.stats.spentTimeLabel
 import app.mawja.android.ui.screens.recap.RecapSource
@@ -96,7 +96,7 @@ internal fun RecapStoryScreen(
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0] ?: Locale.getDefault()
 
     if (summary == null) {
-        Box(Modifier.fillMaxSize()) { FlowLoadingIndicator() }
+        Box(Modifier.fillMaxSize()) { MawjaLoadingIndicator() }
     } else {
         StoryPager(summary, periodLabel(period, locale), locale, onClose)
     }

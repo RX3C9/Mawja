@@ -12,8 +12,8 @@ import app.mawja.android.data.local.dao.WatchHistoryDao
 import app.mawja.android.data.recommendation.BlockedChannelNames
 import app.mawja.android.data.recommendation.ChannelMemoryRepository
 import app.mawja.android.data.recommendation.ContentVector
-import app.mawja.android.data.recommendation.FlowNeuroEngine
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.data.recommendation.NeighbourChannelsRepository
 import app.mawja.android.data.recommendation.TimeBucket
 import app.mawja.android.data.recommendation.UserBrain
@@ -106,7 +106,7 @@ data class HiddenContent(
 @Immutable
 data class TasteState(
     val loading: Boolean = true,
-    val persona: FlowPersona? = null,
+    val persona: MawjaPersona? = null,
     val maturity: Float = 0f,
     val profile: TasteTraits? = null,
     val now: TasteTraits? = null,
@@ -171,16 +171,16 @@ class TasteViewModel
             topic: String,
             preferred: Boolean,
         ) = act {
-            if (preferred) FlowNeuroEngine.addPreferredTopic(context, topic) else FlowNeuroEngine.removePreferredTopic(context, topic)
+            if (preferred) MawjaNeuroEngine.addPreferredTopic(context, topic) else MawjaNeuroEngine.removePreferredTopic(context, topic)
         }
 
-        fun blockTopic(topic: String) = act { FlowNeuroEngine.addBlockedTopic(context, topic) }
+        fun blockTopic(topic: String) = act { MawjaNeuroEngine.addBlockedTopic(context, topic) }
 
-        fun unblockTopic(topic: String) = act { FlowNeuroEngine.removeBlockedTopic(context, topic) }
+        fun unblockTopic(topic: String) = act { MawjaNeuroEngine.removeBlockedTopic(context, topic) }
 
         fun blockChannel(channelId: String) =
             act {
-                FlowNeuroEngine.blockChannel(context, channelId)
+                MawjaNeuroEngine.blockChannel(context, channelId)
                 _state.value.channels
                     .firstOrNull { it.id == channelId && it.name != channelId }
                     ?.let { blockedNames.remember(channelId, it.name) }
@@ -188,7 +188,7 @@ class TasteViewModel
 
         fun unblockChannel(channelId: String) =
             act {
-                FlowNeuroEngine.unblockChannel(context, channelId)
+                MawjaNeuroEngine.unblockChannel(context, channelId)
                 blockedNames.forget(channelId)
             }
 
@@ -208,7 +208,7 @@ class TasteViewModel
                     if (missing.isEmpty()) return@launch
                     _state.update { it.copy(hidden = it.hidden.copy(resolvingNames = true)) }
                     try {
-                        val blocked = FlowNeuroEngine.getSavedBrainSnapshot().blockedChannels
+                        val blocked = MawjaNeuroEngine.getSavedBrainSnapshot().blockedChannels
                         blockedNames.resolve(missing, blocked) { names ->
                             _state.update { state ->
                                 val channels = state.hidden.channels.map { item -> names[item.id]?.let { item.copy(name = it) } ?: item }
@@ -233,7 +233,7 @@ class TasteViewModel
 
         fun resetVideoProfile() =
             act {
-                FlowNeuroEngine.resetBrain(context)
+                MawjaNeuroEngine.resetBrain(context)
                 preferences.setOnboardingDone(false)
                 homeSnapshots.clear()
                 neighbours.clear()
@@ -259,24 +259,24 @@ class TasteViewModel
         }
 
         private suspend fun load(): TasteState {
-            FlowNeuroEngine.initialize(context)
-            val brain = FlowNeuroEngine.getSavedBrainSnapshot()
+            MawjaNeuroEngine.initialize(context)
+            val brain = MawjaNeuroEngine.getSavedBrainSnapshot()
             val names = channelNames()
             val profile = runCatching { musicBrain.tasteProfile() }.getOrNull()
             return TasteState(
                 loading = false,
-                persona = FlowNeuroEngine.getPersona(brain),
+                persona = MawjaNeuroEngine.getPersona(brain),
                 maturity = (brain.totalInteractions / MATURE_INTERACTIONS).coerceIn(0f, 1f),
                 profile = brain.globalVector.traits(),
                 now = (brain.timeVectors[TimeBucket.current()] ?: ContentVector()).traits(),
-                picks = tastePicks(brain, FlowNeuroEngine.pickKeysByLabel(brain)),
-                topics = tasteTopics(brain, TOPIC_COUNT, FlowNeuroEngine.pickKeys(brain), FlowNeuroEngine::specificity),
+                picks = tastePicks(brain, MawjaNeuroEngine.pickKeysByLabel(brain)),
+                topics = tasteTopics(brain, TOPIC_COUNT, MawjaNeuroEngine.pickKeys(brain), MawjaNeuroEngine::specificity),
                 groups =
                     tasteGroups(
                         brain,
-                        runCatching { FlowNeuroEngine.interestClusters(brain) }.getOrDefault(emptyList()),
-                        FlowNeuroEngine.pickKeys(brain),
-                        FlowNeuroEngine::specificity,
+                        runCatching { MawjaNeuroEngine.interestClusters(brain) }.getOrDefault(emptyList()),
+                        MawjaNeuroEngine.pickKeys(brain),
+                        MawjaNeuroEngine::specificity,
                         GROUP_COUNT,
                     ),
                 channels = tasteChannels(brain, names),

@@ -52,7 +52,7 @@ import app.mawja.android.network.ConnectionProfilesCodec
 import app.mawja.android.network.ConnectionTestResult
 import app.mawja.android.network.DnsProvider
 import app.mawja.android.ui.components.settings.nav
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 import app.mawja.android.network.NetworkProfile
 import app.mawja.android.network.SmartNetwork
 import app.mawja.android.ui.components.settings.SettingEntry
@@ -63,7 +63,7 @@ import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.components.settings.option
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.NetworkIndex
 import app.mawja.android.ui.utils.rememberIsOnWifi
 import app.mawja.android.utils.NetworkState
@@ -101,8 +101,8 @@ internal fun NetworkSettingsScreen(
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val types =
         listOf(
-            FlowToggleOption(AppProxyType.HTTP, stringResource(R.string.proxy_type_http)),
-            FlowToggleOption(AppProxyType.SOCKS5, stringResource(R.string.proxy_type_socks5)),
+            MawjaToggleOption(AppProxyType.HTTP, stringResource(R.string.proxy_type_http)),
+            MawjaToggleOption(AppProxyType.SOCKS5, stringResource(R.string.proxy_type_socks5)),
         )
     val hostError = stringResource(R.string.proxy_settings_invalid_host)
     val portError = stringResource(R.string.proxy_settings_invalid_port)
@@ -271,7 +271,7 @@ internal fun NetworkSettingsScreen(
         )
     }
     openProfile?.let { profile ->
-        FlowAlertDialog(
+        MawjaAlertDialog(
             onDismissRequest = { openProfile = null },
             title = { Text(profile.name) },
             text = { Text(profileSummary(profile, directLabel, dnsLabels)) },
@@ -298,7 +298,7 @@ private fun ProfileNameDialog(
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     val clean = ConnectionProfilesCodec.cleanName(name)
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.network_profile_save)) },
         text = {

@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.innertube.pages.explore.ExploreDestination
-import app.mawja.android.ui.components.shared.FlowDropdownFilterChip
-import app.mawja.android.ui.components.shared.FlowFilterChip
+import app.mawja.android.ui.components.shared.MawjaDropdownFilterChip
+import app.mawja.android.ui.components.shared.MawjaFilterChip
 import app.mawja.android.ui.screens.categories.CATEGORY_TABS
 import app.mawja.android.ui.screens.categories.CategorySubTab
 
@@ -39,7 +39,7 @@ internal fun CategoryTabBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         items(CATEGORY_TABS, key = { it.destination.name }) { tab ->
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = stringResource(tab.labelRes),
                 selected = selected == tab.destination,
                 onClick = { onSelect(tab.destination) },
@@ -67,7 +67,7 @@ internal fun CategorySubTabMenu(
     val current = subTabs.firstOrNull { it.title == selected } ?: subTabs.first()
 
     Box(modifier = modifier.padding(horizontal = RowHorizontalPadding)) {
-        FlowDropdownFilterChip(
+        MawjaDropdownFilterChip(
             label = current.title,
             selected = current.title != subTabs.first().title,
             onClick = { expanded = true },

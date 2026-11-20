@@ -18,9 +18,9 @@ import app.mawja.android.ui.components.settings.SettingsTarget
 import app.mawja.android.ui.components.settings.choice
 import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.screens.settings.index.ContentIndex
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 
@@ -89,7 +89,7 @@ internal fun ContentSettingsScreen(
         group(key = "content.shorts", header = R.string.content_settings_header_shorts) {
             switch(ContentIndex.shortsContent, viewModel.shortsContent, viewModel::setShortsContent)
             row(ContentIndex.channelShortsTab.key) { shape ->
-                FlowSwitchRow(
+                MawjaSwitchRow(
                     title = stringResource(ContentIndex.channelShortsTab.title),
                     supportingText = stringResource(R.string.content_settings_channel_shorts_tab_subtitle),
                     checked = channelShortsTab || shortsContent,
@@ -130,7 +130,7 @@ internal fun ContentSettingsScreen(
 
     if (showThresholdDialog) {
         val threshold by viewModel.watchedThreshold.collectAsStateWithLifecycle()
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.content_settings_watched_threshold_title),
             description = stringResource(R.string.content_settings_watched_threshold_dialog_body),
             options =
@@ -139,7 +139,7 @@ internal fun ContentSettingsScreen(
                     WatchedThreshold.PERCENT_99,
                     WatchedThreshold.PERCENT_95,
                     WatchedThreshold.PERCENT_90,
-                ).map { FlowChoice(it, watchedThresholdLabel(it)) },
+                ).map { MawjaChoice(it, watchedThresholdLabel(it)) },
             selected = threshold,
             onSelect = viewModel::setWatchedThreshold,
             onDismiss = { showThresholdDialog = false },
@@ -148,10 +148,10 @@ internal fun ContentSettingsScreen(
 
     if (showSharedLinksDialog) {
         val action by viewModel.sharedLinkAction.collectAsStateWithLifecycle()
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.content_settings_shared_links_title),
             description = stringResource(R.string.content_settings_shared_links_dialog_body),
-            options = SharedLinkAction.entries.map { FlowChoice(it, sharedLinkActionLabel(it)) },
+            options = SharedLinkAction.entries.map { MawjaChoice(it, sharedLinkActionLabel(it)) },
             selected = action,
             onSelect = viewModel::setSharedLinkAction,
             onDismiss = { showSharedLinksDialog = false },

@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.local.DoubleTapSeekZone
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 
 private const val DIAGRAM_ASPECT_RATIO = 16f / 9f
 
@@ -78,7 +78,7 @@ internal fun SeekZoneWidthDialog(
     onSelect: (DoubleTapSeekZone) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = stringResource(R.string.player_settings_seek_zone_width)) },
         text = {

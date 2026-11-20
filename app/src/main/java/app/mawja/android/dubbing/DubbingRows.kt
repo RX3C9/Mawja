@@ -30,9 +30,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.accessibility.MawjaAccessibility
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSelectionRow
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSelectionRow
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import kotlin.math.PI
 import kotlin.math.sin
@@ -47,7 +47,7 @@ fun DubbingRows() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        FlowSectionHeader(text = stringResource(R.string.dubbing_header))
+        MawjaSectionHeader(text = stringResource(R.string.dubbing_header))
         if (status == ArabicDubbing.Status.SPEAKING || status == ArabicDubbing.Status.PREPARING) {
             VoiceWave(active = status == ArabicDubbing.Status.SPEAKING, modifier = Modifier.padding(end = 16.dp).size(width = 44.dp, height = 18.dp))
         }
@@ -58,9 +58,9 @@ fun DubbingRows() {
             DubMode.VOICE_OVER to R.string.dubbing_voice_over,
             DubMode.REPLACE to R.string.dubbing_replace,
         )
-    FlowRowGroup {
+    MawjaRowGroup {
         options.forEachIndexed { index, (option, label) ->
-            FlowSelectionRow(
+            MawjaSelectionRow(
                 title = stringResource(label),
                 supportingText =
                     when {

@@ -40,17 +40,17 @@ import app.mawja.android.ui.components.library.PlaylistHeaderPane
 import app.mawja.android.ui.components.library.PlaylistSearchBar
 import app.mawja.android.ui.components.library.PlaylistSortChip
 import app.mawja.android.ui.components.library.PlaylistSortOrder
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowSelectionAction
-import app.mawja.android.ui.components.shared.FlowSelectionToolbar
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaSelectionAction
+import app.mawja.android.ui.components.shared.MawjaSelectionToolbar
 import app.mawja.android.ui.components.shared.quickactions.VideoQuickActionsBottomSheet
 import app.mawja.android.ui.selection.MultiSelection
 import app.mawja.android.ui.selection.deleteSelectionAction
 import app.mawja.android.ui.selection.rememberSelectionActions
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import app.mawja.android.ui.components.shared.FlowSidePanes
+import app.mawja.android.ui.components.shared.MawjaSidePanes
 import app.mawja.android.ui.components.shared.quickactions.sharedQuickActionsViewModel
 import app.mawja.android.ui.components.shared.rememberFlowPaneState
 import app.mawja.android.ui.components.shared.rememberReorderableLazyListState
@@ -251,11 +251,11 @@ fun PlaylistDetailScreen(
         Box(Modifier.fillMaxSize().padding(padding)) {
             when {
                 uiState.isLoading -> {
-                    FlowLoadingIndicator()
+                    MawjaLoadingIndicator()
                 }
 
                 uiState.errorMessage != null -> {
-                    FlowErrorState(error = uiState.errorMessage.orEmpty(), onRetry = viewModel::retry)
+                    MawjaErrorState(error = uiState.errorMessage.orEmpty(), onRetry = viewModel::retry)
                 }
 
                 else -> {
@@ -305,7 +305,7 @@ fun PlaylistDetailScreen(
                             header = header,
                         )
                     }
-                    FlowSidePanes(
+                    MawjaSidePanes(
                         panes = panes,
                         sidePaneWidth = HeaderPaneWidth,
                         sidePane = {
@@ -326,7 +326,7 @@ fun PlaylistDetailScreen(
                     )
                 }
             }
-            FlowSelectionToolbar(
+            MawjaSelectionToolbar(
                 visible = selectionMode && selectedIds.isNotEmpty(),
                 summary = pluralStringResource(R.plurals.selected_count_template, selectedIds.size, selectedIds.size),
                 actions = selectionActions.actions,

@@ -43,7 +43,7 @@ import app.mawja.android.data.playlist.PlaylistImport
 import app.mawja.android.data.playlist.PlaylistListOrder
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.library.PlaylistCreationFabMenu
 import app.mawja.android.ui.components.library.PlaylistCreationTarget
 import app.mawja.android.ui.components.library.PlaylistLibraryFilterRow
@@ -146,7 +146,7 @@ fun PlaylistsScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title =
                     stringResource(
                         when {

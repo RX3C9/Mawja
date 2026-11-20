@@ -43,7 +43,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.ui.TabScrollEventBus
-import app.mawja.android.ui.components.layout.FlowBottomInsets
+import app.mawja.android.ui.components.layout.MawjaBottomInsets
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.shared.MediaMiniBarDefaults
 import app.mawja.android.ui.screens.home.HomeViewModel
@@ -94,7 +94,7 @@ fun TvShell(
     // Phone pages pad their ends by these insets, so they scroll clear of the floating mini player here too.
     val bottomInsets =
         remember(dimens) {
-            FlowBottomInsets(
+            MawjaBottomInsets(
                 systemInset = mutableStateOf(0.dp),
                 barHeight = mutableStateOf(0.dp),
                 barShown = mutableStateOf(false),

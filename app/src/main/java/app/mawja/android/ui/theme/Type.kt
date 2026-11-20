@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.sp
 import app.mawja.android.R
 
 /** The system font (Roboto on most devices); the app font when the user has not picked another. */
-val FlowFontFamily: FontFamily = FontFamily.Default
+val MawjaSansFontFamily: FontFamily = FontFamily.Default
 
 /** Mawja's own typeface: IBM Plex Sans Arabic (SIL OFL 1.1), Arabic and Latin in one family. */
 val MawjaFontFamily: FontFamily =
@@ -165,4 +165,4 @@ fun flowTypography(family: FontFamily): Typography {
 }
 
 /** The type scale in the system font, for surfaces that cannot take the user's font (widgets). */
-val Typography: Typography = flowTypography(FlowFontFamily)
+val Typography: Typography = flowTypography(MawjaSansFontFamily)

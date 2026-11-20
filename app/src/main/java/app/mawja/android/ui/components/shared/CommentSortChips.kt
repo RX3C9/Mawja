@@ -35,7 +35,7 @@ fun CommentSortChips(
         horizontalArrangement = Arrangement.spacedBy(ChipSpacing),
     ) {
         CommentSortFilter.entries.forEach { filter ->
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = stringResource(filter.labelRes),
                 selected = selected == filter,
                 onClick = {
@@ -45,7 +45,7 @@ fun CommentSortChips(
             )
         }
         if (onTimedChange != null) {
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = stringResource(R.string.filter_timed),
                 selected = timedOnly,
                 onClick = {

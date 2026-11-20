@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 
 /** What the side pane beside the wide player shows. */
 internal enum class PlayerSidePaneTab { UP_NEXT, LYRICS }
@@ -54,15 +54,15 @@ internal fun PlayerSidePane(
                 modifier = Modifier.fillMaxWidth().padding(start = 12.dp, top = 12.dp, end = 4.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                FlowConnectedToggleGroup(
+                MawjaConnectedToggleGroup(
                     options =
                         listOf(
-                            FlowToggleOption(
+                            MawjaToggleOption(
                                 PlayerSidePaneTab.UP_NEXT,
                                 stringResource(R.string.music_player_tab_up_next),
                                 Icons.AutoMirrored.Rounded.QueueMusic,
                             ),
-                            FlowToggleOption(
+                            MawjaToggleOption(
                                 PlayerSidePaneTab.LYRICS,
                                 stringResource(R.string.music_player_tab_lyrics),
                                 Icons.Rounded.Lyrics,

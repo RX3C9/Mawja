@@ -21,7 +21,7 @@ import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.data.video.DownloadedVideo
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.library.LibrarySection
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.screens.library.LibraryViewModel
 import app.mawja.android.ui.screens.library.libraryShelves
@@ -65,7 +65,7 @@ fun TvLibraryScreen(
             val hidden = hiddenSections ?: return@LazyColumn
             if (isLibraryEmpty) {
                 item(key = "library-empty", contentType = "empty") {
-                    FlowEmptyState(
+                    MawjaEmptyState(
                         title = stringResource(R.string.library_empty_title),
                         subtitle = stringResource(R.string.library_empty_body),
                         icon = Icons.Outlined.VideoLibrary,

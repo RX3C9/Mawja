@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.player.dlna.DlnaDevice
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 
 /** DLNA / UPnP device-picker dialog shown when the cast button is pressed. */
 @Composable
@@ -38,7 +38,7 @@ internal fun DlnaDevicePickerDialog(
     onStopCasting: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {

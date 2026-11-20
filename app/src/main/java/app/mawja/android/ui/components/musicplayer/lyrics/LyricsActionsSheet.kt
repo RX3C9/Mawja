@@ -47,10 +47,10 @@ import app.mawja.android.R
 import app.mawja.android.data.local.LYRICS_ALIGN_CENTER
 import app.mawja.android.data.local.LYRICS_ALIGN_LEFT
 import app.mawja.android.data.local.LYRICS_ALIGN_RIGHT
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.components.shared.quickactions.QuickActionRow
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsGroup
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsSheet
@@ -117,7 +117,7 @@ internal fun LyricsActionsSheet(
                     }
                 },
         )
-        FlowSectionHeader(stringResource(R.string.lyrics_display_header))
+        MawjaSectionHeader(stringResource(R.string.lyrics_display_header))
         Row(
             modifier =
                 Modifier
@@ -230,7 +230,7 @@ private fun lyricsRow(
     onClick: () -> Unit,
 ): QuickActionRow =
     QuickActionRow(key) { shape ->
-        FlowNavRow(title = title, supportingText = supporting, leadingIcon = icon, onClick = onClick, showChevron = false, shape = shape)
+        MawjaNavRow(title = title, supportingText = supporting, leadingIcon = icon, onClick = onClick, showChevron = false, shape = shape)
     }
 
 private fun lyricsSwitchRow(
@@ -243,7 +243,7 @@ private fun lyricsSwitchRow(
     onCheckedChange: (Boolean) -> Unit,
 ): QuickActionRow =
     QuickActionRow(key) { shape ->
-        FlowSwitchRow(
+        MawjaSwitchRow(
             title = title,
             checked = checked,
             onCheckedChange = onCheckedChange,
@@ -300,7 +300,7 @@ internal fun LyricsEditDialog(
     onDismiss: () -> Unit,
 ) {
     var text by remember(initialText) { mutableStateOf(initialText) }
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.lyrics_edit)) },
         text = {

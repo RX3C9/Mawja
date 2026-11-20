@@ -38,8 +38,8 @@ import app.mawja.android.data.local.SearchFilter
 import app.mawja.android.data.local.SortType
 import app.mawja.android.data.local.UploadDate
 import app.mawja.android.data.local.WatchState
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowFilterChip
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaFilterChip
 
 /**
  * Search filters, laid out the way YouTube's own dialog is: one row per single-choice group with
@@ -58,7 +58,7 @@ fun SearchFilterDialog(
     var draft by remember(filter) { mutableStateOf(filter) }
     val videoFilters = draft.contentType != ContentType.CHANNELS && draft.contentType != ContentType.PLAYLISTS
 
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.search_filters_title)) },
         text = {
@@ -120,7 +120,7 @@ fun SearchFilterDialog(
                     ) {
                         SearchFeature.entries.forEach { feature ->
                             val selected = feature in draft.features
-                            FlowFilterChip(
+                            MawjaFilterChip(
                                 label = stringResource(feature.labelRes()),
                                 selected = selected,
                                 onClick = {

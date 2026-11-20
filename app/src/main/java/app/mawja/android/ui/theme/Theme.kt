@@ -176,14 +176,14 @@ val LocalExtendedColors =
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun FlowTheme(
+fun MawjaTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
     themeVariant: ThemeVariant = ThemeVariant.DARK,
     customTheme: CustomTheme? = null,
     systemLightThemeMode: ThemeMode = ThemeMode.DARK,
     systemDarkThemeMode: ThemeMode = ThemeMode.DARK,
     systemDarkThemeVariant: ThemeVariant = ThemeVariant.DARK,
-    fontFamily: FontFamily = FlowFontFamily,
+    fontFamily: FontFamily = MawjaSansFontFamily,
     content: @Composable () -> Unit,
 ) {
     val baseColorScheme =
@@ -219,7 +219,7 @@ fun FlowTheme(
             shortsAccent = YouTubeRed,
         )
 
-    // A FlowTheme nested inside another must not boost text a second time.
+    // A MawjaTheme nested inside another must not boost text a second time.
     val density = LocalDensity.current
     val boosted = LocalTextBoostApplied.current
     val fontScale = if (boosted) density.fontScale else AccessibilityPolicy.effectiveFontScale(density.fontScale, accessibility.textSize)
@@ -253,7 +253,7 @@ private val LocalTextBoostApplied = staticCompositionLocalOf { false }
 
 /**
  * Non-composable resolution of the app's active color scheme. Single source of truth
- * shared by [FlowTheme] and the home-screen widgets, so widgets always render in the
+ * shared by [MawjaTheme] and the home-screen widgets, so widgets always render in the
  * exact palette the user selected in-app (including custom and Material You themes).
  */
 fun resolveFlowColorScheme(
@@ -282,13 +282,13 @@ fun resolveFlowColorScheme(
         }
 
         else -> {
-            FlowPalettes.forMode(effectiveThemeMode).colorsFor(effectiveVariant).toColorScheme(effectiveVariant)
+            MawjaPalettes.forMode(effectiveThemeMode).colorsFor(effectiveVariant).toColorScheme(effectiveVariant)
         }
     }
 }
 
 /** The palette and variant the app shows while the system is in one night mode. */
-data class FlowThemeSlot(
+data class MawjaThemeSlot(
     val mode: ThemeMode,
     val variant: ThemeVariant,
 )
@@ -300,8 +300,8 @@ fun resolveFlowThemeSlot(
     systemLightThemeMode: ThemeMode,
     systemDarkThemeMode: ThemeMode,
     systemDarkThemeVariant: ThemeVariant,
-): FlowThemeSlot =
-    FlowThemeSlot(
+): MawjaThemeSlot =
+    MawjaThemeSlot(
         mode = themeMode.resolveSystemDefault(isSystemDark, systemLightThemeMode, systemDarkThemeMode),
         variant =
             if (themeMode == ThemeMode.SYSTEM) {

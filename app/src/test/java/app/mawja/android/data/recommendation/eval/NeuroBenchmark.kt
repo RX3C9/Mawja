@@ -9,7 +9,7 @@ package app.mawja.android.data.recommendation.eval
 
 import app.mawja.android.data.recommendation.ContentVector
 import app.mawja.android.data.recommendation.FeedEntry
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.data.recommendation.NeuroDiscovery
 import app.mawja.android.data.recommendation.NeuroScoring
 import app.mawja.android.data.recommendation.NeuroTokenizer
@@ -277,7 +277,7 @@ internal object NeuroBenchmark {
             // 1. Discovery decides what to search for (the real production selector),
             //    with cluster rotation advanced between refreshes as the engine does.
             val discoveryBrain = brain.copy(clusterRotation = clusterRotation)
-            val discoveryQueries = discovery.generateQueries(discoveryBrain, now) { FlowPersona.EXPLORER }.take(8)
+            val discoveryQueries = discovery.generateQueries(discoveryBrain, now) { MawjaPersona.EXPLORER }.take(8)
             val queries =
                 discoveryQueries.map { it.query }.ifEmpty { universe.groups.take(4).map { it.topics[0] } }
             queriesPerRefresh += queries
@@ -408,7 +408,7 @@ internal object NeuroBenchmark {
         repeat(sessions) { round ->
             val discoveryBrain = brain.copy(clusterRotation = clusterRotation)
             // Round index doubles as tree depth — models refresh + successive pages.
-            val sessionResult = discovery.generateQueries(discoveryBrain, now, depth = round) { FlowPersona.EXPLORER }
+            val sessionResult = discovery.generateQueries(discoveryBrain, now, depth = round) { MawjaPersona.EXPLORER }
             val queries = sessionResult.map { it.query }
             val servedClusters = sessionResult.mapNotNull { it.clusterKey }.toSet()
             if (servedClusters.isNotEmpty()) {

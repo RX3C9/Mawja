@@ -23,9 +23,9 @@ import app.mawja.android.discord.DiscordSettingsState
 import app.mawja.android.discord.DiscordSettingsSummary
 import app.mawja.android.ui.components.settings.SettingsListScope
 import app.mawja.android.ui.components.settings.notice
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSwitchRow
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSwitchRow
 import app.mawja.android.ui.screens.settings.index.IntegrationsIndex
 
 internal fun SettingsListScope.discordSection(
@@ -41,7 +41,7 @@ internal fun SettingsListScope.discordSection(
         footer = R.string.discord_presence_description,
     ) {
         row(IntegrationsIndex.discord.key) { shape ->
-            FlowSwitchRow(
+            MawjaSwitchRow(
                 title = stringResource(IntegrationsIndex.discord.title),
                 supportingText = stringResource(R.string.discord_presence_enable_description),
                 checked = state.isEnabled,
@@ -56,7 +56,7 @@ internal fun SettingsListScope.discordSection(
         }
         if (state.summary == DiscordSettingsSummary.ERROR && state.isAvailable) {
             row("integrations.discord.retry") { shape ->
-                FlowNavRow(
+                MawjaNavRow(
                     title = stringResource(R.string.discord_presence_retry),
                     supportingText = state.errorMessage,
                     leadingIcon = Icons.Outlined.Refresh,
@@ -102,7 +102,7 @@ private fun DiscordAccountRow(
         trailingContent = {
             when {
                 pending -> {
-                    FlowLoadingIndicator()
+                    MawjaLoadingIndicator()
                 }
 
                 state.accountName != null -> {

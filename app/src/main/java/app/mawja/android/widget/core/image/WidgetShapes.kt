@@ -30,7 +30,7 @@ import kotlin.math.min
 
 /**
  * The Material 3 Expressive shapes the app uses, rasterised because RemoteViews can only clip to
- * rounded rectangles. Cookie12 marks actions, Cookie9 artists, as in FlowShapes.
+ * rounded rectangles. Cookie12 marks actions, Cookie9 artists, as in MawjaShapes.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 enum class WidgetShape {

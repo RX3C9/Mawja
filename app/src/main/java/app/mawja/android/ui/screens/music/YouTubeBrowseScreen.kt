@@ -30,14 +30,14 @@ import app.mawja.android.innertube.models.PlaylistItem
 import app.mawja.android.innertube.models.SongItem
 import app.mawja.android.ui.components.currentGridThumbnailHeight
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.music.item.MusicCollectionCard
 import app.mawja.android.ui.components.music.item.MusicItemDensity
 import app.mawja.android.ui.components.music.item.MusicTrackItem
 import app.mawja.android.ui.components.music.section.MusicShelf
 import app.mawja.android.ui.components.music.section.MusicTrackShelf
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowErrorState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaErrorState
 import app.mawja.android.ui.components.shared.ShimmerGridItem
 import app.mawja.android.ui.components.shared.ShimmerHost
 import app.mawja.android.ui.components.shared.ShimmerSectionTitle
@@ -63,7 +63,7 @@ fun YouTubeBrowseScreen(
 
     Scaffold(
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = uiState.title ?: stringResource(R.string.title_browse),
                 onBack = onBackClick,
             )
@@ -105,14 +105,14 @@ fun YouTubeBrowseScreen(
                 }
 
                 uiState.error != null -> {
-                    FlowErrorState(
+                    MawjaErrorState(
                         error = uiState.error ?: stringResource(R.string.unknown_error),
                         onRetry = { viewModel.retry() },
                     )
                 }
 
                 uiState.sections.isEmpty() -> {
-                    FlowEmptyState(title = stringResource(R.string.empty_browse_content))
+                    MawjaEmptyState(title = stringResource(R.string.empty_browse_content))
                 }
 
                 else -> {

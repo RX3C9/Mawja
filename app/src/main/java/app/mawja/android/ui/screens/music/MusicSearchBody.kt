@@ -34,10 +34,10 @@ import app.mawja.android.ui.components.music.section.MusicMoodsShelf
 import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
 import app.mawja.android.ui.components.music.sheet.toCollectionActionItem
 import app.mawja.android.ui.components.search.searchHistoryItems
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowFeedProgress
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaFeedProgress
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 
 private const val RECOMMENDED_SOURCE = "Recommended"
 
@@ -191,9 +191,9 @@ internal fun MusicSearchBody(
 
         val error = uiState.error
         if (uiState.isLoading) {
-            FlowLoadingIndicator()
+            MawjaLoadingIndicator()
         } else if (!hasResults && error != null) {
-            FlowErrorState(
+            MawjaErrorState(
                 error = error,
                 onRetry = {
                     val filter = uiState.activeFilter
@@ -201,7 +201,7 @@ internal fun MusicSearchBody(
                 },
             )
         } else if (!hasResults) {
-            FlowEmptyState(
+            MawjaEmptyState(
                 title = stringResource(R.string.music_search_no_results, query),
                 icon = Icons.Rounded.SearchOff,
             )
@@ -272,7 +272,7 @@ internal fun MusicSearchBody(
                             viewModel.loadMore()
                         }
                         if (uiState.isMoreLoading) {
-                            FlowFeedProgress()
+                            MawjaFeedProgress()
                         }
                     }
                 }

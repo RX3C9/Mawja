@@ -28,7 +28,7 @@ class NeuroEngineInitializationTest {
                 Unit
             }
         }
-    private val engine = FlowNeuroEngine(mockk(relaxed = true), storage, mockk<NeuroContentStore>(relaxed = true))
+    private val engine = MawjaNeuroEngine(mockk(relaxed = true), storage, mockk<NeuroContentStore>(relaxed = true))
 
     @Test
     fun `a block before initialize adds to the persisted brain`() =

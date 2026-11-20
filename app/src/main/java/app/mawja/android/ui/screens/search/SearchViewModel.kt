@@ -20,7 +20,7 @@ import app.mawja.android.data.paging.SearchPagingSource
 import app.mawja.android.data.paging.SearchResultItem
 import app.mawja.android.data.paging.WatchedVideoLookup
 import app.mawja.android.data.paging.watchedVideoIds
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.search.SearchSuggestionsRepository
 import app.mawja.android.data.shorts.ShortsContentFilter
 import app.mawja.android.data.shorts.queue.ShortsQueueHandoff
@@ -58,7 +58,7 @@ class SearchViewModel
         private val shortsQueueHandoff: ShortsQueueHandoff,
         private val searchHistory: SearchHistoryRepository,
         private val videoStats: VideoStatsRecorder,
-        private val neuroEngine: FlowNeuroEngine,
+        private val neuroEngine: MawjaNeuroEngine,
         private val watchHistoryDao: WatchHistoryDao,
         private val preferences: PlayerPreferences,
     ) : ViewModel() {
@@ -129,7 +129,7 @@ class SearchViewModel
             if (normalized != lastSignaledQuery) {
                 lastSignaledQuery = normalized
                 viewModelScope.launch {
-                    runCatching { FlowNeuroEngine.onSearchQuery(context, query) }
+                    runCatching { MawjaNeuroEngine.onSearchQuery(context, query) }
                     videoStats.onSearch(query.takeIf { searchHistory.isSearchHistoryEnabled() })
                 }
             }

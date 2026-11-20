@@ -24,7 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingsListScope
 import app.mawja.android.ui.components.settings.SettingsPage
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 
 /** Every topic, channel and artist blocked in either engine, each one tap from coming back. */
 @Composable
@@ -39,7 +39,7 @@ internal fun HiddenContentScreen(
     SettingsPage(title = stringResource(R.string.taste_hidden_title), onBack = onBack, highlight = highlight) {
         if (!state.loading && hidden.count == 0) {
             item("hidden.empty") {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(R.string.taste_hidden_empty_title),
                     subtitle = stringResource(R.string.taste_hidden_empty_body),
                     icon = Icons.Outlined.VisibilityOff,

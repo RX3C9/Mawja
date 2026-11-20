@@ -40,10 +40,10 @@ import app.mawja.android.data.shorts.queue.ShortsQueueSource
 import app.mawja.android.player.GlobalPlayerState
 import app.mawja.android.player.shorts.ShortsPlayerPool
 import app.mawja.android.ui.components.shared.CommentSortFilter
-import app.mawja.android.ui.components.shared.FlowCommentsBottomSheet
-import app.mawja.android.ui.components.shared.FlowDescriptionBottomSheet
-import app.mawja.android.ui.components.shared.FlowErrorState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaCommentsBottomSheet
+import app.mawja.android.ui.components.shared.MawjaDescriptionBottomSheet
+import app.mawja.android.ui.components.shared.MawjaErrorState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.applyVideoCommentFilters
 import app.mawja.android.ui.components.shared.rememberVideoShareAction
 import app.mawja.android.ui.components.shared.videoCommentSortFor
@@ -154,11 +154,11 @@ fun ShortsScreen(
 
         when {
             uiState.isLoading && uiState.shorts.isEmpty() -> {
-                FlowLoadingIndicator()
+                MawjaLoadingIndicator()
             }
 
             uiState.error != null && uiState.shorts.isEmpty() -> {
-                FlowErrorState(
+                MawjaErrorState(
                     error = uiState.error ?: stringResource(R.string.error_short_load),
                     onRetry = { viewModel.retry(source) },
                     modifier = Modifier.align(Alignment.Center),
@@ -233,7 +233,7 @@ fun ShortsScreen(
 
         if (showCommentsSheet) {
             DisposableEffect(Unit) { onDispose { sheetInsets.release() } }
-            FlowCommentsBottomSheet(
+            MawjaCommentsBottomSheet(
                 comments = visibleComments,
                 isLoading = isLoadingComments,
                 selectedFilter = commentSortFilter,
@@ -264,7 +264,7 @@ fun ShortsScreen(
         if (showDescriptionSheet && uiState.shorts.isNotEmpty()) {
             DisposableEffect(Unit) { onDispose { sheetInsets.release() } }
             val safeIndex = uiState.currentIndex.coerceIn(0, uiState.shorts.size - 1)
-            FlowDescriptionBottomSheet(
+            MawjaDescriptionBottomSheet(
                 video = uiState.shorts[safeIndex].toVideo(),
                 expandedHeight = sheetExpandedHeight,
                 onSheetProgressChange = { progress -> sheetInsets.follow(sheetExpandedHeightPx * progress) },

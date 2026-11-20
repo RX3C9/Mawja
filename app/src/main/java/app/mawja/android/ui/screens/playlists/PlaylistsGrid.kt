@@ -25,7 +25,7 @@ import app.mawja.android.ui.components.PlaylistCardLayout
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.library.MusicPlaylistLibraryCard
 import app.mawja.android.ui.components.library.libraryGridLayoutFor
-import app.mawja.android.ui.components.shared.FlowEmptyState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
 import app.mawja.android.ui.components.shared.MediaKind
 
 private val GridCellMinWidth = 160.dp
@@ -96,12 +96,12 @@ private fun LazyGridScope.emptyPlaylists(kind: MediaKind) {
         contentType = "empty",
     ) {
         if (kind == MediaKind.Videos) {
-            FlowEmptyState(
+            MawjaEmptyState(
                 title = stringResource(R.string.no_playlists_found),
                 icon = Icons.AutoMirrored.Outlined.PlaylistPlay,
             )
         } else {
-            FlowEmptyState(
+            MawjaEmptyState(
                 title = stringResource(R.string.empty_music_playlists),
                 icon = Icons.Default.MusicNote,
             )

@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.ui.screens.settings.taste.PersonaEmblem
 
 private val CardPadding = 16.dp
@@ -32,7 +32,7 @@ private val EmblemSize = 56.dp
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun PersonaEntryCard(
-    persona: FlowPersona?,
+    persona: MawjaPersona?,
     selected: Boolean,
     onOpen: () -> Unit,
     modifier: Modifier = Modifier,

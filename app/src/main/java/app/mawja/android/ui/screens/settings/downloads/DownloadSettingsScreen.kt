@@ -67,9 +67,9 @@ import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.slider
 import app.mawja.android.ui.components.settings.switch
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.DestinationIndex
 import app.mawja.android.ui.screens.settings.index.DownloadsIndex
 import app.mawja.android.ui.screens.settings.quality.MusicQualities
@@ -161,8 +161,8 @@ internal fun DownloadSettingsScreen(
         stringResource(if (access.allFiles) R.string.files_access_granted_subtitle else R.string.files_access_denied_subtitle)
     val menuStyles =
         listOf(
-            FlowToggleOption(DownloadDialogStyle.FULL, stringResource(R.string.download_menu_style_classic)),
-            FlowToggleOption(DownloadDialogStyle.COMPACT, stringResource(R.string.download_menu_style_compact)),
+            MawjaToggleOption(DownloadDialogStyle.FULL, stringResource(R.string.download_menu_style_classic)),
+            MawjaToggleOption(DownloadDialogStyle.COMPACT, stringResource(R.string.download_menu_style_compact)),
         )
 
     SettingsPage(
@@ -298,9 +298,9 @@ internal fun DownloadSettingsScreen(
 
     when (picker) {
         DownloadPicker.QUALITY -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.settings_quick_download_quality),
-                options = VideoQualities.drop(1).map { FlowChoice(it, stringResource(videoQualityLabel(it))) },
+                options = VideoQualities.drop(1).map { MawjaChoice(it, stringResource(videoQualityLabel(it))) },
                 selected = quickQuality,
                 onSelect = viewModel::setQuickQuality,
                 onDismiss = { picker = null },
@@ -308,11 +308,11 @@ internal fun DownloadSettingsScreen(
         }
 
         DownloadPicker.CODEC -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.default_download_codec_label),
                 options =
                     VideoCodec.entries.map { codecOption ->
-                        FlowChoice(
+                        MawjaChoice(
                             codecOption,
                             codecLabel(codecOption),
                             if (codecOption == VideoCodec.AUTO) stringResource(R.string.default_download_codec_auto_subtitle) else null,
@@ -325,11 +325,11 @@ internal fun DownloadSettingsScreen(
         }
 
         DownloadPicker.MUSIC_QUALITY -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.settings_music_download_quality),
                 options =
                     MusicQualities.filter { it != MusicAudioQuality.AUTO }.map {
-                        FlowChoice(
+                        MawjaChoice(
                             it,
                             stringResource(musicQualityLabel(it)),
                         )
@@ -341,9 +341,9 @@ internal fun DownloadSettingsScreen(
         }
 
         DownloadPicker.AUTO_DOWNLOAD -> {
-            FlowChoiceDialog(
+            MawjaChoiceDialog(
                 title = stringResource(R.string.settings_auto_download_opened_title),
-                options = AutoDownloadMode.entries.map { FlowChoice(it, stringResource(autoDownloadLabel(it))) },
+                options = AutoDownloadMode.entries.map { MawjaChoice(it, stringResource(autoDownloadLabel(it))) },
                 selected = autoDownloadOpened,
                 onSelect = viewModel::setAutoDownloadOpened,
                 onDismiss = { picker = null },

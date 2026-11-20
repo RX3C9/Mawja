@@ -32,12 +32,12 @@ import app.mawja.android.R
 import app.mawja.android.data.stats.RecapPeriod
 import app.mawja.android.data.stats.RecapSummary
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowFilterChip
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaFilterChip
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -69,7 +69,7 @@ internal fun RecapScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
         containerColor = MaterialTheme.colorScheme.background,
-        topBar = { FlowTopBar(title = stringResource(R.string.recap_title), onBack = onBack) },
+        topBar = { MawjaTopBar(title = stringResource(R.string.recap_title), onBack = onBack) },
     ) { padding ->
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(CardMinWidth),
@@ -87,13 +87,13 @@ internal fun RecapScreen(
             when {
                 state.loading -> {
                     item(key = "loading", span = StaggeredGridItemSpan.FullLine) {
-                        FlowLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight))
+                        MawjaLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight))
                     }
                 }
 
                 state.isEmpty -> {
                     item(key = "empty", span = StaggeredGridItemSpan.FullLine) {
-                        FlowEmptyState(
+                        MawjaEmptyState(
                             title = stringResource(R.string.recap_empty_title),
                             subtitle = stringResource(R.string.recap_empty_body),
                             icon = Icons.Outlined.Insights,
@@ -120,7 +120,7 @@ private fun LazyStaggeredGridScope.recapCards(
 ) {
     if (summary.isEmpty) {
         item(key = "period-empty", span = StaggeredGridItemSpan.FullLine) {
-            FlowEmptyState(title = stringResource(R.string.recap_period_empty), icon = Icons.Outlined.Insights)
+            MawjaEmptyState(title = stringResource(R.string.recap_period_empty), icon = Icons.Outlined.Insights)
         }
         return
     }
@@ -202,18 +202,18 @@ private fun RecapControls(
         }
     val scopes =
         listOf(
-            FlowToggleOption(RecapScope.MONTH, stringResource(R.string.recap_period_month)),
-            FlowToggleOption(RecapScope.YEAR, stringResource(R.string.recap_period_year)),
-            FlowToggleOption(RecapScope.ALL, stringResource(R.string.recap_period_all)),
+            MawjaToggleOption(RecapScope.MONTH, stringResource(R.string.recap_period_month)),
+            MawjaToggleOption(RecapScope.YEAR, stringResource(R.string.recap_period_year)),
+            MawjaToggleOption(RecapScope.ALL, stringResource(R.string.recap_period_all)),
         )
     val sources =
         listOf(
-            FlowToggleOption(RecapSource.ALL, stringResource(R.string.recap_source_all)),
-            FlowToggleOption(RecapSource.VIDEO, stringResource(R.string.recap_source_video)),
-            FlowToggleOption(RecapSource.MUSIC, stringResource(R.string.recap_source_music)),
+            MawjaToggleOption(RecapSource.ALL, stringResource(R.string.recap_source_all)),
+            MawjaToggleOption(RecapSource.VIDEO, stringResource(R.string.recap_source_video)),
+            MawjaToggleOption(RecapSource.MUSIC, stringResource(R.string.recap_source_music)),
         )
     Column(verticalArrangement = Arrangement.spacedBy(ControlSpacing)) {
-        FlowConnectedToggleGroup(options = scopes, selected = scope, onSelected = { selected ->
+        MawjaConnectedToggleGroup(options = scopes, selected = scope, onSelected = { selected ->
             when (selected) {
                 RecapScope.MONTH -> state.months.firstOrNull()?.let { onPeriod(RecapPeriod.Month(it)) }
                 RecapScope.YEAR -> state.years.firstOrNull()?.let { onPeriod(RecapPeriod.Year(it)) }
@@ -224,7 +224,7 @@ private fun RecapControls(
             is RecapPeriod.Month -> {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(ControlSpacing)) {
                     items(state.months, key = { it.toString() }) { month ->
-                        FlowFilterChip(
+                        MawjaFilterChip(
                             label = "${month.month.getDisplayName(TextStyle.SHORT_STANDALONE, locale)} ${month.year}",
                             selected = month == period.month,
                             onClick = { onPeriod(RecapPeriod.Month(month)) },
@@ -236,7 +236,7 @@ private fun RecapControls(
             is RecapPeriod.Year -> {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(ControlSpacing)) {
                     items(state.years, key = { it }) { year ->
-                        FlowFilterChip(
+                        MawjaFilterChip(
                             label = year.toString(),
                             selected = year == period.year,
                             onClick = { onPeriod(RecapPeriod.Year(year)) },
@@ -249,6 +249,6 @@ private fun RecapControls(
                 Unit
             }
         }
-        FlowConnectedToggleGroup(options = sources, selected = state.source, onSelected = onSource)
+        MawjaConnectedToggleGroup(options = sources, selected = state.source, onSelected = onSource)
     }
 }

@@ -14,7 +14,7 @@ import app.mawja.android.data.local.AppFontPreferences
 import app.mawja.android.data.local.LocalDataManager
 import app.mawja.android.ui.screens.widgets.PlaylistConfigScreen
 import app.mawja.android.ui.screens.widgets.QuickActionsConfigScreen
-import app.mawja.android.ui.startup.FlowTheme
+import app.mawja.android.ui.startup.MawjaTheme
 import app.mawja.android.ui.startup.gatedBy
 import app.mawja.android.ui.startup.themeSettings
 import kotlinx.coroutines.flow.combine
@@ -59,7 +59,7 @@ class WidgetConfigActivity : ComponentActivity() {
                 .combine(entitlementsRepository.entitlements) { settings, entitlements -> settings.gatedBy(entitlements) }
         setContent {
             val settings = theme.collectAsState(initial = null).value ?: return@setContent
-            FlowTheme(settings) {
+            MawjaTheme(settings) {
                 when (provider) {
                     QuickActionsWidgetReceiver::class.java.name -> QuickActionsConfigScreen(glanceId, onDone = ::done)
                     PlaylistWidgetReceiver::class.java.name -> PlaylistConfigScreen(glanceId, onDone = ::done)

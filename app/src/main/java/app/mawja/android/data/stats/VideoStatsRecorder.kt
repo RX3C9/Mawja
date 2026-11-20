@@ -6,7 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import app.mawja.android.data.local.PrivacyGate
 import app.mawja.android.data.local.dao.WatchHistoryDao
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -60,7 +60,7 @@ class VideoStatsRecorder
         ) = record(RecapEntry.VIEW) {
             val topics =
                 if (event.counted && video != null) {
-                    runCatching { FlowNeuroEngine.topTopicsFor(video, VideoStatsParams.TOPICS_PER_VIEW) }.getOrDefault(emptyList())
+                    runCatching { MawjaNeuroEngine.topTopicsFor(video, VideoStatsParams.TOPICS_PER_VIEW) }.getOrDefault(emptyList())
                 } else {
                     emptyList()
                 }

@@ -14,9 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.data.backup.ImportKind
 import app.mawja.android.data.backup.ImportSource
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSheetHeader
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSheetHeader
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import app.mawja.android.ui.components.shared.rememberFlowSheetState
 
@@ -35,14 +35,14 @@ internal fun ImportSourceSheet(
         sheetState = rememberFlowSheetState(),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        FlowSheetHeader(
+        MawjaSheetHeader(
             title = stringResource(source.titleRes),
             onClose = onDismiss,
             showDragHandle = false,
         )
-        FlowRowGroup(Modifier.verticalScroll(rememberScrollState()).padding(bottom = SheetBottomPadding)) {
+        MawjaRowGroup(Modifier.verticalScroll(rememberScrollState()).padding(bottom = SheetBottomPadding)) {
             source.kinds.forEachIndexed { index, kind ->
-                FlowNavRow(
+                MawjaNavRow(
                     title = stringResource(kind.titleRes),
                     supportingText = stringResource(kind.descriptionRes),
                     leadingIcon = Icons.Outlined.FileOpen,

@@ -7,7 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import app.mawja.android.data.localmedia.LocalMediaIds
 import app.mawja.android.data.localmedia.LocalSubtitles
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.video.OfflineSubtitleStore
 import app.mawja.android.data.video.VideoDownloadManager
 import app.mawja.android.player.EnhancedPlayerManager
@@ -38,7 +38,7 @@ object PlayerManagerModule {
     @Provides
     fun provideEnhancedPlayerManager(
         videoDownloadManager: VideoDownloadManager,
-        neuroEngine: Lazy<FlowNeuroEngine>,
+        neuroEngine: Lazy<MawjaNeuroEngine>,
         localSubtitles: Lazy<LocalSubtitles>,
         offlineSubtitleStore: Lazy<OfflineSubtitleStore>,
     ): EnhancedPlayerManager =

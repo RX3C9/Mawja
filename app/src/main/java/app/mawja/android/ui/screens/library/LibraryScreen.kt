@@ -34,12 +34,12 @@ import app.mawja.android.data.stats.RecapPeriod
 import app.mawja.android.data.video.DownloadedVideo
 import app.mawja.android.ui.OnTabReselected
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.layout.navigation.FlowTab
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
 import app.mawja.android.ui.components.library.LibraryNavigationRow
 import app.mawja.android.ui.components.library.LibrarySection
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.components.stats.RecapEntryCard
 import java.time.format.TextStyle
@@ -85,7 +85,7 @@ fun LibraryScreen(
     val locale = LocalConfiguration.current.locales[0]
     val listState = rememberLazyListState()
     app.mawja.android.resume.ResumableScroll(listState, "library")
-    OnTabReselected(FlowTab.Library.route) { listState.animateScrollToItem(0) }
+    OnTabReselected(MawjaTab.Library.route) { listState.animateScrollToItem(0) }
     val openSection: (LibrarySection) -> Unit = { section ->
         when (section) {
             LibrarySection.HISTORY -> onNavigateToHistory()
@@ -105,7 +105,7 @@ fun LibraryScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
-        topBar = { FlowTopBar(title = stringResource(R.string.library)) },
+        topBar = { MawjaTopBar(title = stringResource(R.string.library)) },
     ) { padding ->
         LazyColumn(
             state = listState,
@@ -144,7 +144,7 @@ fun LibraryScreen(
             val settingsSections = visibleSettingsSections(hidden, notesEnabled = notesCount != null, order = sectionOrder)
             if (shelfPreviewsEnabled && isLibraryEmpty) {
                 item(key = "library-empty", contentType = "empty") {
-                    FlowEmptyState(
+                    MawjaEmptyState(
                         title = stringResource(R.string.library_empty_title),
                         subtitle = stringResource(R.string.library_empty_body),
                         icon = Icons.Outlined.VideoLibrary,
@@ -178,7 +178,7 @@ fun LibraryScreen(
             }
             if (emptyLibraryDownloads || settingsSections.isNotEmpty()) {
                 item(key = "settings-data", contentType = "navigation-section") {
-                    Column(modifier = Modifier.widthIn(max = FlowMaxContentWidth).padding(horizontal = 16.dp)) {
+                    Column(modifier = Modifier.widthIn(max = MawjaMaxContentWidth).padding(horizontal = 16.dp)) {
                         LibrarySectionHeader(stringResource(R.string.library_settings_data_header))
                         if (emptyLibraryDownloads) {
                             LibraryNavigationRow(

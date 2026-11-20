@@ -31,7 +31,7 @@ import app.mawja.android.data.local.SponsorBlockAction
 import app.mawja.android.data.model.SponsorBlockCategories
 import app.mawja.android.ui.components.settings.SettingsListScope
 import app.mawja.android.ui.components.settings.switch
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.screens.settings.index.IntegrationsIndex
 import app.mawja.android.ui.theme.defaultSponsorBlockColor
 import app.mawja.android.utils.sponsorCategoryLabelRes
@@ -54,7 +54,7 @@ internal fun SettingsListScope.sponsorBlockSection(
         switch(IntegrationsIndex.contribute, viewModel.submitButton, viewModel::setSubmitButton, enabled = enabled)
         if (submitButton) {
             row(IntegrationsIndex.userId.key) { shape ->
-                FlowNavRow(
+                MawjaNavRow(
                     title = stringResource(IntegrationsIndex.userId.title),
                     supportingText =
                         userId?.let { stringResource(R.string.settings_truncated, it.take(USER_ID_PREVIEW_LENGTH)) }

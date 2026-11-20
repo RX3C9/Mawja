@@ -1,7 +1,7 @@
 package app.mawja.android.utils
 
 import android.util.Log
-import app.mawja.android.FlowApplication
+import app.mawja.android.MawjaApplication
 import app.mawja.android.data.local.MusicAudioQuality
 import app.mawja.android.data.local.PlayerPreferences
 import app.mawja.android.innertube.models.YouTubeClient
@@ -64,13 +64,13 @@ object MusicPlayerUtils {
     )
 
     private suspend fun loadAudioSelectionPreferences(): AudioSelectionPreferences {
-        val playerPreferences = PlayerPreferences(FlowApplication.appContext)
+        val playerPreferences = PlayerPreferences(MawjaApplication.appContext)
         return AudioSelectionPreferences(
             preferredAudioLanguage = playerPreferences.preferredAudioLanguage.first(),
             musicAudioQuality =
                 playerPreferences.musicAudioQuality
                     .first()
-                    .resolve(onWifi = NetworkState.isOnWifi(FlowApplication.appContext)),
+                    .resolve(onWifi = NetworkState.isOnWifi(MawjaApplication.appContext)),
         )
     }
 

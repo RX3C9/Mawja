@@ -3,6 +3,7 @@ package app.mawja.android.ui.screens.settings.home
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ManageSearch
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Science
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material.icons.outlined.CloudUpload
@@ -56,6 +57,7 @@ internal fun destinationIcon(destination: SettingsDestination): ImageVector =
         SettingsDestination.NETWORK -> Icons.Outlined.Public
         SettingsDestination.WELLBEING -> Icons.Outlined.SelfImprovement
         SettingsDestination.ISLAMIC -> Icons.Outlined.NightsStay
+        SettingsDestination.LAB -> Icons.Outlined.Science
         SettingsDestination.QIBLA -> Icons.Outlined.Explore
         SettingsDestination.WIDGETS -> Icons.Outlined.Widgets
         SettingsDestination.ABOUT -> Icons.Outlined.Info

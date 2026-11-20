@@ -45,9 +45,9 @@ fun MediaPlaybackSpeedPicker(
         remember(customSpeedsEnabled, customSpeedPresetsRaw) {
             playbackSpeedOptions(customSpeedsEnabled, customSpeedPresetsRaw)
         }
-    FlowRowGroup(modifier = modifier.fillMaxWidth()) {
+    MawjaRowGroup(modifier = modifier.fillMaxWidth()) {
         speeds.forEachIndexed { index, speed ->
-            FlowSelectionRow(
+            MawjaSelectionRow(
                 title = playbackSpeedLabel(speed),
                 selected = speed == currentSpeed,
                 shape = flowRowGroupShape(index, speeds.size),

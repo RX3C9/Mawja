@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 
 @Composable
-internal fun FlowFeedFooter(
+internal fun MawjaFeedFooter(
     videoCount: Int,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,

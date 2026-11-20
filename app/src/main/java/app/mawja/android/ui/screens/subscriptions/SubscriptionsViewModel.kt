@@ -14,7 +14,7 @@ import app.mawja.android.data.local.dao.SubscriptionGroupDao
 import app.mawja.android.data.model.Channel
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.model.toUiModel
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.subscriptions.SubscriptionFeedRepository
 import app.mawja.android.data.subscriptions.SubscriptionRefreshPlan
 import app.mawja.android.data.subscriptions.SubscriptionWatchedVideos
@@ -61,7 +61,7 @@ class SubscriptionsViewModel
         private val playerPreferences: PlayerPreferences,
         private val subscriptionGroupDao: SubscriptionGroupDao,
         private val subscriptionWatchedVideos: SubscriptionWatchedVideos,
-        private val neuroEngine: FlowNeuroEngine,
+        private val neuroEngine: MawjaNeuroEngine,
         private val backupCoordinator: BackupCoordinator,
     ) : ViewModel() {
         companion object {
@@ -89,7 +89,7 @@ class SubscriptionsViewModel
 
         /**
          * Starts the preference/feed collectors. Deliberately not run from `init`: the TV shell
-         * hoists this ViewModel at launch (see `FlowTvApp`), so constructing it would kick off the
+         * hoists this ViewModel at launch (see `MawjaTvApp`), so constructing it would kick off the
          * subscription RSS fetch before the user ever opens Subscriptions. Called from the screens
          * instead, so the work still begins exactly when the feed becomes visible.
          *

@@ -23,8 +23,8 @@ import app.mawja.android.R
 import app.mawja.android.data.local.HomeFeedColumns
 import app.mawja.android.data.model.Video
 import app.mawja.android.ui.components.rememberFeedGridLayout
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.card.MediaVideoCard
 import app.mawja.android.ui.components.shared.card.VideoCardLayout
 import app.mawja.android.ui.components.shared.rememberFeedGridPlan
@@ -48,7 +48,7 @@ internal fun ChannelSearchResults(
                         .fillMaxSize()
                         .padding(top = topInset),
                 contentAlignment = Alignment.Center,
-            ) { FlowLoadingIndicator() }
+            ) { MawjaLoadingIndicator() }
         }
 
         uiState.searchErrorLog != null -> {
@@ -75,7 +75,7 @@ internal fun ChannelSearchResults(
                         .padding(top = topInset),
                 contentAlignment = Alignment.Center,
             ) {
-                FlowEmptyState(title = stringResource(R.string.channel_search_no_results, uiState.searchQuery))
+                MawjaEmptyState(title = stringResource(R.string.channel_search_no_results, uiState.searchQuery))
             }
         }
 

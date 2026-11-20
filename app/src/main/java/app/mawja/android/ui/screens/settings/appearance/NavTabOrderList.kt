@@ -35,7 +35,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.local.DEFAULT_NAV_TAB_ORDER
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.layout.navigation.icon
 import app.mawja.android.ui.components.shared.ReorderHandle
 import sh.calvin.reorderable.ReorderableColumn
@@ -50,14 +50,14 @@ private val RowIconSpacing = 12.dp
 @Composable
 internal fun NavTabOrderList(
     order: List<Int>,
-    enabledTabs: Set<FlowTab>,
-    defaultTab: FlowTab,
+    enabledTabs: Set<MawjaTab>,
+    defaultTab: MawjaTab,
     onOrderChanged: (List<Int>) -> Unit,
-    onDefaultSelected: (FlowTab) -> Unit,
+    onDefaultSelected: (MawjaTab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val haptic = LocalHapticFeedback.current
-    val persistedTabs = remember(order) { (order + DEFAULT_NAV_TAB_ORDER).distinct().mapNotNull(FlowTab::fromId) }
+    val persistedTabs = remember(order) { (order + DEFAULT_NAV_TAB_ORDER).distinct().mapNotNull(MawjaTab::fromId) }
     // Held locally so a drop shows its result at once instead of snapping back until DataStore emits.
     var tabs by remember(persistedTabs) { mutableStateOf(persistedTabs) }
 
@@ -68,7 +68,7 @@ internal fun NavTabOrderList(
         if (from == to || to !in tabs.indices) return false
         val updated = tabs.toMutableList().apply { add(to, removeAt(from)) }
         tabs = updated
-        onOrderChanged(updated.map(FlowTab::id))
+        onOrderChanged(updated.map(MawjaTab::id))
         return true
     }
 

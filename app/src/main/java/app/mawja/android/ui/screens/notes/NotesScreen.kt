@@ -60,11 +60,11 @@ import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
 import app.mawja.android.ui.components.layout.rememberFlowPaneScaffoldDirective
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowNoteEditorDialog
-import app.mawja.android.ui.components.shared.FlowSelectionAction
-import app.mawja.android.ui.components.shared.FlowSelectionToolbar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaNoteEditorDialog
+import app.mawja.android.ui.components.shared.MawjaSelectionAction
+import app.mawja.android.ui.components.shared.MawjaSelectionToolbar
 import kotlinx.coroutines.launch
 
 private val PaneCornerInset = 16.dp
@@ -150,11 +150,11 @@ internal fun NotesScreen(
         topBar = {
             when {
                 reordering -> {
-                    FlowTopBar(title = stringResource(R.string.notes_reorder_title), onBack = { reordering = false })
+                    MawjaTopBar(title = stringResource(R.string.notes_reorder_title), onBack = { reordering = false })
                 }
 
                 selecting -> {
-                    FlowTopBar(
+                    MawjaTopBar(
                         title = pluralStringResource(R.plurals.selected_count_template, selectedKeys.size, selectedKeys.size),
                         onBack = ::exitSelection,
                         actions = {
@@ -169,7 +169,7 @@ internal fun NotesScreen(
                 }
 
                 else -> {
-                    FlowTopBar(
+                    MawjaTopBar(
                         title = if (showingDetailAlone) "" else stringResource(R.string.notes_title),
                         onBack = if (showingDetailAlone) ::back else onBackClick,
                         actions = {
@@ -238,7 +238,7 @@ internal fun NotesScreen(
                                 }
                             val note = openNote
                             if (note == null) {
-                                FlowEmptyState(
+                                MawjaEmptyState(
                                     title = stringResource(R.string.notes_pick_title),
                                     icon = Icons.Outlined.StickyNote2,
                                     modifier = paneModifier.fillMaxSize(),
@@ -256,14 +256,14 @@ internal fun NotesScreen(
                     },
                 )
             }
-            FlowSelectionToolbar(
+            MawjaSelectionToolbar(
                 visible = selecting && selectedKeys.isNotEmpty(),
                 summary = pluralStringResource(R.plurals.selected_count_template, selectedKeys.size, selectedKeys.size),
                 actions =
                     listOf(
-                        FlowSelectionAction(Icons.Outlined.Delete, stringResource(R.string.action_delete)) { delete(selectedNotes) },
-                        FlowSelectionAction(Icons.Outlined.Share, stringResource(R.string.action_share)) { share(selectedNotes) },
-                        FlowSelectionAction(Icons.Default.SwapVert, stringResource(R.string.notes_reorder)) {
+                        MawjaSelectionAction(Icons.Outlined.Delete, stringResource(R.string.action_delete)) { delete(selectedNotes) },
+                        MawjaSelectionAction(Icons.Outlined.Share, stringResource(R.string.action_share)) { share(selectedNotes) },
+                        MawjaSelectionAction(Icons.Default.SwapVert, stringResource(R.string.notes_reorder)) {
                             exitSelection()
                             viewModel.startReordering()
                             reordering = true
@@ -276,7 +276,7 @@ internal fun NotesScreen(
 
     val editing = editingKey?.let { key -> state.all?.firstOrNull { it.key == key } }
     if (editing != null) {
-        FlowNoteEditorDialog(
+        MawjaNoteEditorDialog(
             initialText = editing.text,
             title = stringResource(if (editing.kind == NoteKind.Video) R.string.note_video_title else R.string.note_channel_title),
             onSave = { text -> viewModel.save(editing, text) },

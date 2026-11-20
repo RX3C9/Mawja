@@ -108,7 +108,7 @@ fun FeedShelfSections(
     val renderable = remember(sections, slots) { sections.filter { it.hasRenderableItems(slots) } }
     if (renderable.isEmpty()) {
         if (isLoading) {
-            FlowLoadingIndicator(modifier = Modifier.padding(top = topInset))
+            MawjaLoadingIndicator(modifier = Modifier.padding(top = topInset))
         }
         return
     }

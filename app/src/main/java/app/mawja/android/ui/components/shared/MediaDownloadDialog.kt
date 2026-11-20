@@ -59,10 +59,10 @@ fun MediaDownloadDialog(
             Column(
                 modifier =
                     Modifier.padding(
-                        start = FlowDialogDefaults.ContentPadding,
-                        top = FlowDialogDefaults.ContentPadding,
-                        end = FlowDialogDefaults.ContentPadding,
-                        bottom = FlowDialogDefaults.BottomPadding,
+                        start = MawjaDialogDefaults.ContentPadding,
+                        top = MawjaDialogDefaults.ContentPadding,
+                        end = MawjaDialogDefaults.ContentPadding,
+                        bottom = MawjaDialogDefaults.BottomPadding,
                     ),
             ) {
                 Text(
@@ -294,7 +294,7 @@ fun MediaDownloadDialog(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(FlowDialogDefaults.ActionsSpacing))
+                Spacer(modifier = Modifier.height(MawjaDialogDefaults.ActionsSpacing))
 
                 TextButton(
                     onClick = onDismiss,

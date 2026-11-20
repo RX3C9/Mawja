@@ -7,7 +7,7 @@ import app.mawja.android.R
 import app.mawja.android.data.local.entity.PlaylistEntity
 import app.mawja.android.data.local.entity.PlaylistVideoCrossRef
 import app.mawja.android.data.local.entity.VideoEntity
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.utils.ThumbnailUrlResolver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -297,7 +297,7 @@ internal class YouTubeTakeoutImporter(
         }
         subscriptions.subscribeAll(imported)
         val names = rows.map { it.channelName }.filter { it.isNotEmpty() }
-        if (names.isNotEmpty()) runCatching { FlowNeuroEngine.bootstrapFromSubscriptions(context, names) }
+        if (names.isNotEmpty()) runCatching { MawjaNeuroEngine.bootstrapFromSubscriptions(context, names) }
         return imported.size
     }
 

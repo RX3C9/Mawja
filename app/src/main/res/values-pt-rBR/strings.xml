@@ -1223,16 +1223,8 @@
     <string name="location_badge_recommended">Recomendado</string>
     <string name="location_badge_active">Ativo</string>
     <string name="select_threads_count_desc">Selecione a quantidade de núcleos (1-8):</string>
-    <string name="support_flow_patreon">Apoie o Mawja no Patreon</string>
     <string name="thank_you_support_message">Obrigada pelo seu apoio! ❤️</string>
     <string name="address_copied_toast">Endereço copiado para a área de transferência</string>
-    <string name="donation_address_clip_label">Endereço para doações</string>
-    <string name="donation_prompt_title">Está Curtindo o Mawja?</string>
-    <string name="donation_prompt_message">O Mawja é gratuito, de código aberto e sem anúncios. Se ele conquistou um lugar no seu celular, um pequeno suporte ajuda o a continuar.</string>
-    <string name="donation_prompt_methods">Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Apoiar o desenvolvimento</string>
-    <string name="donation_prompt_later">Talvez mais tarde</string>
-    <string name="donation_prompt_never">Não mostrar novamente</string>
     <string name="about_creator">Criador</string>
     <string name="about_creator_name">Omar Mahmoud</string>
     <string name="about_website">Site</string>
@@ -2238,7 +2230,6 @@
     <string name="settings_search_no_results">Nenhuma configuração para %1$s foi encontrada</string>
     <string name="settings_lyrics_provider_order_description">Começa de cima para baixo. Arraste para reordenar.</string>
     <string name="import_running_background">Você pode deixar esta tela. A importação continua funcionando.</string>
-    <string name="donations_cryptocurrency">CRIPTOMOEDAS</string>
     <string name="import_no_history_entries">Nenhuma entrada de histórico de visualização encontrada no arquivo</string>
     <string name="import_no_videos">Nenhum vídeo encontrado no arquivo da playlist</string>
     <string name="import_no_content">Nenhum conteúdo importável foi encontrado neste backup</string>

@@ -15,7 +15,7 @@ import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowSelectionAction
+import app.mawja.android.ui.components.shared.MawjaSelectionAction
 
 /** The header's ⋮ menu: add songs, edit or delete your own playlist, or add all of these to one of yours. */
 @Composable
@@ -81,16 +81,16 @@ internal fun selectionActions(
     onAddTo: () -> Unit,
     onDownload: () -> Unit,
     onRemove: () -> Unit,
-): List<FlowSelectionAction> =
+): List<MawjaSelectionAction> =
     buildList {
-        add(FlowSelectionAction(Icons.Rounded.QueuePlayNext, stringResource(R.string.play_next), onClick = onPlayNext))
-        add(FlowSelectionAction(Icons.Rounded.AddToQueue, stringResource(R.string.add_to_queue), onClick = onAddToQueue))
-        add(FlowSelectionAction(Icons.AutoMirrored.Rounded.PlaylistAdd, stringResource(R.string.add_to_playlist), onClick = onAddTo))
-        add(FlowSelectionAction(Icons.Rounded.Download, stringResource(R.string.download), onClick = onDownload))
+        add(MawjaSelectionAction(Icons.Rounded.QueuePlayNext, stringResource(R.string.play_next), onClick = onPlayNext))
+        add(MawjaSelectionAction(Icons.Rounded.AddToQueue, stringResource(R.string.add_to_queue), onClick = onAddToQueue))
+        add(MawjaSelectionAction(Icons.AutoMirrored.Rounded.PlaylistAdd, stringResource(R.string.add_to_playlist), onClick = onAddTo))
+        add(MawjaSelectionAction(Icons.Rounded.Download, stringResource(R.string.download), onClick = onDownload))
         when (state.kind) {
             MusicCollectionKind.OWN -> {
                 add(
-                    FlowSelectionAction(
+                    MawjaSelectionAction(
                         Icons.Rounded.RemoveCircleOutline,
                         stringResource(R.string.remove),
                         onClick = onRemove,
@@ -99,7 +99,7 @@ internal fun selectionActions(
             }
 
             MusicCollectionKind.LIKED -> {
-                add(FlowSelectionAction(Icons.Rounded.HeartBroken, stringResource(R.string.unlike), onClick = onRemove))
+                add(MawjaSelectionAction(Icons.Rounded.HeartBroken, stringResource(R.string.unlike), onClick = onRemove))
             }
 
             else -> {

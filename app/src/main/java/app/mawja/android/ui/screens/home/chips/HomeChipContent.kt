@@ -20,8 +20,8 @@ import app.mawja.android.ui.components.PlaylistCard
 import app.mawja.android.ui.components.PlaylistCardLayout
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.shared.FeedGridSkeleton
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowErrorState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaErrorState
 import app.mawja.android.ui.components.shared.dpadFocusGroup
 import app.mawja.android.ui.screens.home.HomeFeedGrid
 import app.mawja.android.ui.screens.home.HomeUiState
@@ -78,7 +78,7 @@ internal fun HomeChipContent(
         }
 
         ChipFeed.Empty -> {
-            FlowEmptyState(
+            MawjaEmptyState(
                 title = stringResource(R.string.home_chip_empty_title),
                 subtitle = stringResource(R.string.home_chip_empty_body),
                 icon = Icons.Outlined.VideoLibrary,
@@ -87,7 +87,7 @@ internal fun HomeChipContent(
         }
 
         ChipFeed.Failed -> {
-            FlowErrorState(
+            MawjaErrorState(
                 error = stringResource(R.string.home_chip_failed),
                 onRetry = onRefresh,
                 modifier = modifier,

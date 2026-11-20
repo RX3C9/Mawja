@@ -36,8 +36,8 @@ import app.mawja.android.data.music.DownloadedTrack
 import app.mawja.android.data.video.DownloadProgressUpdate
 import app.mawja.android.data.video.DownloadedVideo
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowPullToRefreshBox
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaPullToRefreshBox
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.components.shared.animateMediaGridItem
 
@@ -99,7 +99,7 @@ internal fun VideosDownloadsList(
     onHomeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FlowPullToRefreshBox(
+    MawjaPullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         state = rememberPullToRefreshState(),
@@ -107,7 +107,7 @@ internal fun VideosDownloadsList(
     ) {
         if (totalCount == 0 && incomplete.isEmpty()) {
             DownloadsEmptyState(kind = MediaKind.Videos, onHomeClick = onHomeClick)
-            return@FlowPullToRefreshBox
+            return@MawjaPullToRefreshBox
         }
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val grid = remember(maxWidth) { libraryGridLayoutFor(maxWidth) }
@@ -173,7 +173,7 @@ internal fun MusicDownloadsList(
     onHomeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FlowPullToRefreshBox(
+    MawjaPullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         state = rememberPullToRefreshState(),
@@ -181,7 +181,7 @@ internal fun MusicDownloadsList(
     ) {
         if (totalCount == 0 && incomplete.isEmpty()) {
             DownloadsEmptyState(kind = MediaKind.Music, onHomeClick = onHomeClick)
-            return@FlowPullToRefreshBox
+            return@MawjaPullToRefreshBox
         }
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
@@ -279,7 +279,7 @@ private fun DownloadsSectionHeader(
 
 @Composable
 private fun NoResults(query: String) {
-    FlowEmptyState(
+    MawjaEmptyState(
         title = stringResource(R.string.downloads_no_results, query.trim()),
         icon = Icons.Outlined.SearchOff,
         modifier = Modifier.padding(top = 48.dp),

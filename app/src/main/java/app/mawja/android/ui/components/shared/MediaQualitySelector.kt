@@ -37,9 +37,9 @@ fun <T> MediaQualitySelectorContent(
 ) {
     if (!groupedByResolution) {
         val sorted = options.sortedByDescending { it.height }
-        FlowRowGroup {
+        MawjaRowGroup {
             sorted.forEachIndexed { index, option ->
-                FlowSelectionRow(
+                MawjaSelectionRow(
                     title = option.label,
                     supportingText = option.supportingText,
                     selected = option.selected,
@@ -60,9 +60,9 @@ fun <T> MediaQualitySelectorContent(
             .sortedByDescending { it.key }
             .map { it.value }
     val rowCount = resolutions.size + if (auto == null) 0 else 1
-    FlowRowGroup {
+    MawjaRowGroup {
         if (auto != null) {
-            FlowSelectionRow(
+            MawjaSelectionRow(
                 title = auto.label,
                 selected = auto.selected,
                 shape = flowRowGroupShape(0, rowCount),
@@ -74,7 +74,7 @@ fun <T> MediaQualitySelectorContent(
             val codecOptions = group.filter { it.codecKey.isNotBlank() || it.codecLabel.isNotBlank() }
             if (codecOptions.isEmpty()) {
                 val option = group.first()
-                FlowSelectionRow(
+                MawjaSelectionRow(
                     title = option.label,
                     supportingText = option.supportingText,
                     selected = option.selected,
@@ -126,7 +126,7 @@ private fun <T> MediaQualitySelectorCodecRow(
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             codecOptions.forEach { option ->
-                FlowFilterChip(
+                MawjaFilterChip(
                     label = option.codecLabel.ifBlank { option.label },
                     selected = option.selected,
                     onClick = { onOptionSelected(option.item) },

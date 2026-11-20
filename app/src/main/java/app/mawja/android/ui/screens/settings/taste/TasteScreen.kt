@@ -26,8 +26,8 @@ import app.mawja.android.data.backup.BackupOperation
 import app.mawja.android.ui.components.settings.SettingsDestination
 import app.mawja.android.ui.components.settings.SettingsPage
 import app.mawja.android.ui.components.settings.SettingsTarget
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.components.shared.deepFlowStatus
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -121,7 +121,7 @@ internal fun TasteScreen(
         snackbarHostState = snackbarHostState,
     ) {
         if (state.loading) {
-            item("taste.loading") { FlowLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight)) }
+            item("taste.loading") { MawjaLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight)) }
         } else {
             pausedStatus?.let { learningPaused(pausedLabel, it) }
             tasteContent(state, hiddenLabel, noQueriesLabel, startersLabel, actions)
@@ -132,7 +132,7 @@ internal fun TasteScreen(
         val video = kind == ResetKind.VIDEO
         val title = if (video) R.string.reset_profile_dialog_title else R.string.taste_reset_music_title
         val body = if (video) R.string.taste_reset_video_body else R.string.taste_reset_music_body
-        FlowAlertDialog(
+        MawjaAlertDialog(
             onDismissRequest = { confirmReset = null },
             title = { Text(stringResource(title)) },
             text = { Text(stringResource(body)) },

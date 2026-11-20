@@ -38,7 +38,7 @@ import app.mawja.android.data.model.Video
 import app.mawja.android.data.paging.SearchResultItem
 import app.mawja.android.data.shorts.queue.ShortsQueueSource
 import app.mawja.android.ui.OnTabReselected
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.search.SearchFilterDialog
 import app.mawja.android.ui.components.search.SearchSuggestionsPanel
 import app.mawja.android.ui.components.search.SearchTopBar
@@ -69,7 +69,7 @@ fun SearchScreen(
     val quickActions: QuickActionsViewModel = sharedQuickActionsViewModel()
     val pagingItems = viewModel.searchResults.collectAsLazyPagingItems()
     val gridState = rememberLazyGridState()
-    OnTabReselected(FlowTab.Search.route) { gridState.animateScrollToItem(0) }
+    OnTabReselected(MawjaTab.Search.route) { gridState.animateScrollToItem(0) }
     var showFilters by rememberSaveable { mutableStateOf(false) }
 
     val submitWith = rememberSearchSubmitter(viewModel, state, quickActions)

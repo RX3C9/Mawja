@@ -8,6 +8,7 @@ SHA=$(cat .mawja-sync 2>/dev/null || git rev-parse HEAD)
 [ -f scripts/ci/FAST ] && export MAWJA_SCREENSHOTS=0
 TASKS=${MAWJA_TASKS:-":app:assembleGithubDebug :app:assembleFossDebug :downloader:assembleDebug :admin:assembleDebug"}
 chmod +x gradlew
+brand=$(bash scripts/ci/brand-guard.sh 2>&1 | head -20 | tr "\n" " ")
 # The app's two flavours are compiled one after the other: compiled side by side they share one
 # Kotlin daemon and run it out of heap.
 : > build.log
@@ -130,6 +131,6 @@ for f in $(git ls-files --others --exclude-standard app/schemas 2>/dev/null); do
 done
 apks=$(find app/build/outputs/apk -name '*.apk' -printf '%f (%s bytes)\n' 2>/dev/null | head -14)
 logurl=$(curl -fsS -F "files[]=@build.log" https://uguu.se/upload | jq -r '.files[0].url' 2>/dev/null || echo none)
-summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "backend: $backend"; echo "rules: $rules"; echo "admin-web: $adminweb"; echo "unit: $unit"; echo "screens: $screens"; echo "elapsed: $((SECONDS/60))m"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
+summary=$( { echo "$status src=${SHA:0:7} run=${GITHUB_RUN_ID:-local} log=$logurl"; echo "$brand"; echo "backend: $backend"; echo "rules: $rules"; echo "admin-web: $adminweb"; echo "unit: $unit"; echo "screens: $screens"; echo "elapsed: $((SECONDS/60))m"; echo "$apks"; grep -E '^(e: |FAILURE|\* What went wrong|BUILD )' -A3 build.log | head -60; } )
 curl -fsS -H "Title: Mawja CI $status" -d "$summary" "https://ntfy.sh/$TOPIC" >/dev/null || true
 exit $code

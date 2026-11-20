@@ -11,7 +11,7 @@ import app.mawja.android.data.local.dao.SubscriptionGroupDao
 import app.mawja.android.data.local.entity.SubscriptionGroupEntity
 import app.mawja.android.data.model.Video
 import app.mawja.android.data.recommendation.FeedExclusions
-import app.mawja.android.data.recommendation.FlowNeuroEngine
+import app.mawja.android.data.recommendation.MawjaNeuroEngine
 import app.mawja.android.data.subscriptions.SubscriptionFeedRefreshProgress
 import app.mawja.android.data.subscriptions.SubscriptionFeedRepository
 import app.mawja.android.data.subscriptions.SubscriptionRefreshPlan
@@ -51,7 +51,7 @@ class SubscriptionsViewModelTest {
     private val database: AppDatabase = mockk(relaxed = true)
     private val playerPreferences: PlayerPreferences = mockk(relaxed = true)
     private val subscriptionGroupDao: SubscriptionGroupDao = mockk(relaxed = true)
-    private val neuroEngine: FlowNeuroEngine = mockk(relaxed = true)
+    private val neuroEngine: MawjaNeuroEngine = mockk(relaxed = true)
 
     private lateinit var viewModel: SubscriptionsViewModel
     private val viewModelStore = ViewModelStore()

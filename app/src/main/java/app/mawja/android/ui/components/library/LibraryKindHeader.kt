@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowSearchField
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaSearchField
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.components.shared.MediaKind
 import app.mawja.android.ui.utils.LocalWindowSizeClass
 import app.mawja.android.ui.utils.isMediumWidth
@@ -40,9 +40,9 @@ internal fun LibraryKindHeader(
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val focusManager = LocalFocusManager.current
-    val options = MediaKind.entries.map { FlowToggleOption(it, stringResource(it.labelRes), it.icon) }
+    val options = MediaKind.entries.map { MawjaToggleOption(it, stringResource(it.labelRes), it.icon) }
     val search: @Composable (Modifier) -> Unit = { fieldModifier ->
-        FlowSearchField(
+        MawjaSearchField(
             query = query,
             onQueryChange = onQueryChange,
             placeholder = placeholder,
@@ -59,13 +59,13 @@ internal fun LibraryKindHeader(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             search(Modifier.weight(1f))
-            FlowConnectedToggleGroup(options, selectedKind, onKindSelected, Modifier.width(KindSwitchWidth))
+            MawjaConnectedToggleGroup(options, selectedKind, onKindSelected, Modifier.width(KindSwitchWidth))
             trailing?.invoke()
         }
     } else {
         Column(modifier) {
             search(Modifier.padding(horizontal = 16.dp).fillMaxWidth())
-            FlowConnectedToggleGroup(options, selectedKind, onKindSelected, Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+            MawjaConnectedToggleGroup(options, selectedKind, onKindSelected, Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
         }
     }
 }

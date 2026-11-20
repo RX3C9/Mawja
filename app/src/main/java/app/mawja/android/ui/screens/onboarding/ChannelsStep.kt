@@ -26,11 +26,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.model.Channel
-import app.mawja.android.ui.components.shared.FlowPopIn
-import app.mawja.android.ui.components.shared.FlowQuickSearchChips
-import app.mawja.android.ui.components.shared.FlowSearchField
-import app.mawja.android.ui.components.shared.FlowSectionHeader
-import app.mawja.android.ui.components.shared.FlowSegmentedGap
+import app.mawja.android.ui.components.shared.MawjaPopIn
+import app.mawja.android.ui.components.shared.MawjaQuickSearchChips
+import app.mawja.android.ui.components.shared.MawjaSearchField
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
+import app.mawja.android.ui.components.shared.MawjaSegmentedGap
 import app.mawja.android.ui.components.shared.MediaChannelSubscribeRow
 import app.mawja.android.ui.components.shared.dismissKeyboardOnPress
 import app.mawja.android.ui.components.shared.flowSegmentShape
@@ -58,7 +58,7 @@ internal fun ChannelsStep(
     ) {
         header()
         item(key = "search") {
-            FlowSearchField(
+            MawjaSearchField(
                 query = state.query,
                 onQueryChange = onQueryChange,
                 placeholder = stringResource(R.string.onboarding_channels_search_placeholder),
@@ -69,7 +69,7 @@ internal fun ChannelsStep(
             )
         }
         item(key = "quick") {
-            FlowQuickSearchChips(
+            MawjaQuickSearchChips(
                 searches = state.topics.take(MAX_QUICK_SEARCHES),
                 query = state.query,
                 onQueryChange = onQueryChange,
@@ -105,7 +105,7 @@ private fun LazyListScope.channelResults(
         }
 
         state.results.isNotEmpty() -> {
-            item(key = "results") { FlowSectionHeader(stringResource(R.string.onboarding_channels_results_header)) }
+            item(key = "results") { MawjaSectionHeader(stringResource(R.string.onboarding_channels_results_header)) }
             itemsIndexed(state.results, key = { _, channel -> channel.id }) { index, channel ->
                 val row: @Composable () -> Unit = {
                     MediaChannelSubscribeRow(
@@ -122,8 +122,8 @@ private fun LazyListScope.channelResults(
                         onNotificationsChange = { onNotificationsChange(channel.id, it) },
                     )
                 }
-                val modifier = Modifier.animateItem().padding(bottom = FlowSegmentedGap)
-                if (index < MAX_POPPED_ROWS) FlowPopIn(index, modifier) { row() } else Box(modifier) { row() }
+                val modifier = Modifier.animateItem().padding(bottom = MawjaSegmentedGap)
+                if (index < MAX_POPPED_ROWS) MawjaPopIn(index, modifier) { row() } else Box(modifier) { row() }
             }
         }
     }

@@ -37,9 +37,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.innertube.pages.channel.ChannelFilterGroup
-import app.mawja.android.ui.components.shared.FlowDropdownFilterChip
-import app.mawja.android.ui.components.shared.FlowFilterChip
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaDropdownFilterChip
+import app.mawja.android.ui.components.shared.MawjaFilterChip
+import app.mawja.android.ui.components.shared.MawjaSearchField
 
 /**
  * A tab's filter bar. YouTube ships two controls here and they are not interchangeable: a sort menu
@@ -66,7 +66,7 @@ internal fun ChannelFilterBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (searchActive && showListControls) {
-            FlowSearchField(
+            MawjaSearchField(
                 query = searchQuery,
                 onQueryChange = onSearchQueryChange,
                 placeholder = stringResource(R.string.channel_search_hint),
@@ -117,7 +117,7 @@ internal fun ChannelFilterBar(
                         )
                     } else {
                         val option = group.options[optionIndex]
-                        FlowFilterChip(
+                        MawjaFilterChip(
                             label = option.label,
                             selected = optionIndex == chosen,
                             onClick = { onFilterSelected(groupIndex, optionIndex) },
@@ -154,7 +154,7 @@ private fun ChannelFilterDropdown(
             .orEmpty()
 
     Box {
-        FlowDropdownFilterChip(
+        MawjaDropdownFilterChip(
             label = label,
             selected = selectedIndex >= 0,
             onClick = { expanded = true },

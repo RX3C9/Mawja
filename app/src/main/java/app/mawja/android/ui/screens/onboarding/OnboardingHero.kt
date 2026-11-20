@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
-import app.mawja.android.ui.components.shared.FlowLogo
+import app.mawja.android.ui.components.shared.MawjaLogo
 import app.mawja.android.ui.components.shared.drawMorph
 import kotlinx.coroutines.flow.first
 
@@ -143,7 +143,7 @@ private fun HeroMark(step: OnboardingStep) {
     if (icon != null) {
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.fillMaxWidth(HERO_ICON_SHARE).aspectRatio(1f))
     } else {
-        FlowLogo(Modifier.fillMaxWidth(LOGO_SHARE))
+        MawjaLogo(Modifier.fillMaxWidth(LOGO_SHARE))
     }
 }
 

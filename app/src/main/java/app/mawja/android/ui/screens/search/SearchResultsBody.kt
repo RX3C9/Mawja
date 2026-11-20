@@ -37,8 +37,8 @@ import app.mawja.android.ui.components.search.SearchResultActions
 import app.mawja.android.ui.components.search.SearchResults
 import app.mawja.android.ui.components.search.SearchShortsGrid
 import app.mawja.android.ui.components.shared.FeedGridSkeleton
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowErrorState
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaErrorState
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsViewModel
 import app.mawja.android.utils.YouTubeLink
 import app.mawja.android.utils.parseYouTubeLink
@@ -132,14 +132,14 @@ internal fun ColumnScope.SearchResultsBody(
             }
 
             refreshState is LoadState.Error && pagingItems.itemCount == 0 -> {
-                FlowErrorState(
+                MawjaErrorState(
                     error = refreshState.error.localizedMessage ?: stringResource(R.string.search_failed),
                     onRetry = pagingItems::retry,
                 )
             }
 
             pagingItems.itemCount == 0 -> {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(filters.emptyResultsRes()),
                     icon = Icons.Rounded.Search,
                 )

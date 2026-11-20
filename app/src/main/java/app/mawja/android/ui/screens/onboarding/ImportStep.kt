@@ -38,7 +38,7 @@ import app.mawja.android.R
 import app.mawja.android.data.backup.BackupOperation
 import app.mawja.android.data.backup.ImportKind
 import app.mawja.android.data.backup.ImportSource
-import app.mawja.android.ui.components.shared.FlowProgressBanner
+import app.mawja.android.ui.components.shared.MawjaProgressBanner
 
 private val TileSpacing = 10.dp
 private val TilePadding = 16.dp
@@ -78,7 +78,7 @@ internal fun ImportStep(
             header()
             (importOperation as? BackupOperation.Running)?.let { running ->
                 item(key = "progress") {
-                    FlowProgressBanner(
+                    MawjaProgressBanner(
                         headline = running.headline,
                         current = running.current,
                         total = running.total,

@@ -15,7 +15,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingsPage
-import app.mawja.android.ui.components.shared.FlowSelectionRow
+import app.mawja.android.ui.components.shared.MawjaSelectionRow
 import app.mawja.android.widget.playlist.PlaylistWidgetConfig
 import app.mawja.android.widget.playlist.PlaylistWidgetSource
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ internal fun PlaylistConfigScreen(
         group(key = "playlist.choose", header = R.string.widget_config_playlist) {
             options.forEach { playlist ->
                 row("playlist.${playlist.id}") { shape ->
-                    FlowSelectionRow(
+                    MawjaSelectionRow(
                         title = playlist.name,
                         selected = playlist.id == current,
                         onClick = {

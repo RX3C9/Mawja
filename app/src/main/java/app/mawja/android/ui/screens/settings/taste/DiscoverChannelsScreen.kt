@@ -16,10 +16,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.R
 import app.mawja.android.ui.components.settings.SettingsListScope
 import app.mawja.android.ui.components.settings.SettingsPage
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowQuickSearchChips
-import app.mawja.android.ui.components.shared.FlowSearchField
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaQuickSearchChips
+import app.mawja.android.ui.components.shared.MawjaSearchField
 import app.mawja.android.ui.components.shared.MediaChannelSubscribeRow
 import app.mawja.android.utils.formatSubscriberCount
 
@@ -37,7 +37,7 @@ internal fun DiscoverChannelsScreen(
 
     SettingsPage(title = stringResource(R.string.discover_channels_title), onBack = onBack, highlight = highlight) {
         item("discover.search") {
-            FlowSearchField(
+            MawjaSearchField(
                 query = query,
                 onQueryChange = viewModel::onQueryChange,
                 placeholder = stringResource(R.string.onboarding_channels_search_placeholder),
@@ -49,7 +49,7 @@ internal fun DiscoverChannelsScreen(
         }
         if (state.quickSearches.isNotEmpty()) {
             item("discover.quick") {
-                FlowQuickSearchChips(searches = state.quickSearches, query = query, onQueryChange = viewModel::onQueryChange)
+                MawjaQuickSearchChips(searches = state.quickSearches, query = query, onQueryChange = viewModel::onQueryChange)
             }
         }
         if (query.isBlank()) suggestions(state, viewModel) else results(state, query, viewModel)
@@ -134,12 +134,12 @@ private fun SettingsListScope.results(
     val results = state.results
     when {
         results == null -> {
-            item("discover.loading") { FlowLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight)) }
+            item("discover.loading") { MawjaLoadingIndicator(Modifier.fillMaxWidth().height(LoadingHeight)) }
         }
 
         results.isEmpty() -> {
             item("discover.none") {
-                FlowEmptyState(
+                MawjaEmptyState(
                     title = stringResource(R.string.onboarding_channels_no_results, query),
                     icon = Icons.Outlined.PersonSearch,
                 )

@@ -7,7 +7,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3 of the License.
  *
- * This recommendation algorithm (FlowNeuroEngine) is the intellectual property
+ * This recommendation algorithm (MawjaNeuroEngine) is the intellectual property
  * of the Flow project. Any use of this code in other projects must
  * explicitly credit "Flow Android Client" and link back to the original repository.
  */
@@ -1283,7 +1283,7 @@ internal object NeuroScoring {
 
         totalScore += calculateChannelSignal(video, brain, p.userSubs)
 
-        totalScore += (p.coWatchPrior[video.channelId] ?: 0.0) * FlowNeuroEngine.COWATCH_MAX_PRIOR
+        totalScore += (p.coWatchPrior[video.channelId] ?: 0.0) * MawjaNeuroEngine.COWATCH_MAX_PRIOR
 
         totalScore += calculateSerendipity(noveltyScore, contextScore)
 

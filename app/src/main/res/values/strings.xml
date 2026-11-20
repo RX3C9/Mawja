@@ -1821,20 +1821,9 @@
     <string name="support_flow_dev_desc">Mawja is free and takes no donations. The best support is a star on GitHub or a bug report.</string>
     <string name="mawja_support_star">Star Mawja on GitHub</string>
     <string name="mawja_support_issue">Report a problem</string>
-    <string name="support_flow_open_collective">Support Mawja on Open Collective</string>
-    <string name="support_flow_patreon">Support Mawja on Patreon</string>
     <string name="thank_you_support_message">Thank you for your support! ❤️</string>
     <string name="address_copied_toast">Address copied to clipboard</string>
-    <string name="donation_address_clip_label">Donation Address</string>
     <!-- One-time support prompt -->
-    <string name="donation_prompt_title">Enjoying Mawja?</string>
-    <string name="donation_prompt_message">Mawja is free, open source and ad-free. If it earned a spot on your phone, a little support keeps it going.</string>
-    <string name="donation_method_open_collective" translatable="false">Open Collective</string>
-    <string name="donation_method_patreon" translatable="false">Patreon</string>
-    <string name="donation_prompt_methods">Open Collective · Patreon · Bitcoin · Ethereum · Solana · USDT · Monero</string>
-    <string name="donation_prompt_support">Support development</string>
-    <string name="donation_prompt_later">Maybe later</string>
-    <string name="donation_prompt_never">Don\'t show again</string>
     <!-- About Screen -->
     <string name="about_creator">Creator</string>
     <string name="about_creator_name">Omar Mahmoud</string>
@@ -3525,7 +3514,6 @@
     <string name="settings_search_no_results">No settings found for "%1$s"</string>
     <string name="settings_lyrics_provider_order_description">Tried from top to bottom. Drag to reorder.</string>
     <string name="import_running_background">You can leave this screen. The import keeps running.</string>
-    <string name="donations_cryptocurrency">CRYPTOCURRENCY</string>
     <string name="import_no_history_entries">No watch-history entries found in file</string>
     <string name="import_no_videos">No videos found in playlist file</string>
     <string name="import_no_likes">No likes found. Export My Activity for YouTube as JSON, with your Google account in English.</string>
@@ -3800,11 +3788,6 @@
     <string name="diagnostics_snapshot_exported">Snapshot exported</string>
     <string name="diagnostics_snapshot_export_failed">Couldn\'t export the snapshot</string>
     <string name="settings_keywords_diagnostics">logs, crash, bug report, debug, support, logcat</string>
-    <string name="donation_currency_bitcoin" translatable="false">Bitcoin</string>
-    <string name="donation_currency_ethereum" translatable="false">Ethereum</string>
-    <string name="donation_currency_solana" translatable="false">Solana</string>
-    <string name="donation_currency_usdt" translatable="false">USDT (TRC-20)</string>
-    <string name="donation_currency_monero" translatable="false">Monero</string>
     <string name="settings_keywords_about">version, license, open source, github, reddit, contact, changelog</string>
     <string name="settings_changelog_version">Version %1$s</string>
     <string name="settings_changelog_installed">Installed</string>
@@ -5024,4 +5007,35 @@
     <string name="qr_camera_unavailable">The camera isn\'t available on this device. Use the sync code instead.</string>
     <string name="settings_backup_mirrors_title">Backup servers</string>
     <string name="settings_backup_mirrors_summary">If YouTube refuses to play (it sometimes blocks VPNs and shared networks), play through public Invidious servers instead. Only the video ID is sent to them; YouTube never sees your address.</string>
+    <string name="lab_title">Mawja Lab</string>
+    <string name="lab_summary">A feed that follows your mood and a gentle time guardian</string>
+    <string name="lab_keywords">lab, mood, focus, calm, laugh, learn, guardian, break, wellbeing, autoplay</string>
+    <string name="lab_section_feed">Your feed</string>
+    <string name="lab_mood">Mood</string>
+    <string name="lab_mood_summary">Leans Home towards a mood without hiding anything</string>
+    <string name="lab_mood_off">Off</string>
+    <string name="lab_mood_focus">Focus</string>
+    <string name="lab_mood_laugh">Laugh</string>
+    <string name="lab_mood_learn">Learn</string>
+    <string name="lab_mood_calm">Calm</string>
+    <string name="lab_guardian">Time guardian</string>
+    <string name="lab_guardian_summary">Suggests a break when videos keep autoplaying without you choosing</string>
+    <string name="lab_guardian_title">Time for a breather?</string>
+    <string name="lab_guardian_message">A few videos played on their own in a row. Keep going, or take a short break?</string>
+    <string name="lab_guardian_continue">Keep watching</string>
+    <string name="lab_guardian_break">Take a break</string>
+    <string name="lab_budget_title">I have a few minutes</string>
+    <string name="lab_budget_message">Pick your time and Mawja lines up the best videos from your feed that fit it.</string>
+    <string name="lab_budget_minutes">%1$d minutes</string>
+    <string name="lab_budget_mix_title">Your %1$d minutes</string>
+    <string name="lab_budget_empty">Nothing in your feed fits that time yet</string>
+    <string name="lab_surprise_title">Surprise me</string>
+    <string name="lab_section_stats">Your week on Mawja</string>
+    <string name="lab_stats_minutes">Watched this week</string>
+    <string name="lab_stats_minutes_value">About %1$d min across %2$d videos</string>
+    <string name="lab_stats_average">Daily average</string>
+    <string name="lab_stats_average_value">%1$d min a day</string>
+    <string name="lab_stats_top_channel">Most watched channel</string>
+    <string name="lab_stats_mix">Music and Shorts</string>
+    <string name="lab_stats_mix_value">%1$d%% music, %2$d%% Shorts</string>
 </resources>

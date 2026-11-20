@@ -35,7 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mawja.android.data.backup.BackupOperation
 import app.mawja.android.data.backup.ImportKind
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 import app.mawja.android.ui.utils.LocalWindowSizeClass
 import app.mawja.android.ui.utils.isExpandedWidth
 import kotlinx.coroutines.launch
@@ -126,7 +126,7 @@ fun OnboardingScreen(
                 val besideList = LocalWindowSizeClass.current.isExpandedWidth && state.step.showsProgress
                 Box(Modifier.fillMaxWidth(), contentAlignment = if (besideList) Alignment.CenterEnd else Alignment.Center) {
                     OnboardingBottomBar(
-                        modifier = Modifier.widthIn(max = FlowMaxContentWidth),
+                        modifier = Modifier.widthIn(max = MawjaMaxContentWidth),
                         state = state,
                         onBack = { viewModel.back() },
                         onNext = {

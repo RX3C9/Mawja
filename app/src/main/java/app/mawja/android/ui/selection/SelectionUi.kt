@@ -27,7 +27,7 @@ import app.mawja.android.R
 import app.mawja.android.data.model.Video
 import app.mawja.android.ui.components.shared.CollectionEditDialog
 import app.mawja.android.ui.components.shared.CollectionTarget
-import app.mawja.android.ui.components.shared.FlowSelectionAction
+import app.mawja.android.ui.components.shared.MawjaSelectionAction
 import app.mawja.android.ui.components.shared.MergeIntoCollectionSheet
 import app.mawja.android.ui.components.shared.quickactions.QuickActionsViewModel
 import app.mawja.android.ui.components.shared.quickactions.sharedQuickActionsViewModel
@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 fun rememberSelectionActions(
     videos: () -> List<Video>,
     onDone: () -> Unit,
-    delete: FlowSelectionAction? = null,
+    delete: MawjaSelectionAction? = null,
     more: (() -> Unit)? = null,
     count: Int,
     offerDownload: Boolean = true,
@@ -58,7 +58,7 @@ fun rememberSelectionActions(
     val list =
         buildList {
             add(
-                FlowSelectionAction(Icons.AutoMirrored.Outlined.PlaylistPlay, playNextLabel) {
+                MawjaSelectionAction(Icons.AutoMirrored.Outlined.PlaylistPlay, playNextLabel) {
                     val picked = videos()
                     if (picked.isNotEmpty()) {
                         actions.playNext(picked)
@@ -68,13 +68,13 @@ fun rememberSelectionActions(
                 },
             )
             add(
-                FlowSelectionAction(Icons.AutoMirrored.Outlined.PlaylistAdd, addLabel) {
+                MawjaSelectionAction(Icons.AutoMirrored.Outlined.PlaylistAdd, addLabel) {
                     val picked = videos().filterNot { app.mawja.android.data.localmedia.LocalMediaIds.isLocal(it.id) }
                     if (picked.isNotEmpty()) addTargets = picked
                 },
             )
             if (offerDownload) add(
-                FlowSelectionAction(Icons.Outlined.Download, downloadLabel) {
+                MawjaSelectionAction(Icons.Outlined.Download, downloadLabel) {
                     val picked = videos().filterNot { app.mawja.android.data.localmedia.LocalMediaIds.isLocal(it.id) }
                     if (picked.isNotEmpty()) {
                         actions.download(picked)
@@ -84,7 +84,7 @@ fun rememberSelectionActions(
                 },
             )
             if (delete != null) add(delete)
-            if (more != null && count == 1) add(FlowSelectionAction(Icons.Outlined.MoreVert, moreLabel, more))
+            if (more != null && count == 1) add(MawjaSelectionAction(Icons.Outlined.MoreVert, moreLabel, more))
         }
     return SelectionActionsState(
         actions = list,
@@ -107,7 +107,7 @@ fun rememberSelectionActions(
 
 /** What [rememberSelectionActions] gives a screen: the toolbar buttons and the sheet to place once. */
 class SelectionActionsState(
-    val actions: List<FlowSelectionAction>,
+    val actions: List<MawjaSelectionAction>,
     val sheet: @Composable () -> Unit,
 )
 
@@ -166,4 +166,4 @@ private fun BulkAddToPlaylistSheet(
 fun deleteSelectionAction(
     label: String,
     onClick: () -> Unit,
-): FlowSelectionAction = FlowSelectionAction(Icons.Outlined.Delete, label, onClick)
+): MawjaSelectionAction = MawjaSelectionAction(Icons.Outlined.Delete, label, onClick)

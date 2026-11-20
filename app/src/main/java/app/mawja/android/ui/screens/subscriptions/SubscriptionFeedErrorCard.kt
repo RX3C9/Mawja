@@ -26,7 +26,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.utils.FlowDiagnostics
+import app.mawja.android.utils.MawjaDiagnostics
 import app.mawja.android.utils.copyPlainText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -107,12 +107,12 @@ internal fun SubscriptionFeedErrorCard(
                             val report =
                                 withContext(Dispatchers.IO) {
                                     buildSubscriptionFailureReport(
-                                        deviceInfo = FlowDiagnostics.buildDeviceInfo(context),
+                                        deviceInfo = MawjaDiagnostics.buildDeviceInfo(context),
                                         failedChannelNames = failedChannelNames,
                                         failedChannelIds = failedChannelIds,
                                         failedChannelReasons = failedChannelReasons,
                                         sessionLogs =
-                                            FlowDiagnostics.readSessionLogs(SUBSCRIPTION_FAILURE_LOG_LINES),
+                                            MawjaDiagnostics.readSessionLogs(SUBSCRIPTION_FAILURE_LOG_LINES),
                                     )
                                 }
                             clipboard.copyPlainText(

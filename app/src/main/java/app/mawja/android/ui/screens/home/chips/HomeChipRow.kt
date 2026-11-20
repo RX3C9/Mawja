@@ -21,7 +21,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowFilterChip
+import app.mawja.android.ui.components.shared.MawjaFilterChip
 import kotlin.math.roundToInt
 
 private val ChipRowHeight = 48.dp
@@ -62,7 +62,7 @@ internal fun HomeChipRow(
         items(state.chips, key = { it.key }) { chip ->
             val label = chip.label()
             val description = stringResource(R.string.home_chip_description, label)
-            FlowFilterChip(
+            MawjaFilterChip(
                 label = label,
                 selected = chip.key == state.selected,
                 onClick = { onSelect(chip.key) },

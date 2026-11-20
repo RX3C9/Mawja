@@ -35,7 +35,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowAlertDialog
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
 import app.mawja.android.ui.theme.SponsorBlockSegmentPresets
 import app.mawja.android.utils.sponsorCategoryLabelRes
 
@@ -56,7 +56,7 @@ internal fun IntegrationsDialogs(
     when (dialog) {
         IntegrationsDialog.USER_ID -> {
             var input by rememberSaveable { mutableStateOf(userId.orEmpty()) }
-            FlowAlertDialog(
+            MawjaAlertDialog(
                 onDismissRequest = onDismiss,
                 title = { Text(stringResource(R.string.sb_user_id_dialog_title)) },
                 text = {
@@ -81,7 +81,7 @@ internal fun IntegrationsDialogs(
         }
 
         IntegrationsDialog.DISCORD_RISK -> {
-            FlowAlertDialog(
+            MawjaAlertDialog(
                 onDismissRequest = onDismiss,
                 title = { Text(stringResource(R.string.discord_presence_risk_dialog_title)) },
                 text = { Text(stringResource(R.string.discord_presence_risk_dialog_body)) },
@@ -110,7 +110,7 @@ internal fun SegmentColourDialog(
     onDismiss: () -> Unit,
 ) {
     val label = sponsorCategoryLabelRes(category)?.let { stringResource(it) } ?: category
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.sb_color_picker_title)) },
         text = {

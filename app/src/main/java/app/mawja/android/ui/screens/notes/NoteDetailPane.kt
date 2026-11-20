@@ -58,11 +58,11 @@ import app.mawja.android.data.ratings.RatingSubject
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
 import app.mawja.android.ui.components.shared.ChannelAvatarImage
 import app.mawja.android.ui.components.shared.DurationBadge
-import app.mawja.android.ui.components.shared.FlowActionButtonPair
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowPairAction
-import app.mawja.android.ui.components.shared.FlowRowGroup
-import app.mawja.android.ui.components.shared.FlowSectionHeader
+import app.mawja.android.ui.components.shared.MawjaActionButtonPair
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaPairAction
+import app.mawja.android.ui.components.shared.MawjaRowGroup
+import app.mawja.android.ui.components.shared.MawjaSectionHeader
 import app.mawja.android.ui.components.shared.VideoThumbnailImage
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import app.mawja.android.ui.components.shared.rememberNoteText
@@ -74,7 +74,7 @@ private val TwoColumnMinWidth = 720.dp
 private val ChannelAvatarLarge = 96.dp
 private val ChannelAvatarSmall = 36.dp
 
-/** [FlowRowGroup] insets its rows by this much, so everything else in the pane does too. */
+/** [MawjaRowGroup] insets its rows by this much, so everything else in the pane does too. */
 private val ContentInset = 12.dp
 
 /**
@@ -128,15 +128,15 @@ private fun NoteSubjectHeader(
     val channelId = if (isVideo) note.subject?.channelId?.takeIf { it.isNotBlank() } else note.targetId
     Column(modifier = Modifier.padding(horizontal = ContentInset), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         if (isVideo) VideoHero(note, onPlay, onOpenChannel) else ChannelHero(note)
-        val edit = FlowPairAction(Icons.Outlined.EditNote, stringResource(R.string.note_edit), onEdit)
+        val edit = MawjaPairAction(Icons.Outlined.EditNote, stringResource(R.string.note_edit), onEdit)
         when {
             isVideo -> {
-                FlowActionButtonPair(FlowPairAction(Icons.Rounded.PlayArrow, stringResource(R.string.resume)) { onPlay(null) }, edit)
+                MawjaActionButtonPair(MawjaPairAction(Icons.Rounded.PlayArrow, stringResource(R.string.resume)) { onPlay(null) }, edit)
             }
 
             channelId != null -> {
-                FlowActionButtonPair(
-                    FlowPairAction(Icons.Rounded.AccountCircle, stringResource(R.string.note_open_channel)) { onOpenChannel(channelId) },
+                MawjaActionButtonPair(
+                    MawjaPairAction(Icons.Rounded.AccountCircle, stringResource(R.string.note_open_channel)) { onOpenChannel(channelId) },
                     edit,
                 )
             }
@@ -301,11 +301,11 @@ private fun ColumnScope.NoteBody(
     onPlay: (Long?) -> Unit,
 ) {
     if (moments.isNotEmpty()) {
-        FlowSectionHeader(stringResource(R.string.note_timestamps))
-        FlowRowGroup {
+        MawjaSectionHeader(stringResource(R.string.note_timestamps))
+        MawjaRowGroup {
             moments.forEachIndexed { index, moment ->
                 val time = formatDurationMillis(moment.positionMs)
-                FlowNavRow(
+                MawjaNavRow(
                     title = moment.label.ifBlank { time },
                     onClick = { onPlay(moment.positionMs) },
                     shape = flowRowGroupShape(index, moments.size),
@@ -320,7 +320,7 @@ private fun ColumnScope.NoteBody(
             }
         }
     }
-    FlowSectionHeader(stringResource(R.string.note_title))
+    MawjaSectionHeader(stringResource(R.string.note_title))
     Surface(
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,

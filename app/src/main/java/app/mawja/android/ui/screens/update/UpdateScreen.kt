@@ -58,11 +58,11 @@ import app.mawja.android.R
 import app.mawja.android.data.update.AppRelease
 import app.mawja.android.data.update.AppVersions
 import app.mawja.android.data.update.UpdateFailure
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
-import app.mawja.android.ui.components.shared.FlowLogo
-import app.mawja.android.ui.components.shared.FlowMaxContentWidth
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaLogo
+import app.mawja.android.ui.components.shared.MawjaMaxContentWidth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -93,7 +93,7 @@ fun UpdateScreen(
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
-            FlowTopBar(
+            MawjaTopBar(
                 title = "",
                 onBack = onClose,
                 actions = {
@@ -128,16 +128,16 @@ fun UpdateScreen(
         Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.TopCenter) {
             when {
                 state.loading -> {
-                    FlowLoadingIndicator()
+                    MawjaLoadingIndicator()
                 }
 
                 release == null -> {
-                    FlowEmptyState(title = stringResource(R.string.flow_is_up_to_date), icon = Icons.Outlined.Verified)
+                    MawjaEmptyState(title = stringResource(R.string.flow_is_up_to_date), icon = Icons.Outlined.Verified)
                 }
 
                 else -> {
                     LazyColumn(
-                        modifier = Modifier.widthIn(max = FlowMaxContentWidth).fillMaxWidth(),
+                        modifier = Modifier.widthIn(max = MawjaMaxContentWidth).fillMaxWidth(),
                         contentPadding = ContentPadding,
                     ) {
                         item(key = "header") { ReleaseHeader(release) }
@@ -160,7 +160,7 @@ private fun ReleaseHeader(release: AppRelease) {
             color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.size(HeroSize),
         ) {
-            Box(contentAlignment = Alignment.Center) { FlowLogo(Modifier.width(HeroLogoWidth)) }
+            Box(contentAlignment = Alignment.Center) { MawjaLogo(Modifier.width(HeroLogoWidth)) }
         }
         Text(
             text = stringResource(R.string.update_title, release.version),

@@ -21,9 +21,9 @@ import app.mawja.android.player.EnhancedPlayerManager
 import app.mawja.android.player.EnhancedPlayerState
 import app.mawja.android.player.SleepTimerManager
 import app.mawja.android.ui.components.shared.CommentSortFilter
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowCommentsBottomSheet
-import app.mawja.android.ui.components.videoplayer.sheet.FlowLiveChatBottomSheet
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaCommentsBottomSheet
+import app.mawja.android.ui.components.videoplayer.sheet.MawjaLiveChatBottomSheet
 import app.mawja.android.ui.screens.player.VideoPlayerViewModel
 import app.mawja.android.ui.screens.player.state.PlayerCommentsUiState
 import app.mawja.android.ui.screens.player.state.PlayerScreenState
@@ -72,7 +72,7 @@ internal fun PlayerBottomSheetsContainer(
 
     // Comments Bottom Sheet
     if (screenState.activeSheet == PlayerSheet.Comments() && commentsEnabled && !hostedInSidePanel) {
-        FlowCommentsBottomSheet(
+        MawjaCommentsBottomSheet(
             comments = visibleComments,
             isLoading = commentsUiState.isLoading,
             selectedFilter = screenState.commentSortFilter,
@@ -99,7 +99,7 @@ internal fun PlayerBottomSheetsContainer(
     }
 
     if (screenState.activeSheet == PlayerSheet.LiveChat() && uiState.isLiveChatAvailable) {
-        FlowLiveChatBottomSheet(
+        MawjaLiveChatBottomSheet(
             messages = uiState.liveChatMessages,
             isLoading = uiState.isLiveChatLoading,
             expandedHeight = mediaSheetExpandedHeight,
@@ -200,7 +200,7 @@ private fun ShortsSuggestionDialog(
     onPlayAsShort: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         icon = { Icon(Icons.Outlined.SmartDisplay, null) },
         title = {

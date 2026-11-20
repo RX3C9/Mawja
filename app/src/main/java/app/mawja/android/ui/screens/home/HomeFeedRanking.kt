@@ -1,7 +1,7 @@
 package app.mawja.android.ui.screens.home
 
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.data.recommendation.UserBrain
 import kotlinx.coroutines.flow.map
 
@@ -36,15 +36,15 @@ internal data class FeedTasteProfile(
 
 internal fun feedTasteProfile(
     brain: UserBrain,
-    persona: FlowPersona,
+    persona: MawjaPersona,
 ): FeedTasteProfile {
     val comfort =
         when (persona) {
-            FlowPersona.DEEP_DIVER, FlowPersona.SCHOLAR,
-            FlowPersona.BINGER, FlowPersona.AUDIOPHILE,
+            MawjaPersona.DEEP_DIVER, MawjaPersona.SCHOLAR,
+            MawjaPersona.BINGER, MawjaPersona.AUDIOPHILE,
             -> 0
 
-            FlowPersona.SKIMMER -> DURATION_COMFORT_SKIMMER_SEC
+            MawjaPersona.SKIMMER -> DURATION_COMFORT_SKIMMER_SEC
 
             else -> DURATION_COMFORT_DEFAULT_SEC
         }

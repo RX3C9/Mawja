@@ -51,15 +51,15 @@ import app.mawja.android.data.music.model.MusicTrack
 import app.mawja.android.data.shorts.queue.ShortsQueueSource
 import app.mawja.android.ui.components.layout.LocalFlowBottomInsets
 import app.mawja.android.ui.components.layout.floatAboveBottomChrome
-import app.mawja.android.ui.components.layout.topbar.FlowTopBar
-import app.mawja.android.ui.components.layout.topbar.FlowTopBarMenuItem
-import app.mawja.android.ui.components.layout.topbar.FlowTopBarOverflow
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBar
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBarMenuItem
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBarOverflow
 import app.mawja.android.ui.components.library.HistoryFilterRow
 import app.mawja.android.ui.components.library.HistoryList
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowEmptyState
-import app.mawja.android.ui.components.shared.FlowSearchField
-import app.mawja.android.ui.components.shared.FlowSelectionToolbar
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaEmptyState
+import app.mawja.android.ui.components.shared.MawjaSearchField
+import app.mawja.android.ui.components.shared.MawjaSelectionToolbar
 import app.mawja.android.ui.components.music.sheet.LocalMusicMenus
 import app.mawja.android.ui.components.shared.quickactions.VideoQuickActionsBottomSheet
 import app.mawja.android.ui.components.shared.showUndoSnackbar
@@ -152,7 +152,7 @@ fun HistoryScreen(
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             if (selection.active) {
-                FlowTopBar(
+                MawjaTopBar(
                     title = pluralStringResource(R.plurals.selected_count_template, selection.count, selection.count),
                     onBack = { selection = selection.clear() },
                     actions = {
@@ -166,16 +166,16 @@ fun HistoryScreen(
                     },
                 )
             } else {
-            FlowTopBar(
+            MawjaTopBar(
                 title = stringResource(R.string.library_history_label),
                 onBack = onBackClick,
                 actions = {
-                    FlowTopBarOverflow(
+                    MawjaTopBarOverflow(
                         items =
                             buildList {
                                 if (uiState.shortsEnabled) {
                                     add(
-                                        FlowTopBarMenuItem(
+                                        MawjaTopBarMenuItem(
                                             label = stringResource(R.string.history_delete_shorts),
                                             enabled = uiState.historyEntries.any { it.isShort },
                                             onClick = { showClearShortsDialog = true },
@@ -183,7 +183,7 @@ fun HistoryScreen(
                                     )
                                 }
                                 add(
-                                    FlowTopBarMenuItem(
+                                    MawjaTopBarMenuItem(
                                         label = stringResource(R.string.clear_all),
                                         enabled = uiState.historyEntries.isNotEmpty(),
                                         onClick = { showClearDialog = true },
@@ -207,7 +207,7 @@ fun HistoryScreen(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues),
         ) {
-            FlowSearchField(
+            MawjaSearchField(
                 query = searchQuery,
                 onQueryChange = viewModel::setSearchQuery,
                 placeholder = stringResource(R.string.search_watch_history),
@@ -258,7 +258,7 @@ fun HistoryScreen(
                 }
 
                 displayEntries.isEmpty() -> {
-                    FlowEmptyState(
+                    MawjaEmptyState(
                         modifier = Modifier.fillMaxSize(),
                         title =
                             if (uiState.historyEntries.isEmpty()) {
@@ -293,7 +293,7 @@ fun HistoryScreen(
             }
         }
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.BottomCenter) {
-            FlowSelectionToolbar(
+            MawjaSelectionToolbar(
                 visible = selection.active && selection.count > 0,
                 summary = pluralStringResource(R.plurals.selected_count_template, selection.count, selection.count),
                 actions = selectionActions.actions,
@@ -311,7 +311,7 @@ fun HistoryScreen(
     }
 
     if (showClearDialog) {
-        FlowAlertDialog(
+        MawjaAlertDialog(
             onDismissRequest = { showClearDialog = false },
             title = { Text(stringResource(R.string.clear_watch_history_alert_title)) },
             text = { Text(stringResource(R.string.clear_watch_history_alert_body)) },
@@ -334,7 +334,7 @@ fun HistoryScreen(
     }
 
     if (showClearShortsDialog) {
-        FlowAlertDialog(
+        MawjaAlertDialog(
             onDismissRequest = { showClearShortsDialog = false },
             title = { Text(stringResource(R.string.history_delete_shorts_title)) },
             text = { Text(stringResource(R.string.history_delete_shorts_body)) },

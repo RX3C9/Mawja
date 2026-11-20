@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowAlertDialog
-import app.mawja.android.ui.components.shared.FlowChoice
-import app.mawja.android.ui.components.shared.FlowChoiceDialog
-import app.mawja.android.ui.components.shared.FlowNavRow
+import app.mawja.android.ui.components.shared.MawjaAlertDialog
+import app.mawja.android.ui.components.shared.MawjaChoice
+import app.mawja.android.ui.components.shared.MawjaChoiceDialog
+import app.mawja.android.ui.components.shared.MawjaNavRow
 import app.mawja.android.ui.theme.CustomTheme
 import app.mawja.android.ui.theme.ThemeCatalog
 import app.mawja.android.ui.theme.ThemeCatalogEntry
@@ -46,7 +46,7 @@ internal fun ThemeNameDialog(
     var pickingBase by rememberSaveable { mutableStateOf(false) }
     val trimmed = name.trim()
 
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
@@ -59,7 +59,7 @@ internal fun ThemeNameDialog(
                     modifier = Modifier.fillMaxWidth(),
                 )
                 if (palettes != null) {
-                    FlowNavRow(
+                    MawjaNavRow(
                         title = stringResource(R.string.settings_custom_theme_start_from),
                         supportingText = stringResource(ThemeCatalog.nameRes(base)),
                         leadingIcon = Icons.Outlined.Palette,
@@ -76,9 +76,9 @@ internal fun ThemeNameDialog(
     )
 
     if (pickingBase && palettes != null) {
-        FlowChoiceDialog(
+        MawjaChoiceDialog(
             title = stringResource(R.string.settings_custom_theme_start_from),
-            options = palettes.map { FlowChoice(it.mode, stringResource(it.nameRes), stringResource(it.descriptionRes)) },
+            options = palettes.map { MawjaChoice(it.mode, stringResource(it.nameRes), stringResource(it.descriptionRes)) },
             selected = base,
             onSelect = { base = it },
             onDismiss = { pickingBase = false },
@@ -92,7 +92,7 @@ internal fun DeleteThemeDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    FlowAlertDialog(
+    MawjaAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.settings_custom_theme_delete_title, name)) },
         text = { Text(stringResource(R.string.settings_custom_theme_delete_body)) },

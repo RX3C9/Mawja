@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
-import app.mawja.android.ui.components.shared.FlowRowGroup
+import app.mawja.android.ui.components.shared.MawjaRowGroup
 import app.mawja.android.ui.components.shared.flowRowGroupShape
 import java.text.DecimalFormat
 import kotlin.math.abs
@@ -38,7 +38,7 @@ internal fun SubtitleTimingCard(
     modifier: Modifier = Modifier,
 ) {
     val haptics = LocalHapticFeedback.current
-    FlowRowGroup(modifier = modifier) {
+    MawjaRowGroup(modifier = modifier) {
         Surface(
             shape = flowRowGroupShape(0, 1),
             color = MaterialTheme.colorScheme.surfaceContainerHigh,

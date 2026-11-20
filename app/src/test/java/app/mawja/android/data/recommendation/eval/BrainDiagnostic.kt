@@ -7,7 +7,7 @@
 
 package app.mawja.android.data.recommendation.eval
 
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.data.recommendation.NeuroClusters
 import app.mawja.android.data.recommendation.NeuroDiscovery
 import app.mawja.android.data.recommendation.NeuroMaintenance
@@ -104,7 +104,7 @@ internal object BrainDiagnostic {
         val brain = NeuroMaintenance.runIfNeeded(rawBrain, tokenizer)
         val discovery = NeuroDiscovery(NeuroTopicCatalog.TOPIC_CATEGORIES, tokenizer)
         val persona =
-            FlowPersona.entries.find { it.name == brain.lastPersona } ?: FlowPersona.EXPLORER
+            MawjaPersona.entries.find { it.name == brain.lastPersona } ?: MawjaPersona.EXPLORER
 
         // ── Clusters, exactly as production builds them ──
         val clusters =

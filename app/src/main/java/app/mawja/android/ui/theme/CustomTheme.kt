@@ -48,7 +48,7 @@ data class CustomTheme(
         fun from(
             id: String,
             name: String,
-            base: PalettePair = FlowPalettes.default,
+            base: PalettePair = MawjaPalettes.default,
         ): CustomTheme =
             CustomTheme(
                 id = id,

@@ -1,7 +1,7 @@
 package app.mawja.android.ui.tv.navigation
 
 import com.google.common.truth.Truth.assertThat
-import app.mawja.android.ui.components.layout.navigation.FlowTab
+import app.mawja.android.ui.components.layout.navigation.MawjaTab
 import app.mawja.android.ui.components.layout.navigation.NavigationVisibility
 import org.junit.Test
 
@@ -10,40 +10,40 @@ class TvTabsTest {
 
     @Test
     fun `follows the user's order and leaves Shorts and Explore off`() {
-        val order = listOf(FlowTab.Library, FlowTab.Shorts, FlowTab.Music, FlowTab.Explore, FlowTab.Home).map(FlowTab::id)
+        val order = listOf(MawjaTab.Library, MawjaTab.Shorts, MawjaTab.Music, MawjaTab.Explore, MawjaTab.Home).map(MawjaTab::id)
 
-        val tabs = tvNavigation(order, defaultTabId = FlowTab.Home.id, visibility = allOn).tabs
+        val tabs = tvNavigation(order, defaultTabId = MawjaTab.Home.id, visibility = allOn).tabs
 
-        assertThat(tabs.take(3)).containsExactly(FlowTab.Library, FlowTab.Music, FlowTab.Home).inOrder()
-        assertThat(tabs).containsNoneOf(FlowTab.Shorts, FlowTab.Explore)
+        assertThat(tabs.take(3)).containsExactly(MawjaTab.Library, MawjaTab.Music, MawjaTab.Home).inOrder()
+        assertThat(tabs).containsNoneOf(MawjaTab.Shorts, MawjaTab.Explore)
     }
 
     @Test
     fun `always shows Search, which TV has nowhere else to put`() {
-        val tabs = tvNavigation(emptyList(), FlowTab.Home.id, NavigationVisibility(search = false)).tabs
+        val tabs = tvNavigation(emptyList(), MawjaTab.Home.id, NavigationVisibility(search = false)).tabs
 
-        assertThat(tabs).contains(FlowTab.Search)
+        assertThat(tabs).contains(MawjaTab.Search)
     }
 
     @Test
     fun `hides the tabs the user hid`() {
-        val tabs = tvNavigation(emptyList(), FlowTab.Home.id, NavigationVisibility(home = false, music = false)).tabs
+        val tabs = tvNavigation(emptyList(), MawjaTab.Home.id, NavigationVisibility(home = false, music = false)).tabs
 
-        assertThat(tabs).containsNoneOf(FlowTab.Home, FlowTab.Music)
+        assertThat(tabs).containsNoneOf(MawjaTab.Home, MawjaTab.Music)
     }
 
     @Test
     fun `opens on the user's default tab, or the first tab when TV leaves it off`() {
-        assertThat(tvNavigation(emptyList(), FlowTab.Library.id, allOn).startTab).isEqualTo(FlowTab.Library)
+        assertThat(tvNavigation(emptyList(), MawjaTab.Library.id, allOn).startTab).isEqualTo(MawjaTab.Library)
 
-        val fromShorts = tvNavigation(emptyList(), FlowTab.Shorts.id, allOn)
+        val fromShorts = tvNavigation(emptyList(), MawjaTab.Shorts.id, allOn)
         assertThat(fromShorts.startTab).isEqualTo(fromShorts.tabs.first())
     }
 
     @Test
     fun `roots are the tabs plus Settings`() {
-        val navigation = tvNavigation(emptyList(), FlowTab.Home.id, allOn)
+        val navigation = tvNavigation(emptyList(), MawjaTab.Home.id, allOn)
 
-        assertThat(navigation.rootRoutes).containsExactlyElementsIn(navigation.tabs.map(FlowTab::route) + TV_SETTINGS_ROUTE)
+        assertThat(navigation.rootRoutes).containsExactlyElementsIn(navigation.tabs.map(MawjaTab::route) + TV_SETTINGS_ROUTE)
     }
 }

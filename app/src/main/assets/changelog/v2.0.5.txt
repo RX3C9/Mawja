@@ -20,7 +20,7 @@ FEATURES
 - Add new category screen toggle #218
 
 IMPROVEMENTS
-- FlowNeuroEngine modularization
+- MawjaNeuroEngine modularization
 - Smarter Discovery Query Generation
 - Improved content tokenization - Domain based
 - Tuned engine learning rates

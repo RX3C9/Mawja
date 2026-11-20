@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import app.mawja.android.R
-import app.mawja.android.ui.components.layout.topbar.FlowTopBarDefaults
+import app.mawja.android.ui.components.layout.topbar.MawjaTopBarDefaults
 import app.mawja.android.ui.components.shared.dpadDownTo
 import app.mawja.android.ui.theme.ArtworkScrimAffordance
 import app.mawja.android.ui.theme.ArtworkScrimContent
@@ -71,7 +71,7 @@ fun MusicHeroTopBar(
             AnimatedVisibility(visible = showTitle, enter = fadeIn(), exit = fadeOut()) {
                 Text(
                     text = title,
-                    style = FlowTopBarDefaults.titleStyle,
+                    style = MawjaTopBarDefaults.titleStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )

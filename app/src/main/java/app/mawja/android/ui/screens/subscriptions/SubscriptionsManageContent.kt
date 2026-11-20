@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.data.model.Channel
 import app.mawja.android.ui.components.layout.flowBottomContentPadding
-import app.mawja.android.ui.components.shared.FlowConnectedToggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaConnectedToggleGroup
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 
 private val ContentHorizontalPadding = 16.dp
 private val SelectorVerticalPadding = 8.dp
@@ -86,15 +86,15 @@ internal fun SubscriptionsManageContent(
         }
 
     Column(modifier = modifier.fillMaxSize()) {
-        FlowConnectedToggleGroup(
+        MawjaConnectedToggleGroup(
             options =
                 listOf(
-                    FlowToggleOption(
+                    MawjaToggleOption(
                         value = 0,
                         label = stringResource(R.string.subscriptions_video_section_title),
                         icon = Icons.Default.OndemandVideo,
                     ),
-                    FlowToggleOption(
+                    MawjaToggleOption(
                         value = 1,
                         label = stringResource(R.string.subscriptions_music_section_title),
                         icon = Icons.Default.MusicNote,

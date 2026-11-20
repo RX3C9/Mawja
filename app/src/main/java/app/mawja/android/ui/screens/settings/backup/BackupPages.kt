@@ -27,7 +27,7 @@ import app.mawja.android.ui.components.settings.nav
 import app.mawja.android.ui.components.settings.notice
 import app.mawja.android.ui.components.settings.option
 import app.mawja.android.ui.components.settings.toggleGroup
-import app.mawja.android.ui.components.shared.FlowToggleOption
+import app.mawja.android.ui.components.shared.MawjaToggleOption
 import app.mawja.android.ui.screens.settings.index.BackupIndex
 
 internal fun SettingsListScope.exportPage(onExport: (ExportKind) -> Unit) {
@@ -58,7 +58,7 @@ internal class AutoBackupState(
     val noFolderLabel: String,
     val lastRun: String?,
     val running: Boolean,
-    val frequencyOptions: List<FlowToggleOption<AutoBackupFrequency>>,
+    val frequencyOptions: List<MawjaToggleOption<AutoBackupFrequency>>,
     val typeLabels: Map<AutoBackupType, String>,
 )
 

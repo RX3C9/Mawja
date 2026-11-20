@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mawja.android.R
 import app.mawja.android.innertube.pages.renderer.CommunityPost
-import app.mawja.android.ui.components.shared.FlowFeedProgress
-import app.mawja.android.ui.components.shared.FlowLoadingIndicator
+import app.mawja.android.ui.components.shared.MawjaFeedProgress
+import app.mawja.android.ui.components.shared.MawjaLoadingIndicator
 import app.mawja.android.ui.screens.channel.ChannelRequestErrorState
 
 @Composable
@@ -47,7 +47,7 @@ internal fun ChannelCommunityPosts(
         when {
             isLoading && posts.isEmpty() -> {
                 item(key = "posts_loading") {
-                    FlowLoadingIndicator(modifier = Modifier.fillParentMaxSize())
+                    MawjaLoadingIndicator(modifier = Modifier.fillParentMaxSize())
                 }
             }
 
@@ -102,7 +102,7 @@ internal fun ChannelCommunityPosts(
                     item(key = "posts_load_more") {
                         LaunchedEffect(posts.size) { onLoadMore() }
                         if (isLoadingMore) {
-                            FlowFeedProgress()
+                            MawjaFeedProgress()
                         } else {
                             Spacer(Modifier.height(16.dp))
                         }

@@ -46,9 +46,9 @@ import app.mawja.android.data.ratings.RatingKind
 import app.mawja.android.data.ratings.toRatingSubject
 import app.mawja.android.ui.components.layout.navigation.LocalMediaNavigator
 import app.mawja.android.ui.components.shared.ChannelAvatarStack
-import app.mawja.android.ui.components.shared.FlowNavRow
-import app.mawja.android.ui.components.shared.FlowSubscribeButton
-import app.mawja.android.ui.components.shared.FlowSubscribeButtonSize
+import app.mawja.android.ui.components.shared.MawjaNavRow
+import app.mawja.android.ui.components.shared.MawjaSubscribeButton
+import app.mawja.android.ui.components.shared.MawjaSubscribeButtonSize
 import app.mawja.android.ui.components.shared.MediaThumbnail
 import app.mawja.android.ui.components.shared.SaveVideoSheet
 import app.mawja.android.ui.components.shared.card.LocalVideoCardPreferences
@@ -271,7 +271,7 @@ private fun channelRow(
     }
 
     return QuickActionRow("channel") { shape ->
-        FlowNavRow(
+        MawjaNavRow(
             title = channelLabel,
             onClick = {
                 if (isCollaboration) {
@@ -296,11 +296,11 @@ private fun channelRow(
                 } else {
                     {
                         val toggle = { viewModel.toggleSubscription(video.channelId, video.channelName, video.channelThumbnailUrl) }
-                        FlowSubscribeButton(
+                        MawjaSubscribeButton(
                             isSubscribed = video.channelId in subscribedChannelIds,
                             onSubscribeClick = toggle,
                             onUnsubscribeClick = toggle,
-                            size = FlowSubscribeButtonSize.Compact,
+                            size = MawjaSubscribeButtonSize.Compact,
                         )
                     }
                 },
@@ -334,7 +334,7 @@ private fun feedRows(
             onDismiss()
         },
         QuickActionRow("watched") { shape ->
-            FlowNavRow(
+            MawjaNavRow(
                 title = stringResource(if (isWatched) R.string.mark_as_unwatched else R.string.mark_as_watched),
                 leadingIcon = if (isWatched) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
                 onClick = {
@@ -374,7 +374,7 @@ private fun moreRows(
     val downloadedLabel = stringResource(R.string.downloaded)
     return listOf(
         QuickActionRow("download") { shape ->
-            FlowNavRow(
+            MawjaNavRow(
                 title = if (isDownloaded) downloadedLabel else stringResource(R.string.download),
                 leadingIcon = if (isDownloaded) Icons.Filled.CheckCircle else Icons.Outlined.Download,
                 onClick = {
@@ -395,7 +395,7 @@ private fun moreRows(
             }
         },
         QuickActionRow("details") { shape ->
-            FlowNavRow(
+            MawjaNavRow(
                 title = stringResource(R.string.details_metadata),
                 leadingIcon = Icons.Outlined.Info,
                 onClick = onOpenDetails,
@@ -417,7 +417,7 @@ private fun whyShownRow(
     val reason = whyShown?.takeIf { it.isNotBlank() } ?: return null
     val label = stringResource(R.string.details_why_shown)
     return QuickActionRow("why_shown") { shape ->
-        FlowNavRow(
+        MawjaNavRow(
             title = reason,
             supportingText = label,
             leadingIcon = Icons.Outlined.Info,
@@ -437,7 +437,7 @@ internal fun actionRow(
     onClick: () -> Unit,
 ): QuickActionRow =
     QuickActionRow(key) { shape ->
-        FlowNavRow(
+        MawjaNavRow(
             title = title,
             supportingText = supporting,
             leadingIcon = icon,

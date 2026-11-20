@@ -9,7 +9,7 @@ package app.mawja.android.ui.screens.home
 import com.google.common.truth.Truth.assertThat
 import app.mawja.android.data.local.VideoHistoryEntry
 import app.mawja.android.data.model.Video
-import app.mawja.android.data.recommendation.FlowPersona
+import app.mawja.android.data.recommendation.MawjaPersona
 import app.mawja.android.data.recommendation.GraphSeedInput
 import app.mawja.android.data.recommendation.GraphSeedSource
 import app.mawja.android.data.recommendation.UserBrain
@@ -99,7 +99,7 @@ class HomeFeedLogicTest {
         val deepDiver =
             feedTasteProfile(
                 UserBrain(totalInteractions = 200),
-                FlowPersona.DEEP_DIVER,
+                MawjaPersona.DEEP_DIVER,
             )
         assertThat(feedFitPenalty(essay, deepDiver)).isEqualTo(0.0)
     }

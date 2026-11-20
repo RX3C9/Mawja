@@ -16,15 +16,15 @@ class TopicPreferencesRepository
     constructor(
         @ApplicationContext private val context: Context,
     ) {
-        suspend fun preferredTopics(): Set<String> = FlowNeuroEngine.getPreferredTopics()
+        suspend fun preferredTopics(): Set<String> = MawjaNeuroEngine.getPreferredTopics()
 
-        suspend fun blockedTopics(): Set<String> = FlowNeuroEngine.getBlockedTopics()
+        suspend fun blockedTopics(): Set<String> = MawjaNeuroEngine.getBlockedTopics()
 
-        suspend fun addPreferred(topic: String) = FlowNeuroEngine.addPreferredTopic(context, topic)
+        suspend fun addPreferred(topic: String) = MawjaNeuroEngine.addPreferredTopic(context, topic)
 
-        suspend fun removePreferred(topic: String) = FlowNeuroEngine.removePreferredTopic(context, topic)
+        suspend fun removePreferred(topic: String) = MawjaNeuroEngine.removePreferredTopic(context, topic)
 
-        suspend fun addBlocked(topic: String) = FlowNeuroEngine.addBlockedTopic(context, topic)
+        suspend fun addBlocked(topic: String) = MawjaNeuroEngine.addBlockedTopic(context, topic)
 
-        suspend fun removeBlocked(topic: String) = FlowNeuroEngine.removeBlockedTopic(context, topic)
+        suspend fun removeBlocked(topic: String) = MawjaNeuroEngine.removeBlockedTopic(context, topic)
     }
