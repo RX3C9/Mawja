@@ -137,7 +137,8 @@ private fun PillRow(
                 text = remember(duration) { formatDuration((duration / 1000L).toInt(), padMinutes = true) },
                 style = MaterialTheme.typography.labelMedium,
                 color = PlayerScrimContentSecondary,
-            )            if (showRemainingTime) EndsAtLabel(positionProvider, duration)
+            )
+            if (showRemainingTime) EndsAtLabel(positionProvider, duration)
         }
     }
 }
