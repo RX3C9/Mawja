@@ -29,5 +29,7 @@ internal object LabIndex {
     val mood = entry("mood", R.string.lab_mood, R.string.lab_section_feed, R.string.lab_mood_summary)
     val guardian = entry("guardian", R.string.lab_guardian, R.string.lab_section_feed, R.string.lab_guardian_summary)
 
-    val all = listOf(mood, guardian)
+    val shake = entry("shake", R.string.lab_shake, R.string.lab_section_feed, R.string.lab_shake_summary)
+
+    val all = listOf(mood, guardian, shake)
 }

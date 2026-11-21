@@ -38,6 +38,7 @@ class TranscriptRepository
                 captionCache.get(trackUrl)?.let { return@withContext it }
                 val body = fetch(trackUrl) ?: return@withContext emptyList()
                 VideoTranscript.parseCaptions(body).also { cues ->
+                    app.mawja.android.lab.MawjaLab.rememberCues(trackUrl, cues)
                     if (cues.isNotEmpty()) captionCache.put(trackUrl, cues)
                 }
             }
@@ -76,6 +77,7 @@ class TranscriptRepository
                         return@withContext emptyList()
                     }
                 VideoTranscript.parse(body).also { cues ->
+                    app.mawja.android.lab.MawjaLab.rememberCues(trackUrl, cues)
                     if (cues.isNotEmpty()) cache.put(trackUrl, cues)
                 }
             }

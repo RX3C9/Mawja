@@ -6,6 +6,7 @@ package app.mawja.android.ui.screens.settings.lab
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.SelfImprovement
+import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -28,6 +29,7 @@ internal fun LabScreen(
 ) {
     val mood by MawjaLab.mood.collectAsStateWithLifecycle()
     val guardian by MawjaLab.guardian.collectAsStateWithLifecycle()
+    val shake by MawjaLab.shakeRewind.collectAsStateWithLifecycle()
     val context = androidx.compose.ui.platform.LocalContext.current
     val history by androidx.compose.runtime.remember(context) {
         app.mawja.android.data.local.ViewHistory.getInstance(context).getAllHistory()
@@ -57,8 +59,10 @@ internal fun LabScreen(
         group(key = "lab.feed", header = R.string.lab_section_feed) {
             toggleGroup(LabIndex.mood, moodOptions, mood, { MawjaLab.setMood(it) })
             switch(LabIndex.guardian, guardian, { MawjaLab.setGuardian(it) }, icon = Icons.Outlined.SelfImprovement)
+            switch(LabIndex.shake, shake, { MawjaLab.setShakeRewind(it) }, icon = Icons.Outlined.Vibration)
         }
         group(key = "lab.stats", header = R.string.lab_section_stats) {
+            row("lab.stats.bars") { shape -> app.mawja.android.lab.WeekBars(week.perDay, statsMinutes, shape) }
             info("lab.stats.minutes", statsTitle, statsMinutes)
             info("lab.stats.average", statsAvgTitle, statsAvg)
             info("lab.stats.top", statsTopTitle, week.topChannel ?: "—")

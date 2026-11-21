@@ -243,3 +243,5 @@ app.mawja.android.lab.FeedMoodTest
 app.mawja.android.lab.WatchGuardianTest
 app.mawja.android.lab.TimeBudgetFeedTest
 app.mawja.android.lab.WatchStatsTest
+app.mawja.android.lab.EndsAtTest
+app.mawja.android.lab.SentenceRewindTest

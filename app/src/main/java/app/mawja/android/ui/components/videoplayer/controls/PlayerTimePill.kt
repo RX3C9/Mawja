@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -136,7 +137,7 @@ private fun PillRow(
                 text = remember(duration) { formatDuration((duration / 1000L).toInt(), padMinutes = true) },
                 style = MaterialTheme.typography.labelMedium,
                 color = PlayerScrimContentSecondary,
-            )
+            )            if (showRemainingTime) EndsAtLabel(positionProvider, duration)
         }
     }
 }
@@ -199,5 +200,29 @@ private fun TimeSeparator() {
         style = MaterialTheme.typography.labelMedium,
         color = PlayerScrimContentSecondary,
         modifier = Modifier.padding(horizontal = 2.dp),
+    )
+}
+
+
+/** "· ends 11:42", at the current playback speed; shown with the remaining-time read-out. */
+@Composable
+private fun EndsAtLabel(
+    positionProvider: () -> Long,
+    duration: Long,
+) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val player by app.mawja.android.player.EnhancedPlayerManager.getInstance().playerState.collectAsState()
+    val minuteKey by remember(positionProvider) { derivedStateOf { positionProvider() / 30_000L } }
+    val label =
+        remember(minuteKey, duration, player.playbackSpeed) {
+            app.mawja.android.lab.EndsAt
+                .endMillis(System.currentTimeMillis(), positionProvider(), duration, player.playbackSpeed)
+                ?.let { android.text.format.DateFormat.getTimeFormat(context).format(java.util.Date(it)) }
+        } ?: return
+    Spacer(modifier = Modifier.width(6.dp))
+    Text(
+        text = stringResource(R.string.lab_ends_at, label),
+        style = MaterialTheme.typography.labelMedium,
+        color = PlayerScrimContentSecondary,
     )
 }

@@ -46,4 +46,11 @@ class WatchStatsTest {
         assertEquals(0, w.minutes)
         assertNull(w.topChannel)
     }
+
+    @Test fun perDayBuckets() {
+        val w = WatchStats.week(listOf(e("today", 5, 10, 1000), e("y", 7, 10, day + 1000)), now)
+        assertEquals(7, w.perDay.size)
+        assertEquals(5, w.perDay[6])
+        assertEquals(7, w.perDay[5])
+    }
 }

@@ -14,6 +14,8 @@ data class WatchWeek(
     val topChannel: String?,
     val musicPercent: Int,
     val shortsPercent: Int,
+    /** Minutes per day, oldest first; the last one is today (the 24 hours up to now). */
+    val perDay: List<Int> = List(7) { 0 },
 )
 
 object WatchStats {
@@ -50,6 +52,12 @@ object WatchStats {
             topChannel = top,
             musicPercent = share { it.isMusic },
             shortsPercent = share { it.isShort },
+            perDay =
+                List(WEEK_DAYS) { d ->
+                    val end = nowMs - (WEEK_DAYS - 1 - d) * DAY_MS
+                    val start = end - DAY_MS
+                    (recent.zip(watchedMs).filter { it.first.timestamp > start && it.first.timestamp <= end }.sumOf { it.second } / 60_000L).toInt()
+                },
         )
     }
 }

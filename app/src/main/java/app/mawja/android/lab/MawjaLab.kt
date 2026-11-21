@@ -21,6 +21,26 @@ object MawjaLab {
     val mood: StateFlow<FeedMood> = _mood.asStateFlow()
     val guardian: StateFlow<Boolean> = _guardian.asStateFlow()
 
+    private val _shakeRewind = MutableStateFlow(false)
+    val shakeRewind: StateFlow<Boolean> = _shakeRewind.asStateFlow()
+
+    fun setShakeRewind(on: Boolean) = save("shake_rewind", on) { _shakeRewind.value = on }
+
+    @Volatile private var lastCues: Pair<String, List<app.mawja.android.data.transcript.TranscriptCue>>? = null
+
+    /** The transcript layer reports every caption track it reads; a shake uses the one for this video. */
+    fun rememberCues(
+        trackUrl: String,
+        cues: List<app.mawja.android.data.transcript.TranscriptCue>,
+    ) {
+        if (cues.isNotEmpty()) lastCues = trackUrl to cues
+    }
+
+    fun cuesFor(videoId: String?): List<app.mawja.android.data.transcript.TranscriptCue> {
+        val (url, cues) = lastCues ?: return emptyList()
+        return if (videoId != null && url.contains(videoId)) cues else emptyList()
+    }
+
     /** One guardian for the whole process; the player feeds it. */
     val watchGuardian = WatchGuardian()
 
@@ -53,6 +73,7 @@ object MawjaLab {
         prefs = p
         _mood.value = runCatching { FeedMood.valueOf(p.getString("mood", null) ?: "OFF") }.getOrDefault(FeedMood.OFF)
         _guardian.value = p.getBoolean("guardian", true)
+        _shakeRewind.value = p.getBoolean("shake_rewind", false)
     }
 
     fun setMood(value: FeedMood) {

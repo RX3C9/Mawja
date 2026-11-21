@@ -5030,6 +5030,9 @@
     <string name="lab_budget_mix_title">Your %1$d minutes</string>
     <string name="lab_budget_empty">Nothing in your feed fits that time yet</string>
     <string name="lab_surprise_title">Surprise me</string>
+    <string name="lab_shake">Shake to replay the sentence</string>
+    <string name="lab_shake_summary">Give your phone a light shake to jump back to the start of the line you missed</string>
+    <string name="lab_ends_at">· ends %1$s</string>
     <string name="lab_section_stats">Your week on Mawja</string>
     <string name="lab_stats_minutes">Watched this week</string>
     <string name="lab_stats_minutes_value">About %1$d min across %2$d videos</string>

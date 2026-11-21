@@ -5423,6 +5423,9 @@
     <string name="lab_budget_mix_title">دقايقك الـ%1$d</string>
     <string name="lab_budget_empty">مفيش حاجة في صفحتك تناسب الوقت ده دلوقتي</string>
     <string name="lab_surprise_title">فاجئني</string>
+    <string name="lab_shake">هزّة ترجّعك للجملة</string>
+    <string name="lab_shake_summary">هزّة خفيفة للموبايل ترجعك لأول الجملة اللي فاتتك</string>
+    <string name="lab_ends_at">· يخلص %1$s</string>
     <string name="lab_section_stats">أسبوعك على موجة</string>
     <string name="lab_stats_minutes">اتفرجت الأسبوع ده</string>
     <string name="lab_stats_minutes_value">حوالي %1$d دقيقة في %2$d فيديو</string>
