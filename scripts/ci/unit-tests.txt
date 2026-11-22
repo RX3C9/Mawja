@@ -245,3 +245,8 @@ app.mawja.android.lab.TimeBudgetFeedTest
 app.mawja.android.lab.WatchStatsTest
 app.mawja.android.lab.EndsAtTest
 app.mawja.android.lab.SentenceRewindTest
+app.mawja.android.lab.SleepSentenceTest
+app.mawja.android.lab.NightVolumeTest
+app.mawja.android.lab.BedtimeFilterTest
+app.mawja.android.lab.WeekMemoTest
+app.mawja.android.lab.TransparencyTest

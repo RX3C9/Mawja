@@ -121,9 +121,24 @@ object SleepTimerManager {
         timerJob =
             scope.launch {
                 delay(minutes * 60_000L)
+                delay(sentenceGraceMs())
                 firePause()
             }
     }
+
+    /** Mawja Lab "finish the sentence": extra wait so the timer never cuts a speaker off mid-word. */
+    private fun sentenceGraceMs(): Long =
+        runCatching {
+            if (!app.mawja.android.lab.MawjaLab.sleepSentence.value) return@runCatching 0L
+            val player = currentPlayer ?: return@runCatching 0L
+            if (!player.isPlaying) return@runCatching 0L
+            val id = EnhancedPlayerManager.getInstance().playerState.value.currentVideoId
+            app.mawja.android.lab.SleepSentence.extraWaitMs(
+                player.currentPosition,
+                player.playbackParameters.speed,
+                app.mawja.android.lab.MawjaLab.cuesFor(id),
+            )
+        }.getOrDefault(0L)
 
     /** Start end-of-media mode — player pauses (or closes the app) when the current item ends. */
     fun startEndOfMedia(closeApp: Boolean = false) {

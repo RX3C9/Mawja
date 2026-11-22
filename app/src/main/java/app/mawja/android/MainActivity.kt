@@ -364,6 +364,7 @@ class MainActivity : ComponentActivity() {
                                 app.mawja.android.ui.components.shared.DownloaderInstallPrompt()
                                 app.mawja.android.lab.BreakPromptHost()
                                 app.mawja.android.lab.ShakeRewindHost()
+                                app.mawja.android.lab.BedtimeOverlay()
                                 app.mawja.android.remote.RemoteControlOverlay(remoteConfig, entitlementsRepository, appUpdater)
                                 app.mawja.android.account.ModerationOverlay(accountBackend)
                             }

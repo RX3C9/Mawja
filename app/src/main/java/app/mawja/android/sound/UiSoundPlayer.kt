@@ -86,8 +86,17 @@ class UiSoundPlayer
             val id = loaded[sound] ?: return
             if (synchronized(ready) { id !in ready }) return
             lastPlayedAt = now
-            soundPool.play(id, UiSoundPolicy.VOLUME, UiSoundPolicy.VOLUME, 1, 0, 1f)
+            val volume = UiSoundPolicy.VOLUME * nightFactor()
+            soundPool.play(id, volume, volume, 1, 0, 1f)
         }
+
+        /** Mawja Lab "night sounds": quieter after 10 pm until morning. */
+        private fun nightFactor(): Float =
+            if (app.mawja.android.lab.MawjaLab.nightSounds.value) {
+                app.mawja.android.lab.NightVolume.factor(java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY))
+            } else {
+                1f
+            }
 
         private fun conditions(): UiSoundConditions {
             val audio = context.getSystemService(AudioManager::class.java)

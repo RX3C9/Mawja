@@ -26,6 +26,34 @@ object MawjaLab {
 
     fun setShakeRewind(on: Boolean) = save("shake_rewind", on) { _shakeRewind.value = on }
 
+    private val _sleepSentence = MutableStateFlow(true)
+    private val _nightSounds = MutableStateFlow(true)
+    private val _bedtime = MutableStateFlow(false)
+    private val _bedtimeStartHour = MutableStateFlow(0)
+
+    /** A sleep timer waits for the end of the sentence being spoken. */
+    val sleepSentence: StateFlow<Boolean> = _sleepSentence.asStateFlow()
+
+    /** UI sounds get quieter at night. */
+    val nightSounds: StateFlow<Boolean> = _nightSounds.asStateFlow()
+
+    /** Warm amber tint at night. */
+    val bedtime: StateFlow<Boolean> = _bedtime.asStateFlow()
+
+    /** Hour of day (22, 23 or 0) the bedtime tint begins to fade in. */
+    val bedtimeStartHour: StateFlow<Int> = _bedtimeStartHour.asStateFlow()
+
+    fun setSleepSentence(on: Boolean) = save("sleep_sentence", on) { _sleepSentence.value = on }
+
+    fun setNightSounds(on: Boolean) = save("night_sounds", on) { _nightSounds.value = on }
+
+    fun setBedtime(on: Boolean) = save("bedtime", on) { _bedtime.value = on }
+
+    fun setBedtimeStartHour(hour: Int) {
+        prefs?.edit()?.putInt("bedtime_start", hour)?.apply()
+        _bedtimeStartHour.value = hour
+    }
+
     @Volatile private var lastCues: Pair<String, List<app.mawja.android.data.transcript.TranscriptCue>>? = null
 
     /** The transcript layer reports every caption track it reads; a shake uses the one for this video. */
@@ -74,6 +102,10 @@ object MawjaLab {
         _mood.value = runCatching { FeedMood.valueOf(p.getString("mood", null) ?: "OFF") }.getOrDefault(FeedMood.OFF)
         _guardian.value = p.getBoolean("guardian", true)
         _shakeRewind.value = p.getBoolean("shake_rewind", false)
+        _sleepSentence.value = p.getBoolean("sleep_sentence", true)
+        _nightSounds.value = p.getBoolean("night_sounds", true)
+        _bedtime.value = p.getBoolean("bedtime", false)
+        _bedtimeStartHour.value = p.getInt("bedtime_start", 0).takeIf { it == 22 || it == 23 || it == 0 } ?: 0
     }
 
     fun setMood(value: FeedMood) {
