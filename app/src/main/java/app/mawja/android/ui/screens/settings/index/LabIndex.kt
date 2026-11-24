@@ -36,9 +36,12 @@ internal object LabIndex {
     val nightSounds = entry("night_sounds", R.string.lab_night_sounds, R.string.lab_section_night, R.string.lab_night_sounds_summary)
     val bedtime = entry("bedtime", R.string.lab_bedtime, R.string.lab_section_night, R.string.lab_bedtime_summary)
     val bedtimeStart = entry("bedtime_start", R.string.lab_bedtime_start, R.string.lab_section_night, R.string.lab_bedtime_start_summary)
+    val nightLeveling =
+        entry("night_leveling", R.string.lab_night_leveling, R.string.lab_section_night, R.string.lab_night_leveling_summary)
+    val oneHand = entry("one_hand", R.string.lab_one_hand, R.string.lab_section_player, R.string.lab_one_hand_summary)
     val memo = entry("memo", R.string.lab_memo, R.string.lab_section_stats, R.string.lab_memo_summary)
 
     val forget = entry("forget", R.string.lab_forget, R.string.lab_section_know, R.string.lab_forget_summary)
 
-    val all = listOf(mood, guardian, shake, sleepSentence, nightSounds, bedtime, bedtimeStart, memo, forget)
+    val all = listOf(mood, guardian, shake, oneHand, sleepSentence, nightSounds, bedtime, nightLeveling, bedtimeStart, memo, forget)
 }

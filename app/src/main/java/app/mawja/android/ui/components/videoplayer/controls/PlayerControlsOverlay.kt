@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
@@ -104,6 +105,12 @@ internal fun PlayerControlsOverlay(
     val isFullscreen = state.isFullscreen
     val isPortraitFullscreen = isFullscreen && state.isPortraitFullscreen
     val isLandscapeFullscreen = isFullscreen && !isPortraitFullscreen
+    // One-hand mode lowers play, pause and skip into the thumb's reach on a tall fullscreen video.
+    val oneHandMode by app.mawja.android.lab.MawjaLab.oneHand.collectAsStateWithLifecycle()
+    val transportAlignment =
+        remember(oneHandMode, isPortraitFullscreen) {
+            BiasAlignment(0f, app.mawja.android.lab.OneHandLayout.transportBias(oneHandMode, isPortraitFullscreen))
+        }
     // The stage hands this overlay no insets, so landscape fullscreen clears the camera cutout
     // itself: the side one on phones, the top one on tablets (#968).
     val cutoutPadding = WindowInsets.displayCutout.asPaddingValues()
@@ -327,7 +334,7 @@ internal fun PlayerControlsOverlay(
                     visible = !isCleared,
                     enter = fadeIn(fadeSpec),
                     exit = fadeOut(fadeSpec),
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier.align(transportAlignment),
                 ) {
                     PlayerTransportControls(
                         isPlaying = state.isPlaying,

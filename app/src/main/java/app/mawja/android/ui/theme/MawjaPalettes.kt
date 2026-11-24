@@ -1029,6 +1029,122 @@ object MawjaPalettes {
                             error = Color(0xFFFFB4AB),
                         ),
                 ),
+            // Mawja 3.0 royal "Pharaoh Gold: burnished gold on lapis-lazuli blue."
+            ThemeMode.PHARAOH_GOLD to
+                PalettePair(
+                    id = "pharaoh-gold",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF8A5A00),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF1F4E9C),
+                            background = Color(0xFFFFFBF2),
+                            surface = Color(0xFFF6EEDC),
+                            onSurface = Color(0xFF1E1606),
+                            onSurfaceVariant = Color(0xFF5E5236),
+                            outline = Color(0xFFDCCFAF),
+                            error = Color(0xFFBA1A1A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFE8B84A),
+                            onPrimary = Color(0xFF2A1C00),
+                            secondary = Color(0xFF6F9BE8),
+                            background = Color(0xFF0A1330),
+                            surface = Color(0xFF141E40),
+                            onSurface = Color(0xFFF7EEDA),
+                            onSurfaceVariant = Color(0xFFC9BFA4),
+                            outline = Color(0xFF2C3866),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            // Mawja 3.0 royal "Emerald: deep green jewel with a soft gold accent."
+            ThemeMode.EMERALD to
+                PalettePair(
+                    id = "emerald",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF00704A),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFFA07A1E),
+                            background = Color(0xFFF5FBF7),
+                            surface = Color(0xFFE5F2EA),
+                            onSurface = Color(0xFF07160F),
+                            onSurfaceVariant = Color(0xFF46594E),
+                            outline = Color(0xFFC0D6C8),
+                            error = Color(0xFFBA1A1A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFF3DDC97),
+                            onPrimary = Color(0xFF00301C),
+                            secondary = Color(0xFFE2C46A),
+                            background = Color(0xFF04140E),
+                            surface = Color(0xFF0C2219),
+                            onSurface = Color(0xFFE4F5EC),
+                            onSurfaceVariant = Color(0xFFA9C4B5),
+                            outline = Color(0xFF1F3D30),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            // Mawja 3.0 royal "Ruby: crimson jewel with a warm gold accent."
+            ThemeMode.RUBY to
+                PalettePair(
+                    id = "ruby",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFFA8133F),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF7A5C1E),
+                            background = Color(0xFFFFF8F9),
+                            surface = Color(0xFFF8E6EA),
+                            onSurface = Color(0xFF22080F),
+                            onSurfaceVariant = Color(0xFF6A4A52),
+                            outline = Color(0xFFE2C4CB),
+                            error = Color(0xFFB3261E),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFFFF6B8B),
+                            onPrimary = Color(0xFF3D0014),
+                            secondary = Color(0xFFE8C07A),
+                            background = Color(0xFF16060B),
+                            surface = Color(0xFF261018),
+                            onSurface = Color(0xFFF9E6EB),
+                            onSurfaceVariant = Color(0xFFD2B1B9),
+                            outline = Color(0xFF47222E),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
+            // Mawja 3.0 royal "Midnight OLED: moonlight blue on true black, opens on the AMOLED style."
+            ThemeMode.MIDNIGHT_OLED to
+                PalettePair(
+                    id = "midnight-oled",
+                    light =
+                        PaletteSeed(
+                            primary = Color(0xFF2F55B8),
+                            onPrimary = Color(0xFFFFFFFF),
+                            secondary = Color(0xFF5B6B8C),
+                            background = Color(0xFFF7F8FC),
+                            surface = Color(0xFFEBEEF6),
+                            onSurface = Color(0xFF0B0E16),
+                            onSurfaceVariant = Color(0xFF4C5466),
+                            outline = Color(0xFFCDD3E2),
+                            error = Color(0xFFBA1A1A),
+                        ),
+                    dark =
+                        PaletteSeed(
+                            primary = Color(0xFF9DB8FF),
+                            onPrimary = Color(0xFF0A1A44),
+                            secondary = Color(0xFFB8C2D9),
+                            background = Color(0xFF000000),
+                            surface = Color(0xFF0B0D12),
+                            onSurface = Color(0xFFEEF1F8),
+                            onSurfaceVariant = Color(0xFFB4BCCD),
+                            outline = Color(0xFF1E2330),
+                            error = Color(0xFFFFB4AB),
+                        ),
+                ),
             ThemeMode.CREAM_LIGHT to
                 PalettePair(
                     id = "cream-paper",
@@ -1060,7 +1176,12 @@ object MawjaPalettes {
         )
 
     /** The palette behind [mode], or Flow Default for the modes that are not palettes themselves. */
-    fun forMode(mode: ThemeMode): PalettePair = palettes[mode] ?: palettes.getValue(ThemeMode.DARK)
+    fun forMode(mode: ThemeMode): PalettePair =
+        if (mode == ThemeMode.TIME_OF_DAY) {
+            TimeOfDayTheme.pairAt(TimeOfDayTheme.nowMinute())
+        } else {
+            palettes[mode] ?: palettes.getValue(ThemeMode.DARK)
+        }
 
     val default: PalettePair get() = palettes.getValue(ThemeMode.DARK)
 }

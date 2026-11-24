@@ -34,6 +34,24 @@ Models default to dated "AI slop" UI trends. The following are STRICTLY FORBIDDE
 
 If you find yourself about to reach for any of the above because "it looks nice," stop — it is not the app's design language and it will be reverted.
 
+### Depth and glass exception ("Nile Glass", Mawja 3.0)
+
+The product owner explicitly asked for a premium 3D/glass look. This is the ONLY permitted
+departure from the glassmorphism and glow bans above, and it is narrow:
+
+- **Tokens only.** Depth, glass and edge-glow values live in `ui/theme/Depth.kt` (`MawjaDepth`:
+  three elevation levels, blur radius, glass/scrim alpha, edge glow alpha). Colours still come from
+  `MaterialTheme.colorScheme`; a call site never hand-tunes an alpha, radius or elevation.
+- **Premium themes only, always budgeted.** Read `LocalEffectLevel` (provided by `MawjaTheme`,
+  computed by the pure `EffectBudget`: premium theme, low-RAM device, battery saver, reduce motion,
+  high contrast → `FULL` / `REDUCED` / `OFF`). Draw glass only at `FULL`; `REDUCED` and `OFF` must
+  look exactly like the solid, non-premium surface.
+- **Blur only on API 31+, only on static layers.** Use `Modifier.mawjaDepthBlur` (it is a no-op
+  below Android 12, where the glass falls back to the near-solid `scrimAlpha`). The rule in the
+  performance section still holds: never blur a node that redraws every frame.
+- **Few surfaces.** Currently the floating navigation capsule only. Adding a surface needs the same
+  gating and a line here.
+
 ## Use the platform — never hand-roll an API a dependency already provides
 
 **The default is always the library implementation.** Hand-rolling is a fallback that must be

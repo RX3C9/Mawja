@@ -40,6 +40,10 @@ private val VerticalHudWidth = 56.dp
 private val HorizontalTrackLength = 132.dp
 private val HudIconSize = 22.dp
 
+/** The read-out's slow breath: a 3% swell over 1.4 s, then back. */
+private const val HUD_BREATH_SCALE = 1.03f
+private const val HUD_BREATH_MS = 1_400
+
 /**
  * The brightness read-out shown mid-swipe.
  *
@@ -178,7 +182,30 @@ private fun GestureLevelHud(
             fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec()) +
                 scaleOut(MaterialTheme.motionScheme.fastSpatialSpec(), targetScale = 0.92f),
         modifier = modifier,
-        content = { content() },
+        content = {
+            // The read-out breathes gently while it is up, so it reads as alive under the thumb
+            // without ever moving far enough to blur the number.
+            val breath =
+                rememberInfiniteTransition(label = "hudBreath").animateFloat(
+                    initialValue = 1f,
+                    targetValue = HUD_BREATH_SCALE,
+                    animationSpec =
+                        infiniteRepeatable(
+                            animation = tween(durationMillis = HUD_BREATH_MS, easing = FastOutSlowInEasing),
+                            repeatMode = RepeatMode.Reverse,
+                        ),
+                    label = "hudBreathScale",
+                )
+            Box(
+                modifier =
+                    Modifier.graphicsLayer {
+                        scaleX = breath.value
+                        scaleY = breath.value
+                    },
+            ) {
+                content()
+            }
+        },
     )
 }
 

@@ -230,6 +230,10 @@ app.mawja.android.ui.components.motion.MicroMotionTest
 app.mawja.android.ui.components.shared.WaveLoadingTest
 app.mawja.android.ui.theme.AppFontTest
 app.mawja.downloader.DownloadMathTest
+app.mawja.downloader.SegmentBoardTest
+app.mawja.downloader.RetryPolicyTest
+app.mawja.downloader.ScheduleRulesTest
+app.mawja.downloader.SmartFilesTest
 app.mawja.admin.core.ModerationActionsTest
 app.mawja.android.account.ModerationTest
 app.mawja.android.youtubeaccount.YouTubeAccountJsonTest
@@ -250,3 +254,9 @@ app.mawja.android.lab.NightVolumeTest
 app.mawja.android.lab.BedtimeFilterTest
 app.mawja.android.lab.WeekMemoTest
 app.mawja.android.lab.TransparencyTest
+app.mawja.android.ui.components.videoplayer.gesture.HoldSpeedDragTest
+app.mawja.android.ui.components.videoplayer.overlay.TouchRippleMathTest
+app.mawja.android.lab.NightLevelingTest
+app.mawja.android.lab.OneHandLayoutTest
+app.mawja.android.ui.theme.TimeOfDayThemeTest
+app.mawja.android.ui.theme.EffectBudgetTest

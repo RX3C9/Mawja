@@ -7,8 +7,10 @@ package app.mawja.android.ui.screens.settings.lab
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Bedtime
 import androidx.compose.material.icons.outlined.DeleteSweep
+import androidx.compose.material.icons.outlined.GraphicEq
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.NightsStay
+import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Vibration
@@ -65,6 +67,8 @@ internal fun LabScreen(
     val nightSounds by MawjaLab.nightSounds.collectAsStateWithLifecycle()
     val bedtime by MawjaLab.bedtime.collectAsStateWithLifecycle()
     val bedtimeStart by MawjaLab.bedtimeStartHour.collectAsStateWithLifecycle()
+    val nightLeveling by MawjaLab.nightLeveling.collectAsStateWithLifecycle()
+    val oneHand by MawjaLab.oneHand.collectAsStateWithLifecycle()
     val bedtimeOptions = listOf(22, 23, 0).map { h -> MawjaToggleOption(h, "%02d:00".format(h)) }
     val paceText =
         stringResource(
@@ -137,11 +141,21 @@ internal fun LabScreen(
             switch(LabIndex.guardian, guardian, { MawjaLab.setGuardian(it) }, icon = Icons.Outlined.SelfImprovement)
             switch(LabIndex.shake, shake, { MawjaLab.setShakeRewind(it) }, icon = Icons.Outlined.Vibration)
         }
+        group(key = "lab.player", header = R.string.lab_section_player) {
+            switch(LabIndex.oneHand, oneHand, { MawjaLab.setOneHand(it) }, icon = Icons.Outlined.PhoneAndroid)
+        }
         group(key = "lab.night", header = R.string.lab_section_night) {
             switch(LabIndex.sleepSentence, sleepSentence, { MawjaLab.setSleepSentence(it) }, icon = Icons.Outlined.Bedtime)
             switch(LabIndex.nightSounds, nightSounds, { MawjaLab.setNightSounds(it) }, icon = Icons.Outlined.MusicNote)
             switch(LabIndex.bedtime, bedtime, { MawjaLab.setBedtime(it) }, icon = Icons.Outlined.NightsStay)
-            toggleGroup(LabIndex.bedtimeStart, bedtimeOptions, bedtimeStart, { MawjaLab.setBedtimeStartHour(it) }, enabled = bedtime)
+            switch(LabIndex.nightLeveling, nightLeveling, { MawjaLab.setNightLeveling(it) }, icon = Icons.Outlined.GraphicEq)
+            toggleGroup(
+                LabIndex.bedtimeStart,
+                bedtimeOptions,
+                bedtimeStart,
+                { MawjaLab.setBedtimeStartHour(it) },
+                enabled = bedtime || nightLeveling,
+            )
         }
         group(key = "lab.know", header = R.string.lab_section_know) {
             info("lab.know.topics", knowTopicsTitle, knowTopics)

@@ -365,6 +365,7 @@ class MainActivity : ComponentActivity() {
                                 app.mawja.android.lab.BreakPromptHost()
                                 app.mawja.android.lab.ShakeRewindHost()
                                 app.mawja.android.lab.BedtimeOverlay()
+                                app.mawja.android.lab.NightLevelHost()
                                 app.mawja.android.remote.RemoteControlOverlay(remoteConfig, entitlementsRepository, appUpdater)
                                 app.mawja.android.account.ModerationOverlay(accountBackend)
                             }

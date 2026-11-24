@@ -9,8 +9,11 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
+import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
+import android.view.HapticFeedbackConstants
+import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +22,7 @@ import androidx.core.content.edit
 import app.mawja.android.R
 import app.mawja.android.account.EntitlementsRepository
 import app.mawja.android.account.MawjaFeature
+import app.mawja.android.player.EnhancedPlayerManager
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -77,7 +81,14 @@ class UiSoundPlayer
             if (on) ensurePool() else release()
         }
 
-        fun play(sound: UiSound) {
+        /**
+         * Plays [sound]; when [view] is given and the sound actually plays, the pack's matched haptic
+         * ([UiSoundPolicy.hapticFor]) plays with it, so a muted sound never buzzes on its own.
+         */
+        fun play(
+            sound: UiSound,
+            view: View? = null,
+        ) {
             if (!_enabled.value) return
             val now = SystemClock.elapsedRealtime()
             if (!UiSoundPolicy.outsideCooldown(lastPlayedAt, now)) return
@@ -88,7 +99,23 @@ class UiSoundPlayer
             lastPlayedAt = now
             val volume = UiSoundPolicy.VOLUME * nightFactor()
             soundPool.play(id, volume, volume, 1, 0, 1f)
+            view?.performHapticFeedback(hapticConstant(UiSoundPolicy.hapticFor(_pack.value, sound)))
         }
+
+        private fun hapticConstant(haptic: UiHaptic): Int =
+            when (haptic) {
+                UiHaptic.TICK -> HapticFeedbackConstants.CLOCK_TICK
+                UiHaptic.CLICK -> HapticFeedbackConstants.KEYBOARD_TAP
+                UiHaptic.CONFIRM ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) HapticFeedbackConstants.CONFIRM else HapticFeedbackConstants.VIRTUAL_KEY
+            }
+
+        /** True while a video plays (not music): UI sounds stay quiet over it. */
+        private fun videoPlaying(): Boolean =
+            runCatching {
+                val state = EnhancedPlayerManager.getInstance().playerState.value
+                state.isPlaying && state.currentVideoId != null
+            }.getOrDefault(false)
 
         /** Mawja Lab "night sounds": quieter after 10 pm until morning. */
         private fun nightFactor(): Float =
@@ -113,6 +140,7 @@ class UiSoundPlayer
                 doNotDisturb =
                     filter != NotificationManager.INTERRUPTION_FILTER_ALL &&
                         filter != NotificationManager.INTERRUPTION_FILTER_UNKNOWN,
+                videoPlaying = videoPlaying(),
             )
         }
 
@@ -183,6 +211,30 @@ class UiSoundPlayer
                             UiSound.TAP -> R.raw.ui_retro_tap
                             UiSound.TOGGLE -> R.raw.ui_retro_toggle
                             UiSound.SUCCESS -> R.raw.ui_retro_success
+                        }
+                    UiSoundPack.WATER ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_water_tap
+                            UiSound.TOGGLE -> R.raw.ui_water_toggle
+                            UiSound.SUCCESS -> R.raw.ui_water_success
+                        }
+                    UiSoundPack.GLASS ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_glass_tap
+                            UiSound.TOGGLE -> R.raw.ui_glass_toggle
+                            UiSound.SUCCESS -> R.raw.ui_glass_success
+                        }
+                    UiSoundPack.OUD ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_oud_tap
+                            UiSound.TOGGLE -> R.raw.ui_oud_toggle
+                            UiSound.SUCCESS -> R.raw.ui_oud_success
+                        }
+                    UiSoundPack.SPACE ->
+                        when (sound) {
+                            UiSound.TAP -> R.raw.ui_space_tap
+                            UiSound.TOGGLE -> R.raw.ui_space_toggle
+                            UiSound.SUCCESS -> R.raw.ui_space_success
                         }
                 }
         }

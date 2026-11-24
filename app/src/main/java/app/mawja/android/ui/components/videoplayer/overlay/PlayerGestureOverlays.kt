@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import app.mawja.android.R
 import app.mawja.android.data.local.GestureOverlayStyle
 import app.mawja.android.data.local.SpeedSwipeSide
 import app.mawja.android.ui.screens.player.state.PlayerScreenState
@@ -38,6 +41,13 @@ fun PlayerGestureOverlays(
             // Only a read-out that actually sits on the top edge clears the punch-hole. The ring
             // reads out in the middle of the picture, nowhere near it.
             val centredTopInset = if (centredAlignment == Alignment.TopCenter) topInset else HudTopInset
+
+            // The wave spreads from the exact spot the finger tapped, under the zone read-out.
+            SeekTouchRipple(
+                sequence = screenState.seekRippleSequence,
+                center = { Offset(screenState.seekRippleX, screenState.seekRippleY) },
+                modifier = Modifier.fillMaxSize(),
+            )
 
             SeekAnimationOverlay(
                 showSeekBack = screenState.showSeekBackAnimation,
@@ -110,6 +120,7 @@ fun PlayerGestureOverlays(
             SpeedBoostOverlay(
                 isVisible = screenState.isSpeedBoostActive,
                 speed = speedBoostSpeed,
+                hint = if (screenState.holdSpeed > 0f) null else stringResource(R.string.player_hold_speed_hint),
                 modifier =
                     Modifier
                         .align(Alignment.TopCenter)

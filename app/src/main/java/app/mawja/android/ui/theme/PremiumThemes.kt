@@ -27,6 +27,12 @@ object PremiumThemes {
             ThemeMode.ASWAN_SUNSET,
             ThemeMode.LOTUS,
             ThemeMode.ALEXANDRIA,
+            // Mawja 3.0 "Nile Glass" royal palettes.
+            ThemeMode.PHARAOH_GOLD,
+            ThemeMode.EMERALD,
+            ThemeMode.RUBY,
+            ThemeMode.MIDNIGHT_OLED,
+            ThemeMode.TIME_OF_DAY,
         )
 
     fun isPremium(mode: ThemeMode): Boolean = mode in modes

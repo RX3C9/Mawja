@@ -81,4 +81,34 @@
     <string name="notification_speed">%1$s · %2$s/s</string>
     <string name="sha_copied">SHA-256 copied</string>
     <string name="speed_graph">Live speed graph</string>
+    <string name="settings_connections">Connections per download</string>
+    <string name="settings_parallel">Downloads at the same time</string>
+    <string name="settings_rules">When to download</string>
+    <string name="settings_charging">Only while charging</string>
+    <string name="settings_battery">Only when the battery is above %1$d%%</string>
+    <string name="settings_night">Only at night (%1$s to %2$s)</string>
+    <string name="settings_daily_cap">Daily data limit</string>
+    <string name="settings_no_cap">No limit</string>
+    <string name="settings_used_today">Downloaded today: %1$s</string>
+    <string name="settings_auto_sort">Sort finished files into folders (Video, Music, Documents …)</string>
+    <string name="wait_charging">Waiting for the charger</string>
+    <string name="wait_battery">Waiting for the battery to pass %1$d%%</string>
+    <string name="wait_night">Waiting for the night window (%1$s)</string>
+    <string name="wait_cap">Daily limit reached, continues tomorrow</string>
+    <string name="add_checksum">Expected checksum (optional, e.g. sha256:…)</string>
+    <string name="add_checksum_bad">Not a checksum we can check (MD5, SHA-1, SHA-256 or SHA-512)</string>
+    <string name="dup_in_queue">Already in your list: %1$s</string>
+    <string name="dup_done_today">You already downloaded this today: %1$s</string>
+    <plurals name="dup_done_days">
+        <item quantity="one">You already have this from %2$d day ago: %1$s</item>
+        <item quantity="other">You already have this from %2$d days ago: %1$s</item>
+    </plurals>
+    <string name="badge_checksum_ok">Checksum matches</string>
+    <string name="badge_checksum_bad">Checksum doesn\'t match</string>
+    <string name="badge_app">Android app: install only if you trust where it came from</string>
+    <string name="badge_executable">Program file: it can\'t run on Android, be careful sharing it</string>
+    <string name="badge_disguised">Warning: this file isn\'t what its name says</string>
+    <string name="action_unzip">Unzip here</string>
+    <string name="unzip_done">Unzipped %1$d file(s)</string>
+    <string name="unzip_failed">Couldn\'t unzip this file</string>
 </resources>

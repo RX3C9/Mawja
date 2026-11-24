@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
@@ -80,6 +81,52 @@ internal fun SeekAnimationOverlay(
         ) {
             SeekChevronLabel(forward = true, seconds = seekSeconds)
         }
+    }
+}
+
+/**
+ * The circular wave a double-tap seek sends out from under the finger.
+ *
+ * Each new [sequence] restarts one wave at [center]: a soft filled disc with a thin ring at its edge
+ * that spreads toward the farthest corner and fades away. Progress is read only in the draw phase,
+ * so the wave repaints without recomposing anything.
+ */
+@Composable
+internal fun SeekTouchRipple(
+    sequence: Int,
+    center: () -> Offset,
+    modifier: Modifier = Modifier,
+) {
+    val progress = remember { Animatable(1f) }
+
+    LaunchedEffect(sequence) {
+        if (sequence > 0) {
+            progress.snapTo(0f)
+            progress.animateTo(1f, tween(durationMillis = TouchRippleMath.DURATION_MS, easing = LinearEasing))
+        }
+    }
+
+    Canvas(modifier = modifier) {
+        val p = progress.value
+        if (p >= 1f) return@Canvas
+        val origin = center()
+        val maxRadius = TouchRippleMath.maxRadius(origin.x, origin.y, size.width, size.height)
+        if (maxRadius <= 0f) return@Canvas
+        val radius = TouchRippleMath.radiusAt(p, maxRadius)
+        val alpha = TouchRippleMath.alphaAt(p)
+        drawCircle(
+            color = PlayerScrimContent,
+            radius = radius,
+            center = origin,
+            alpha = alpha * 0.5f,
+        )
+        drawCircle(
+            color = PlayerScrimContent,
+            radius = radius,
+            center = origin,
+            alpha = alpha,
+            style = Stroke(width = 2.dp.toPx()),
+        )
     }
 }
 

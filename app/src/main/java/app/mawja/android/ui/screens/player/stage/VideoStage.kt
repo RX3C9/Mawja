@@ -136,6 +136,12 @@ internal fun VideoStage(
                     isSeekForwardActive = screenState.showSeekForwardAnimation,
                     isSeekBackActive = screenState.showSeekBackAnimation,
                     onTapWindowChange = { screenState.isTapWindowOpen = it },
+                    onSeekRipple = { touch ->
+                        screenState.seekRippleX = touch.x
+                        screenState.seekRippleY = touch.y
+                        screenState.seekRippleSequence += 1
+                    },
+                    onHoldSpeedChange = { speed -> screenState.holdSpeed = speed },
                 ).videoPlayerZoom(
                     scope = scope,
                     scale = { screenState.zoomScale },

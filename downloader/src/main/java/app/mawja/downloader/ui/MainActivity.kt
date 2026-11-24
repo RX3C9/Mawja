@@ -40,8 +40,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -57,6 +59,7 @@ import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Verified
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -81,14 +84,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -97,13 +104,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.mawja.downloader.ConnectionPolicy
 import app.mawja.downloader.DownloadEngine
 import app.mawja.downloader.DownloadItem
 import app.mawja.downloader.DownloadMath
 import app.mawja.downloader.DownloadService
 import app.mawja.downloader.DownloaderPrefs
+import app.mawja.downloader.DuplicateFinder
+import app.mawja.downloader.ExpectedChecksum
+import app.mawja.downloader.FileSafety
 import app.mawja.downloader.LinkRules
 import app.mawja.downloader.R
+import app.mawja.downloader.ScheduleRules
+import app.mawja.downloader.SmartNaming
 import app.mawja.downloader.api.MawjaDownloaderContract.State
 import app.mawja.downloader.remote.DownloaderRemoteConfig
 import app.mawja.theme.MawjaLookSheet
@@ -112,7 +125,9 @@ import app.mawja.theme.MawjaSound
 import app.mawja.theme.MawjaThemeStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import java.util.Date
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     private val notificationPermission =
@@ -171,6 +186,7 @@ private fun DownloadsScreen(
     onSharedConsumed: () -> Unit,
 ) {
     val items by DownloadEngine.items.collectAsStateWithLifecycle()
+    val wait by DownloadEngine.waitReason.collectAsStateWithLifecycle()
     val transfers by app.mawja.downloader.RangeFetcher.active.collectAsStateWithLifecycle()
     val transferred by app.mawja.downloader.RangeFetcher.bytesTotal.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -327,7 +343,7 @@ private fun DownloadsScreen(
                     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp + padding.calculateBottomPadding()),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    items(shown, key = { it.id }) { DownloadRow(it) }
+                    items(shown, key = { it.id }) { DownloadRow(it, wait) }
                 }
             }
         }
@@ -395,8 +411,14 @@ private fun AddLinkSheet(
     var name by remember { mutableStateOf("") }
     var wifiOnly by remember { mutableStateOf(false) }
     var tonight by remember { mutableStateOf(false) }
+    var checksum by remember { mutableStateOf("") }
     val link = LinkRules.firstUrl(url)
     val youtube = link != null && LinkRules.isYouTube(link)
+    val typedName = name.trim()
+    val duplicate =
+        remember(link, typedName) {
+            if (link == null || youtube) null else DownloadEngine.findDuplicate(link, typedName.ifBlank { null }, sourceId = link)
+        }
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 20.dp).navigationBarsPadding().imePadding(),
@@ -427,6 +449,18 @@ private fun AddLinkSheet(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
+                duplicate?.let { DuplicateWarning(it) }
+                OutlinedTextField(
+                    value = checksum,
+                    onValueChange = { checksum = it },
+                    label = { Text(stringResource(R.string.add_checksum)) },
+                    isError = checksum.isNotBlank() && ExpectedChecksum.parse(checksum) == null,
+                    supportingText = {
+                        if (checksum.isNotBlank() && ExpectedChecksum.parse(checksum) == null) Text(stringResource(R.string.add_checksum_bad))
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(selected = wifiOnly, onClick = { wifiOnly = !wifiOnly }, label = { Text(stringResource(R.string.add_wifi)) })
                     FilterChip(selected = tonight, onClick = { tonight = !tonight }, label = { Text(stringResource(R.string.add_tonight)) })
@@ -435,7 +469,7 @@ private fun AddLinkSheet(
                     enabled = link != null,
                     onClick = {
                         val target = link ?: return@Button
-                        val fileName = name.trim().ifBlank { LinkRules.fileName(target, null) }
+                        val fileName = typedName.ifBlank { LinkRules.fileName(target, null) }
                         DownloadEngine.enqueue(
                             context,
                             DownloadItem(
@@ -449,6 +483,9 @@ private fun AddLinkSheet(
                                 sourceId = target,
                                 wifiOnly = wifiOnly,
                                 notBefore = if (tonight) DownloadEngine.tonight() else 0,
+                                checksum = checksum.trim().ifBlank { null },
+                                // No name typed: the server's own name (Content-Disposition) may replace the link's.
+                                autoName = typedName.isEmpty(),
                             ),
                         )
                         DownloadService.kick(context)
@@ -459,6 +496,30 @@ private fun AddLinkSheet(
                 ) { Text(stringResource(R.string.add_start)) }
             }
             Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+/** "You already have this": queued already, or finished before (with how long ago). */
+@Composable
+private fun DuplicateWarning(match: DuplicateFinder.Match) {
+    val text =
+        when (match.kind) {
+            DuplicateFinder.Kind.IN_QUEUE -> stringResource(R.string.dup_in_queue, match.fileName)
+            else -> {
+                val days = match.ageDays(System.currentTimeMillis())
+                if (days <= 0) {
+                    stringResource(R.string.dup_done_today, match.fileName)
+                } else {
+                    pluralStringResource(R.plurals.dup_done_days, days, match.fileName, days)
+                }
+            }
+        }
+    Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier.fillMaxWidth()) {
+        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Rounded.Warning, null, tint = MaterialTheme.colorScheme.onErrorContainer)
+            Spacer(Modifier.width(8.dp))
+            Text(text, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
         }
     }
 }
@@ -491,9 +552,23 @@ private fun SettingsSheet(onDismiss: () -> Unit) {
     var limit by remember { mutableStateOf(DownloaderPrefs.speedLimit(context)) }
     var wifi by remember { mutableStateOf(DownloaderPrefs.wifiOnly(context)) }
     var clip by remember { mutableStateOf(DownloaderPrefs.watchClipboard(context)) }
+    val royal = remember { DownloaderPrefs.royal(context) }
+    val initialRules = remember { DownloaderPrefs.rules(context) }
+    var connections by remember { mutableStateOf(ConnectionPolicy.connections(DownloaderPrefs.connections(context), royal)) }
+    var parallel by remember { mutableStateOf(ConnectionPolicy.parallel(DownloaderPrefs.parallel(context), royal)) }
+    var charging by remember { mutableStateOf(initialRules.chargingOnly) }
+    var battery by remember { mutableStateOf(initialRules.minBatteryPercent > 0) }
+    var night by remember { mutableStateOf(initialRules.nightOnly) }
+    var cap by remember { mutableStateOf(initialRules.dailyCapBytes) }
+    var autoSort by remember { mutableStateOf(DownloaderPrefs.autoSort(context)) }
+    val usedToday = remember { DownloadEngine.bytesToday() }
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
-            Modifier.fillMaxWidth().padding(horizontal = 20.dp).navigationBarsPadding(),
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
+                .navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(stringResource(R.string.settings_title), style = MaterialTheme.typography.titleLarge)
@@ -518,9 +593,77 @@ private fun SettingsSheet(onDismiss: () -> Unit) {
                     )
                 }
             }
+            Text(stringResource(R.string.settings_connections), style = MaterialTheme.typography.titleSmall)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ConnectionPolicy.CONNECTION_CHOICES.filter { it <= ConnectionPolicy.maxConnections(royal) }.forEach { n ->
+                    FilterChip(
+                        selected = connections == n,
+                        onClick = {
+                            connections = n
+                            DownloaderPrefs.setConnections(context, n)
+                        },
+                        label = { Text(n.toString()) },
+                    )
+                }
+            }
+            Text(stringResource(R.string.settings_parallel), style = MaterialTheme.typography.titleSmall)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                PARALLEL_CHOICES.filter { it <= ConnectionPolicy.maxParallel(royal) }.forEach { n ->
+                    FilterChip(
+                        selected = parallel == n,
+                        onClick = {
+                            parallel = n
+                            DownloaderPrefs.setParallel(context, n)
+                            DownloadEngine.rulesChanged(context)
+                        },
+                        label = { Text(n.toString()) },
+                    )
+                }
+            }
+            Text(stringResource(R.string.settings_rules), style = MaterialTheme.typography.titleSmall)
             SettingSwitch(stringResource(R.string.settings_wifi), wifi) {
                 wifi = it
                 DownloadEngine.setWifiOnly(context, it)
+            }
+            SettingSwitch(stringResource(R.string.settings_charging), charging) {
+                charging = it
+                DownloaderPrefs.setChargingOnly(context, it)
+                DownloadEngine.rulesChanged(context)
+            }
+            SettingSwitch(stringResource(R.string.settings_battery, ScheduleRules.BATTERY_FLOOR), battery) {
+                battery = it
+                DownloaderPrefs.setBatteryFloor(context, it)
+                DownloadEngine.rulesChanged(context)
+            }
+            SettingSwitch(stringResource(R.string.settings_night, clock(initialRules.windowStart), clock(initialRules.windowEnd)), night) {
+                night = it
+                DownloaderPrefs.setNightOnly(context, it)
+                DownloadEngine.rulesChanged(context)
+            }
+            Text(stringResource(R.string.settings_daily_cap), style = MaterialTheme.typography.titleSmall)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ScheduleRules.DAILY_CAPS.forEach { bytes ->
+                    FilterChip(
+                        selected = cap == bytes,
+                        onClick = {
+                            cap = bytes
+                            DownloaderPrefs.setDailyCap(context, bytes)
+                            DownloadEngine.rulesChanged(context)
+                        },
+                        label = {
+                            Text(if (bytes == 0L) stringResource(R.string.settings_no_cap) else Formatter.formatShortFileSize(context, bytes))
+                        },
+                    )
+                }
+            }
+            Text(
+                stringResource(R.string.settings_used_today, Formatter.formatShortFileSize(context, usedToday)),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SettingSwitch(stringResource(R.string.settings_auto_sort), autoSort) {
+                autoSort = it
+                DownloaderPrefs.setAutoSort(context, it)
             }
             SettingSwitch(stringResource(R.string.settings_clipboard), clip) {
                 clip = it
@@ -530,6 +673,9 @@ private fun SettingsSheet(onDismiss: () -> Unit) {
         }
     }
 }
+
+/** Downloads at the same time offered in settings (capped by the tier). */
+private val PARALLEL_CHOICES = listOf(1, 2, 3, 5, 10)
 
 @Composable
 private fun SettingSwitch(
@@ -574,7 +720,10 @@ private fun EmptyState(modifier: Modifier) {
 }
 
 @Composable
-private fun DownloadRow(item: DownloadItem) {
+private fun DownloadRow(
+    item: DownloadItem,
+    wait: ScheduleRules.Verdict,
+) {
     val context = LocalContext.current
     Surface(
         shape = RoundedCornerShape(20.dp),
@@ -599,7 +748,7 @@ private fun DownloadRow(item: DownloadItem) {
                 Column(Modifier.weight(1f)) {
                     Text(item.title, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Text(
-                        statusLine(item),
+                        statusLine(item, wait),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -645,6 +794,22 @@ private fun DownloadRow(item: DownloadItem) {
                     Text(stringResource(R.string.verified), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                 }
             }
+            if (item.state == State.COMPLETED) {
+                when (item.checksumOk) {
+                    true -> InfoBadge(Icons.Rounded.Verified, stringResource(R.string.badge_checksum_ok), MaterialTheme.colorScheme.primary)
+                    false -> InfoBadge(Icons.Rounded.Warning, stringResource(R.string.badge_checksum_bad), MaterialTheme.colorScheme.error)
+                    null -> Unit
+                }
+                when (item.safety) {
+                    FileSafety.Verdict.APP.name ->
+                        InfoBadge(Icons.Rounded.Warning, stringResource(R.string.badge_app), MaterialTheme.colorScheme.tertiary)
+                    FileSafety.Verdict.EXECUTABLE.name ->
+                        InfoBadge(Icons.Rounded.Warning, stringResource(R.string.badge_executable), MaterialTheme.colorScheme.error)
+                    FileSafety.Verdict.DISGUISED.name ->
+                        InfoBadge(Icons.Rounded.Warning, stringResource(R.string.badge_disguised), MaterialTheme.colorScheme.error)
+                    else -> Unit
+                }
+            }
         }
     }
 }
@@ -688,6 +853,7 @@ private fun SpeedGraph(id: String) {
 @Composable
 private fun RowMenu(item: DownloadItem) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var open by remember { mutableStateOf(false) }
     Box {
         IconButton(onClick = { open = true }) { Icon(Icons.Rounded.MoreVert, stringResource(R.string.action_more)) }
@@ -718,6 +884,15 @@ private fun RowMenu(item: DownloadItem) {
                     entries += entry(R.string.action_copy_sha) {
                         context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("SHA-256", sha))
                         Toast.makeText(context, R.string.sha_copied, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            if (item.state == State.COMPLETED && item.contentUri != null && SmartNaming.extension(item.fileName) == "zip") {
+                entries += entry(R.string.action_unzip) {
+                    scope.launch {
+                        val result = runCatching { DownloadEngine.unzip(context, item.id) }
+                        val message = result.fold({ context.getString(R.string.unzip_done, it) }, { context.getString(R.string.unzip_failed) })
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -757,8 +932,43 @@ private fun shareFile(
     }
 }
 
+/** A small icon + label under a finished download (checksum result, safety warning). */
 @Composable
-private fun statusLine(item: DownloadItem): String {
+private fun InfoBadge(
+    icon: ImageVector,
+    text: String,
+    tint: Color,
+) {
+    Spacer(Modifier.height(6.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, null, Modifier.size(16.dp), tint = tint)
+        Spacer(Modifier.width(4.dp))
+        Text(text, style = MaterialTheme.typography.labelSmall, color = tint)
+    }
+}
+
+/** Why a queued download is not starting: the first smart rule that holds it. */
+@Composable
+private fun waitText(verdict: ScheduleRules.Verdict): String {
+    val context = LocalContext.current
+    return when (verdict) {
+        ScheduleRules.Verdict.OK -> stringResource(R.string.state_queued)
+        ScheduleRules.Verdict.WAIT_WIFI -> stringResource(R.string.state_waiting_wifi)
+        ScheduleRules.Verdict.WAIT_CHARGING -> stringResource(R.string.wait_charging)
+        ScheduleRules.Verdict.WAIT_BATTERY -> stringResource(R.string.wait_battery, ScheduleRules.BATTERY_FLOOR)
+        ScheduleRules.Verdict.WAIT_NIGHT -> stringResource(R.string.wait_night, clock(DownloaderPrefs.rules(context).windowStart))
+        ScheduleRules.Verdict.DAILY_CAP -> stringResource(R.string.wait_cap)
+    }
+}
+
+/** Minutes after midnight as "HH:MM". */
+private fun clock(minute: Int): String = String.format(Locale.ROOT, "%02d:%02d", minute / 60, minute % 60)
+
+@Composable
+private fun statusLine(
+    item: DownloadItem,
+    wait: ScheduleRules.Verdict,
+): String {
     val context = LocalContext.current
     fun size(v: Long) = Formatter.formatShortFileSize(context, v)
     val parts = mutableListOf<String>()
@@ -769,7 +979,8 @@ private fun statusLine(item: DownloadItem): String {
                     item.paused -> stringResource(R.string.state_paused)
                     item.notBefore > System.currentTimeMillis() ->
                         stringResource(R.string.state_tonight, DateFormat.getTimeFormat(context).format(Date(item.notBefore)))
-                    item.wifiOnly || DownloaderPrefs.wifiOnly(context) -> stringResource(R.string.state_waiting_wifi)
+                    !item.ignoreRules && wait != ScheduleRules.Verdict.OK -> waitText(wait)
+                    !item.ignoreRules && (item.wifiOnly || DownloaderPrefs.wifiOnly(context)) -> stringResource(R.string.state_waiting_wifi)
                     else -> stringResource(R.string.state_queued)
                 }
         State.RUNNING -> {

@@ -1,5 +1,6 @@
 package app.mawja.android.ui.theme
 
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -23,7 +25,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import app.mawja.android.accessibility.AccessibilityPolicy
 import app.mawja.android.accessibility.MawjaAccessibility
+import app.mawja.android.battery.BatterySaver
 import androidx.compose.ui.text.font.FontFamily
+import kotlinx.coroutines.delay
 
 /**
  * What the theme preference points at: a built-in palette, Material You, the active custom theme,
@@ -79,6 +83,17 @@ enum class ThemeMode {
     CUSTOM,
     LIGHT,
     OLED,
+
+    /**
+     * Mawja 3.0 "Nile Glass" royal palettes (Plus), appended at the end so no stored name moves.
+     * [MIDNIGHT_OLED] opens on its true-black style; [TIME_OF_DAY] changes with the hour (dawn,
+     * noon, sunset, night) through [TimeOfDayTheme].
+     */
+    PHARAOH_GOLD,
+    EMERALD,
+    RUBY,
+    MIDNIGHT_OLED,
+    TIME_OF_DAY,
     ;
 
     companion object {
@@ -121,7 +136,7 @@ enum class ThemeMode {
 fun ThemeMode.defaultVariant(): ThemeVariant =
     when (this) {
         ThemeMode.LIGHT, ThemeMode.CREAM_LIGHT -> ThemeVariant.LIGHT
-        ThemeMode.OLED -> ThemeVariant.AMOLED
+        ThemeMode.OLED, ThemeMode.MIDNIGHT_OLED -> ThemeVariant.AMOLED
         else -> ThemeVariant.DARK
     }
 
@@ -186,16 +201,31 @@ fun MawjaTheme(
     fontFamily: FontFamily = MawjaSansFontFamily,
     content: @Composable () -> Unit,
 ) {
+    // Mawja time-of-day theme: the clock is only watched while that palette can be on screen.
+    val followsClock =
+        themeMode == ThemeMode.TIME_OF_DAY ||
+            (themeMode == ThemeMode.SYSTEM && (systemLightThemeMode == ThemeMode.TIME_OF_DAY || systemDarkThemeMode == ThemeMode.TIME_OF_DAY))
+    val themeMinute by produceState(TimeOfDayTheme.quantize(TimeOfDayTheme.nowMinute()), followsClock) {
+        if (!followsClock) return@produceState
+        while (true) {
+            val now = TimeOfDayTheme.nowMinute()
+            value = TimeOfDayTheme.quantize(now)
+            delay(TimeOfDayTheme.minutesToNextStep(now) * 60_000L)
+        }
+    }
+    val context = LocalContext.current
+    val isSystemDark = isSystemInDarkTheme()
     val baseColorScheme =
         resolveFlowColorScheme(
-            context = LocalContext.current,
-            isSystemDark = isSystemInDarkTheme(),
+            context = context,
+            isSystemDark = isSystemDark,
             themeMode = themeMode,
             themeVariant = themeVariant,
             customTheme = customTheme,
             systemLightThemeMode = systemLightThemeMode,
             systemDarkThemeMode = systemDarkThemeMode,
             systemDarkThemeVariant = systemDarkThemeVariant,
+            minuteOfDay = themeMinute,
         )
 
     // Accessibility (#161-#163): high contrast and colour vision reshape the scheme, the text size
@@ -209,6 +239,24 @@ fun MawjaTheme(
                 .withColorVision(accessibility.colorVision, isDark)
                 .let { if (accessibility.highContrast) it.withHighContrast() else it }
         }
+
+    // Mawja "Nile Glass" depth budget (AGENTS.md, depth and glass exception): premium themes only,
+    // stepped down for small devices, the battery saver, reduce motion and high contrast.
+    val batterySaverActive by BatterySaver.active.collectAsState()
+    val lowRamDevice =
+        remember(context) {
+            (context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager)?.isLowRamDevice == true
+        }
+    val effectiveMode =
+        resolveFlowThemeSlot(isSystemDark, themeMode, themeVariant, systemLightThemeMode, systemDarkThemeMode, systemDarkThemeVariant).mode
+    val effectLevel =
+        EffectBudget.level(
+            premiumTheme = PremiumThemes.isPremium(effectiveMode),
+            lowRamDevice = lowRamDevice,
+            batterySaverActive = batterySaverActive,
+            reduceMotion = reduceMotion,
+            highContrast = accessibility.highContrast,
+        )
 
     val extendedColors =
         ExtendedColors(
@@ -231,6 +279,7 @@ fun MawjaTheme(
     CompositionLocalProvider(
         LocalExtendedColors provides extendedColors,
         LocalReduceMotion provides reduceMotion,
+        LocalEffectLevel provides effectLevel,
         LocalDensity provides scaledDensity,
         LocalTextBoostApplied provides true,
     ) {
@@ -265,6 +314,7 @@ fun resolveFlowColorScheme(
     systemLightThemeMode: ThemeMode,
     systemDarkThemeMode: ThemeMode,
     systemDarkThemeVariant: ThemeVariant,
+    minuteOfDay: Int = TimeOfDayTheme.quantize(TimeOfDayTheme.nowMinute()),
 ): ColorScheme {
     val (effectiveThemeMode, effectiveVariant) =
         resolveFlowThemeSlot(isSystemDark, themeMode, themeVariant, systemLightThemeMode, systemDarkThemeMode, systemDarkThemeVariant)
@@ -279,6 +329,10 @@ fun resolveFlowColorScheme(
 
         effectiveThemeMode == ThemeMode.CUSTOM && customTheme != null -> {
             customTheme.colorsFor(effectiveVariant).toColorScheme(effectiveVariant)
+        }
+
+        effectiveThemeMode == ThemeMode.TIME_OF_DAY -> {
+            TimeOfDayTheme.pairAt(minuteOfDay).colorsFor(effectiveVariant).toColorScheme(effectiveVariant)
         }
 
         else -> {

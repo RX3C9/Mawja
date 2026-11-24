@@ -17,8 +17,8 @@ class PaletteColorsTest {
     @Test
     fun `every palette in the picker has a seed and every seed is in the picker`() {
         val catalogued = ThemeCatalog.palettes.map { it.mode }.filterNot { it == ThemeMode.MATERIAL_YOU }
-        assertThat(catalogued).hasSize(31)
-        assertThat(catalogued.map { MawjaPalettes.forMode(it).id }.toSet()).hasSize(31)
+        assertThat(catalogued).hasSize(36)
+        assertThat(catalogued.map { MawjaPalettes.forMode(it).id }.toSet()).hasSize(36)
     }
 
     @Test
@@ -78,6 +78,10 @@ class PaletteColorsTest {
             ThemeMode.MIDNIGHT_OUD,
             ThemeMode.DELTA,
             ThemeMode.RED_SEA_REEF,
+            ThemeMode.PHARAOH_GOLD,
+            ThemeMode.EMERALD,
+            ThemeMode.RUBY,
+            ThemeMode.MIDNIGHT_OLED,
         ).forEach { mode ->
             listOf(ThemeVariant.LIGHT, ThemeVariant.DARK).forEach { variant ->
                 val c = MawjaPalettes.forMode(mode).colorsFor(variant)

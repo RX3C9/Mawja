@@ -59,11 +59,13 @@ internal fun BoxScope.VideoStageOverlays(session: VideoPlayerStageSession) {
         style = prefs.gestureOverlayStyle,
         seekZoneFraction = prefs.doubleTapSeekZone.sideFraction,
         speedSwipeSide = prefs.speedSwipeSide,
+        // Once the hold is slid the badge follows the finger; until then it shows the boost.
         speedBoostSpeed =
-            PlayerSpeedBoost.boostedPlaybackSpeed(
-                currentSpeed = screenState.normalSpeed,
-                targetSpeed = prefs.longPressPlaybackSpeed,
-            ),
+            screenState.holdSpeed.takeIf { it > 0f }
+                ?: PlayerSpeedBoost.boostedPlaybackSpeed(
+                    currentSpeed = screenState.normalSpeed,
+                    targetSpeed = prefs.longPressPlaybackSpeed,
+                ),
     )
 
     AnimatedVisibility(

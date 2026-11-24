@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Keeps unfinished downloads going when no screen is open: WorkManager survives the app being
- * closed and the phone restarting, waits for the network (or Wi-Fi), and for "tonight" items starts
- * at their time. While it runs, it holds a dataSync foreground notification.
+ * closed and the phone restarting, waits for the network (or Wi-Fi) and the charger when the rules
+ * ask for one, and for "tonight" items and the night window starts at their time. While it runs, it holds a dataSync foreground notification.
  */
 class DownloadWork(
     context: Context,
@@ -91,11 +91,16 @@ class DownloadWork(
             if (running && !fromWorker) return
             DownloadEngine.init(context)
             if (!DownloadEngine.hasPendingWork()) return
-            val wait = (DownloadEngine.nextScheduledAt() - System.currentTimeMillis()).coerceAtLeast(0)
+            // "Tonight" items wait for their time; the smart rules (night window, daily cap, battery)
+            // say when they might allow work again. Whichever comes first wakes the keeper.
+            val tonight = (DownloadEngine.nextScheduledAt() - System.currentTimeMillis()).coerceAtLeast(0)
+            val rules = DownloadEngine.rulesRecheckInMs()
+            val wait = listOf(tonight, rules).filter { it > 0 }.minOrNull() ?: 0L
             val constraints =
                 Constraints
                     .Builder()
                     .setRequiredNetworkType(if (DownloadEngine.needsOnlyUnmetered()) NetworkType.UNMETERED else NetworkType.CONNECTED)
+                    .setRequiresCharging(DownloadEngine.needsCharging())
                     .build()
             val request =
                 OneTimeWorkRequestBuilder<DownloadWork>()

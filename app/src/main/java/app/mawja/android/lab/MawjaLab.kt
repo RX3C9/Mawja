@@ -30,6 +30,18 @@ object MawjaLab {
     private val _nightSounds = MutableStateFlow(true)
     private val _bedtime = MutableStateFlow(false)
     private val _bedtimeStartHour = MutableStateFlow(0)
+    private val _nightLeveling = MutableStateFlow(false)
+    private val _oneHand = MutableStateFlow(false)
+
+    /** Bed mode evens out the video's loud and quiet moments through the night window. */
+    val nightLeveling: StateFlow<Boolean> = _nightLeveling.asStateFlow()
+
+    /** One-hand mode: on a tall fullscreen video the main buttons sit in the bottom third. */
+    val oneHand: StateFlow<Boolean> = _oneHand.asStateFlow()
+
+    fun setNightLeveling(on: Boolean) = save("night_leveling", on) { _nightLeveling.value = on }
+
+    fun setOneHand(on: Boolean) = save("one_hand", on) { _oneHand.value = on }
 
     /** A sleep timer waits for the end of the sentence being spoken. */
     val sleepSentence: StateFlow<Boolean> = _sleepSentence.asStateFlow()
@@ -105,6 +117,8 @@ object MawjaLab {
         _sleepSentence.value = p.getBoolean("sleep_sentence", true)
         _nightSounds.value = p.getBoolean("night_sounds", true)
         _bedtime.value = p.getBoolean("bedtime", false)
+        _nightLeveling.value = p.getBoolean("night_leveling", false)
+        _oneHand.value = p.getBoolean("one_hand", false)
         _bedtimeStartHour.value = p.getInt("bedtime_start", 0).takeIf { it == 22 || it == 23 || it == 0 } ?: 0
     }
 

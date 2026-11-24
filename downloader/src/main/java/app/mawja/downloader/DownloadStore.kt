@@ -74,6 +74,16 @@ object DownloadStore {
                         put("segments", JsonArray(i.segments.map { s -> JsonArray(listOf(JsonPrimitive(s.start), JsonPrimitive(s.end), JsonPrimitive(s.done))) }))
                         i.sha256?.let { put("sha256", it) }
                         i.verified?.let { put("verified", it) }
+                        if (i.mirrors.isNotEmpty()) put("mirrors", JsonArray(i.mirrors.map { JsonPrimitive(it) }))
+                        if (i.sources.isNotEmpty()) put("sources", JsonArray(i.sources.map { JsonPrimitive(it) }))
+                        i.checksum?.let { put("checksum", it) }
+                        i.checksumOk?.let { put("checksumOk", it) }
+                        i.etag?.let { put("etag", it) }
+                        i.lastModified?.let { put("lastModified", it) }
+                        if (i.connections > 0) put("connections", i.connections)
+                        if (i.autoName) put("autoName", true)
+                        if (i.ignoreRules) put("ignoreRules", true)
+                        i.safety?.let { put("safety", it) }
                     },
                 )
             }
@@ -86,6 +96,7 @@ object DownloadStore {
                 fun s(k: String) = o[k]?.jsonPrimitive?.contentOrNull
                 fun l(k: String) = o[k]?.jsonPrimitive?.longOrNull
                 fun b(k: String) = o[k]?.jsonPrimitive?.booleanOrNull
+                fun strings(k: String) = (o[k] as? JsonArray)?.mapNotNull { it.jsonPrimitive.contentOrNull }.orEmpty()
                 DownloadItem(
                     id = s("id")!!,
                     title = s("title").orEmpty(),
@@ -113,6 +124,16 @@ object DownloadStore {
                         }.orEmpty(),
                     sha256 = s("sha256"),
                     verified = b("verified"),
+                    mirrors = strings("mirrors"),
+                    sources = strings("sources"),
+                    checksum = s("checksum"),
+                    checksumOk = b("checksumOk"),
+                    etag = s("etag"),
+                    lastModified = s("lastModified"),
+                    connections = (l("connections") ?: 0).toInt(),
+                    autoName = b("autoName") ?: false,
+                    ignoreRules = b("ignoreRules") ?: false,
+                    safety = s("safety"),
                 )
             }.getOrNull()
         }
@@ -150,4 +171,85 @@ object DownloaderPrefs {
         context: Context,
         url: String,
     ) = prefs(context).edit { putString("last_clip", url) }
+
+    /** Connections per download (0 = default); capped by the tier in ConnectionPolicy. */
+    fun connections(context: Context): Int = prefs(context).getInt("connections", ConnectionPolicy.DEFAULT_CONNECTIONS)
+
+    fun setConnections(
+        context: Context,
+        value: Int,
+    ) = prefs(context).edit { putInt("connections", value) }
+
+    /** Downloads at the same time. */
+    fun parallel(context: Context): Int = prefs(context).getInt("parallel", ConnectionPolicy.FREE_PARALLEL)
+
+    fun setParallel(
+        context: Context,
+        value: Int,
+    ) = prefs(context).edit { putInt("parallel", value) }
+
+    /**
+     * Royal tier (32 connections, more at once). The Downloader has no account link yet, so this
+     * stays false until the Mawja account/entitlement hand-over lands (plan §6 "same account").
+     */
+    fun royal(context: Context): Boolean = prefs(context).getBoolean("royal", false)
+
+    fun autoSort(context: Context): Boolean = prefs(context).getBoolean("auto_sort", true)
+
+    fun setAutoSort(
+        context: Context,
+        on: Boolean,
+    ) = prefs(context).edit { putBoolean("auto_sort", on) }
+
+    /** The smart scheduling rules, Wi-Fi only included. */
+    fun rules(context: Context): ScheduleRules.Rules {
+        val p = prefs(context)
+        return ScheduleRules.Rules(
+            wifiOnly = p.getBoolean("wifi_only", false),
+            chargingOnly = p.getBoolean("charging_only", false),
+            minBatteryPercent = if (p.getBoolean("battery_floor", false)) ScheduleRules.BATTERY_FLOOR else 0,
+            nightOnly = p.getBoolean("night_only", false),
+            windowStart = p.getInt("window_start", 60),
+            windowEnd = p.getInt("window_end", 7 * 60),
+            dailyCapBytes = p.getLong("daily_cap", 0),
+        )
+    }
+
+    fun setChargingOnly(
+        context: Context,
+        on: Boolean,
+    ) = prefs(context).edit { putBoolean("charging_only", on) }
+
+    fun setBatteryFloor(
+        context: Context,
+        on: Boolean,
+    ) = prefs(context).edit { putBoolean("battery_floor", on) }
+
+    fun setNightOnly(
+        context: Context,
+        on: Boolean,
+    ) = prefs(context).edit { putBoolean("night_only", on) }
+
+    fun setDailyCap(
+        context: Context,
+        bytes: Long,
+    ) = prefs(context).edit { putLong("daily_cap", bytes.coerceAtLeast(0)) }
+
+    fun ledger(context: Context): ScheduleRules.Ledger =
+        ScheduleRules.Ledger(prefs(context).getInt("ledger_day", 0), prefs(context).getLong("ledger_bytes", 0))
+
+    fun setLedger(
+        context: Context,
+        ledger: ScheduleRules.Ledger,
+    ) = prefs(context).edit {
+        putInt("ledger_day", ledger.day)
+        putLong("ledger_bytes", ledger.bytes)
+    }
+
+    fun hourlySpeed(context: Context): String? = prefs(context).getString("hourly_speed", null)
+
+    fun setHourlySpeed(
+        context: Context,
+        encoded: String,
+    ) = prefs(context).edit { putString("hourly_speed", encoded) }
 }

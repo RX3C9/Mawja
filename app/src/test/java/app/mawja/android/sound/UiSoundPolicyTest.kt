@@ -54,9 +54,33 @@ class UiSoundPolicyTest {
 
     @Test
     fun soundPacksRoundTripAndUnknownIsWave() {
-        assertThat(UiSoundPack.entries).hasSize(5)
+        assertThat(UiSoundPack.entries).hasSize(9)
         UiSoundPack.entries.forEach { assertThat(UiSoundPack.fromStorage(it.storageId)).isEqualTo(it) }
         assertThat(UiSoundPack.fromStorage(null)).isEqualTo(UiSoundPack.WAVE)
         assertThat(UiSoundPack.fromStorage("nope")).isEqualTo(UiSoundPack.WAVE)
+    }
+
+    @Test
+    fun storedPackIdsNeverMove() {
+        assertThat(UiSoundPack.entries.map { it.storageId })
+            .containsExactly("wave", "drop", "crystal", "soft", "retro", "water", "glass", "oud", "space")
+            .inOrder()
+    }
+
+    @Test
+    fun staysQuietWhileAVideoPlays() {
+        assertThat(UiSoundPolicy.shouldPlay(allOn.copy(videoPlaying = true))).isFalse()
+        assertThat(UiSoundPolicy.shouldPlay(allOn.copy(videoPlaying = false))).isTrue()
+    }
+
+    @Test
+    fun hapticsMatchThePack() {
+        UiSoundPack.entries.forEach { pack ->
+            assertThat(UiSoundPolicy.hapticFor(pack, UiSound.SUCCESS)).isEqualTo(UiHaptic.CONFIRM)
+        }
+        assertThat(UiSoundPolicy.hapticFor(UiSoundPack.WATER, UiSound.TAP)).isEqualTo(UiHaptic.TICK)
+        assertThat(UiSoundPolicy.hapticFor(UiSoundPack.OUD, UiSound.TOGGLE)).isEqualTo(UiHaptic.TICK)
+        assertThat(UiSoundPolicy.hapticFor(UiSoundPack.GLASS, UiSound.TAP)).isEqualTo(UiHaptic.CLICK)
+        assertThat(UiSoundPolicy.hapticFor(UiSoundPack.SPACE, UiSound.TOGGLE)).isEqualTo(UiHaptic.CLICK)
     }
 }

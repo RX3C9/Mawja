@@ -271,6 +271,10 @@ private fun soundPackLabel(pack: UiSoundPack): Int =
         UiSoundPack.CRYSTAL -> R.string.sound_pack_crystal
         UiSoundPack.SOFT -> R.string.sound_pack_soft
         UiSoundPack.RETRO -> R.string.sound_pack_retro
+        UiSoundPack.WATER -> R.string.sound_pack_water
+        UiSoundPack.GLASS -> R.string.sound_pack_glass
+        UiSoundPack.OUD -> R.string.sound_pack_oud
+        UiSoundPack.SPACE -> R.string.sound_pack_space
     }
 
 private fun soundPackSummary(pack: UiSoundPack): Int =
@@ -280,6 +284,10 @@ private fun soundPackSummary(pack: UiSoundPack): Int =
         UiSoundPack.CRYSTAL -> R.string.sound_pack_crystal_summary
         UiSoundPack.SOFT -> R.string.sound_pack_soft_summary
         UiSoundPack.RETRO -> R.string.sound_pack_retro_summary
+        UiSoundPack.WATER -> R.string.sound_pack_water_summary
+        UiSoundPack.GLASS -> R.string.sound_pack_glass_summary
+        UiSoundPack.OUD -> R.string.sound_pack_oud_summary
+        UiSoundPack.SPACE -> R.string.sound_pack_space_summary
     }
 
 private fun interfaceModeLabel(mode: AppUiMode): Int =

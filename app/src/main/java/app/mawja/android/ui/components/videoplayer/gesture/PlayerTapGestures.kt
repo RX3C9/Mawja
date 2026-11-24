@@ -11,12 +11,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.isOutOfBounds
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import app.mawja.android.player.EnhancedPlayerManager
@@ -44,6 +46,8 @@ internal fun Modifier.playerTapGestures(
     isSeekBackActive: State<Boolean>,
     sideEdgeIgnorePx: State<Float>,
     onTapWindowChange: State<(Boolean) -> Unit>,
+    onSeekRipple: State<(Offset) -> Unit>,
+    onHoldSpeedChange: State<(Float) -> Unit>,
     haptics: HapticFeedback,
 ): Modifier {
     val currentIsSpeedBoostActive by isSpeedBoostActive
@@ -65,6 +69,8 @@ internal fun Modifier.playerTapGestures(
     val currentIsSeekBackActive by isSeekBackActive
     val currentSideEdgeIgnorePx by sideEdgeIgnorePx
     val currentOnTapWindowChange by onTapWindowChange
+    val currentOnSeekRipple by onSeekRipple
+    val currentOnHoldSpeedChange by onHoldSpeedChange
 
     return this.pointerInput(Unit) {
         var accumulatedForwardMs = 0L
@@ -74,6 +80,8 @@ internal fun Modifier.playerTapGestures(
         var pendingForwardTargetMs: Long? = null
         var pendingBackTargetMs: Long? = null
         var speedBeforeLongPress: Float? = null
+        var holdBoostSpeed = Float.NaN
+        var lastHoldSpeed = Float.NaN
 
         var revealedOnTap = false
         var hidePending = false
@@ -153,6 +161,7 @@ internal fun Modifier.playerTapGestures(
                             (zone == TapZone.FORWARD && currentIsSeekForwardActive)
                     when {
                         continuesActiveSeek -> {
+                            currentOnSeekRipple(offset)
                             applyZoneSeek(forward = zone == TapZone.FORWARD)
                         }
 
@@ -182,6 +191,7 @@ internal fun Modifier.playerTapGestures(
                 }
                 revealedOnTap = false
 
+                if (zone == TapZone.BACK || zone == TapZone.FORWARD) currentOnSeekRipple(offset)
                 when (zone) {
                     TapZone.BACK -> applyZoneSeek(forward = false)
                     TapZone.FORWARD -> applyZoneSeek(forward = true)
@@ -190,10 +200,10 @@ internal fun Modifier.playerTapGestures(
                 }
             },
             onLongPress = { offset ->
-                if (currentLongPressPlaybackSpeed <= 0f) return@detectPlayerTaps
+                if (currentLongPressPlaybackSpeed <= 0f) return@detectPlayerTaps false
 
                 val bottomExclusion = if (currentIsFullscreen) LongPressBottomExclusionFullscreen else LongPressBottomExclusion
-                if (offset.y > size.height - bottomExclusion.toPx()) return@detectPlayerTaps
+                if (offset.y > size.height - bottomExclusion.toPx()) return@detectPlayerTaps false
 
                 val manager = EnhancedPlayerManager.getInstance()
                 val player = manager.getPlayer()
@@ -205,16 +215,50 @@ internal fun Modifier.playerTapGestures(
                     speedBeforeLongPress = restoreSpeed
                     currentOnNormalSpeedChange(restoreSpeed)
                     currentOnSpeedBoostChange(true)
-                    manager.setPlaybackSpeed(
+                    val boosted =
                         PlayerSpeedBoost.boostedPlaybackSpeed(
                             currentSpeed = restoreSpeed,
                             targetSpeed = currentLongPressPlaybackSpeed,
-                        ),
-                    )
+                        )
+                    manager.setPlaybackSpeed(boosted)
+                    // Live streams keep their speed, so a hold there never tunes it by sliding.
+                    val isLive = manager.playerState.value.isLive || player.isCurrentMediaItemLive
+                    holdBoostSpeed = if (isLive) Float.NaN else boosted
+                    lastHoldSpeed = boosted
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    true
+                } else {
+                    false
+                }
+            },
+            onLongPressDrag = { travel ->
+                val boost = holdBoostSpeed
+                if (!boost.isNaN()) {
+                    val next =
+                        HoldSpeedDrag.speedFor(
+                            boostSpeed = boost,
+                            dx = travel.x,
+                            dy = travel.y,
+                            stepTravelPx = HoldSpeedStepTravel.toPx(),
+                        )
+                    if (next != lastHoldSpeed) {
+                        EnhancedPlayerManager.getInstance().setPlaybackSpeed(next)
+                        lastHoldSpeed = next
+                        currentOnHoldSpeedChange(next)
+                        haptics.performHapticFeedback(
+                            if (next == HoldSpeedDrag.MIN_SPEED || next == HoldSpeedDrag.MAX_SPEED) {
+                                HapticFeedbackType.GestureThresholdActivate
+                            } else {
+                                HapticFeedbackType.SegmentFrequentTick
+                            },
+                        )
+                    }
                 }
             },
             onLongPressReleased = {
+                holdBoostSpeed = Float.NaN
+                lastHoldSpeed = Float.NaN
+                currentOnHoldSpeedChange(0f)
                 val restoreSpeed = speedBeforeLongPress
                 if (restoreSpeed != null) {
                     EnhancedPlayerManager.getInstance().setPlaybackSpeed(restoreSpeed)
@@ -253,7 +297,8 @@ private suspend fun PointerInputScope.detectPlayerTaps(
     onTapUp: (Offset) -> Unit,
     onSingleTapConfirmed: () -> Unit,
     onDoubleTap: (Offset) -> Unit,
-    onLongPress: (Offset) -> Unit,
+    onLongPress: (Offset) -> Boolean,
+    onLongPressDrag: (Offset) -> Unit,
     onLongPressReleased: () -> Unit,
 ) {
     awaitEachGesture {
@@ -267,8 +312,11 @@ private suspend fun PointerInputScope.detectPlayerTaps(
                 try {
                     withTimeout(viewConfiguration.longPressTimeoutMillis) { awaitStillUp(down) }
                 } catch (_: PointerEventTimeoutCancellationException) {
-                    onLongPress(down.position)
-                    waitForUpOrCancellation()
+                    if (onLongPress(down.position)) {
+                        awaitHoldRelease(down, onLongPressDrag)
+                    } else {
+                        waitForUpOrCancellation()
+                    }
                     onLongPressReleased()
                     return@awaitEachGesture
                 }
@@ -307,5 +355,26 @@ private suspend fun AwaitPointerEventScope.awaitStillUp(down: PointerInputChange
         if (change.changedToUp()) return change
         if (change.isConsumed || change.isOutOfBounds(size, extendedTouchPadding)) return null
         if ((change.position - down.position).getDistance() > viewConfiguration.touchSlop) return null
+    }
+}
+
+/**
+ * Follows a boosted hold until the finger lifts, reporting its travel from [down] so sliding while
+ * holding tunes the speed. Read on the initial pass and consumed once it moves, so the seek,
+ * brightness and volume drags underneath, and the player sheet, leave a tuning hold alone.
+ */
+private suspend fun AwaitPointerEventScope.awaitHoldRelease(
+    down: PointerInputChange,
+    onDrag: (Offset) -> Unit,
+) {
+    while (true) {
+        val event = awaitPointerEvent(PointerEventPass.Initial)
+        val change = event.changes.firstOrNull { it.id == down.id } ?: return
+        if (!change.pressed) return
+        if (change.isConsumed) return
+        if (change.positionChanged()) {
+            onDrag(change.position - down.position)
+            change.consume()
+        }
     }
 }

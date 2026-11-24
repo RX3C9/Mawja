@@ -34,9 +34,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import app.mawja.android.R
+import app.mawja.android.ui.theme.EffectLevel
+import app.mawja.android.ui.theme.LocalEffectLevel
+import app.mawja.android.ui.theme.LocalMawjaDepth
 import app.mawja.android.ui.utils.LocalWindowSizeClass
 import app.mawja.android.ui.utils.isMediumWidth
 import app.mawja.android.sound.UiSound
@@ -60,10 +64,19 @@ internal fun MawjaNavigationBar(
     val barTabs = if (tabs.size <= MAX_BAR_TABS) tabs else tabs.take(MAX_BAR_TABS - 1)
     val overflowTabs = tabs.drop(barTabs.size)
     val sounds = rememberUiSounds()
+    val view = LocalView.current
 
     // Mawja look: a floating capsule over the content, with a soft tinted shadow and a hairline edge.
     val shape = RoundedCornerShape(percent = 50)
     val colors = MaterialTheme.colorScheme
+    // "Nile Glass" (AGENTS.md depth exception): premium themes at full budget get a translucent capsule
+    // with a light glass edge; every other case keeps the solid capsule exactly as before.
+    val effectLevel = LocalEffectLevel.current
+    val depth = LocalMawjaDepth.current
+    val glass = effectLevel == EffectLevel.FULL
+    val containerColor = if (glass) depth.glassColor(colors.surfaceContainerHigh, effectLevel) else colors.surfaceContainerHigh
+    val edgeColor = if (glass) depth.edgeColor(colors.onSurface) else colors.outlineVariant.copy(alpha = 0.45f)
+    val elevation = if (glass) depth.level3 else CapsuleElevation
     Box(
         modifier =
             modifier
@@ -78,13 +91,13 @@ internal fun MawjaNavigationBar(
             Modifier
                 .widthIn(max = CapsuleMaxWidth)
                 .shadow(
-                    elevation = CapsuleElevation,
+                    elevation = elevation,
                     shape = shape,
                     ambientColor = colors.primary.copy(alpha = 0.22f),
                     spotColor = colors.primary.copy(alpha = 0.32f),
                 ).clip(shape)
-                .border(1.dp, colors.outlineVariant.copy(alpha = 0.45f), shape),
-        containerColor = colors.surfaceContainerHigh,
+                .border(1.dp, edgeColor, shape),
+        containerColor = containerColor,
         windowInsets = WindowInsets(0, 0, 0, 0),
         arrangement =
             if (horizontalItems) ShortNavigationBarArrangement.Centered else ShortNavigationBarArrangement.EqualWeight,
@@ -94,7 +107,7 @@ internal fun MawjaNavigationBar(
             ShortNavigationBarItem(
                 selected = selected,
                 onClick = {
-                    sounds?.play(UiSound.TAP)
+                    sounds?.play(UiSound.TAP, view)
                     onTabSelected(tab)
                 },
                 icon = { Icon(imageVector = tab.icon(selected), contentDescription = null) },

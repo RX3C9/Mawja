@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -184,10 +185,11 @@ fun MawjaSwitchRow(
     shape: Shape = RectangleShape,
 ) {
     val sounds = rememberUiSounds()
+    val view = LocalView.current
     SegmentedListItem(
         verticalAlignment = Alignment.CenterVertically,
         onClick = {
-            sounds?.play(UiSound.TOGGLE)
+            sounds?.play(UiSound.TOGGLE, view)
             onCheckedChange(!checked)
         },
         shapes = ListItemDefaults.shapes(shape = shape),

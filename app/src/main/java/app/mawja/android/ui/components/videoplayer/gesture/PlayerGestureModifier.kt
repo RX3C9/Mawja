@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -61,6 +62,8 @@ fun Modifier.videoPlayerControls(
     isSeekForwardActive: Boolean = false,
     isSeekBackActive: Boolean = false,
     onTapWindowChange: (Boolean) -> Unit = {},
+    onSeekRipple: (Offset) -> Unit = {},
+    onHoldSpeedChange: (Float) -> Unit = {},
 ): Modifier {
     val isSpeedBoostActiveState = rememberUpdatedState(isSpeedBoostActive)
     val onSpeedBoostChangeState = rememberUpdatedState(onSpeedBoostChange)
@@ -101,6 +104,8 @@ fun Modifier.videoPlayerControls(
     val isSeekForwardActiveState = rememberUpdatedState(isSeekForwardActive)
     val isSeekBackActiveState = rememberUpdatedState(isSeekBackActive)
     val onTapWindowChangeState = rememberUpdatedState(onTapWindowChange)
+    val onSeekRippleState = rememberUpdatedState(onSeekRipple)
+    val onHoldSpeedChangeState = rememberUpdatedState(onHoldSpeedChange)
 
     // The width the system itself reserves for the back gesture, so the player's dead zones match
     // the ones the user is already swiping against rather than a number of our own.
@@ -144,6 +149,8 @@ fun Modifier.videoPlayerControls(
             isSeekBackActive = isSeekBackActiveState,
             sideEdgeIgnorePx = sideEdgeIgnorePxState,
             onTapWindowChange = onTapWindowChangeState,
+            onSeekRipple = onSeekRippleState,
+            onHoldSpeedChange = onHoldSpeedChangeState,
             haptics = haptics,
         ).playerDragGestures(
             currentPosition = currentPositionState,

@@ -76,6 +76,14 @@ class PlayerScreenState {
     var isSpeedBoostActive by mutableStateOf(false)
     var normalSpeed by mutableFloatStateOf(1.0f)
 
+    /** Speed a held boost has been slid to; 0 while the hold has not been slid. */
+    var holdSpeed by mutableFloatStateOf(0f)
+
+    // Where the latest double-tap seek touched, for the wave that spreads from the finger
+    var seekRippleX by mutableFloatStateOf(0f)
+    var seekRippleY by mutableFloatStateOf(0f)
+    var seekRippleSequence by mutableIntStateOf(0)
+
     // Shorts/Music Prompt
     var showShortsPrompt by mutableStateOf(false)
     var hasShownShortsPrompt by mutableStateOf(false)

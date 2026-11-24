@@ -24,6 +24,7 @@ internal fun SpeedBoostOverlay(
     isVisible: Boolean,
     speed: Float = 2.0f,
     modifier: Modifier = Modifier,
+    hint: String? = null,
 ) {
     AnimatedVisibility(
         visible = isVisible,
@@ -40,24 +41,35 @@ internal fun SpeedBoostOverlay(
             shape = CircleShape,
             modifier = Modifier.wrapContentSize(),
         ) {
-            Row(
+            Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = formatMultiplierLabel(speed, maxValue = 4.0f),
-                    color = PlayerScrimContent,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    imageVector = Icons.Rounded.FastForward,
-                    contentDescription = null,
-                    tint = PlayerScrimContent,
-                    modifier = Modifier.size(20.dp),
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = formatMultiplierLabel(speed, maxValue = 4.0f),
+                        color = PlayerScrimContent,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        imageVector = Icons.Rounded.FastForward,
+                        contentDescription = null,
+                        tint = PlayerScrimContent,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+                if (hint != null) {
+                    Text(
+                        text = hint,
+                        color = PlayerScrimContent,
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                }
             }
         }
     }
